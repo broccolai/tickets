@@ -1,0 +1,6 @@
+ticket:
+  created: "Ticket created"
+  closed: "Ticket closed"
+  picked: "Ticket picked"
+notifications:
+  pick: "%picker% has picked your ticket"
