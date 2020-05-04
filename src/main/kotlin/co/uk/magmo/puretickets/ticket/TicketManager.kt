@@ -1,6 +1,7 @@
 package co.uk.magmo.puretickets.ticket
 
 import co.uk.magmo.puretickets.storage.SQLFunctions
+import co.uk.magmo.puretickets.utils.asUUID
 import com.google.common.collect.ArrayListMultimap
 import org.bukkit.OfflinePlayer
 import org.bukkit.command.CommandSender
@@ -42,48 +43,51 @@ object TicketManager {
     }
 
     fun pick(user: CommandSender, information: TicketInformation) {
-        val uuid = if (user is Player) user.uniqueId else null
         val ticket = tickets[information.player][information.index]
-        val message = Message(MessageReason.PICKED, null, uuid, null)
+        val message = Message(MessageReason.PICKED, null, user.asUUID(), null)
 
         ticket.status = TicketStatus.PICKED
-        ticket.pickerUUID = uuid
+        ticket.pickerUUID = user.asUUID()
         ticket.addMessage(message)
 
         tickets[information.player][information.index] = ticket
     }
 
     fun yield(user: CommandSender, information: TicketInformation) {
-        // val ticket = tickets[information.player][information.index]
-        // val message =
-        //     Message(MessageReason.YIELDED, null, user.uuid, null)
-        // ticket.status = TicketStatus.OPEN
-        // addMessage(ticket, message)
-        // tickets[information.player][information.index] = ticket
+        val ticket = tickets[information.player][information.index]
+         val message = Message(MessageReason.YIELDED, null, user.asUUID(), null)
+
+         ticket.status = TicketStatus.OPEN
+         ticket.addMessage(message)
+
+         tickets[information.player][information.index] = ticket
     }
 
     fun close(user: CommandSender, information: TicketInformation) {
-        // val ticket = tickets[information.player][information.index]
-        // val message =
-        //     Message(MessageReason.CLOSED, null, user.uuid, null)
-        // tickets.remove(information.player, ticket)
-        // ticket.status = TicketStatus.CLOSED
-        // addMessage(ticket, message)
+         val ticket = tickets[information.player][information.index]
+         val message = Message(MessageReason.CLOSED, null, user.asUUID(), null)
+
+         tickets.remove(information.player, ticket)
+         ticket.status = TicketStatus.CLOSED
+         ticket.addMessage(message)
     }
 
     fun done(user: CommandSender, information: TicketInformation) {
-        // val ticket = tickets[information.player][information.index]
-        // val message =
-        //     Message(MessageReason.DONE_MARKED, null, user.uuid, null)
-        // tickets.remove(information.player, ticket)
-        // ticket.status = TicketStatus.CLOSED
-        // addMessage(ticket, message)
+         val ticket = tickets[information.player][information.index]
+         val message = Message(MessageReason.DONE_MARKED, null, user.asUUID(), null)
+
+         tickets.remove(information.player, ticket)
+         ticket.status = TicketStatus.CLOSED
+         ticket.addMessage(message)
     }
-    //    public void reopen(CommandSender sender, TicketInformation information) {
-//        Ticket ticket = tickets.get(information.player).get(information.index);
-//        Message message = new Message(MessageReason.REOPENED, null, sender, null);
-//
-//        ticket.status = TicketStatus.OPEN;
-//        addMessage(ticket, message);
-//    }
+
+    fun reopen(sender: CommandSender, information: TicketInformation) {
+        val ticket = SQLFunctions.retrieveSingleTicket(information.index)
+        val message = Message(MessageReason.REOPENED, null, sender.asUUID(), null)
+
+        ticket?.status = TicketStatus.OPEN
+        ticket?.addMessage(message)
+
+        tickets.put(information.player, ticket)
+    }
 }
