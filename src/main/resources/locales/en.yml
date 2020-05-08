@@ -1,3 +1,5 @@
+acf-core:
+  help_header: "<c3> §l§m===§r </c3> <c1>/TICKET</c1> <c2>COMMANDS</c2> <c3> §l§m===§r </c3>"
 ticket:
   created: "Ticket created"
   closed: "Ticket closed"

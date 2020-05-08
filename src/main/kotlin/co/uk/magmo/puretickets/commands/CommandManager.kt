@@ -1,5 +1,6 @@
 package co.uk.magmo.puretickets.commands
 
+import co.aikar.commands.MessageType
 import co.aikar.commands.PaperCommandManager
 import co.uk.magmo.puretickets.PureTickets.Companion.TICKETS
 import co.uk.magmo.puretickets.storage.SQLFunctions
@@ -8,6 +9,7 @@ import co.uk.magmo.puretickets.ticket.MessageReason
 import co.uk.magmo.puretickets.ticket.TicketInformation
 import co.uk.magmo.puretickets.ticket.TicketManager
 import org.bukkit.Bukkit
+import org.bukkit.ChatColor
 import org.bukkit.OfflinePlayer
 import org.bukkit.configuration.file.YamlConfiguration
 import java.io.File
@@ -22,6 +24,10 @@ class CommandManager : PaperCommandManager(TICKETS) {
         enableUnstableAPI("help")
         saveLocales()
         loadLocales()
+
+        // Colours
+        setFormat(MessageType.HELP, ChatColor.AQUA, ChatColor.WHITE, ChatColor.DARK_GRAY)
+
 
         // Contexts
         commandContexts.registerContext(Message::class.java) { c ->
@@ -73,7 +79,7 @@ class CommandManager : PaperCommandManager(TICKETS) {
         val fs = FileSystems.newFileSystem(folder.toURI(), emptyMap<String, Any>())
 
         Files.walk(fs.getPath("/locales"))
-            .filter { path -> path.endsWith(".yml") }
+            .filter { path -> path.toString().endsWith(".yml") }
             .forEach { path ->
                 val target = File(localeFolder, path.fileName.toString())
                 val stream = TICKETS.javaClass.getResourceAsStream(path.toString())
