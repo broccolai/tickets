@@ -18,12 +18,11 @@ repositories {
 }
 
 dependencies {
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
-    implementation "me.liuwj.ktorm:ktorm-core:2.7.2"
-    implementation "me.liuwj.ktorm:ktorm-support-sqlite:2.7.2"
-
+    implementation "org.jetbrains.kotlin:kotlin-stdlib"
     api "co.aikar:acf-paper:0.5.0-SNAPSHOT"
-    compileOnly "org.jetbrains:annotations:17.0.0"
+    api "co.aikar:idb-core:1.0.0-SNAPSHOT"
+    api "com.zaxxer:HikariCP:2.4.1"
+
     compileOnly "org.spigotmc:spigot-api:1.15-R0.1-SNAPSHOT"
 }
 
@@ -34,13 +33,12 @@ compileJava {
 }
 
 shadowJar {
-    relocate "co.aikar.commands", "co.uk.magmo.puretickets.lib.commands"
-    relocate "co.aikar.locales", "co.uk.magmo.puretickets.lib.locales"
-    relocate "net.jodah.expiringmap", "co.uk.magmo.puretickets.expiringmap"
+    String base = "co.uk.magmo.puretickets.lib."
 
-    exclude 'kotlin/reflect/**/*.class'
-    exclude 'kotlin/coroutines/**/*.class'
-    exclude 'kotlin/experimental/**/*.class'
+    relocate "org.jetbrains.kotlin", base + "kotlin"
+    relocate "co.aikar.commands", base + "commands"
+    relocate "co.aikar.locales", base + "locales"
+    relocate "net.jodah.expiringmap", base + "expiringmap"
 
     archiveFileName = name + ".jar"
     mergeServiceFiles()

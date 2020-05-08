@@ -1,9 +1,9 @@
 package co.uk.magmo.puretickets
 
+import co.aikar.idb.DB
 import co.uk.magmo.puretickets.commands.CommandManager
 import co.uk.magmo.puretickets.interactions.Notifications
 import co.uk.magmo.puretickets.storage.SQLFunctions
-import co.uk.magmo.puretickets.ticket.TicketManager
 import org.bukkit.plugin.java.JavaPlugin
 
 class PureTickets : JavaPlugin() {
@@ -13,6 +13,10 @@ class PureTickets : JavaPlugin() {
 
         SQLFunctions.setup()
         server.pluginManager.registerEvents(Notifications, this)
+    }
+
+    override fun onDisable() {
+        DB.close()
     }
 
     companion object {
