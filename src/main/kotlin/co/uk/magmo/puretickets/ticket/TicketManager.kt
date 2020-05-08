@@ -2,14 +2,13 @@ package co.uk.magmo.puretickets.ticket
 
 import co.uk.magmo.puretickets.storage.SQLFunctions
 import co.uk.magmo.puretickets.utils.asUUID
-import com.google.common.collect.ArrayListMultimap
 import org.bukkit.OfflinePlayer
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 import java.util.UUID
 
 object TicketManager {
-    private val tickets = ArrayListMultimap.create<UUID, Ticket>()
+    private val tickets = SQLFunctions.retrieveAllTickets()
     private var current = SQLFunctions.currentTicketId()
 
     operator fun get(uuid: UUID?, index: Int): Ticket? = tickets[uuid][index]
@@ -85,8 +84,8 @@ object TicketManager {
         val ticket = SQLFunctions.retrieveSingleTicket(information.index)
         val message = Message(MessageReason.REOPENED, null, sender.asUUID(), null)
 
-        ticket?.status = TicketStatus.OPEN
-        ticket?.addMessage(message)
+        ticket.status = TicketStatus.OPEN
+        ticket.addMessage(message)
 
         tickets.put(information.player, ticket)
     }

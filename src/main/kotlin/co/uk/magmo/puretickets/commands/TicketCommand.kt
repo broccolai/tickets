@@ -24,7 +24,6 @@ class TicketCommand : PureBaseCommand() {
     @Default
     @HelpCommand
     fun onHelp(sender: CommandSender, help: CommandHelp) {
-        sender.sendMessage("lol")
         help.showHelp()
     }
 
