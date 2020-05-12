@@ -15,6 +15,7 @@ import org.bukkit.configuration.file.YamlConfiguration
 import java.io.File
 import java.io.InputStream
 import java.io.InputStreamReader
+import java.lang.Exception
 import java.nio.file.FileSystems
 import java.nio.file.Files
 import java.util.Locale
@@ -27,32 +28,43 @@ class CommandManager : PaperCommandManager(TICKETS) {
 
         // Colours
         setFormat(MessageType.HELP, ChatColor.AQUA, ChatColor.WHITE, ChatColor.DARK_GRAY)
-
+        setFormat(MessageType.INFO, ChatColor.AQUA, ChatColor.WHITE, ChatColor.DARK_GRAY)
 
         // Contexts
         commandContexts.registerContext(Message::class.java) { c ->
-            Message(MessageReason.MESSAGE, c.joinArgs(), null, null)
+            Message(MessageReason.MESSAGE, c.joinArgs(), null)
         }
 
         commandContexts.registerContext(TicketInformation::class.java) { c ->
-            TicketInformation(Bukkit.getOfflinePlayer(c.popFirstArg()).uniqueId, c.popFirstArg().toInt())
+            val name = c.popFirstArg()
+            val index = c.popFirstArg() ?: "1"
+
+            TicketInformation(Bukkit.getOfflinePlayer(name).uniqueId, index.toInt() - 1)
         }
 
         // Completions
         commandCompletions.registerAsyncCompletion("AllTicketHolders") {
-            TicketManager.allKeys().map { uuid -> Bukkit.getOfflinePlayer(uuid) }.map { it.name }.toList()
+            TicketManager.allKeys().map { uuid -> Bukkit.getOfflinePlayer(uuid) }.map { it.name }
         }
 
         commandCompletions.registerAsyncCompletion("UserTicketIds") { c ->
-            IntRange(0, TicketManager[c.getContextValue(OfflinePlayer::class.java).uniqueId].size).map { it.toString() }.toList()
+            try {
+                TicketManager[c.getContextValue(OfflinePlayer::class.java).uniqueId].indices.map { it.inc().toString() }
+            } catch (e: Exception) {
+                return@registerAsyncCompletion null
+            }
         }
 
         commandCompletions.registerAsyncCompletion("IssuerTicketIds") { c ->
-            IntRange(0, TicketManager[c.issuer.uniqueId].size).map { (it + 1).toString() }.toList()
+            TicketManager[c.issuer.uniqueId].indices.map { it.inc().toString() }
         }
 
         commandCompletions.registerAsyncCompletion("UserOfflineTicketIDs") { c ->
-            SQLFunctions.retrieveClosedTicketIds(c.issuer.uniqueId).map { it.toString() }.toList()
+            try {
+                SQLFunctions.retrieveClosedTicketIds(c.issuer.uniqueId).map { it.toString() }
+            } catch (e: Exception) {
+                return@registerAsyncCompletion null
+            }
         }
 
         // Commands
