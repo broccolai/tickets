@@ -54,6 +54,8 @@ object SQLFunctions {
         return if (raw != null) UUID.fromString(raw) else null
     }
 
+    private fun DbRow.getLiteLong(column: String) = getString(column).toLong()
+
     private fun DbRow.toTicket(): Ticket {
         val id = getInt("id")
 
@@ -62,5 +64,5 @@ object SQLFunctions {
 
     private fun DbRow.toMessage() =
         Message(MessageReason.valueOf(getString("reason")), getString("data"), getUUID("sender"),
-                LocalDateTime.ofInstant(Instant.ofEpochMilli(getLong("date")), ZoneId.systemDefault()))
+                LocalDateTime.ofInstant(Instant.ofEpochMilli(getLiteLong("date")), ZoneId.systemDefault()))
 }
