@@ -17,7 +17,7 @@ object TicketManager {
 
     operator fun contains(player: OfflinePlayer) = tickets.containsKey(player.uniqueId)
 
-    fun all() = tickets.values()
+    fun asMap(): MutableMap<UUID, MutableCollection<Ticket>> = tickets.asMap()
 
     fun allKeys(): MutableSet<UUID> = tickets.keySet()
 
@@ -43,7 +43,7 @@ object TicketManager {
 
     fun pick(user: CommandSender, information: TicketInformation) {
         val ticket = tickets[information.player][information.index]
-        val message = Message(MessageReason.PICKED, null, user.asUUID(), null)
+        val message = Message(MessageReason.PICKED, null, user.asUUID())
 
         ticket.status = TicketStatus.PICKED
         ticket.pickerUUID = user.asUUID()
@@ -54,7 +54,7 @@ object TicketManager {
 
     fun yield(user: CommandSender, information: TicketInformation) {
         val ticket = tickets[information.player][information.index]
-         val message = Message(MessageReason.YIELDED, null, user.asUUID(), null)
+         val message = Message(MessageReason.YIELDED, null, user.asUUID())
 
          ticket.status = TicketStatus.OPEN
          ticket.addMessage(message)
@@ -64,7 +64,7 @@ object TicketManager {
 
     fun close(user: CommandSender, information: TicketInformation) {
          val ticket = tickets[information.player][information.index]
-         val message = Message(MessageReason.CLOSED, null, user.asUUID(), null)
+         val message = Message(MessageReason.CLOSED, null, user.asUUID())
 
          tickets.remove(information.player, ticket)
          ticket.status = TicketStatus.CLOSED
@@ -73,7 +73,7 @@ object TicketManager {
 
     fun done(user: CommandSender, information: TicketInformation) {
          val ticket = tickets[information.player][information.index]
-         val message = Message(MessageReason.DONE_MARKED, null, user.asUUID(), null)
+         val message = Message(MessageReason.DONE_MARKED, null, user.asUUID())
 
          tickets.remove(information.player, ticket)
          ticket.status = TicketStatus.CLOSED
@@ -82,7 +82,7 @@ object TicketManager {
 
     fun reopen(sender: CommandSender, information: TicketInformation) {
         val ticket = SQLFunctions.retrieveSingleTicket(information.index)
-        val message = Message(MessageReason.REOPENED, null, sender.asUUID(), null)
+        val message = Message(MessageReason.REOPENED, null, sender.asUUID())
 
         ticket.status = TicketStatus.OPEN
         ticket.addMessage(message)

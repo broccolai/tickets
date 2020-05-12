@@ -1,8 +1,11 @@
 acf-core:
-  help_header: "<c3> §l§m===§r </c3> <c1>/TICKET</c1> <c2>COMMANDS</c2> <c3> §l§m===§r </c3>"
+  help_header: "<c3> §l§m===§r </c3> <c1>TICKET</c1> <c2>COMMANDS</c2> <c3> §l§m===§r </c3>"
 ticket:
-  created: "Ticket created"
-  closed: "Ticket closed"
-  picked: "Ticket picked"
+  created: "§a§lT §8» §fTicket created"
+  closed: "§a§lT §8» §fTicket closed"
+  picked: "§a§lT §8» §fTicket picked"
 notifications:
-  pick: "%picker% has picked your ticket"
+  pick: "§a§lT §8» §f%picker% has picked your ticket"
+titles:
+  all_tickets: "<c3> §l§m====§r </c3> <c2>ALL TICKETS</c2> <c3> §l§m====§r </c3>"
+  show_ticket: "<c3> §l§m====§r </c3> <c2>TICKET §l#%id%</c2> <c3> §l§m====§r </c3>"
