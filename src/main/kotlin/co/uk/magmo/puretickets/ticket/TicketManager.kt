@@ -30,6 +30,13 @@ object TicketManager {
         }
     }
 
+    fun update(information: TicketInformation, message: Message) {
+        val ticket = tickets[information.player][information.index]
+
+        ticket.addMessageAndUpdate(message)
+        tickets[information.player][information.index] = ticket
+    }
+
     fun pick(user: CommandSender, information: TicketInformation) {
         val ticket = tickets[information.player][information.index]
         val message = Message(MessageReason.PICKED, null, user.asUUID())

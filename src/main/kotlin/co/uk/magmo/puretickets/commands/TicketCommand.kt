@@ -37,6 +37,15 @@ class TicketCommand : PureBaseCommand() {
         Notifications.reply(player, Messages.TICKET__CREATED)
     }
 
+    @Subcommand("update|u")
+    @CommandPermission(Constants.USER_PERMISSION + ".update")
+    @Description("Update a ticket")
+    fun onUpdate(player: Player, index: Int, message: Message) {
+        val information = generateInformation(player, index)
+        TicketManager.update(information, message)
+        Notifications.reply(player, Messages.TICKET__UPDATED)
+    }
+
     @Subcommand("close|cl")
     @CommandCompletion("@UsersTickets")
     @CommandPermission(Constants.USER_PERMISSION + ".close")
