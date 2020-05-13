@@ -20,9 +20,9 @@ object Notifications : Listener {
 
     fun send(uuid: UUID, messageKey: Messages, vararg replacements: String) {
         val op = Bukkit.getOfflinePlayer(uuid)
-        val ci = commandManager.getCommandIssuer(op)
 
         if (op.isOnline) {
+            val ci = commandManager.getCommandIssuer(op)
             ci.sendInfo(messageKey, *replacements)
         } else {
             awaiting.put(uuid, PendingNotification(messageKey, *replacements))
@@ -32,6 +32,9 @@ object Notifications : Listener {
     @EventHandler
     fun onJoin(e: PlayerJoinEvent) {
         val ci = commandManager.getCommandIssuer(e.player)
-        awaiting[ci.uniqueId].forEach { n -> ci.sendInfo(n.messageKey, *n.replacements) }
+        awaiting[ci.uniqueId].forEach { n ->
+            ci.sendInfo(n.messageKey, *n.replacements)
+            awaiting.remove(ci.uniqueId, n)
+        }
     }
 }

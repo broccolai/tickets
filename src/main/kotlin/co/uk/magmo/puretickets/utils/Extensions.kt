@@ -11,3 +11,5 @@ fun UUID?.asName() = if (this == null) Bukkit.getConsoleSender().name else Bukki
 fun CommandSender.asUUID() = if (this is Player) this.uniqueId else null;
 
 fun ChatColor.bold() = "$this${ChatColor.BOLD}"
+
+fun Int.minuteToTick() = (this * 60 * 20).toLong() / 100
