@@ -21,8 +21,8 @@ object TicketManager {
 
     fun allKeys(): MutableSet<UUID> = tickets.keySet()
 
-    fun createTicket(player: Player, message: Message) {
-        Ticket(current.inc(), player.uniqueId, arrayListOf(message), TicketStatus.OPEN, null).also {
+    fun createTicket(player: Player, message: Message): Ticket {
+        return Ticket(current.inc(), player.uniqueId, arrayListOf(message), TicketStatus.OPEN, null).also {
             tickets.put(player.uniqueId, it)
 
             SQLFunctions.insertTicket(it)

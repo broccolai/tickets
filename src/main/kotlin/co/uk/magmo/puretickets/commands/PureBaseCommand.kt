@@ -9,15 +9,16 @@ import org.bukkit.OfflinePlayer
 
 open class PureBaseCommand : BaseCommand() {
     fun generateInformation(offlinePlayer: OfflinePlayer, input: Int?, closed: Boolean = false): TicketInformation {
-        var index = if (input != null) input - 1 else null
+        var index = input
 
         if (closed) {
             if (index == null)
                 index = SQLFunctions.highestTicket(offlinePlayer.uniqueId) ?: throw InvalidCommandArgument()
 
             if (!SQLFunctions.ticketExists(offlinePlayer.uniqueId, index)) throw InvalidCommandArgument()
-        } else if (index != null && !TicketManager[offlinePlayer.uniqueId].indices.contains(index)) {
-            throw InvalidCommandArgument()
+        } else if (index != null) {
+            index--
+            if (!TicketManager[offlinePlayer.uniqueId].indices.contains(index)) throw InvalidCommandArgument()
         }
 
         return TicketInformation(offlinePlayer.uniqueId, index ?: 0)

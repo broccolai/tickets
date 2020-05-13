@@ -33,11 +33,13 @@ class TicketCommand : PureBaseCommand() {
     @CommandPermission(Constants.USER_PERMISSION + ".create")
     @Description("Create a ticket")
     fun onCreate(player: Player, message: Message) {
-        TicketManager.createTicket(player, message)
+        val ticket = TicketManager.createTicket(player, message)
         Notifications.reply(player, Messages.TICKET__CREATED)
+        Notifications.announce(Messages.NOTIFICATIONS__NEW_TICKET, "%picker%", player.name, "%id%", ticket.id.toString(), "%ticket%", ticket.currentMessage()!!)
     }
 
     @Subcommand("update|u")
+    @CommandCompletion("@IssuerTicketIds")
     @CommandPermission(Constants.USER_PERMISSION + ".update")
     @Description("Update a ticket")
     fun onUpdate(player: Player, index: Int, message: Message) {
@@ -47,11 +49,11 @@ class TicketCommand : PureBaseCommand() {
     }
 
     @Subcommand("close|cl")
-    @CommandCompletion("@UsersTickets")
+    @CommandCompletion("@IssuerTicketIds")
     @CommandPermission(Constants.USER_PERMISSION + ".close")
     @Description("Close a ticket")
     fun onClose(player: Player, @Optional index: Int?) {
-        val information = generateInformation(player, index, true)
+        val information = generateInformation(player, index)
         TicketManager.close(player, information)
         Notifications.reply(player, Messages.TICKET__CLOSED)
     }
@@ -109,14 +111,26 @@ class TicketCommand : PureBaseCommand() {
     }
 
     @Subcommand("reopen|ro")
-    @CommandCompletion("@AllTicketHolders @UserOfflineTicketIDs")
+    @CommandCompletion("@UserOfflineNames @UserOfflineTicketIDs")
     @CommandPermission(Constants.STAFF_PERMISSION + ".reopen")
     @Description("Reopen a ticket")
     fun onReopen(sender: CommandSender, offlinePlayer: OfflinePlayer, @Optional index: Int?) {
-        val information = generateInformation(offlinePlayer, index)
+        val information = generateInformation(offlinePlayer, index, true)
         TicketManager.reopen(sender, information)
         Notifications.reply(sender, Messages.TICKET__REOPENED)
         Notifications.send(information.player, Messages.NOTIFICATIONS__REOPEN, "%picker%", sender.name)
+    }
+
+    @Subcommand("log")
+    @CommandCompletion("@AllTicketHolders @UserTicketIds")
+    @CommandPermission(Constants.STAFF_PERMISSION + ".log")
+    @Description("Log tickets messages")
+    fun onLog(sender: CommandSender, offlinePlayer: OfflinePlayer, @Optional index: Int?) {
+        val information = generateInformation(offlinePlayer, index)
+        Notifications.reply(sender, Messages.TITLES__TICKET_LOG)
+        TicketManager[information.player, information.index]?.messages?.forEach {
+            sender.sendMessage(it.reason.name + " " + it.data)
+        }
     }
 
     @Subcommand("list|l")
@@ -126,7 +140,7 @@ class TicketCommand : PureBaseCommand() {
         Notifications.reply(sender, Messages.TITLES__ALL_TICKETS)
 
         TicketManager.asMap().forEach { (uuid, tickets) ->
-            sender.sendMessage(ChatColor.GREEN.toString() + uuid.asName()!!)
+            sender.sendMessage(ChatColor.GREEN.toString() + uuid.asName())
 
             tickets.forEach { t -> sender.sendMessage(t.status.color.toString() + "#" + ChatColor.WHITE.bold() + t.id.toString() + ChatColor.DARK_GRAY + " - " + ChatColor.WHITE + t.currentMessage()) }
         }
