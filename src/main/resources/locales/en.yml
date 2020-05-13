@@ -1,11 +1,19 @@
 acf-core:
-  help_header: "<c3> §l§m===§r </c3> <c1>TICKET</c1> <c2>COMMANDS</c2> <c3> §l§m===§r </c3>"
+  help_header: "<c3> §l§m===§r </c3> <c1>TICKET</c1> <c2>COMMANDS</c2> <c3> §l§m===§r </c3>"#
+tasks:
+  reminder: "§a§lT §8» §fThere is %amount% ticket(s) currently open"
 ticket:
   created: "§a§lT §8» §fTicket created"
   closed: "§a§lT §8» §fTicket closed"
   picked: "§a§lT §8» §fTicket picked"
+  yielded: "§a§lT §8» §fTicket yielded"
+  done: "§a§lT §8» §fTicket done-marked"
+  reopened: "§a§lT §8» §fTicket reopened"
 notifications:
   pick: "§a§lT §8» §f%picker% has picked your ticket"
+  yield: "§a§lT §8» §f%picker% has yielded your ticket"
+  done: "§a§lT §8» §f%picker% has done-marked your ticket"
+  reopen: "§a§lT §8» §f%picker% has reopened your ticket"
 titles:
   all_tickets: "<c3> §l§m====§r </c3> <c2>ALL TICKETS</c2> <c3> §l§m====§r </c3>"
   show_ticket: "<c3> §l§m====§r </c3> <c2>TICKET §l#%id%</c2> <c3> §l§m====§r </c3>"
