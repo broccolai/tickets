@@ -61,7 +61,7 @@ class CommandManager : PaperCommandManager(TICKETS) {
 
         commandCompletions.registerAsyncCompletion("UserOfflineTicketIDs") { c ->
             try {
-                SQLFunctions.retrieveClosedTicketIds(c.issuer.uniqueId).map { it.toString() }
+                SQLFunctions.retrieveClosedTicketIds(c.getContextValue(OfflinePlayer::class.java).uniqueId).map { it.toString() }
             } catch (e: Exception) {
                 return@registerAsyncCompletion null
             }

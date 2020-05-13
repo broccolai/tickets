@@ -1,3 +1,4 @@
 name: PureTickets
 main: co.uk.magmo.puretickets.PureTickets
 version: 2.0.0
+api-version: 1.13
