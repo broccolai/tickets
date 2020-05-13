@@ -2,6 +2,7 @@ package co.uk.magmo.puretickets.interactions
 
 import co.uk.magmo.puretickets.locale.Messages
 import co.uk.magmo.puretickets.PureTickets.Companion.commandManager
+import co.uk.magmo.puretickets.utils.Constants
 import com.google.common.collect.ArrayListMultimap
 import org.bukkit.Bukkit
 import org.bukkit.command.CommandSender
@@ -27,6 +28,12 @@ object Notifications : Listener {
         } else {
             awaiting.put(uuid, PendingNotification(messageKey, *replacements))
         }
+    }
+
+    fun announce(messageKey: Messages, vararg replacements: String) {
+        Bukkit.getOnlinePlayers()
+                .filter { it.hasPermission(Constants.STAFF_PERMISSION + ".announce") }
+                .forEach { reply(it, messageKey, *replacements) }
     }
 
     @EventHandler
