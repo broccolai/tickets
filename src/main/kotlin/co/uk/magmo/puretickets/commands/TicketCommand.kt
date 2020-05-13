@@ -41,38 +41,17 @@ class TicketCommand : PureBaseCommand() {
     @CommandCompletion("@UsersTickets")
     @CommandPermission(Constants.USER_PERMISSION + ".close")
     @Description("Close a ticket")
-    fun onClose(player: Player, @Optional index: Int) {
+    fun onClose(player: Player, @Optional index: Int?) {
         val information = generateInformation(player, index)
         TicketManager.close(player, information)
         Notifications.reply(player, Messages.TICKET__CLOSED)
-    }
-
-    @Subcommand("pick|p")
-    @CommandCompletion("@AllTicketHolders @UserTicketIds")
-    @CommandPermission(Constants.STAFF_PERMISSION + ".pick")
-    @Description("Pick a ticket")
-    fun onPick(sender: CommandSender, offlinePlayer: OfflinePlayer, @Optional index: Int?) {
-        val information = generateInformation(offlinePlayer, index)
-        TicketManager.pick(sender, information)
-        Notifications.reply(sender, Messages.TICKET__PICKED)
-        Notifications.send(information.player, Messages.TICKET__CREATED, "%player%", sender.name);
-    }
-
-    @Subcommand("done|d")
-    @CommandCompletion("@AllTicketHolders @UserTicketIds")
-    @CommandPermission(Constants.STAFF_PERMISSION + ".done")
-    @Description("Done-mark a ticket")
-    fun onDone(sender: CommandSender, offlinePlayer: OfflinePlayer, @Optional index: Int) {
-        val information = generateInformation(offlinePlayer, index)
-        TicketManager.done(sender, information)
-        Notifications.reply(sender, Messages.TICKET__DONE)
     }
 
     @Subcommand("show|s")
     @CommandCompletion("@AllTicketHolders @UserTicketIds")
     @CommandPermission(Constants.STAFF_PERMISSION + ".show")
     @Description("Show a ticket")
-    fun onShow(sender: CommandSender, offlinePlayer: OfflinePlayer, @Optional index: Int) {
+    fun onShow(sender: CommandSender, offlinePlayer: OfflinePlayer, @Optional index: Int?) {
         val information = generateInformation(offlinePlayer, index)
 
         TicketManager[information.player, information.index]?.apply {
@@ -87,11 +66,48 @@ class TicketCommand : PureBaseCommand() {
         }
     }
 
+    @Subcommand("pick|p")
+    @CommandCompletion("@AllTicketHolders @UserTicketIds")
+    @CommandPermission(Constants.STAFF_PERMISSION + ".pick")
+    @Description("Pick a ticket")
+    fun onPick(sender: CommandSender, offlinePlayer: OfflinePlayer, @Optional index: Int?) {
+        val information = generateInformation(offlinePlayer, index)
+        TicketManager.pick(sender, information)
+        Notifications.reply(sender, Messages.TICKET__PICKED)
+        Notifications.send(information.player, Messages.NOTIFICATIONS__PICK, "%picker%", sender.name)
+    }
+
+    @Subcommand("done|d")
+    @CommandCompletion("@AllTicketHolders @UserTicketIds")
+    @CommandPermission(Constants.STAFF_PERMISSION + ".done")
+    @Description("Done-mark a ticket")
+    fun onDone(sender: CommandSender, offlinePlayer: OfflinePlayer, @Optional index: Int?) {
+        val information = generateInformation(offlinePlayer, index)
+        TicketManager.done(sender, information)
+        Notifications.reply(sender, Messages.TICKET__DONE)
+        Notifications.send(information.player, Messages.NOTIFICATIONS__DONE, "%picker%", sender.name)
+    }
+
+    @Subcommand("yield|y")
+    @CommandCompletion("@AllTicketHolders @UserTicketIds")
+    @CommandPermission(Constants.STAFF_PERMISSION + ".yield")
+    @Description("Yield a ticket")
+    fun onYield(sender: CommandSender, offlinePlayer: OfflinePlayer, @Optional index: Int?) {
+        val information = generateInformation(offlinePlayer, index)
+        TicketManager.yield(sender, information)
+        Notifications.reply(sender, Messages.TICKET__YIELDED)
+        Notifications.send(information.player, Messages.NOTIFICATIONS__YIELD, "%picker%", sender.name)
+    }
+
     @Subcommand("reopen|ro")
+    @CommandCompletion("@AllTicketHolders @UserOfflineTicketIDs")
     @CommandPermission(Constants.STAFF_PERMISSION + ".reopen")
     @Description("Reopen a ticket")
-    fun onReopen(sender: CommandSender, offlinePlayer: OfflinePlayer, @Optional index: Int) {
+    fun onReopen(sender: CommandSender, offlinePlayer: OfflinePlayer, @Optional index: Int?) {
         val information = generateInformation(offlinePlayer, index)
+        TicketManager.reopen(sender, information)
+        Notifications.reply(sender, Messages.TICKET__REOPENED)
+        Notifications.send(information.player, Messages.NOTIFICATIONS__REOPEN, "%picker%", sender.name)
     }
 
     @Subcommand("list|l")
@@ -101,7 +117,7 @@ class TicketCommand : PureBaseCommand() {
         Notifications.reply(sender, Messages.TITLES__ALL_TICKETS)
 
         TicketManager.asMap().forEach { (uuid, tickets) ->
-            sender.sendMessage(ChatColor.AQUA.toString() + uuid.asName()!!)
+            sender.sendMessage(ChatColor.GREEN.toString() + uuid.asName()!!)
 
             tickets.forEach { t -> sender.sendMessage(t.status.color.toString() + "#" + ChatColor.WHITE.bold() + t.id.toString() + ChatColor.DARK_GRAY + " - " + ChatColor.WHITE + t.currentMessage()) }
         }
