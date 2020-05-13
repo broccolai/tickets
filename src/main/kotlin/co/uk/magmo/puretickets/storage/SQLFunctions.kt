@@ -48,6 +48,10 @@ object SQLFunctions {
 
     fun retrieveSingleTicket(id: Int) = DB.getFirstRow("SELECT * FROM ticket WHERE id = ?", id).toTicket()
 
+    fun ticketExists(uuid: UUID, id: Int): Boolean = DB.getFirstColumn("SELECT EXISTS(SELECT 1 FROM ticket WHERE uuid = ? AND id = ?)", uuid, id)
+
+    fun highestTicket(uuid: UUID): Int? = DB.getFirstColumn("SELECT max(id) FROM ticket WHERE uuid = ?", uuid)
+
     private fun retrieveMessages(id: Int) = DB.getResults("SELECT reason, data, sender, date FROM message WHERE ticket = ?", id)
             .map { row -> row.toMessage() } as ArrayList<Message>
 
