@@ -29,7 +29,10 @@ object SQLFunctions {
     fun currentTicketId() = DB.getFirstColumn<Int>("SELECT max(id) FROM ticket") ?: 0
 
     fun insertTicket(t: Ticket): Long = DB.executeInsert("INSERT INTO ticket(id, uuid, status, picker) VALUES(?, ?, ?, ?)",
-            t.id, t.playerUUID, t.status, t.pickerUUID)
+            t.id, t.playerUUID, t.status.name, t.pickerUUID)
+
+    fun updateTicket(t: Ticket) = DB.executeUpdateAsync("UPDATE ticket SET status = ?, picker = ? WHERE id = ?",
+            t.status.name, t.pickerUUID, t.id)
 
     fun insertMessage(t: Ticket, m: Message): Long = DB.executeInsert("INSERT INTO message(ticket, reason, data, sender, date) VALUES(?, ?, ?, ?, ?)",
             t.id, m.reason.name, m.data, m.sender, m.date?.atZone(ZoneId.systemDefault())?.toEpochSecond())
