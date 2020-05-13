@@ -51,7 +51,7 @@ class TicketCommand : PureBaseCommand() {
     @CommandPermission(Constants.USER_PERMISSION + ".close")
     @Description("Close a ticket")
     fun onClose(player: Player, @Optional index: Int?) {
-        val information = generateInformation(player, index)
+        val information = generateInformation(player, index, true)
         TicketManager.close(player, information)
         Notifications.reply(player, Messages.TICKET__CLOSED)
     }
