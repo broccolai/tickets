@@ -6,6 +6,7 @@ import co.uk.magmo.puretickets.ticket.Message
 import co.uk.magmo.puretickets.ticket.MessageReason
 import co.uk.magmo.puretickets.ticket.Ticket
 import co.uk.magmo.puretickets.ticket.TicketStatus
+import co.uk.magmo.puretickets.utils.asName
 import com.google.common.collect.ArrayListMultimap
 import java.io.File
 import java.time.Instant
@@ -37,6 +38,10 @@ object SQLFunctions {
     fun insertMessage(t: Ticket, m: Message): Long = DB.executeInsert("INSERT INTO message(ticket, reason, data, sender, date) VALUES(?, ?, ?, ?, ?)",
             t.id, m.reason.name, m.data, m.sender, m.date?.atZone(ZoneId.systemDefault())?.toEpochSecond())
 
+    fun retrieveClosedTicketNames(): List<String> = DB.getFirstColumnResults<String>("SELECT uuid FROM ticket WHERE status = ?", TicketStatus.CLOSED)
+            .mapNotNull { UUID.fromString(it) }
+            .map { it.asName() }
+
     fun retrieveClosedTicketIds(uuid: UUID): List<Int> = DB.getFirstColumnResults("SELECT id FROM ticket WHERE uuid = ? AND status = ?",
             uuid, TicketStatus.CLOSED.name)
 
@@ -48,7 +53,7 @@ object SQLFunctions {
 
     fun retrieveSingleTicket(id: Int) = DB.getFirstRow("SELECT * FROM ticket WHERE id = ?", id).toTicket()
 
-    fun ticketExists(uuid: UUID, id: Int): Boolean = DB.getFirstColumn("SELECT EXISTS(SELECT 1 FROM ticket WHERE uuid = ? AND id = ?)", uuid, id)
+    fun ticketExists(uuid: UUID, id: Int): Boolean = DB.getFirstColumn<Int>("SELECT EXISTS(SELECT 1 FROM ticket WHERE uuid = ? AND id = ?)", uuid, id) == 1
 
     fun highestTicket(uuid: UUID): Int? = DB.getFirstColumn("SELECT max(id) FROM ticket WHERE uuid = ?", uuid)
 
