@@ -4,6 +4,7 @@ tasks:
   reminder: "§a§lT §8» §fThere is %amount% ticket(s) currently open"
 ticket:
   created: "§a§lT §8» §fTicket created"
+  updated: "§a§lT §8» §fTicket updated"
   closed: "§a§lT §8» §fTicket closed"
   picked: "§a§lT §8» §fTicket picked"
   yielded: "§a§lT §8» §fTicket yielded"
