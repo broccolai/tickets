@@ -12,6 +12,9 @@ class ReminderTask : BukkitRunnable() {
     override fun run() {
         val amount = TicketManager.asMap().values.flatten()
                 .count { it.status == TicketStatus.OPEN }
+
+        if (amount == 0) return
+
         Bukkit.getOnlinePlayers()
                 .filter { it.hasPermission(Constants.STAFF_PERMISSION + ".remind") }
                 .forEach { Notifications.reply(it, Messages.TASKS__REMINDER, "%amount%", amount.toString()) }

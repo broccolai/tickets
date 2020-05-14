@@ -17,32 +17,35 @@ permissions:
     default: true
     description: Allows a user to close a ticket
   tickets.staff.*:
-    default: false
+    default: op
     description: Allows access to all ticket staff permissions
   tickets.staff.show:
-    default: false
+    default: op
     description: Allows a user to view a ticket
   tickets.staff.pick:
-    default: false
+    default: op
     description: Allows a user to pick a ticket
   tickets.staff.done:
-    default: false
+    default: op
     description: Allows a user to done-mark a ticket
   tickets.staff.yield:
-    default: false
+    default: op
     description: Allows a user to yield a ticket
   tickets.staff.reopen:
-    default: false
+    default: op
     description: Allows a user to reopen a ticket
   tickets.staff.log:
-    default: false
+    default: op
     description: Allows a user to view a tickets messages
   tickets.staff.list:
-    default: false
+    default: op
     description: Allows a user to view all open tickets
   tickets.staff.announce:
-    default: false
+    default: op
     description: Allows a user to see when a ticket is changed
   tickets.staff.remind:
-    default: false
+    default: op
     description: Allows a user to view the ticket reminder message
+  tickets.staff.reload:
+    default: op
+    description: Allows a user to reload parts of tickets

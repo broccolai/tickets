@@ -20,12 +20,14 @@ import org.bukkit.ChatColor
 import org.bukkit.OfflinePlayer
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
+import java.time.format.DateTimeFormatter
 
 @CommandAlias("ticket|ti")
 class TicketCommand : PureBaseCommand() {
     @Default
     @HelpCommand
     fun onHelp(sender: CommandSender, help: CommandHelp) {
+        help.helpEntries.removeAt(0)
         help.showHelp()
     }
 
@@ -44,9 +46,10 @@ class TicketCommand : PureBaseCommand() {
     @Description("Update a ticket")
     fun onUpdate(player: Player, index: Int, message: Message) {
         val information = generateInformation(player, index)
-        TicketManager.update(information, message)
+        val id = TicketManager.update(information, message)
+
         Notifications.reply(player, Messages.TICKET__UPDATED)
-        Notifications.announce(Messages.ANNOUNCEMENTS__UPDATED_TICKET, "%user%", player.name, "%id%", information.index.toString(), "%ticket%", message.data!!)
+        Notifications.announce(Messages.ANNOUNCEMENTS__UPDATED_TICKET, "%user%", player.name, "%id%", id.toString(), "%ticket%", message.data!!)
     }
 
     @Subcommand("close|cl")
@@ -55,9 +58,10 @@ class TicketCommand : PureBaseCommand() {
     @Description("Close a ticket")
     fun onClose(player: Player, @Optional index: Int?) {
         val information = generateInformation(player, index)
-        TicketManager.close(player, information)
+        val id = TicketManager.close(player, information)
+
         Notifications.reply(player, Messages.TICKET__CLOSED)
-        Notifications.announce(Messages.ANNOUNCEMENTS__CLOSED_TICKET, "%user%", player.name, "%id%")
+        Notifications.announce(Messages.ANNOUNCEMENTS__CLOSED_TICKET, "%user%", player.name, "%id%", id.toString())
     }
 
     @Subcommand("show|s")
@@ -74,7 +78,7 @@ class TicketCommand : PureBaseCommand() {
 
             sender.sendMessage("§bSender: §f" + playerUUID.asName())
             sender.sendMessage("§bPicker: §f" + picker)
-            sender.sendMessage("§bDate Opened: §f" + dateOpened())
+            sender.sendMessage("§bDate Opened: §f" + dateOpened()?.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
             sender.sendMessage("§bCurrent Message: §f" + currentMessage())
         }
     }
@@ -85,10 +89,11 @@ class TicketCommand : PureBaseCommand() {
     @Description("Pick a ticket")
     fun onPick(sender: CommandSender, offlinePlayer: OfflinePlayer, @Optional index: Int?) {
         val information = generateInformation(offlinePlayer, index)
-        TicketManager.pick(sender, information)
+        val id = TicketManager.pick(sender, information)
+
         Notifications.reply(sender, Messages.TICKET__PICKED)
         Notifications.send(information.player, Messages.NOTIFICATIONS__PICK, "%user%", sender.name)
-        Notifications.announce(Messages.ANNOUNCEMENTS__PICKED_TICKET, "%user%", sender.name, "%id%")
+        Notifications.announce(Messages.ANNOUNCEMENTS__PICKED_TICKET, "%user%", sender.name, "%id%", id.toString())
     }
 
     @Subcommand("done|d")
@@ -97,10 +102,11 @@ class TicketCommand : PureBaseCommand() {
     @Description("Done-mark a ticket")
     fun onDone(sender: CommandSender, offlinePlayer: OfflinePlayer, @Optional index: Int?) {
         val information = generateInformation(offlinePlayer, index)
-        TicketManager.done(sender, information)
+        val id = TicketManager.done(sender, information)
+
         Notifications.reply(sender, Messages.TICKET__DONE)
         Notifications.send(information.player, Messages.NOTIFICATIONS__DONE, "%user%", sender.name)
-        Notifications.announce(Messages.ANNOUNCEMENTS__DONE_TICKET, "%user%", sender.name, "%id%")
+        Notifications.announce(Messages.ANNOUNCEMENTS__DONE_TICKET, "%user%", sender.name, "%id%", id.toString())
     }
 
     @Subcommand("yield|y")
@@ -109,10 +115,11 @@ class TicketCommand : PureBaseCommand() {
     @Description("Yield a ticket")
     fun onYield(sender: CommandSender, offlinePlayer: OfflinePlayer, @Optional index: Int?) {
         val information = generateInformation(offlinePlayer, index)
-        TicketManager.yield(sender, information)
+        val id = TicketManager.yield(sender, information)
+
         Notifications.reply(sender, Messages.TICKET__YIELDED)
         Notifications.send(information.player, Messages.NOTIFICATIONS__YIELD, "%user%", sender.name)
-        Notifications.announce(Messages.ANNOUNCEMENTS__YIELDED_TICKET, "%user%", sender.name, "%id%")
+        Notifications.announce(Messages.ANNOUNCEMENTS__YIELDED_TICKET, "%user%", sender.name, "%id%", id.toString())
     }
 
     @Subcommand("reopen|ro")
@@ -121,10 +128,10 @@ class TicketCommand : PureBaseCommand() {
     @Description("Reopen a ticket")
     fun onReopen(sender: CommandSender, offlinePlayer: OfflinePlayer, @Optional index: Int?) {
         val information = generateInformation(offlinePlayer, index, true)
-        TicketManager.reopen(sender, information)
+        val id = TicketManager.reopen(sender, information)
         Notifications.reply(sender, Messages.TICKET__REOPENED)
         Notifications.send(information.player, Messages.NOTIFICATIONS__REOPEN, "%user%", sender.name)
-        Notifications.announce(Messages.ANNOUNCEMENTS__REOPEN_TICKET, "%user%", sender.name, "%id%")
+        Notifications.announce(Messages.ANNOUNCEMENTS__REOPEN_TICKET, "%user%", sender.name, "%id%", id.toString())
     }
 
     @Subcommand("log")
@@ -133,8 +140,11 @@ class TicketCommand : PureBaseCommand() {
     @Description("Log tickets messages")
     fun onLog(sender: CommandSender, offlinePlayer: OfflinePlayer, @Optional index: Int?) {
         val information = generateInformation(offlinePlayer, index)
-        Notifications.reply(sender, Messages.TITLES__TICKET_LOG)
-        TicketManager[information.player, information.index]?.messages?.forEach {
+        val ticket = TicketManager[information.player, information.index] ?: return
+
+        Notifications.reply(sender, Messages.TITLES__TICKET_LOG, ticket.id.toString())
+
+        ticket.messages.forEach {
             sender.sendMessage("§f§l" + it.reason.name + " -  §8" + (it.data ?: it.sender.asName()))
         }
     }

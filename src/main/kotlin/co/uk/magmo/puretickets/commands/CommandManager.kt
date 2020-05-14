@@ -35,13 +35,6 @@ class CommandManager : PaperCommandManager(TICKETS) {
             Message(MessageReason.MESSAGE, c.joinArgs(), null)
         }
 
-        commandContexts.registerContext(TicketInformation::class.java) { c ->
-            val name = c.popFirstArg()
-            val index = c.popFirstArg() ?: "1"
-
-            TicketInformation(Bukkit.getOfflinePlayer(name).uniqueId, index.toInt() - 1)
-        }
-
         // Completions
         commandCompletions.registerAsyncCompletion("AllTicketHolders") {
             TicketManager.allKeys().map { uuid -> Bukkit.getOfflinePlayer(uuid) }.map { it.name }

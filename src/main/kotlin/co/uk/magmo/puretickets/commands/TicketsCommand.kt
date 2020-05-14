@@ -2,16 +2,14 @@ package co.uk.magmo.puretickets.commands
 
 import co.aikar.commands.CommandIssuer
 import co.aikar.commands.InvalidCommandArgument
-import co.aikar.commands.annotation.CommandAlias
-import co.aikar.commands.annotation.CommandCompletion
-import co.aikar.commands.annotation.Single
-import co.aikar.commands.annotation.Subcommand
-import co.aikar.commands.annotation.Syntax
+import co.aikar.commands.annotation.*
 import co.uk.magmo.puretickets.PureTickets
 import co.uk.magmo.puretickets.PureTickets.Companion.TICKETS
+import co.uk.magmo.puretickets.utils.Constants
 
 @CommandAlias("tickets")
 class TicketsCommand : PureBaseCommand() {
+    @Default
     @Subcommand("info")
     fun onInfo(issuer: CommandIssuer) {
         issuer.sendMessage(TICKETS.name + " " + TICKETS.description.version)
@@ -19,6 +17,7 @@ class TicketsCommand : PureBaseCommand() {
 
     @Subcommand("reload")
     @CommandCompletion("locale")
+    @CommandPermission(Constants.STAFF_PERMISSION + ".reload")
     @Syntax("[reloadable]")
     fun onReload(issuer: CommandIssuer, @Single reloadable: String) {
         when (reloadable.toUpperCase()) {
