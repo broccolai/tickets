@@ -35,7 +35,7 @@ class TicketCommand : PureBaseCommand() {
     fun onCreate(player: Player, message: Message) {
         val ticket = TicketManager.createTicket(player, message)
         Notifications.reply(player, Messages.TICKET__CREATED)
-        Notifications.announce(Messages.NOTIFICATIONS__NEW_TICKET, "%picker%", player.name, "%id%", ticket.id.toString(), "%ticket%", ticket.currentMessage()!!)
+        Notifications.announce(Messages.ANNOUNCEMENTS__NEW_TICKET, "%user%", player.name, "%id%", ticket.id.toString(), "%ticket%", ticket.currentMessage()!!)
     }
 
     @Subcommand("update|u")
@@ -85,7 +85,7 @@ class TicketCommand : PureBaseCommand() {
         val information = generateInformation(offlinePlayer, index)
         TicketManager.pick(sender, information)
         Notifications.reply(sender, Messages.TICKET__PICKED)
-        Notifications.send(information.player, Messages.NOTIFICATIONS__PICK, "%picker%", sender.name)
+        Notifications.send(information.player, Messages.NOTIFICATIONS__PICK, "%user%", sender.name)
     }
 
     @Subcommand("done|d")
@@ -96,7 +96,7 @@ class TicketCommand : PureBaseCommand() {
         val information = generateInformation(offlinePlayer, index)
         TicketManager.done(sender, information)
         Notifications.reply(sender, Messages.TICKET__DONE)
-        Notifications.send(information.player, Messages.NOTIFICATIONS__DONE, "%picker%", sender.name)
+        Notifications.send(information.player, Messages.NOTIFICATIONS__DONE, "%user%", sender.name)
     }
 
     @Subcommand("yield|y")
@@ -107,7 +107,7 @@ class TicketCommand : PureBaseCommand() {
         val information = generateInformation(offlinePlayer, index)
         TicketManager.yield(sender, information)
         Notifications.reply(sender, Messages.TICKET__YIELDED)
-        Notifications.send(information.player, Messages.NOTIFICATIONS__YIELD, "%picker%", sender.name)
+        Notifications.send(information.player, Messages.NOTIFICATIONS__YIELD, "%user%", sender.name)
     }
 
     @Subcommand("reopen|ro")
@@ -118,7 +118,7 @@ class TicketCommand : PureBaseCommand() {
         val information = generateInformation(offlinePlayer, index, true)
         TicketManager.reopen(sender, information)
         Notifications.reply(sender, Messages.TICKET__REOPENED)
-        Notifications.send(information.player, Messages.NOTIFICATIONS__REOPEN, "%picker%", sender.name)
+        Notifications.send(information.player, Messages.NOTIFICATIONS__REOPEN, "%user%", sender.name)
     }
 
     @Subcommand("log")
