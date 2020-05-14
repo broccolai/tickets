@@ -135,7 +135,7 @@ class TicketCommand : PureBaseCommand() {
         val information = generateInformation(offlinePlayer, index)
         Notifications.reply(sender, Messages.TITLES__TICKET_LOG)
         TicketManager[information.player, information.index]?.messages?.forEach {
-            sender.sendMessage(it.reason.name + " " + it.data)
+            sender.sendMessage("§f§l" + it.reason.name + " -  §8" + (it.data ?: it.sender.asName()))
         }
     }
 
