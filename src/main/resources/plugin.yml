@@ -2,3 +2,47 @@ name: PureTickets
 main: co.uk.magmo.puretickets.PureTickets
 version: 2.0.0
 api-version: 1.13
+
+permissions:
+  tickets.user.*:
+    default: true
+    description: Allows access to all ticket user permissions
+  tickets.user.create:
+    default: true
+    description: Allows a user to create a ticket
+  tickets.user.update:
+    default: true
+    description: Allows a user to update a ticket
+  tickets.user.close:
+    default: true
+    description: Allows a user to close a ticket
+  tickets.staff.*:
+    default: false
+    description: Allows access to all ticket staff permissions
+  tickets.staff.show:
+    default: false
+    description: Allows a user to view a ticket
+  tickets.staff.pick:
+    default: false
+    description: Allows a user to pick a ticket
+  tickets.staff.done:
+    default: false
+    description: Allows a user to done-mark a ticket
+  tickets.staff.yield:
+    default: false
+    description: Allows a user to yield a ticket
+  tickets.staff.reopen:
+    default: false
+    description: Allows a user to reopen a ticket
+  tickets.staff.log:
+    default: false
+    description: Allows a user to view a tickets messages
+  tickets.staff.list:
+    default: false
+    description: Allows a user to view all open tickets
+  tickets.staff.announce:
+    default: false
+    description: Allows a user to see when a ticket is changed
+  tickets.staff.remind:
+    default: false
+    description: Allows a user to view the ticket reminder message
