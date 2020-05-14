@@ -46,6 +46,7 @@ class TicketCommand : PureBaseCommand() {
         val information = generateInformation(player, index)
         TicketManager.update(information, message)
         Notifications.reply(player, Messages.TICKET__UPDATED)
+        Notifications.announce(Messages.ANNOUNCEMENTS__UPDATED_TICKET, "%user%", player.name, "%id%", information.index.toString(), "%ticket%", message.data!!)
     }
 
     @Subcommand("close|cl")
@@ -56,6 +57,7 @@ class TicketCommand : PureBaseCommand() {
         val information = generateInformation(player, index)
         TicketManager.close(player, information)
         Notifications.reply(player, Messages.TICKET__CLOSED)
+        Notifications.announce(Messages.ANNOUNCEMENTS__CLOSED_TICKET, "%user%", player.name, "%id%")
     }
 
     @Subcommand("show|s")
@@ -86,6 +88,7 @@ class TicketCommand : PureBaseCommand() {
         TicketManager.pick(sender, information)
         Notifications.reply(sender, Messages.TICKET__PICKED)
         Notifications.send(information.player, Messages.NOTIFICATIONS__PICK, "%user%", sender.name)
+        Notifications.announce(Messages.ANNOUNCEMENTS__PICKED_TICKET, "%user%", sender.name, "%id%")
     }
 
     @Subcommand("done|d")
@@ -97,6 +100,7 @@ class TicketCommand : PureBaseCommand() {
         TicketManager.done(sender, information)
         Notifications.reply(sender, Messages.TICKET__DONE)
         Notifications.send(information.player, Messages.NOTIFICATIONS__DONE, "%user%", sender.name)
+        Notifications.announce(Messages.ANNOUNCEMENTS__DONE_TICKET, "%user%", sender.name, "%id%")
     }
 
     @Subcommand("yield|y")
@@ -108,6 +112,7 @@ class TicketCommand : PureBaseCommand() {
         TicketManager.yield(sender, information)
         Notifications.reply(sender, Messages.TICKET__YIELDED)
         Notifications.send(information.player, Messages.NOTIFICATIONS__YIELD, "%user%", sender.name)
+        Notifications.announce(Messages.ANNOUNCEMENTS__YIELDED_TICKET, "%user%", sender.name, "%id%")
     }
 
     @Subcommand("reopen|ro")
@@ -119,6 +124,7 @@ class TicketCommand : PureBaseCommand() {
         TicketManager.reopen(sender, information)
         Notifications.reply(sender, Messages.TICKET__REOPENED)
         Notifications.send(information.player, Messages.NOTIFICATIONS__REOPEN, "%user%", sender.name)
+        Notifications.announce(Messages.ANNOUNCEMENTS__REOPEN_TICKET, "%user%", sender.name, "%id%")
     }
 
     @Subcommand("log")

@@ -16,7 +16,13 @@ notifications:
   done: "§a§lT §8» §f%user% has done-marked your ticket"
   reopen: "§a§lT §8» §f%user% has reopened your ticket"
 announcements:
-  new_tickets: "§a§lT §8» §f%user% opened a new ticket %id% - %ticket%"
+  new_ticket: "§a§lT §8» §f%user% opened a new ticket %id% - %ticket%"
+  updated_ticket: "§a§lT §8» §f%user% updated ticket %id% - %ticket%"
+  closed_ticket: "§a§lT §8» §f%user% closed their ticket %id%"
+  picked_ticket: "§a§lT §8» §f%user% picked ticket %id%"
+  yielded_ticket: "§a§lT §8» §f%user% yielded ticket %id%"
+  done_ticket: "§a§lT §8» §f%user% done-marked a ticket %id%"
+  reopen_ticket: "§a§lT §8» §f%user% reopened ticket %id%"
 titles:
   all_tickets: "<c3> §l§m====§r </c3> <c2>ALL TICKETS</c2> <c3> §l§m====§r </c3>"
   show_ticket: "<c3> §l§m====§r </c3> <c2>TICKET §l#%id%</c2> <c3> §l§m====§r </c3>"
