@@ -4,6 +4,7 @@ import co.aikar.commands.CommandHelp
 import co.aikar.commands.annotation.*
 import co.uk.magmo.puretickets.interactions.Notifications
 import co.uk.magmo.puretickets.locale.Messages
+import co.uk.magmo.puretickets.storage.SQLFunctions
 import co.uk.magmo.puretickets.ticket.Message
 import co.uk.magmo.puretickets.ticket.TicketManager
 import co.uk.magmo.puretickets.utils.Constants
@@ -152,6 +153,7 @@ class TicketCommand : PureBaseCommand() {
     }
 
     @Subcommand("list|l")
+    @CommandCompletion("@UserOfflineNames")
     @CommandPermission(Constants.USER_PERMISSION + ".list")
     @Description("List all tickets")
     @Syntax("[Player]")
@@ -159,7 +161,7 @@ class TicketCommand : PureBaseCommand() {
         if (offlinePlayer != null) {
             Notifications.reply(sender, Messages.TITLES__SPECIFIC_TICKETS, "%player%", offlinePlayer.name!!)
 
-            TicketManager[offlinePlayer.uniqueId].forEach { t -> sender.sendMessage(t.status.color.toString() + "#" + ChatColor.WHITE.bold() + t.id.toString() + ChatColor.DARK_GRAY + " - " + ChatColor.WHITE + t.currentMessage()) }
+            SQLFunctions.retrieveClosedTickets(offlinePlayer.uniqueId).forEach { t -> sender.sendMessage(t.status.color.toString() + "#" + ChatColor.WHITE.bold() + t.id.toString() + ChatColor.DARK_GRAY + " - " + ChatColor.WHITE + t.currentMessage()) }
         } else {
             Notifications.reply(sender, Messages.TITLES__ALL_TICKETS)
 

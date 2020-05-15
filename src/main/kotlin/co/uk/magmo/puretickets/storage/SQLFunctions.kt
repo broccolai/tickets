@@ -42,6 +42,9 @@ object SQLFunctions {
             .mapNotNull { UUID.fromString(it) }
             .map { it.asName() }
 
+    fun retrieveClosedTickets(uuid: UUID): List<Ticket> = DB.getResults("SELECT id, uuid, status, picker FROM ticket WHERE uuid = ?", uuid)
+            .map { it.toTicket() }
+
     fun retrieveClosedTicketIds(uuid: UUID): List<Int> = DB.getFirstColumnResults("SELECT id FROM ticket WHERE uuid = ? AND status = ?",
             uuid, TicketStatus.CLOSED.name)
 
