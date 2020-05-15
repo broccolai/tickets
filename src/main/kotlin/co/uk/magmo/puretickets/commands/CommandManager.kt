@@ -6,7 +6,6 @@ import co.uk.magmo.puretickets.PureTickets.Companion.TICKETS
 import co.uk.magmo.puretickets.storage.SQLFunctions
 import co.uk.magmo.puretickets.ticket.Message
 import co.uk.magmo.puretickets.ticket.MessageReason
-import co.uk.magmo.puretickets.ticket.TicketInformation
 import co.uk.magmo.puretickets.ticket.TicketManager
 import org.bukkit.Bukkit
 import org.bukkit.ChatColor
@@ -15,10 +14,9 @@ import org.bukkit.configuration.file.YamlConfiguration
 import java.io.File
 import java.io.InputStream
 import java.io.InputStreamReader
-import java.lang.Exception
 import java.nio.file.FileSystems
 import java.nio.file.Files
-import java.util.Locale
+import java.util.*
 
 class CommandManager : PaperCommandManager(TICKETS) {
     init {
@@ -27,8 +25,8 @@ class CommandManager : PaperCommandManager(TICKETS) {
         loadLocales()
 
         // Colours
-        setFormat(MessageType.HELP, ChatColor.AQUA, ChatColor.WHITE, ChatColor.DARK_GRAY)
-        setFormat(MessageType.INFO, ChatColor.AQUA, ChatColor.WHITE, ChatColor.DARK_GRAY)
+        setFormat(MessageType.HELP, ChatColor.WHITE, ChatColor.AQUA, ChatColor.DARK_GRAY)
+        setFormat(MessageType.INFO, ChatColor.WHITE, ChatColor.AQUA, ChatColor.DARK_GRAY)
 
         // Contexts
         commandContexts.registerContext(Message::class.java) { c ->
@@ -52,7 +50,7 @@ class CommandManager : PaperCommandManager(TICKETS) {
             TicketManager[c.issuer.uniqueId].indices.map { it.inc().toString() }
         }
 
-        commandCompletions.registerAsyncCompletion("UserOfflineNames") { c ->
+        commandCompletions.registerAsyncCompletion("UserOfflineNames") {
             try {
                 SQLFunctions.retrieveClosedTicketNames()
             } catch (e: Exception) {
