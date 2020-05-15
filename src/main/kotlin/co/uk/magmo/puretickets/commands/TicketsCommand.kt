@@ -16,18 +16,10 @@ class TicketsCommand : PureBaseCommand() {
     }
 
     @Subcommand("reload")
-    @CommandCompletion("locale")
     @CommandPermission(Constants.STAFF_PERMISSION + ".reload")
-    @Syntax("[reloadable]")
-    fun onReload(issuer: CommandIssuer, @Single reloadable: String) {
-        when (reloadable.toUpperCase()) {
-            "LOCALE" -> {
-                PureTickets.commandManager.loadLocales()
-                issuer.sendMessage("Locale reloaded")
-            }
-            else -> {
-                throw InvalidCommandArgument("Supplied argument is not a reloadable")
-            }
-        }
+    fun onReload(issuer: CommandIssuer) {
+        TICKETS.onDisable()
+        TICKETS.onEnable()
+        issuer.sendMessage("PureTickets reloaded")
     }
 }

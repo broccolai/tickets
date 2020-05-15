@@ -7,10 +7,6 @@ object Config {
     var reminderDelay = 5
     var reminderRepeat = 15
 
-    init {
-        loadFile()
-    }
-
     fun loadFile() {
         TICKETS.saveDefaultConfig()
         TICKETS.reloadConfig()

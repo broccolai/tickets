@@ -2,6 +2,7 @@ package co.uk.magmo.puretickets
 
 import co.aikar.idb.DB
 import co.uk.magmo.puretickets.commands.CommandManager
+import co.uk.magmo.puretickets.configuration.Config
 import co.uk.magmo.puretickets.interactions.Notifications
 import co.uk.magmo.puretickets.storage.SQLFunctions
 import co.uk.magmo.puretickets.tasks.TaskManager
@@ -12,12 +13,14 @@ class PureTickets : JavaPlugin() {
 
     override fun onEnable() {
         TICKETS = this
-        commandManager = CommandManager()
 
+        Config.loadFile()
         SQLFunctions.setup()
-        server.pluginManager.registerEvents(Notifications, this)
 
+        commandManager = CommandManager()
         taskManager = TaskManager()
+
+        server.pluginManager.registerEvents(Notifications, this)
     }
 
     override fun onDisable() {
