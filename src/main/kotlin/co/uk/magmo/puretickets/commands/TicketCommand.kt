@@ -154,13 +154,20 @@ class TicketCommand : PureBaseCommand() {
     @Subcommand("list|l")
     @CommandPermission(Constants.USER_PERMISSION + ".list")
     @Description("List all tickets")
-    fun onList(sender: CommandSender) {
-        Notifications.reply(sender, Messages.TITLES__ALL_TICKETS)
+    @Syntax("[Player]")
+    fun onList(sender: CommandSender, @Optional offlinePlayer: OfflinePlayer?) {
+        if (offlinePlayer != null) {
+            Notifications.reply(sender, Messages.TITLES__SPECIFIC_TICKETS, "%player%", offlinePlayer.name!!)
 
-        TicketManager.asMap().forEach { (uuid, tickets) ->
-            sender.sendMessage(ChatColor.GREEN.toString() + uuid.asName())
+            TicketManager[offlinePlayer.uniqueId].forEach { t -> sender.sendMessage(t.status.color.toString() + "#" + ChatColor.WHITE.bold() + t.id.toString() + ChatColor.DARK_GRAY + " - " + ChatColor.WHITE + t.currentMessage()) }
+        } else {
+            Notifications.reply(sender, Messages.TITLES__ALL_TICKETS)
 
-            tickets.forEach { t -> sender.sendMessage(t.status.color.toString() + "#" + ChatColor.WHITE.bold() + t.id.toString() + ChatColor.DARK_GRAY + " - " + ChatColor.WHITE + t.currentMessage()) }
+            TicketManager.asMap().forEach { (uuid, tickets) ->
+                sender.sendMessage(ChatColor.GREEN.toString() + uuid.asName())
+
+                tickets.forEach { t -> sender.sendMessage(t.status.color.toString() + "#" + ChatColor.WHITE.bold() + t.id.toString() + ChatColor.DARK_GRAY + " - " + ChatColor.WHITE + t.currentMessage()) }
+            }
         }
     }
 }
