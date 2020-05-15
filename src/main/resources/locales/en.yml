@@ -1,5 +1,5 @@
 acf-core:
-  help_header: "<c3> §l§m===§r </c3> <c1>TICKET</c1> <c2>COMMANDS</c2> <c3> §l§m===§r </c3>"#
+  help_header: "<c3> §l§m===§r </c3> <c1>TICKET</c1> <c2>COMMANDS</c2> <c3> §l§m===§r </c3>"
 tasks:
   reminder: "§a§lT §8» §fThere is %amount% ticket(s) currently open"
 ticket:
@@ -27,3 +27,8 @@ titles:
   all_tickets: "<c3> §l§m====§r </c3> <c2>ALL TICKETS</c2> <c3> §l§m====§r </c3>"
   show_ticket: "<c3> §l§m====§r </c3> <c2>TICKET #§l%id%</c2> <c3> §l§m====§r </c3>"
   ticket_log: "<c3> §l§m====§r </c3> <c2>TICKET LOG #§l%id%</c2> <c3> §l§m====§r </c3>"
+show:
+  sender: "<c2>Sender:</c2> <c1>%player%</c1>"
+  picker: "<c2>Picker:</c2> <c1>%player%</c1>"
+  date: "<c2>Date Opened:</c2> <c1>%date%</c1>"
+  message: "<c2>Current Message:</c2> <c1>%message%</c1>"

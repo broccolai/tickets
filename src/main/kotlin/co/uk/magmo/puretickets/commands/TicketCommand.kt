@@ -72,11 +72,10 @@ class TicketCommand : PureBaseCommand() {
             val picker = if (pickerUUID == null) "Unpicked" else pickerUUID.asName()
 
             Notifications.reply(sender, Messages.TITLES__SHOW_TICKET, "%id%", id.toString())
-
-            sender.sendMessage("§bSender: §f" + playerUUID.asName())
-            sender.sendMessage("§bPicker: §f" + picker)
-            sender.sendMessage("§bDate Opened: §f" + dateOpened()?.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
-            sender.sendMessage("§bCurrent Message: §f" + currentMessage())
+            Notifications.reply(sender, Messages.SHOW__SENDER, "%player%", playerUUID.asName())
+            Notifications.reply(sender, Messages.SHOW__PICKER, "%player%", picker)
+            Notifications.reply(sender, Messages.SHOW__DATE, "%date%", dateOpened()?.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))!!)
+            Notifications.reply(sender, Messages.SHOW__MESSAGE, "%message%", currentMessage()!!)
         }
     }
 
