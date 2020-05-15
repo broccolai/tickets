@@ -11,7 +11,7 @@ object TicketManager {
     private val tickets = SQLFunctions.retrieveAllTickets()
     private var current = SQLFunctions.currentTicketId()
 
-    operator fun get(uuid: UUID?, index: Int): Ticket? = tickets[uuid][index]
+    operator fun get(uuid: UUID?, id: Int): Ticket? = tickets[uuid].first { ticket -> ticket.id == id }
 
     operator fun get(uuid: UUID?): MutableList<Ticket> = tickets[uuid]
 

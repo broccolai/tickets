@@ -145,10 +145,11 @@ class TicketCommand : PureBaseCommand() {
         val information = generateInformation(offlinePlayer, index)
         val ticket = TicketManager[information.player, information.index] ?: return
 
-        Notifications.reply(sender, Messages.TITLES__TICKET_LOG, ticket.id.toString())
+        Notifications.reply(sender, Messages.TITLES__TICKET_LOG, "%id%", ticket.id.toString())
 
         ticket.messages.forEach {
-            sender.sendMessage("§f§l" + it.reason.name + " -  §8" + (it.data ?: it.sender.asName()))
+            sender.sendMessage("§f§l" + it.reason.name + " §8@ §f" +
+                    it.date?.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))!! + "§8 - " + (it.data ?: it.sender.asName()))
         }
     }
 
