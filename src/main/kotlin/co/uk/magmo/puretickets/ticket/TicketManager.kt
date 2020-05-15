@@ -32,42 +32,44 @@ object TicketManager {
     }
 
     fun update(information: TicketInformation, message: Message): Int {
-        val ticket = tickets[information.player][information.index]
+        val ticket = tickets[information.player].first { ticket -> ticket.id == information.index }
+        val index = tickets[information.player].indexOf(ticket)
 
         ticket.addMessageAndUpdate(message)
-        tickets[information.player][information.index] = ticket
+        tickets[information.player][index] = ticket
 
         return ticket.id
     }
 
     fun pick(user: CommandSender, information: TicketInformation): Int {
-        val ticket = tickets[information.player][information.index]
+        val ticket = tickets[information.player].first { ticket -> ticket.id == information.index }
+        val index = tickets[information.player].indexOf(ticket)
         val message = Message(MessageReason.PICKED, null, user.asUUID())
 
         ticket.status = TicketStatus.PICKED
         ticket.pickerUUID = user.asUUID()
         ticket.addMessageAndUpdate(message)
 
-        tickets[information.player][information.index] = ticket
-
+        tickets[information.player][index] = ticket
         return ticket.id
     }
 
     fun yield(user: CommandSender, information: TicketInformation): Int {
-        val ticket = tickets[information.player][information.index]
+        val ticket = tickets[information.player].first { ticket -> ticket.id == information.index }
+        val index = tickets[information.player].indexOf(ticket)
         val message = Message(MessageReason.YIELDED, null, user.asUUID())
 
         ticket.status = TicketStatus.OPEN
         ticket.pickerUUID = null
         ticket.addMessageAndUpdate(message)
 
-        tickets[information.player][information.index] = ticket
+        tickets[information.player][index] = ticket
 
         return ticket.id
     }
 
     fun close(user: CommandSender, information: TicketInformation): Int {
-        val ticket = tickets[information.player][information.index]
+        val ticket = tickets[information.player].first { ticket -> ticket.id == information.index }
         val message = Message(MessageReason.CLOSED, null, user.asUUID())
 
         tickets.remove(information.player, ticket)
@@ -78,7 +80,7 @@ object TicketManager {
     }
 
     fun done(user: CommandSender, information: TicketInformation): Int {
-        val ticket = tickets[information.player][information.index]
+        val ticket = tickets[information.player].first { ticket -> ticket.id == information.index }
         val message = Message(MessageReason.DONE_MARKED, null, user.asUUID())
 
         tickets.remove(information.player, ticket)

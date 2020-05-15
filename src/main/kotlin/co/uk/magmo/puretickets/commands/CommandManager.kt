@@ -40,14 +40,14 @@ class CommandManager : PaperCommandManager(TICKETS) {
 
         commandCompletions.registerAsyncCompletion("UserTicketIds") { c ->
             try {
-                TicketManager[c.getContextValue(OfflinePlayer::class.java).uniqueId].indices.map { it.inc().toString() }
+                TicketManager[c.getContextValue(OfflinePlayer::class.java).uniqueId].map { ticket -> ticket.id.toString() }
             } catch (e: Exception) {
                 return@registerAsyncCompletion null
             }
         }
 
         commandCompletions.registerAsyncCompletion("IssuerTicketIds") { c ->
-            TicketManager[c.issuer.uniqueId].indices.map { it.inc().toString() }
+            TicketManager[c.issuer.uniqueId].map { ticket -> ticket.id.toString() }
         }
 
         commandCompletions.registerAsyncCompletion("UserOfflineNames") {

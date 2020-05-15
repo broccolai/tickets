@@ -8,19 +8,14 @@ import co.uk.magmo.puretickets.ticket.TicketManager
 import org.bukkit.OfflinePlayer
 
 open class PureBaseCommand : BaseCommand() {
-    fun generateInformation(offlinePlayer: OfflinePlayer, input: Int?, closed: Boolean = false): TicketInformation {
+    fun generateInformation(offlinePlayer: OfflinePlayer, input: Int?): TicketInformation {
         var index = input
 
-        if (closed) {
-            if (index == null)
-                index = SQLFunctions.highestTicket(offlinePlayer.uniqueId) ?: throw InvalidCommandArgument()
+        if (index == null)
+            index = SQLFunctions.highestTicket(offlinePlayer.uniqueId) ?: throw InvalidCommandArgument()
+        else if (!TicketManager[offlinePlayer.uniqueId].any { it.id == input } && !SQLFunctions.ticketExists(offlinePlayer.uniqueId, index))
+            throw InvalidCommandArgument()
 
-            if (!SQLFunctions.ticketExists(offlinePlayer.uniqueId, index)) throw InvalidCommandArgument()
-        } else if (index != null) {
-            index--
-            if (!TicketManager[offlinePlayer.uniqueId].indices.contains(index)) throw InvalidCommandArgument()
-        }
-
-        return TicketInformation(offlinePlayer.uniqueId, index ?: 0)
+        return TicketInformation(offlinePlayer.uniqueId, index)
     }
 }

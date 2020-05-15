@@ -128,7 +128,7 @@ class TicketCommand : PureBaseCommand() {
     @Description("Reopen a ticket")
     @Syntax("<Player> [Index]")
     fun onReopen(sender: CommandSender, offlinePlayer: OfflinePlayer, @Optional index: Int?) {
-        val information = generateInformation(offlinePlayer, index, true)
+        val information = generateInformation(offlinePlayer, index)
         val id = TicketManager.reopen(sender, information)
 
         Notifications.reply(sender, Messages.TICKET__REOPENED, "%id%", id.toString())
