@@ -106,7 +106,7 @@ class CommandManager : PaperCommandManager(TICKETS) {
     }
 
     private fun mergeLocales(input: InputStream, destination: File) {
-        val inputYaml = YamlConfiguration.loadConfiguration(InputStreamReader(input))
+        val inputYaml = YamlConfiguration.loadConfiguration(InputStreamReader(input, "UTF-8"))
         val outputYaml = YamlConfiguration.loadConfiguration(destination)
 
         inputYaml.getKeys(true).forEach { path -> outputYaml[path] = outputYaml[path, inputYaml[path]] }
