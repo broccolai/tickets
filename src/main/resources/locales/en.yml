@@ -29,7 +29,7 @@ titles:
   show_ticket: "<c3> §l§m====§r </c3> <c2>TICKET #§l%id%</c2> <c3> §l§m====§r </c3>"
   ticket_log: "<c3> §l§m====§r </c3> <c2>TICKET LOG #§l%id%</c2> <c3> §l§m====§r </c3>"
 show:
-  sender: "<c2>Sender:</c2> <c1>%player%</c1>"
-  picker: "<c2>Picker:</c2> <c1>%player%</c1>"
-  date: "<c2>Date Opened:</c2> <c1>%date%</c1>"
-  message: "<c2>Current Message:</c2> <c1>%message%</c1>"
+  sender: "<c2>Created:</c2> <c1>%date% by %player%</c1>"
+  picker: "<c2>Picker:</c2> <c1>%date% by %player%</c1>"
+  unpicked: "<c2>Picker:</c2> <c1>Unpicked</c1>"
+  message: "<c2>Current Message:</c2> <c1>%date% by %message%</c1>"

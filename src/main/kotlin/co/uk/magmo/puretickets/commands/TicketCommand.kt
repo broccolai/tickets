@@ -6,10 +6,13 @@ import co.uk.magmo.puretickets.interactions.Notifications
 import co.uk.magmo.puretickets.locale.Messages
 import co.uk.magmo.puretickets.storage.SQLFunctions
 import co.uk.magmo.puretickets.ticket.Message
+import co.uk.magmo.puretickets.ticket.MessageReason
 import co.uk.magmo.puretickets.ticket.TicketManager
+import co.uk.magmo.puretickets.ticket.TicketStatus
 import co.uk.magmo.puretickets.utils.Constants
 import co.uk.magmo.puretickets.utils.asName
 import co.uk.magmo.puretickets.utils.bold
+import co.uk.magmo.puretickets.utils.formatted
 import org.bukkit.ChatColor
 import org.bukkit.OfflinePlayer
 import org.bukkit.command.CommandSender
@@ -32,7 +35,7 @@ class TicketCommand : PureBaseCommand() {
     fun onCreate(player: Player, message: Message) {
         val ticket = TicketManager.createTicket(player, message)
         Notifications.reply(player, Messages.TICKET__CREATED, "%id%", ticket.id.toString())
-        Notifications.announce(Messages.ANNOUNCEMENTS__NEW_TICKET, "%user%", player.name, "%id%", ticket.id.toString(), "%ticket%", ticket.currentMessage()!!)
+        Notifications.announce(Messages.ANNOUNCEMENTS__NEW_TICKET, "%user%", player.name, "%id%", ticket.id.toString(), "%ticket%", ticket.currentMessage()!!.data!!)
     }
 
     @Subcommand("update|u")
@@ -70,13 +73,17 @@ class TicketCommand : PureBaseCommand() {
         val information = generateInformation(offlinePlayer, index)
 
         TicketManager[information.player, information.index]?.apply {
-            val picker = if (pickerUUID == null) "Unpicked" else pickerUUID.asName()
+            val message = currentMessage()!!
 
             Notifications.reply(sender, Messages.TITLES__SHOW_TICKET, "%id%", id.toString())
-            Notifications.reply(sender, Messages.SHOW__SENDER, "%player%", playerUUID.asName())
-            Notifications.reply(sender, Messages.SHOW__PICKER, "%player%", picker)
-            Notifications.reply(sender, Messages.SHOW__DATE, "%date%", dateOpened()?.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))!!)
-            Notifications.reply(sender, Messages.SHOW__MESSAGE, "%message%", currentMessage()!!)
+            Notifications.reply(sender, Messages.SHOW__SENDER, "%player%", playerUUID.asName(), "%date%", dateOpened().formatted())
+            Notifications.reply(sender, Messages.SHOW__MESSAGE, "%message%", message.data!!, "%date%", message.date.formatted())
+
+            if (status != TicketStatus.PICKED)
+                Notifications.reply(sender, Messages.SHOW__UNPICKED)
+            else
+                Notifications.reply(sender, Messages.SHOW__PICKER, "%player%", pickerUUID.asName(),
+                        "%date%", messages.last { it.reason == MessageReason.PICKED }.date.formatted())
         }
     }
 
@@ -162,14 +169,14 @@ class TicketCommand : PureBaseCommand() {
         if (offlinePlayer != null) {
             Notifications.reply(sender, Messages.TITLES__SPECIFIC_TICKETS, "%player%", offlinePlayer.name!!)
 
-            SQLFunctions.retrieveClosedTickets(offlinePlayer.uniqueId).forEach { t -> sender.sendMessage(t.status.color.toString() + "#" + ChatColor.WHITE.bold() + t.id.toString() + ChatColor.DARK_GRAY + " - " + ChatColor.WHITE + t.currentMessage()) }
+            SQLFunctions.retrieveClosedTickets(offlinePlayer.uniqueId).forEach { t -> sender.sendMessage(t.status.color.toString() + "#" + ChatColor.WHITE.bold() + t.id.toString() + ChatColor.DARK_GRAY + " - " + ChatColor.WHITE + t.currentMessage()!!.data) }
         } else {
             Notifications.reply(sender, Messages.TITLES__ALL_TICKETS)
 
             TicketManager.asMap().forEach { (uuid, tickets) ->
                 sender.sendMessage(ChatColor.GREEN.toString() + uuid.asName())
 
-                tickets.forEach { t -> sender.sendMessage(t.status.color.toString() + "#" + ChatColor.WHITE.bold() + t.id.toString() + ChatColor.DARK_GRAY + " - " + ChatColor.WHITE + t.currentMessage()) }
+                tickets.forEach { t -> sender.sendMessage(t.status.color.toString() + "#" + ChatColor.WHITE.bold() + t.id.toString() + ChatColor.DARK_GRAY + " - " + ChatColor.WHITE + t.currentMessage()!!.data) }
             }
         }
     }
