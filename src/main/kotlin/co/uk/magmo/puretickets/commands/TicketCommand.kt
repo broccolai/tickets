@@ -17,7 +17,6 @@ import org.bukkit.ChatColor
 import org.bukkit.OfflinePlayer
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
-import java.time.format.DateTimeFormatter
 
 @CommandAlias("ticket|ti")
 class TicketCommand : PureBaseCommand() {
@@ -155,21 +154,24 @@ class TicketCommand : PureBaseCommand() {
         Notifications.reply(sender, Messages.TITLES__TICKET_LOG, "%id%", ticket.id.toString())
 
         ticket.messages.forEach {
-            sender.sendMessage("§f§l" + it.reason.name + " §8@ §f" +
-                    it.date?.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))!! + "§8 - " + (it.data ?: it.sender.asName()))
+            sender.sendMessage("§f§l" + it.reason.name + " §8@ §f" + it.date?.formatted() + "§8 - " + (it.data ?: it.sender.asName()))
         }
     }
 
     @Subcommand("%list")
-    @CommandCompletion("@UserOfflineNames")
+    @CommandCompletion("@UserOfflineNames @TicketStatus")
     @CommandPermission(Constants.USER_PERMISSION + ".list")
     @Description("List all tickets")
     @Syntax("[Player]")
-    fun onList(sender: CommandSender, @Optional offlinePlayer: OfflinePlayer?) {
+    fun onList(sender: CommandSender, @Optional offlinePlayer: OfflinePlayer?, @Optional status: TicketStatus?) {
         if (offlinePlayer != null) {
             Notifications.reply(sender, Messages.TITLES__SPECIFIC_TICKETS, "%player%", offlinePlayer.name!!)
 
-            SQLFunctions.retrieveClosedTickets(offlinePlayer.uniqueId).forEach { t -> sender.sendMessage(t.status.color.toString() + "#" + ChatColor.WHITE.bold() + t.id.toString() + ChatColor.DARK_GRAY + " - " + ChatColor.WHITE + t.currentMessage()!!.data) }
+            var tickets = SQLFunctions.retrieveClosedTickets(offlinePlayer.uniqueId)
+
+            if (status != null) tickets = tickets.filter { ticket -> ticket.status == status }
+
+            tickets.forEach { t -> sender.sendMessage(t.status.color.toString() + "#" + ChatColor.WHITE.bold() + t.id.toString() + ChatColor.DARK_GRAY + " - " + ChatColor.WHITE + t.currentMessage()!!.data) }
         } else {
             Notifications.reply(sender, Messages.TITLES__ALL_TICKETS)
 

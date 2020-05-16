@@ -5,17 +5,12 @@ import co.aikar.commands.PaperCommandManager
 import co.uk.magmo.puretickets.PureTickets.Companion.TICKETS
 import co.uk.magmo.puretickets.configuration.Config
 import co.uk.magmo.puretickets.storage.SQLFunctions
-import co.uk.magmo.puretickets.ticket.Message
-import co.uk.magmo.puretickets.ticket.MessageReason
-import co.uk.magmo.puretickets.ticket.TicketManager
+import co.uk.magmo.puretickets.ticket.*
 import co.uk.magmo.puretickets.utils.Utils
 import org.bukkit.Bukkit
 import org.bukkit.ChatColor
 import org.bukkit.OfflinePlayer
-import org.bukkit.configuration.file.YamlConfiguration
 import java.io.File
-import java.io.InputStream
-import java.io.InputStreamReader
 import java.nio.file.FileSystems
 import java.nio.file.Files
 import java.util.*
@@ -33,6 +28,10 @@ class CommandManager : PaperCommandManager(TICKETS) {
         // Contexts
         commandContexts.registerContext(Message::class.java) { c ->
             Message(MessageReason.MESSAGE, c.joinArgs(), null)
+        }
+
+        commandContexts.registerContext(TicketStatus::class.java) { c ->
+            TicketStatus.from(c.popFirstArg())
         }
 
         // Replacements
@@ -79,6 +78,8 @@ class CommandManager : PaperCommandManager(TICKETS) {
                 return@registerAsyncCompletion null
             }
         }
+
+        commandCompletions.registerStaticCompletion("TicketStatus", TicketStatus.values().map { it.name.toLowerCase() })
 
         // Commands
         registerCommand(TicketCommand())
