@@ -3,3 +3,14 @@ locale: "en"
 reminder:
   delay: 5
   repeat: 15
+
+alias:
+  create: "create|c"
+  update: "update|u"
+  close: "close|cl"
+  show: "show|s"
+  pick: "pick|p"
+  done: "done|d"
+  reopen: "reopen|ro"
+  log: "log"
+  list: "list|l"

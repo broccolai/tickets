@@ -3,10 +3,12 @@ package co.uk.magmo.puretickets.commands
 import co.aikar.commands.MessageType
 import co.aikar.commands.PaperCommandManager
 import co.uk.magmo.puretickets.PureTickets.Companion.TICKETS
+import co.uk.magmo.puretickets.configuration.Config
 import co.uk.magmo.puretickets.storage.SQLFunctions
 import co.uk.magmo.puretickets.ticket.Message
 import co.uk.magmo.puretickets.ticket.MessageReason
 import co.uk.magmo.puretickets.ticket.TicketManager
+import co.uk.magmo.puretickets.utils.Utils
 import org.bukkit.Bukkit
 import org.bukkit.ChatColor
 import org.bukkit.OfflinePlayer
@@ -32,6 +34,18 @@ class CommandManager : PaperCommandManager(TICKETS) {
         commandContexts.registerContext(Message::class.java) { c ->
             Message(MessageReason.MESSAGE, c.joinArgs(), null)
         }
+
+        // Replacements
+        commandReplacements.addReplacement("create", Config.aliasCreate)
+        commandReplacements.addReplacement("update", Config.aliasUpdate)
+        commandReplacements.addReplacement("close", Config.aliasClose)
+        commandReplacements.addReplacement("show", Config.aliasShow)
+        commandReplacements.addReplacement("pick", Config.aliasPick)
+        commandReplacements.addReplacement("done", Config.aliasDone)
+        commandReplacements.addReplacement("yield", Config.aliasYield)
+        commandReplacements.addReplacement("reopen", Config.aliasReopen)
+        commandReplacements.addReplacement("log", Config.aliasLog)
+        commandReplacements.addReplacement("list", Config.aliasList)
 
         // Completions
         commandCompletions.registerAsyncCompletion("AllTicketHolders") {
@@ -98,18 +112,10 @@ class CommandManager : PaperCommandManager(TICKETS) {
                 if (!target.exists()) {
                     Files.copy(stream, target.absoluteFile.toPath())
                 } else {
-                    mergeLocales(stream, target)
+                    Utils.mergeYAML(stream, target)
                 }
             }
 
         fs.close()
-    }
-
-    private fun mergeLocales(input: InputStream, destination: File) {
-        val inputYaml = YamlConfiguration.loadConfiguration(InputStreamReader(input, "UTF-8"))
-        val outputYaml = YamlConfiguration.loadConfiguration(destination)
-
-        inputYaml.getKeys(true).forEach { path -> outputYaml[path] = outputYaml[path, inputYaml[path]] }
-        outputYaml.save(destination)
     }
 }

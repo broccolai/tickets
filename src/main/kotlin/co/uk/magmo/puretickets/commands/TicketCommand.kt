@@ -28,7 +28,7 @@ class TicketCommand : PureBaseCommand() {
         help.showHelp()
     }
 
-    @Subcommand("create|c")
+    @Subcommand("%create")
     @CommandPermission(Constants.USER_PERMISSION + ".create")
     @Description("Create a ticket")
     @Syntax("<Message>")
@@ -38,7 +38,7 @@ class TicketCommand : PureBaseCommand() {
         Notifications.announce(Messages.ANNOUNCEMENTS__NEW_TICKET, "%user%", player.name, "%id%", ticket.id.toString(), "%ticket%", ticket.currentMessage()!!.data!!)
     }
 
-    @Subcommand("update|u")
+    @Subcommand("%update")
     @CommandCompletion("@IssuerTicketIds")
     @CommandPermission(Constants.USER_PERMISSION + ".update")
     @Description("Update a ticket")
@@ -51,7 +51,7 @@ class TicketCommand : PureBaseCommand() {
         Notifications.announce(Messages.ANNOUNCEMENTS__UPDATED_TICKET, "%user%", player.name, "%id%", id.toString(), "%ticket%", message.data!!)
     }
 
-    @Subcommand("close|cl")
+    @Subcommand("%close")
     @CommandCompletion("@IssuerTicketIds")
     @CommandPermission(Constants.USER_PERMISSION + ".close")
     @Description("Close a ticket")
@@ -64,7 +64,7 @@ class TicketCommand : PureBaseCommand() {
         Notifications.announce(Messages.ANNOUNCEMENTS__CLOSED_TICKET, "%user%", player.name, "%id%", id.toString())
     }
 
-    @Subcommand("show|s")
+    @Subcommand("%show")
     @CommandCompletion("@AllTicketHolders @UserTicketIds")
     @CommandPermission(Constants.STAFF_PERMISSION + ".show")
     @Description("Show a ticket")
@@ -87,7 +87,7 @@ class TicketCommand : PureBaseCommand() {
         }
     }
 
-    @Subcommand("pick|p")
+    @Subcommand("%pick")
     @CommandCompletion("@AllTicketHolders @UserTicketIds")
     @CommandPermission(Constants.STAFF_PERMISSION + ".pick")
     @Description("Pick a ticket")
@@ -101,7 +101,7 @@ class TicketCommand : PureBaseCommand() {
         Notifications.announce(Messages.ANNOUNCEMENTS__PICKED_TICKET, "%user%", sender.name, "%id%", id.toString())
     }
 
-    @Subcommand("done|d")
+    @Subcommand("%done")
     @CommandCompletion("@AllTicketHolders @UserTicketIds")
     @CommandPermission(Constants.STAFF_PERMISSION + ".done")
     @Description("Done-mark a ticket")
@@ -115,7 +115,7 @@ class TicketCommand : PureBaseCommand() {
         Notifications.announce(Messages.ANNOUNCEMENTS__DONE_TICKET, "%user%", sender.name, "%id%", id.toString())
     }
 
-    @Subcommand("yield|y")
+    @Subcommand("%yield")
     @CommandCompletion("@AllTicketHolders @UserTicketIds")
     @CommandPermission(Constants.STAFF_PERMISSION + ".yield")
     @Description("Yield a ticket")
@@ -129,7 +129,7 @@ class TicketCommand : PureBaseCommand() {
         Notifications.announce(Messages.ANNOUNCEMENTS__YIELDED_TICKET, "%user%", sender.name, "%id%", id.toString())
     }
 
-    @Subcommand("reopen|ro")
+    @Subcommand("%reopen")
     @CommandCompletion("@UserOfflineNames @UserOfflineTicketIDs")
     @CommandPermission(Constants.STAFF_PERMISSION + ".reopen")
     @Description("Reopen a ticket")
@@ -143,7 +143,7 @@ class TicketCommand : PureBaseCommand() {
         Notifications.announce(Messages.ANNOUNCEMENTS__REOPEN_TICKET, "%user%", sender.name, "%id%", id.toString())
     }
 
-    @Subcommand("log")
+    @Subcommand("%log")
     @CommandCompletion("@AllTicketHolders @UserTicketIds")
     @CommandPermission(Constants.STAFF_PERMISSION + ".log")
     @Description("Log tickets messages")
@@ -160,7 +160,7 @@ class TicketCommand : PureBaseCommand() {
         }
     }
 
-    @Subcommand("list|l")
+    @Subcommand("%list")
     @CommandCompletion("@UserOfflineNames")
     @CommandPermission(Constants.USER_PERMISSION + ".list")
     @Description("List all tickets")
