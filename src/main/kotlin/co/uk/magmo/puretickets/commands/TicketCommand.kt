@@ -159,8 +159,8 @@ class TicketCommand : PureBaseCommand() {
     }
 
     @Subcommand("%list")
-    @CommandCompletion("@UserOfflineNames @TicketStatus")
-    @CommandPermission(Constants.USER_PERMISSION + ".list")
+    @CommandCompletion("@UserNames @TicketStatus")
+    @CommandPermission(Constants.STAFF_PERMISSION + ".list")
     @Description("List all tickets")
     @Syntax("[Player]")
     fun onList(sender: CommandSender, @Optional offlinePlayer: OfflinePlayer?, @Optional status: TicketStatus?) {
@@ -180,6 +180,25 @@ class TicketCommand : PureBaseCommand() {
 
                 tickets.forEach { t -> sender.sendMessage(t.status.color.toString() + "#" + ChatColor.WHITE.bold() + t.id.toString() + ChatColor.DARK_GRAY + " - " + ChatColor.WHITE + t.currentMessage()!!.data) }
             }
+        }
+    }
+
+    @Subcommand("%status")
+    @CommandCompletion("@UserNames")
+    @CommandPermission(Constants.STAFF_PERMISSION + ".status")
+    @Description("View amount of tickets in")
+    @Syntax("[Player]")
+    fun onStatus(sender: CommandSender, @Optional offlinePlayer: OfflinePlayer?) {
+        val data = if (offlinePlayer != null) {
+            Notifications.reply(sender, Messages.TITLES__SPECIFIC_STATUS, "%player%", offlinePlayer.name!!)
+            SQLFunctions.selectCurrentTickets(offlinePlayer.uniqueId)
+        } else {
+            Notifications.reply(sender, Messages.TITLES__TICKET_STATUS)
+            SQLFunctions.selectCurrentTickets(null)
+        }
+
+        data.forEach { (status, amount) ->
+            if (amount != 0) sender.sendMessage(amount.toString() + " " + status.name.toLowerCase())
         }
     }
 }

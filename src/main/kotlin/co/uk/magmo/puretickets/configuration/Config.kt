@@ -20,6 +20,7 @@ object Config {
     var aliasReopen = "reopen|ro"
     var aliasLog = "log"
     var aliasList = "list|l"
+    var aliasStatus = "status"
 
     fun loadFile() {
         val target = File(TICKETS.dataFolder, "config.yml")
@@ -49,5 +50,6 @@ object Config {
         aliasReopen = pluginConfig.getString("alias.reopen", aliasReopen) ?: aliasReopen
         aliasLog = pluginConfig.getString("alias.log", aliasLog) ?: aliasLog
         aliasList = pluginConfig.getString("alias.list", aliasList) ?: aliasList
+        aliasStatus = pluginConfig.getString("alias.status", aliasStatus) ?: aliasStatus
     }
 }

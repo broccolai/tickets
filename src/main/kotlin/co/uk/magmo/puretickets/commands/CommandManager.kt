@@ -45,6 +45,7 @@ class CommandManager : PaperCommandManager(TICKETS) {
         commandReplacements.addReplacement("reopen", Config.aliasReopen)
         commandReplacements.addReplacement("log", Config.aliasLog)
         commandReplacements.addReplacement("list", Config.aliasList)
+        commandReplacements.addReplacement("status", Config.aliasStatus)
 
         // Completions
         commandCompletions.registerAsyncCompletion("AllTicketHolders") {
@@ -61,6 +62,14 @@ class CommandManager : PaperCommandManager(TICKETS) {
 
         commandCompletions.registerAsyncCompletion("IssuerTicketIds") { c ->
             TicketManager[c.issuer.uniqueId].map { ticket -> ticket.id.toString() }
+        }
+
+        commandCompletions.registerAsyncCompletion("UserNames") {
+            try {
+                SQLFunctions.retrieveTicketNames()
+            } catch (e: Exception) {
+                return@registerAsyncCompletion null
+            }
         }
 
         commandCompletions.registerAsyncCompletion("UserOfflineNames") {

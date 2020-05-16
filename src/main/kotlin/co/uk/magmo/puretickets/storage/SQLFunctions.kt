@@ -38,6 +38,10 @@ object SQLFunctions {
     fun insertMessage(t: Ticket, m: Message): Long = DB.executeInsert("INSERT INTO message(ticket, reason, data, sender, date) VALUES(?, ?, ?, ?, ?)",
             t.id, m.reason.name, m.data, m.sender, m.date?.atZone(ZoneId.systemDefault())?.toEpochSecond())
 
+    fun retrieveTicketNames(): List<String> = DB.getFirstColumnResults<String>("SELECT uuid FROM ticket")
+            .mapNotNull { UUID.fromString(it) }
+            .map { it.asName() }
+
     fun retrieveClosedTicketNames(): List<String> = DB.getFirstColumnResults<String>("SELECT uuid FROM ticket WHERE status = ?", TicketStatus.CLOSED)
             .mapNotNull { UUID.fromString(it) }
             .map { it.asName() }
@@ -59,6 +63,30 @@ object SQLFunctions {
     fun ticketExists(uuid: UUID, id: Int): Boolean = DB.getFirstColumn<Int>("SELECT EXISTS(SELECT 1 FROM ticket WHERE uuid = ? AND id = ?)", uuid, id) == 1
 
     fun highestTicket(uuid: UUID): Int? = DB.getFirstColumn("SELECT max(id) FROM ticket WHERE uuid = ?", uuid)
+
+    fun selectCurrentTickets(uuid: UUID?): HashMap<TicketStatus, Int> {
+        val sql = """
+            SELECT
+                SUM(Status LIKE 'OPEN') AS open,
+                SUM(Status LIKE 'PICKED') AS picked,
+                SUM(status LIKE 'CLOSED') AS closed
+            FROM ticket
+        """.trimIndent()
+
+        val row = if (uuid != null) {
+            DB.getFirstRow(sql + " WHERE uuid = ?", uuid)
+        } else {
+            DB.getFirstRow(sql)
+        }
+
+        val results = HashMap<TicketStatus, Int>()
+
+        results[TicketStatus.OPEN] = row.getInt("open")
+        results[TicketStatus.PICKED] = row.getInt("picked")
+        results[TicketStatus.CLOSED] = row.getInt("closed")
+
+        return results
+}
 
     private fun retrieveMessages(id: Int) = DB.getResults("SELECT reason, data, sender, date FROM message WHERE ticket = ?", id)
             .map { row -> row.toMessage() } as ArrayList<Message>
