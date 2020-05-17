@@ -3,7 +3,6 @@ package co.uk.magmo.puretickets.configuration
 import co.uk.magmo.puretickets.PureTickets.Companion.TICKETS
 import co.uk.magmo.puretickets.utils.Utils
 import java.io.File
-import java.nio.file.Files
 
 object Config {
     var locale = "en-US"
@@ -24,14 +23,12 @@ object Config {
     var aliasStatus = "status"
 
     fun loadFile() {
-        val target = File(TICKETS.dataFolder, "config.yml")
-        val stream = TICKETS.javaClass.getResourceAsStream("/config.yml")
+        TICKETS.saveDefaultConfig()
 
-        if (!target.exists()) {
-            Files.copy(stream, target.absoluteFile.toPath())
-        } else {
-            Utils.mergeYAML(stream, target)
-        }
+        val target = File(TICKETS.dataFolder, "config.yml")
+        val stream = TICKETS.javaClass.getResource("/config.yml").openStream()
+
+        Utils.mergeYAML(stream, target)
 
         TICKETS.reloadConfig()
 
