@@ -18,6 +18,7 @@ object Config {
     var aliasDone = "done|d"
     var aliasYield = "yield|y"
     var aliasReopen = "reopen|ro"
+    var aliasTeleport = "teleport|tp"
     var aliasLog = "log"
     var aliasList = "list|l"
     var aliasStatus = "status"
@@ -48,6 +49,7 @@ object Config {
         aliasDone = pluginConfig.getString("alias.done", aliasDone) ?: aliasDone
         aliasYield = pluginConfig.getString("alias.yield", aliasYield) ?: aliasYield
         aliasReopen = pluginConfig.getString("alias.reopen", aliasReopen) ?: aliasReopen
+        aliasTeleport = pluginConfig.getString("alias.teleport", aliasTeleport) ?: aliasTeleport
         aliasLog = pluginConfig.getString("alias.log", aliasLog) ?: aliasLog
         aliasList = pluginConfig.getString("alias.list", aliasList) ?: aliasList
         aliasStatus = pluginConfig.getString("alias.status", aliasStatus) ?: aliasStatus
