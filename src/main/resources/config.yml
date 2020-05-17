@@ -12,6 +12,7 @@ alias:
   pick: "pick|p"
   done: "done|d"
   reopen: "reopen|ro"
+  teleport: "teleport|tp"
   log: "log"
   list: "list|l"
   status: "status"

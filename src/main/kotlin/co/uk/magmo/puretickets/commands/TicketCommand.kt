@@ -142,6 +142,26 @@ class TicketCommand : PureBaseCommand() {
         Notifications.announce(Messages.ANNOUNCEMENTS__REOPEN_TICKET, "%user%", sender.name, "%id%", id.toString())
     }
 
+    @Subcommand("%teleport")
+    @CommandCompletion("@AllTicketHolders @UserTicketIds")
+    @CommandPermission(Constants.STAFF_PERMISSION + ".teleport")
+    @Description("Teleport to a ticket creation location")
+    @Syntax("<Player> [Index]")
+    fun onTeleport(player: CommandSender, offlinePlayer: OfflinePlayer, @Optional index: Int?) {
+        if (player !is Player) return
+
+        val information = generateInformation(offlinePlayer, index)
+        val ticket = TicketManager[offlinePlayer.uniqueId, information.index]
+        val location = ticket?.location
+
+        if (location == null) {
+            Notifications.reply(player, Messages.TICKET__TELEPORT_ERROR, "%id%", ticket?.id.toString())
+        } else {
+            Notifications.reply(player, Messages.TICKET__TELEPORT, "%id%", ticket.id.toString())
+            player.teleport(ticket.location)
+        }
+    }
+
     @Subcommand("%log")
     @CommandCompletion("@AllTicketHolders @UserTicketIds")
     @CommandPermission(Constants.STAFF_PERMISSION + ".log")

@@ -23,7 +23,7 @@ object TicketManager {
 
     fun createTicket(player: Player, message: Message): Ticket {
         current += 1
-        return Ticket(current, player.uniqueId, arrayListOf(message), TicketStatus.OPEN, null).also {
+        return Ticket(current, player.uniqueId, arrayListOf(message), TicketStatus.OPEN, null, player.location).also {
             tickets.put(player.uniqueId, it)
 
             SQLFunctions.insertTicket(it)

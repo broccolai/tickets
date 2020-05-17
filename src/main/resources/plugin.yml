@@ -34,6 +34,9 @@ permissions:
   tickets.staff.reopen:
     default: op
     description: Allows a user to reopen a ticket
+  tickets.staff.teleport:
+    default: op
+    description: Allows a user to teleport to a ticket
   tickets.staff.log:
     default: op
     description: Allows a user to view a tickets messages

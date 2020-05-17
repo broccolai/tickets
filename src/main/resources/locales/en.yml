@@ -10,6 +10,8 @@ ticket:
   yielded: "§a§lT §8» §fTicket yielded"
   done: "§a§lT §8» §fTicket done-marked"
   reopened: "§a§lT §8» §fTicket reopened"
+  teleport: "§a§lT §8» §fTeleported to ticket creation location"
+  teleport_error: "§a§lT §8» §fCannot find ticket creation location"
 notifications:
   pick: "§a§lT §8» §f%user% has picked your ticket"
   yield: "§a§lT §8» §f%user% has yielded your ticket"

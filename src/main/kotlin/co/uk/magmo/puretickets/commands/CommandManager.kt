@@ -43,6 +43,7 @@ class CommandManager : PaperCommandManager(TICKETS) {
         commandReplacements.addReplacement("done", Config.aliasDone)
         commandReplacements.addReplacement("yield", Config.aliasYield)
         commandReplacements.addReplacement("reopen", Config.aliasReopen)
+        commandReplacements.addReplacement("teleport", Config.aliasTeleport)
         commandReplacements.addReplacement("log", Config.aliasLog)
         commandReplacements.addReplacement("list", Config.aliasList)
         commandReplacements.addReplacement("status", Config.aliasStatus)
