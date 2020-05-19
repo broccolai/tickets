@@ -14,6 +14,7 @@ object Config {
     var aliasClose = "close|cl"
     var aliasShow = "show|s"
     var aliasPick = "pick|p"
+    var aliasAssign = "assign|a"
     var aliasDone = "done|d"
     var aliasYield = "yield|y"
     var aliasReopen = "reopen|ro"
@@ -43,6 +44,7 @@ object Config {
         aliasClose = pluginConfig.getString("alias.close", aliasClose) ?: aliasClose
         aliasShow = pluginConfig.getString("alias.show", aliasShow) ?: aliasShow
         aliasPick = pluginConfig.getString("alias.pick", aliasPick) ?: aliasPick
+        aliasAssign = pluginConfig.getString("alias.alias", aliasAssign) ?: aliasAssign
         aliasDone = pluginConfig.getString("alias.done", aliasDone) ?: aliasDone
         aliasYield = pluginConfig.getString("alias.yield", aliasYield) ?: aliasYield
         aliasReopen = pluginConfig.getString("alias.reopen", aliasReopen) ?: aliasReopen

@@ -40,6 +40,7 @@ class CommandManager : PaperCommandManager(TICKETS) {
         commandReplacements.addReplacement("close", Config.aliasClose)
         commandReplacements.addReplacement("show", Config.aliasShow)
         commandReplacements.addReplacement("pick", Config.aliasPick)
+        commandReplacements.addReplacement("assign", Config.aliasAssign)
         commandReplacements.addReplacement("done", Config.aliasDone)
         commandReplacements.addReplacement("yield", Config.aliasYield)
         commandReplacements.addReplacement("reopen", Config.aliasReopen)
@@ -56,6 +57,22 @@ class CommandManager : PaperCommandManager(TICKETS) {
         commandCompletions.registerAsyncCompletion("UserTicketIds") { c ->
             try {
                 TicketManager[c.getContextValue(OfflinePlayer::class.java).uniqueId].map { ticket -> ticket.id.toString() }
+            } catch (e: Exception) {
+                return@registerAsyncCompletion null
+            }
+        }
+
+        commandCompletions.registerAsyncCompletion("UserTicketIdsWithPlayer") { c ->
+            try {
+                TicketManager[c.getContextValue(OfflinePlayer::class.java, 1).uniqueId].map { ticket -> ticket.id.toString() }
+            } catch (e: Exception) {
+                return@registerAsyncCompletion null
+            }
+        }
+
+        commandCompletions.registerAsyncCompletion("UserTicketIdsWithTarget") { c ->
+            try {
+                TicketManager[c.getContextValue(OfflinePlayer::class.java, 2).uniqueId].map { ticket -> ticket.id.toString() }
             } catch (e: Exception) {
                 return@registerAsyncCompletion null
             }
