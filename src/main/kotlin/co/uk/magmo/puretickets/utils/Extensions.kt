@@ -10,9 +10,7 @@ import java.util.UUID
 
 fun UUID?.asName() = if (this == null) Bukkit.getConsoleSender().name else Bukkit.getOfflinePlayer(this).name!!
 
-fun CommandSender.asUUID() = if (this is Player) this.uniqueId else null;
-
-fun ChatColor.bold() = "$this${ChatColor.BOLD}"
+fun CommandSender.asUUID() = if (this is Player) this.uniqueId else null
 
 fun Int.minuteToTick() = (this * 60 * 20).toLong()
 
