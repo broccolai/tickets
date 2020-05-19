@@ -39,9 +39,11 @@ object Notifications : Listener {
     @EventHandler
     fun onJoin(e: PlayerJoinEvent) {
         val ci = commandManager.getCommandIssuer(e.player)
+
         awaiting[ci.uniqueId].forEach { n ->
             ci.sendInfo(n.messageKey, *n.replacements)
-            awaiting.remove(ci.uniqueId, n)
         }
+
+        awaiting.removeAll(ci.uniqueId)
     }
 }
