@@ -113,7 +113,7 @@ class CommandManager : PaperCommandManager(TICKETS) {
         registerCommand(TicketsCommand())
     }
 
-    fun loadLocales() {
+    private fun loadLocales() {
         File(TICKETS.dataFolder, "locales").listFiles()?.forEach { file ->
             val localeName = file.name.replace(".yml", "")
             val locale = Locale.forLanguageTag(localeName)
