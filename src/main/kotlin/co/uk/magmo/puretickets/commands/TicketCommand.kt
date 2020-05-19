@@ -95,9 +95,19 @@ class TicketCommand : PureBaseCommand() {
         val information = generateInformation(offlinePlayer, index)
         val id = TicketManager.pick(sender, information)
 
-        Notifications.reply(sender, Messages.TICKET__PICKED, "%id%", id.toString())
-        Notifications.send(information.player, Messages.NOTIFICATIONS__PICK, "%user%", sender.name)
-        Notifications.announce(Messages.ANNOUNCEMENTS__PICKED_TICKET, "%user%", sender.name, "%id%", id.toString())
+    @Subcommand("%assign")
+    @CommandCompletion("@Players @AllTicketHolders @UserTicketIdsWithTarget")
+    @CommandPermission(Constants.STAFF_PERMISSION + ".assign")
+    @Description("Assign a ticket to a staff member")
+    @Syntax("<TargetPlayer> <Player> [Index]")
+    fun onAssign(sender: CommandSender, target: OfflinePlayer, offlinePlayer: OfflinePlayer, @Optional index: Int?) {
+        val information = generateInformation(offlinePlayer, index, false)
+        val ticket = TicketManager.pick(target.uniqueId, information)
+        val replacements = Utils.ticketReplacements(ticket)
+
+        Notifications.reply(sender, Messages.TICKET__ASSIGN, "%target%", target.name!! , *replacements)
+        Notifications.send(target.uniqueId, Messages.NOTIFICATIONS__ASSIGN, "%user%", sender.name, *replacements)
+        Notifications.announce(Messages.ANNOUNCEMENTS__ASSIGN_TICKET, "%user%", sender.name, "%target%", target.name!!, *replacements)
     }
 
     @Subcommand("%done")

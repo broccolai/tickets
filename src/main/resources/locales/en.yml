@@ -12,16 +12,19 @@ ticket:
   reopened: "§a§lT §8» §fTicket reopened"
   teleport: "§a§lT §8» §fTeleported to ticket creation location"
   teleport_error: "§a§lT §8» §fCannot find ticket creation location"
+  assign: "§a§lT §8» §fTicket assigned to %target%"
 notifications:
   pick: "§a§lT §8» §f%user% has picked your ticket"
   yield: "§a§lT §8» §f%user% has yielded your ticket"
   done: "§a§lT §8» §f%user% has done-marked your ticket"
   reopen: "§a§lT §8» §f%user% has reopened your ticket"
+  assign: "§a§lT §8» §f%user% has assigned you to ticket %id%"
 announcements:
   new_ticket: "§a§lT §8» §f%user% opened a new ticket #§a§l%id%§f - %ticket%"
   updated_ticket: "§a§lT §8» §f%user% updated ticket #§a§l%id%§f - %ticket%"
   closed_ticket: "§a§lT §8» §f%user% closed their ticket #§a§l%id%"
   picked_ticket: "§a§lT §8» §f%user% picked ticket #§a§l%id%"
+  assign_ticket: "§a§lT §8» §f%user% assigned ticket #§a§l%id% §fto %target%"
   yielded_ticket: "§a§lT §8» §f%user% yielded ticket #§a§l%id%"
   done_ticket: "§a§lT §8» §f%user% done-marked a ticket #§a§l%id%"
   reopen_ticket: "§a§lT §8» §f%user% reopened ticket #§a§l%id%"
@@ -37,3 +40,5 @@ show:
   picker: "<c2>Picker:</c2> <c1>%date% by %player%</c1>"
   unpicked: "<c2>Picker:</c2> <c1>Unpicked</c1>"
   message: "<c2>Current Message:</c2> <c1>%date% by %message%</c1>"
+format:
+  list_item: "%statusColor%#§f§l%id% §8- §f%message%"
