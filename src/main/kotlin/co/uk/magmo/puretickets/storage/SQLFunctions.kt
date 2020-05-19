@@ -75,7 +75,13 @@ object SQLFunctions {
 
     fun ticketExists(uuid: UUID, id: Int): Boolean = DB.getFirstColumn<Int>("SELECT EXISTS(SELECT 1 FROM ticket WHERE uuid = ? AND id = ?)", uuid, id) == 1
 
-    fun highestTicket(uuid: UUID): Int? = DB.getFirstColumn("SELECT max(id) FROM ticket WHERE uuid = ?", uuid)
+    fun highestTicket(uuid: UUID, closed: Boolean): Int? {
+        var sql = "SELECT max(id) FROM ticket WHERE uuid = ? AND status"
+
+        sql += if (closed) " = ?" else " <> ?"
+
+        return DB.getFirstColumn(sql, uuid, TicketStatus.CLOSED.name)
+    }
 
     fun selectCurrentTickets(uuid: UUID?): HashMap<TicketStatus, Int> {
         val sql = """
