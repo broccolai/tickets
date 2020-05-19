@@ -31,33 +31,33 @@ object TicketManager {
         }
     }
 
-    fun update(information: TicketInformation, message: Message): Int {
+    fun update(information: TicketInformation, message: Message): Ticket? {
         val ticket = tickets[information.player].first { ticket -> ticket.id == information.index }
         val index = tickets[information.player].indexOf(ticket)
 
         ticket.addMessageAndUpdate(message)
         tickets[information.player][index] = ticket
 
-        return ticket.id
+        return ticket
     }
 
-    fun pick(user: CommandSender, information: TicketInformation): Int {
+    fun pick(uuid: UUID?, information: TicketInformation): Ticket? {
         val ticket = tickets[information.player].first { ticket -> ticket.id == information.index }
         val index = tickets[information.player].indexOf(ticket)
-        val message = Message(MessageReason.PICKED, null, user.asUUID())
+        val message = Message(MessageReason.PICKED, null, uuid)
 
         ticket.status = TicketStatus.PICKED
-        ticket.pickerUUID = user.asUUID()
+        ticket.pickerUUID = uuid
         ticket.addMessageAndUpdate(message)
 
         tickets[information.player][index] = ticket
-        return ticket.id
+        return ticket
     }
 
-    fun yield(user: CommandSender, information: TicketInformation): Int {
+    fun yield(uuid: UUID?, information: TicketInformation): Ticket? {
         val ticket = tickets[information.player].first { ticket -> ticket.id == information.index }
         val index = tickets[information.player].indexOf(ticket)
-        val message = Message(MessageReason.YIELDED, null, user.asUUID())
+        val message = Message(MessageReason.YIELDED, null, uuid)
 
         ticket.status = TicketStatus.OPEN
         ticket.pickerUUID = null
@@ -65,41 +65,41 @@ object TicketManager {
 
         tickets[information.player][index] = ticket
 
-        return ticket.id
+        return ticket
     }
 
-    fun close(user: CommandSender, information: TicketInformation): Int {
+    fun close(uuid: UUID?, information: TicketInformation): Ticket? {
         val ticket = tickets[information.player].first { ticket -> ticket.id == information.index }
-        val message = Message(MessageReason.CLOSED, null, user.asUUID())
+        val message = Message(MessageReason.CLOSED, null, uuid)
 
         tickets.remove(information.player, ticket)
         ticket.status = TicketStatus.CLOSED
         ticket.addMessageAndUpdate(message)
 
-        return ticket.id
+        return ticket
     }
 
-    fun done(user: CommandSender, information: TicketInformation): Int {
+    fun done(uuid: UUID?, information: TicketInformation): Ticket? {
         val ticket = tickets[information.player].first { ticket -> ticket.id == information.index }
-        val message = Message(MessageReason.DONE_MARKED, null, user.asUUID())
+        val message = Message(MessageReason.DONE_MARKED, null, uuid)
 
         tickets.remove(information.player, ticket)
         ticket.status = TicketStatus.CLOSED
         ticket.addMessageAndUpdate(message)
 
-        return ticket.id
+        return ticket
     }
 
-    fun reopen(sender: CommandSender, information: TicketInformation): Int {
+    fun reopen(uuid: UUID?, information: TicketInformation): Ticket {
         val ticket = SQLFunctions.retrieveSingleTicket(information.index)
-        val message = Message(MessageReason.REOPENED, null, sender.asUUID())
+        val message = Message(MessageReason.REOPENED, null, uuid)
 
         ticket.status = TicketStatus.OPEN
         ticket.addMessageAndUpdate(message)
 
         tickets.put(information.player, ticket)
 
-        return ticket.id
+        return ticket
     }
 
     private fun Ticket.addMessageAndUpdate(message: Message) {
