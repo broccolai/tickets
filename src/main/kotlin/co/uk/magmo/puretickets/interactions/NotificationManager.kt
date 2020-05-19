@@ -1,7 +1,7 @@
 package co.uk.magmo.puretickets.interactions
 
 import co.uk.magmo.puretickets.locale.Messages
-import co.uk.magmo.puretickets.PureTickets.Companion.commandManager
+import co.uk.magmo.puretickets.commands.CommandManager
 import co.uk.magmo.puretickets.utils.Constants
 import com.google.common.collect.ArrayListMultimap
 import org.bukkit.Bukkit
@@ -11,7 +11,7 @@ import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerJoinEvent
 import java.util.UUID
 
-object Notifications : Listener {
+class NotificationManager(private val commandManager: CommandManager) : Listener {
     private val awaiting = ArrayListMultimap.create<UUID, PendingNotification>()
 
     fun reply(commandSender: CommandSender, messageKey: Messages, vararg replacements: String) {
@@ -37,8 +37,8 @@ object Notifications : Listener {
     }
 
     @EventHandler
-    fun onJoin(e: PlayerJoinEvent) {
-        val ci = commandManager.getCommandIssuer(e.player)
+    fun PlayerJoinEvent.onJoin() {
+        val ci = commandManager.getCommandIssuer(player)
 
         awaiting[ci.uniqueId].forEach { n ->
             ci.sendInfo(n.messageKey, *n.replacements)

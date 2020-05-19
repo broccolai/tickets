@@ -7,7 +7,7 @@ import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 import java.util.UUID
 
-object TicketManager {
+class TicketManager {
     private val tickets = SQLFunctions.retrieveAllTickets()
     private var current = SQLFunctions.currentTicketId()
 

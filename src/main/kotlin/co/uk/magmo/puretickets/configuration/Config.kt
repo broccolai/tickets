@@ -1,7 +1,7 @@
 package co.uk.magmo.puretickets.configuration
 
-import co.uk.magmo.puretickets.PureTickets.Companion.TICKETS
 import co.uk.magmo.puretickets.utils.Utils
+import org.bukkit.plugin.Plugin
 import java.io.File
 
 object Config {
@@ -23,17 +23,17 @@ object Config {
     var aliasList = "list|l"
     var aliasStatus = "status"
 
-    fun loadFile() {
-        TICKETS.saveDefaultConfig()
+    fun loadFile(plugin: Plugin) {
+        plugin.saveDefaultConfig()
 
-        val target = File(TICKETS.dataFolder, "config.yml")
-        val stream = TICKETS.javaClass.getResource("/config.yml").openStream()
+        val target = File(plugin.dataFolder, "config.yml")
+        val stream = plugin.javaClass.getResource("/config.yml").openStream()
 
         Utils.mergeYAML(stream, target)
 
-        TICKETS.reloadConfig()
+        plugin.reloadConfig()
 
-        val pluginConfig = TICKETS.config
+        val pluginConfig = plugin.config
 
         locale = pluginConfig.getString("locale", locale) ?: locale
         reminderDelay = pluginConfig.getInt("reminder.delay", reminderDelay)

@@ -1,7 +1,6 @@
 package co.uk.magmo.puretickets.storage
 
 import co.aikar.idb.*
-import co.uk.magmo.puretickets.PureTickets.Companion.TICKETS
 import co.uk.magmo.puretickets.ticket.Message
 import co.uk.magmo.puretickets.ticket.MessageReason
 import co.uk.magmo.puretickets.ticket.Ticket
@@ -10,6 +9,7 @@ import co.uk.magmo.puretickets.utils.asName
 import com.google.common.collect.ArrayListMultimap
 import org.bukkit.Bukkit
 import org.bukkit.Location
+import org.bukkit.plugin.Plugin
 import java.io.File
 import java.time.Instant
 import java.time.LocalDateTime
@@ -18,8 +18,8 @@ import java.util.UUID
 import java.util.logging.Level
 
 object SQLFunctions {
-    fun setup() {
-        val file = File(TICKETS.dataFolder, "tickets.db")
+    fun setup(plugin: Plugin) {
+        val file = File(plugin.dataFolder, "tickets.db")
         file.createNewFile()
 
         val options = DatabaseOptions.builder().sqlite(file.toString()).build()
@@ -32,7 +32,7 @@ object SQLFunctions {
         var version = DB.getFirstColumn<Int>("PRAGMA user_version")
 
         if (version == 0) {
-            TICKETS.logger.log(Level.INFO, "Updated PureTickets database to have location column")
+            plugin.logger.log(Level.INFO, "Updated PureTickets database to have location column")
             DB.executeUpdate("ALTER TABLE ticket ADD location TEXT")
             version++
         }
