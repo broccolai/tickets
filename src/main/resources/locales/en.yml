@@ -42,4 +42,4 @@ show:
   message: "<c2>Current Message:</c2> <c1>%date% by %message%</c1>"
 format:
   list_item: "%statusColor%#§f§l%id% §8- §f%message%"
-  setting_update: "§a§lT §8» Setting §a%setting% §fis now %status%"
+  setting_update: "§a§lT §8» §fSetting §a%setting% §fis now %status%"
