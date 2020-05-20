@@ -7,6 +7,7 @@ import co.uk.magmo.puretickets.interactions.NotificationManager
 import co.uk.magmo.puretickets.storage.SQLFunctions
 import co.uk.magmo.puretickets.tasks.TaskManager
 import co.uk.magmo.puretickets.ticket.TicketManager
+import co.uk.magmo.puretickets.user.UserManager
 import org.bukkit.plugin.java.JavaPlugin
 
 class PureTickets : JavaPlugin() {
@@ -18,10 +19,11 @@ class PureTickets : JavaPlugin() {
         Config.loadFile(this)
         SQLFunctions.setup(this)
 
+        val userManager = UserManager()
         commandManager = CommandManager(this)
 
         ticketManager = TicketManager()
-        notificationManager = NotificationManager(commandManager)
+        notificationManager = NotificationManager(userManager, commandManager)
 
         commandManager.registerCompletions(ticketManager)
         commandManager.registerInjections(ticketManager, notificationManager)
@@ -34,6 +36,7 @@ class PureTickets : JavaPlugin() {
 
     override fun onDisable() {
         taskManager.clear()
+        notificationManager.save()
 
         DB.close()
     }

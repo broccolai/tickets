@@ -1,10 +1,13 @@
 package co.uk.magmo.puretickets.storage
 
 import co.aikar.idb.*
+import co.uk.magmo.puretickets.interactions.PendingNotification
+import co.uk.magmo.puretickets.locale.Messages
 import co.uk.magmo.puretickets.ticket.Message
 import co.uk.magmo.puretickets.ticket.MessageReason
 import co.uk.magmo.puretickets.ticket.Ticket
 import co.uk.magmo.puretickets.ticket.TicketStatus
+import co.uk.magmo.puretickets.user.UserSettings
 import co.uk.magmo.puretickets.utils.asName
 import com.google.common.collect.ArrayListMultimap
 import org.bukkit.Bukkit
@@ -15,6 +18,7 @@ import java.time.Instant
 import java.time.LocalDateTime
 import java.time.ZoneId
 import java.util.UUID
+import java.util.concurrent.CompletableFuture
 import java.util.logging.Level
 
 object SQLFunctions {
@@ -28,6 +32,8 @@ object SQLFunctions {
         DB.setGlobalDatabase(database)
         DB.executeUpdate("CREATE TABLE IF NOT EXISTS ticket(id INTEGER, uuid TEXT, status TEXT, picker TEXT)")
         DB.executeUpdate("CREATE TABLE IF NOT EXISTS message(ticket INTEGER, reason TEXT, data TEXT, sender TEXT, date TEXT)")
+        DB.executeUpdate("CREATE TABLE IF NOT EXISTS notification(uuid TEXT, message TEXT, replacements TEXT)")
+        DB.executeUpdate("CREATE TABLE IF NOT EXISTS settings(uuid TEXT, announcements TEXT)")
 
         var version = DB.getFirstColumn<Int>("PRAGMA user_version")
 
@@ -40,12 +46,45 @@ object SQLFunctions {
         DB.executeUpdate("PRAGMA user_version = $version")
     }
 
+    fun settingsExist(uuid: UUID) = DB.getFirstColumn<Int>("SELECT EXISTS(SELECT 1 FROM settings WHERE uuid = ?)", uuid) == 1
+
+    fun retrieveUserSettings(uuid: UUID): UserSettings {
+        val data = DB.getFirstRow("SELECT announcements FROM settings WHERE uuid = ?", uuid)
+        val announcements = data.getString("announcements")?.toBoolean() ?: true
+
+        return UserSettings(announcements)
+    }
+
+    fun insertUserSettings(uuid: UUID, settings: UserSettings) = DB.executeInsert("INSERT INTO settings(uuid, announcements) VALUES(?, ?)",
+        uuid, settings)
+
+    fun updateUserSettings(uuid: UUID, settings: UserSettings) = DB.executeUpdate("UPDATE settings SET announcements = ? WHERE uuid = ?",
+        settings.announcements, uuid)
+
+    fun retrieveNotifications(): ArrayListMultimap<UUID, PendingNotification> = ArrayListMultimap.create<UUID, PendingNotification>().apply {
+        DB.getResults("SELECT uuid, message, replacements FROM notification")
+                .map { row -> row.getUUID("uuid") to PendingNotification(Messages.valueOf(row.getString("message")),
+                        *row.getString("replacements").split("|").toTypedArray()) }
+                .forEach { put(it.first, it.second) }
+
+        DB.executeUpdate("DELETE FROM notification")
+    }
+
+    fun saveNotifications(notifications: ArrayListMultimap<UUID, PendingNotification>) {
+        notifications.forEach { uuid, notification ->
+            val message = notification.messageKey.name
+            val replacements = notification.replacements.joinToString("|")
+
+            DB.executeInsert("INSERT INTO notification(uuid, message, replacements) VALUES(?, ?, ?)", uuid, message, replacements)
+        }
+    }
+
     fun currentTicketId() = DB.getFirstColumn<Int>("SELECT max(id) FROM ticket") ?: 0
 
     fun insertTicket(t: Ticket): Long = DB.executeInsert("INSERT INTO ticket(id, uuid, status, picker, location) VALUES(?, ?, ?, ?, ?)",
             t.id, t.playerUUID, t.status.name, t.pickerUUID, t.location?.save())
 
-    fun updateTicket(t: Ticket) = DB.executeUpdateAsync("UPDATE ticket SET status = ?, picker = ? WHERE id = ?",
+    fun updateTicket(t: Ticket): CompletableFuture<Int> = DB.executeUpdateAsync("UPDATE ticket SET status = ?, picker = ? WHERE id = ?",
             t.status.name, t.pickerUUID, t.id)
 
     fun insertMessage(t: Ticket, m: Message): Long = DB.executeInsert("INSERT INTO message(ticket, reason, data, sender, date) VALUES(?, ?, ?, ?, ?)",

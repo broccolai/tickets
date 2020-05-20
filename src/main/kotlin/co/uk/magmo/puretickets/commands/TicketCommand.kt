@@ -18,7 +18,6 @@ import org.bukkit.entity.Player
 class TicketCommand : BaseCommand() {
     @Dependency
     private lateinit var notificationManager: NotificationManager
-    
     @Dependency
     private lateinit var ticketManager: TicketManager
     
