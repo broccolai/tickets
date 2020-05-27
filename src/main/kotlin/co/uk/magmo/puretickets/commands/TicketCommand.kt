@@ -119,6 +119,7 @@ class TicketCommand : BaseCommand() {
 
         notificationManager.reply(sender, Messages.TICKET__ASSIGN, "%target%", target.name!! , *replacements)
         notificationManager.send(target.uniqueId, Messages.NOTIFICATIONS__ASSIGN, "%user%", sender.name, *replacements)
+        notificationManager.send(information.player, Messages.NOTIFICATIONS__PICK, "%user%", target.name!!, *replacements)
         notificationManager.announce(Messages.ANNOUNCEMENTS__ASSIGN_TICKET, "%user%", sender.name, "%target%", target.name!!, *replacements)
     }
 

@@ -26,7 +26,7 @@ class PureTickets : JavaPlugin() {
         notificationManager = NotificationManager(userManager, commandManager)
 
         commandManager.registerCompletions(ticketManager)
-        commandManager.registerInjections(ticketManager, notificationManager)
+        commandManager.registerInjections(userManager, ticketManager, notificationManager)
         commandManager.registerCommands()
 
         taskManager = TaskManager(this, ticketManager, notificationManager)

@@ -28,7 +28,8 @@ class TicketsCommand : BaseCommand() {
 
     @Subcommand("settings")
     @CommandPermission(Constants.USER_PERMISSION + ".settings")
-    fun onSettings(player: Player, setting: String, value: Boolean) {
+    @CommandCompletion("announcements true|false")
+    fun onSettings(player: Player, setting: String, @Optional value: Boolean) {
         userManager.update(player.uniqueId) { settings ->
             when(setting.toLowerCase()) {
                 "announcements" -> settings.announcements = value
