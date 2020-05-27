@@ -22,8 +22,8 @@ class UserManager {
         return settings
     }
 
-    fun update(uuid: UUID, action: (UserSettings) -> UserSettings) {
-        val settings = action.invoke(get(uuid))
+    fun update(uuid: UUID, action: (UserSettings) -> Unit) {
+        val settings = get(uuid).also(action)
 
         users[uuid] = settings
         SQLFunctions.updateUserSettings(uuid, settings)

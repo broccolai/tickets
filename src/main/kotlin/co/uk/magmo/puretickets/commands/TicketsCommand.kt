@@ -35,9 +35,6 @@ class TicketsCommand : BaseCommand() {
 
                 else -> throw InvalidCommandArgument("Provided setting is not an option")
             }
-
-
-            settings
         }
 
         val status = if (value) "enabled" else "disabled"
