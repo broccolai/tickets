@@ -1,8 +1,12 @@
 package co.uk.magmo.puretickets.configuration
 
 import co.uk.magmo.puretickets.utils.Utils
+import org.bukkit.Bukkit
+import org.bukkit.configuration.file.FileConfiguration
 import org.bukkit.plugin.Plugin
 import java.io.File
+import java.lang.reflect.Field
+import java.util.logging.Level
 
 object Config {
     var locale = "en-US"
@@ -33,24 +37,35 @@ object Config {
 
         plugin.reloadConfig()
 
-        val pluginConfig = plugin.config
+        plugin.config.run {
+            locale = process("locale", locale)
+            reminderDelay = process("reminder.delay", reminderDelay)
+            reminderRepeat = process("reminder.repeat", reminderRepeat)
 
-        locale = pluginConfig.getString("locale", locale) ?: locale
-        reminderDelay = pluginConfig.getInt("reminder.delay", reminderDelay)
-        reminderRepeat = pluginConfig.getInt("reminder.repeat", reminderRepeat)
+            aliasCreate = process("alias.create", aliasCreate)
+            aliasUpdate = process("alias.update", aliasUpdate)
+            aliasClose = process("alias.close", aliasClose)
+            aliasShow = process("alias.show", aliasShow)
+            aliasPick = process("alias.pick", aliasPick)
+            aliasAssign = process("alias.alias", aliasAssign)
+            aliasDone = process("alias.done", aliasDone)
+            aliasYield = process("alias.yield", aliasYield)
+            aliasReopen = process("alias.reopen", aliasReopen)
+            aliasTeleport = process("alias.teleport", aliasTeleport)
+            aliasLog = process("alias.log", aliasLog)
+            aliasList = process("alias.list", aliasList)
+            aliasStatus = process("alias.status", aliasStatus)
+        }
+    }
 
-        aliasCreate = pluginConfig.getString("alias.create", aliasCreate) ?: aliasCreate
-        aliasUpdate = pluginConfig.getString("alias.update", aliasUpdate) ?: aliasUpdate
-        aliasClose = pluginConfig.getString("alias.close", aliasClose) ?: aliasClose
-        aliasShow = pluginConfig.getString("alias.show", aliasShow) ?: aliasShow
-        aliasPick = pluginConfig.getString("alias.pick", aliasPick) ?: aliasPick
-        aliasAssign = pluginConfig.getString("alias.alias", aliasAssign) ?: aliasAssign
-        aliasDone = pluginConfig.getString("alias.done", aliasDone) ?: aliasDone
-        aliasYield = pluginConfig.getString("alias.yield", aliasYield) ?: aliasYield
-        aliasReopen = pluginConfig.getString("alias.reopen", aliasReopen) ?: aliasReopen
-        aliasTeleport = pluginConfig.getString("alias.teleport", aliasTeleport) ?: aliasTeleport
-        aliasLog = pluginConfig.getString("alias.log", aliasLog) ?: aliasLog
-        aliasList = pluginConfig.getString("alias.list", aliasList) ?: aliasList
-        aliasStatus = pluginConfig.getString("alias.status", aliasStatus) ?: aliasStatus
+    private inline fun <reified T> FileConfiguration.process(path: String, default: Any): T {
+        var value = get(path)
+
+        if (value == null || value !is T) {
+            Bukkit.getLogger().log(Level.WARNING, path + " has a incorrect value it has been set to " + default)
+            value = default
+        }
+
+        return value as T
     }
 }

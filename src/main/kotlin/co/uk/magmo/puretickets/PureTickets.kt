@@ -13,6 +13,7 @@ import org.bukkit.plugin.java.JavaPlugin
 class PureTickets : JavaPlugin() {
     lateinit var taskManager: TaskManager
     lateinit var ticketManager: TicketManager
+    lateinit var commandManager: CommandManager
     lateinit var notificationManager: NotificationManager
 
     override fun onEnable() {
@@ -39,9 +40,5 @@ class PureTickets : JavaPlugin() {
         notificationManager.save()
 
         DB.close()
-    }
-
-    companion object {
-        lateinit var commandManager: CommandManager
     }
 }
