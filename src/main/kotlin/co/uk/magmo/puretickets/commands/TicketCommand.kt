@@ -20,11 +20,13 @@ import org.bukkit.entity.Player
 class TicketCommand : BaseCommand() {
     @Dependency
     private lateinit var notificationManager: NotificationManager
+
     @Dependency
     private lateinit var ticketManager: TicketManager
+
     @Dependency
     private lateinit var taskManager: TaskManager
-    
+
     @Default
     @HelpCommand
     fun onHelp(sender: CommandSender, help: CommandHelp) {
@@ -54,8 +56,9 @@ class TicketCommand : BaseCommand() {
     @Description("Update a ticket")
     @Syntax("<Index> <Message>")
     fun onUpdate(player: Player, index: Int, message: Message) {
+        val information = generateInformation(player, index, false)
+
         taskManager.schedule {
-            val information = generateInformation(player, index, false)
             val ticket = ticketManager.update(information, message)
             val replacements = Utils.ticketReplacements(ticket)
 
@@ -72,8 +75,9 @@ class TicketCommand : BaseCommand() {
     @Description("Close a ticket")
     @Syntax("[Index]")
     fun onClose(player: Player, @Optional index: Int?) {
+        val information = generateInformation(player, index, false)
+
         taskManager.schedule {
-            val information = generateInformation(player, index, false)
             val ticket = ticketManager.close(player.asUUID(), information)
             val replacements = Utils.ticketReplacements(ticket)
 
@@ -90,8 +94,9 @@ class TicketCommand : BaseCommand() {
     @Description("Show a ticket")
     @Syntax("<Player> [Index]")
     fun onShow(sender: CommandSender, offlinePlayer: OfflinePlayer, @Optional index: Int?) {
+        val information = generateInformation(offlinePlayer, index, false)
+
         taskManager.schedule {
-            val information = generateInformation(offlinePlayer, index, false)
             val ticket = ticketManager[information.player, information.index] ?: return@schedule
             val replacements = Utils.ticketReplacements(ticket)
             val message = ticket.currentMessage()!!
@@ -117,8 +122,9 @@ class TicketCommand : BaseCommand() {
     @Description("Pick a ticket")
     @Syntax("<Player> [Index]")
     fun onPick(sender: CommandSender, offlinePlayer: OfflinePlayer, @Optional index: Int?) {
+        val information = generateInformation(offlinePlayer, index, false)
+
         taskManager.schedule {
-            val information = generateInformation(offlinePlayer, index, false)
             val ticket = ticketManager.pick(sender.asUUID(), information)
             val replacements = Utils.ticketReplacements(ticket)
 
@@ -136,8 +142,9 @@ class TicketCommand : BaseCommand() {
     @Description("Assign a ticket to a staff member")
     @Syntax("<TargetPlayer> <Player> [Index]")
     fun onAssign(sender: CommandSender, target: OfflinePlayer, offlinePlayer: OfflinePlayer, @Optional index: Int?) {
+        val information = generateInformation(offlinePlayer, index, false)
+
         taskManager.schedule {
-            val information = generateInformation(offlinePlayer, index, false)
             val ticket = ticketManager.pick(target.uniqueId, information)
             val replacements = Utils.ticketReplacements(ticket)
 
@@ -156,8 +163,9 @@ class TicketCommand : BaseCommand() {
     @Description("Done-mark a ticket")
     @Syntax("<Player> [Index]")
     fun onDone(sender: CommandSender, offlinePlayer: OfflinePlayer, @Optional index: Int?) {
+        val information = generateInformation(offlinePlayer, index, false)
+
         taskManager.schedule {
-            val information = generateInformation(offlinePlayer, index, false)
             val ticket = ticketManager.done(sender.asUUID(), information)
             val replacements = Utils.ticketReplacements(ticket)
 
@@ -175,8 +183,9 @@ class TicketCommand : BaseCommand() {
     @Description("Yield a ticket")
     @Syntax("<Player> [Index]")
     fun onYield(sender: CommandSender, offlinePlayer: OfflinePlayer, @Optional index: Int?) {
+        val information = generateInformation(offlinePlayer, index, false)
+
         taskManager.schedule {
-            val information = generateInformation(offlinePlayer, index, false)
             val ticket = ticketManager.yield(sender.asUUID(), information)
             val replacements = Utils.ticketReplacements(ticket)
 
@@ -194,8 +203,9 @@ class TicketCommand : BaseCommand() {
     @Description("Reopen a ticket")
     @Syntax("<Player> [Index]")
     fun onReopen(sender: CommandSender, offlinePlayer: OfflinePlayer, @Optional index: Int?) {
+        val information = generateInformation(offlinePlayer, index, true)
+
         taskManager.schedule {
-            val information = generateInformation(offlinePlayer, index, true)
             val ticket = ticketManager.reopen(sender.asUUID(), information)
             val replacements = Utils.ticketReplacements(ticket)
 
@@ -213,8 +223,9 @@ class TicketCommand : BaseCommand() {
     @Description("Teleport to a ticket creation location")
     @Syntax("<Player> [Index]")
     fun onTeleport(player: Player, offlinePlayer: OfflinePlayer, @Optional index: Int?) {
+        val information = generateInformation(offlinePlayer, index, false)
+
         taskManager.schedule {
-            val information = generateInformation(offlinePlayer, index, false)
             val ticket = ticketManager[offlinePlayer.uniqueId, information.index]
             val replacements = Utils.ticketReplacements(ticket)
             val location = ticket?.location
@@ -236,8 +247,9 @@ class TicketCommand : BaseCommand() {
     @Description("Log tickets messages")
     @Syntax("<Player> [Index]")
     fun onLog(sender: CommandSender, offlinePlayer: OfflinePlayer, @Optional index: Int?) {
+        val information = generateInformation(offlinePlayer, index, true)
+
         taskManager.schedule {
-            val information = generateInformation(offlinePlayer, index, true)
             val ticket = ticketManager[information.player, information.index] ?: return@schedule
             val replacements = Utils.ticketReplacements(ticket)
 
@@ -258,28 +270,33 @@ class TicketCommand : BaseCommand() {
     @Description("List all tickets")
     @Syntax("[Player]")
     fun onList(sender: CommandSender, @Optional offlinePlayer: OfflinePlayer?, @Optional status: TicketStatus?) {
-        if (offlinePlayer != null) {
-            notificationManager.reply(sender, Messages.TITLES__SPECIFIC_TICKETS, "%player%", offlinePlayer.name!!)
+        taskManager.schedule {
+            if (offlinePlayer != null) {
+                var tickets = SQLFunctions.retrieveClosedTickets(offlinePlayer.uniqueId)
+                if (status != null) tickets = tickets.filter { ticket -> ticket.status == status }
 
-            var tickets = SQLFunctions.retrieveClosedTickets(offlinePlayer.uniqueId)
+                switchContext(SynchronizationContext.SYNC)
 
-            if (status != null) tickets = tickets.filter { ticket -> ticket.status == status }
-
-            tickets.forEach { ticket ->
-                val replacements = Utils.ticketReplacements(ticket)
-
-                notificationManager.reply(sender, Messages.FORMAT__LIST_ITEM, *replacements)
-            }
-        } else {
-            notificationManager.reply(sender, Messages.TITLES__ALL_TICKETS)
-
-            ticketManager.asMap().forEach { (uuid, tickets) ->
-                sender.sendMessage(ChatColor.GREEN.toString() + uuid.asName())
+                notificationManager.reply(sender, Messages.TITLES__SPECIFIC_TICKETS, "%player%", offlinePlayer.name!!)
 
                 tickets.forEach { ticket ->
                     val replacements = Utils.ticketReplacements(ticket)
 
                     notificationManager.reply(sender, Messages.FORMAT__LIST_ITEM, *replacements)
+                }
+            } else {
+                switchContext(SynchronizationContext.SYNC)
+
+                notificationManager.reply(sender, Messages.TITLES__ALL_TICKETS)
+
+                ticketManager.asMap().forEach { (uuid, tickets) ->
+                    sender.sendMessage(ChatColor.GREEN.toString() + uuid.asName())
+
+                    tickets.forEach { ticket ->
+                        val replacements = Utils.ticketReplacements(ticket)
+
+                        notificationManager.reply(sender, Messages.FORMAT__LIST_ITEM, *replacements)
+                    }
                 }
             }
         }
@@ -291,16 +308,24 @@ class TicketCommand : BaseCommand() {
     @Description("View amount of tickets in")
     @Syntax("[Player]")
     fun onStatus(sender: CommandSender, @Optional offlinePlayer: OfflinePlayer?) {
-        val data = if (offlinePlayer != null) {
-            notificationManager.reply(sender, Messages.TITLES__SPECIFIC_STATUS, "%player%", offlinePlayer.name!!)
-            SQLFunctions.selectCurrentTickets(offlinePlayer.uniqueId)
-        } else {
-            notificationManager.reply(sender, Messages.TITLES__TICKET_STATUS)
-            SQLFunctions.selectCurrentTickets(null)
-        }
+        taskManager.schedule {
+            val data = if (offlinePlayer != null) {
+                notificationManager.reply(sender, Messages.TITLES__SPECIFIC_STATUS, "%player%", offlinePlayer.name!!)
 
-        data.forEach { (status, amount) ->
-            if (amount != 0) sender.sendMessage(amount.toString() + " " + status.name.toLowerCase())
+                switchContext(SynchronizationContext.SYNC)
+
+                SQLFunctions.selectCurrentTickets(offlinePlayer.uniqueId)
+            } else {
+                notificationManager.reply(sender, Messages.TITLES__TICKET_STATUS)
+
+                switchContext(SynchronizationContext.SYNC)
+
+                SQLFunctions.selectCurrentTickets(null)
+            }
+
+            data.forEach { (status, amount) ->
+                if (amount != 0) sender.sendMessage(amount.toString() + " " + status.name.toLowerCase())
+            }
         }
     }
 
