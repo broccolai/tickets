@@ -197,6 +197,26 @@ class TicketCommand : BaseCommand() {
         }
     }
 
+    @Subcommand("%note")
+    @CommandCompletion("@AllTicketHolders @UserTicketIds")
+    @CommandPermission(Constants.STAFF_PERMISSION + ".note")
+    @Description("Make a note on a ticket")
+    @Syntax("<Player> [Index]")
+    fun onNote(sender: CommandSender, offlinePlayer: OfflinePlayer, index: Int, message: String) {
+        val information = generateInformation(offlinePlayer, index, false)
+
+        taskManager.schedule {
+            val ticket = ticketManager.note(sender.asUUID(), information, message)
+            val replacements = Utils.ticketReplacements(ticket)
+
+            switchContext(SynchronizationContext.SYNC)
+
+            notificationManager.reply(sender, Messages.TICKET__NOTE, *replacements)
+            notificationManager.send(information.player, Messages.NOTIFICATIONS__NOTE, "%user%", sender.name, "%note%", message, *replacements)
+            notificationManager.announce(Messages.ANNOUNCEMENTS__NOTE_TICKET, "%user%", sender.name, "%note%", message, *replacements)
+        }
+    }
+
     @Subcommand("%reopen")
     @CommandCompletion("@UserOfflineNames @UserOfflineTicketIDs")
     @CommandPermission(Constants.STAFF_PERMISSION + ".reopen")

@@ -102,6 +102,15 @@ class TicketManager {
         return ticket
     }
 
+    fun note(uuid: UUID?, information: TicketInformation, input: String): Ticket {
+        val ticket = tickets[information.player].first { ticket -> ticket.id == information.index }
+        val message = Message(MessageReason.NOTE, input, uuid)
+
+        ticket.addMessageAndUpdate(message)
+
+        return ticket
+    }
+
     private fun Ticket.addMessageAndUpdate(message: Message) {
         messages.add(message)
         SQLFunctions.insertMessage(this, message)

@@ -21,6 +21,7 @@ object Config {
     var aliasAssign = "assign|a"
     var aliasDone = "done|d"
     var aliasYield = "yield|y"
+    var aliasNote = "note"
     var aliasReopen = "reopen|ro"
     var aliasTeleport = "teleport|tp"
     var aliasLog = "log"
@@ -50,6 +51,7 @@ object Config {
             aliasAssign = process("alias.alias", aliasAssign)
             aliasDone = process("alias.done", aliasDone)
             aliasYield = process("alias.yield", aliasYield)
+            aliasNote = process("alias.note", aliasNote)
             aliasReopen = process("alias.reopen", aliasReopen)
             aliasTeleport = process("alias.teleport", aliasTeleport)
             aliasLog = process("alias.log", aliasLog)

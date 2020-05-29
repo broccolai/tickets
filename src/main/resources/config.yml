@@ -13,6 +13,7 @@ alias:
   assign: "assign|a"
   done: "done|d"
   yield: "yield|y"
+  note: "note"
   reopen: "reopen|ro"
   teleport: "teleport|tp"
   log: "log"

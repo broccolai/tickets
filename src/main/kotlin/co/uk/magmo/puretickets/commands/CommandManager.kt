@@ -44,6 +44,7 @@ class CommandManager(plugin: Plugin) : PaperCommandManager(plugin) {
         commandReplacements.addReplacement("assign", Config.aliasAssign)
         commandReplacements.addReplacement("done", Config.aliasDone)
         commandReplacements.addReplacement("yield", Config.aliasYield)
+        commandReplacements.addReplacement("note", Config.aliasNote)
         commandReplacements.addReplacement("reopen", Config.aliasReopen)
         commandReplacements.addReplacement("teleport", Config.aliasTeleport)
         commandReplacements.addReplacement("log", Config.aliasLog)
