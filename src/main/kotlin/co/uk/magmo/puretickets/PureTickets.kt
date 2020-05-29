@@ -12,8 +12,6 @@ import org.bukkit.plugin.java.JavaPlugin
 
 class PureTickets : JavaPlugin() {
     lateinit var taskManager: TaskManager
-    lateinit var ticketManager: TicketManager
-    lateinit var commandManager: CommandManager
     lateinit var notificationManager: NotificationManager
 
     override fun onEnable() {
@@ -21,16 +19,15 @@ class PureTickets : JavaPlugin() {
         SQLFunctions.setup(this)
 
         val userManager = UserManager()
-        commandManager = CommandManager(this)
+        val commandManager = CommandManager(this)
+        val ticketManager = TicketManager()
 
-        ticketManager = TicketManager()
-        notificationManager = NotificationManager(userManager, commandManager)
+        taskManager = TaskManager(this)
+        notificationManager = NotificationManager(userManager, commandManager, ticketManager, taskManager)
 
         commandManager.registerCompletions(ticketManager)
-        commandManager.registerInjections(userManager, ticketManager, notificationManager)
+        commandManager.registerInjections(userManager, ticketManager, notificationManager, taskManager)
         commandManager.registerCommands()
-
-        taskManager = TaskManager(this, ticketManager, notificationManager)
 
         server.pluginManager.registerEvents(notificationManager, this)
     }

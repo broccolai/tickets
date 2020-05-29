@@ -7,8 +7,10 @@ import co.aikar.commands.annotation.*
 import co.uk.magmo.puretickets.interactions.NotificationManager
 import co.uk.magmo.puretickets.locale.Messages
 import co.uk.magmo.puretickets.storage.SQLFunctions
+import co.uk.magmo.puretickets.tasks.TaskManager
 import co.uk.magmo.puretickets.ticket.*
 import co.uk.magmo.puretickets.utils.*
+import com.okkero.skedule.SynchronizationContext
 import org.bukkit.ChatColor
 import org.bukkit.OfflinePlayer
 import org.bukkit.command.CommandSender
@@ -20,6 +22,8 @@ class TicketCommand : BaseCommand() {
     private lateinit var notificationManager: NotificationManager
     @Dependency
     private lateinit var ticketManager: TicketManager
+    @Dependency
+    private lateinit var taskManager: TaskManager
     
     @Default
     @HelpCommand
@@ -33,11 +37,15 @@ class TicketCommand : BaseCommand() {
     @Description("Create a ticket")
     @Syntax("<Message>")
     fun onCreate(player: Player, message: Message) {
-        val ticket = ticketManager.createTicket(player, message)
-        val replacements = Utils.ticketReplacements(ticket)
+        taskManager.schedule {
+            val ticket = ticketManager.createTicket(player, message)
+            val replacements = Utils.ticketReplacements(ticket)
 
-        notificationManager.reply(player, Messages.TICKET__CREATED, *replacements)
-        notificationManager.announce(Messages.ANNOUNCEMENTS__NEW_TICKET, "%user%", player.name, *replacements)
+            switchContext(SynchronizationContext.SYNC)
+
+            notificationManager.reply(player, Messages.TICKET__CREATED, *replacements)
+            notificationManager.announce(Messages.ANNOUNCEMENTS__NEW_TICKET, "%user%", player.name, *replacements)
+        }
     }
 
     @Subcommand("%update")
@@ -46,12 +54,16 @@ class TicketCommand : BaseCommand() {
     @Description("Update a ticket")
     @Syntax("<Index> <Message>")
     fun onUpdate(player: Player, index: Int, message: Message) {
-        val information = generateInformation(player, index, false)
-        val ticket = ticketManager.update(information, message)
-        val replacements = Utils.ticketReplacements(ticket)
+        taskManager.schedule {
+            val information = generateInformation(player, index, false)
+            val ticket = ticketManager.update(information, message)
+            val replacements = Utils.ticketReplacements(ticket)
 
-        notificationManager.reply(player, Messages.TICKET__UPDATED, *replacements)
-        notificationManager.announce(Messages.ANNOUNCEMENTS__UPDATED_TICKET, "%user%", player.name, *replacements)
+            switchContext(SynchronizationContext.SYNC)
+
+            notificationManager.reply(player, Messages.TICKET__UPDATED, *replacements)
+            notificationManager.announce(Messages.ANNOUNCEMENTS__UPDATED_TICKET, "%user%", player.name, *replacements)
+        }
     }
 
     @Subcommand("%close")
@@ -60,12 +72,16 @@ class TicketCommand : BaseCommand() {
     @Description("Close a ticket")
     @Syntax("[Index]")
     fun onClose(player: Player, @Optional index: Int?) {
-        val information = generateInformation(player, index, false)
-        val ticket = ticketManager.close(player.asUUID(), information)
-        val replacements = Utils.ticketReplacements(ticket)
+        taskManager.schedule {
+            val information = generateInformation(player, index, false)
+            val ticket = ticketManager.close(player.asUUID(), information)
+            val replacements = Utils.ticketReplacements(ticket)
 
-        notificationManager.reply(player, Messages.TICKET__CLOSED, *replacements)
-        notificationManager.announce(Messages.ANNOUNCEMENTS__CLOSED_TICKET, "%user%", player.name, *replacements)
+            switchContext(SynchronizationContext.SYNC)
+
+            notificationManager.reply(player, Messages.TICKET__CLOSED, *replacements)
+            notificationManager.announce(Messages.ANNOUNCEMENTS__CLOSED_TICKET, "%user%", player.name, *replacements)
+        }
     }
 
     @Subcommand("%show")
@@ -74,21 +90,24 @@ class TicketCommand : BaseCommand() {
     @Description("Show a ticket")
     @Syntax("<Player> [Index]")
     fun onShow(sender: CommandSender, offlinePlayer: OfflinePlayer, @Optional index: Int?) {
-        val information = generateInformation(offlinePlayer, index, false)
-        val ticket = ticketManager[information.player, information.index] ?: return
-        val replacements = Utils.ticketReplacements(ticket)
+        taskManager.schedule {
+            val information = generateInformation(offlinePlayer, index, false)
+            val ticket = ticketManager[information.player, information.index] ?: return@schedule
+            val replacements = Utils.ticketReplacements(ticket)
+            val message = ticket.currentMessage()!!
 
-        val message = ticket.currentMessage()!!
+            switchContext(SynchronizationContext.SYNC)
 
-        notificationManager.reply(sender, Messages.TITLES__SHOW_TICKET, *replacements)
-        notificationManager.reply(sender, Messages.SHOW__SENDER, "%player%", ticket.playerUUID.asName(), "%date%", ticket.dateOpened().formatted())
-        notificationManager.reply(sender, Messages.SHOW__MESSAGE, "%message%", message.data!!, "%date%", message.date.formatted())
+            notificationManager.reply(sender, Messages.TITLES__SHOW_TICKET, *replacements)
+            notificationManager.reply(sender, Messages.SHOW__SENDER, "%player%", ticket.playerUUID.asName(), "%date%", ticket.dateOpened().formatted())
+            notificationManager.reply(sender, Messages.SHOW__MESSAGE, "%message%", message.data!!, "%date%", message.date.formatted())
 
-        if (ticket.status != TicketStatus.PICKED) {
-            notificationManager.reply(sender, Messages.SHOW__UNPICKED)
-        } else {
-            notificationManager.reply(sender, Messages.SHOW__PICKER, "%player%", ticket.pickerUUID.asName(),
-                    "%date%", ticket.messages.last { it.reason == MessageReason.PICKED }.date.formatted())
+            if (ticket.status != TicketStatus.PICKED) {
+                notificationManager.reply(sender, Messages.SHOW__UNPICKED)
+            } else {
+                notificationManager.reply(sender, Messages.SHOW__PICKER, "%player%", ticket.pickerUUID.asName(),
+                        "%date%", ticket.messages.last { it.reason == MessageReason.PICKED }.date.formatted())
+            }
         }
     }
 
@@ -98,13 +117,17 @@ class TicketCommand : BaseCommand() {
     @Description("Pick a ticket")
     @Syntax("<Player> [Index]")
     fun onPick(sender: CommandSender, offlinePlayer: OfflinePlayer, @Optional index: Int?) {
-        val information = generateInformation(offlinePlayer, index, false)
-        val ticket = ticketManager.pick(sender.asUUID(), information)
-        val replacements = Utils.ticketReplacements(ticket)
+        taskManager.schedule {
+            val information = generateInformation(offlinePlayer, index, false)
+            val ticket = ticketManager.pick(sender.asUUID(), information)
+            val replacements = Utils.ticketReplacements(ticket)
 
-        notificationManager.reply(sender, Messages.TICKET__PICKED, *replacements)
-        notificationManager.send(information.player, Messages.NOTIFICATIONS__PICK, "%user%", sender.name, *replacements)
-        notificationManager.announce(Messages.ANNOUNCEMENTS__PICKED_TICKET, "%user%", sender.name, *replacements)
+            switchContext(SynchronizationContext.SYNC)
+
+            notificationManager.reply(sender, Messages.TICKET__PICKED, *replacements)
+            notificationManager.send(information.player, Messages.NOTIFICATIONS__PICK, "%user%", sender.name, *replacements)
+            notificationManager.announce(Messages.ANNOUNCEMENTS__PICKED_TICKET, "%user%", sender.name, *replacements)
+        }
     }
 
     @Subcommand("%assign")
@@ -113,14 +136,18 @@ class TicketCommand : BaseCommand() {
     @Description("Assign a ticket to a staff member")
     @Syntax("<TargetPlayer> <Player> [Index]")
     fun onAssign(sender: CommandSender, target: OfflinePlayer, offlinePlayer: OfflinePlayer, @Optional index: Int?) {
-        val information = generateInformation(offlinePlayer, index, false)
-        val ticket = ticketManager.pick(target.uniqueId, information)
-        val replacements = Utils.ticketReplacements(ticket)
+        taskManager.schedule {
+            val information = generateInformation(offlinePlayer, index, false)
+            val ticket = ticketManager.pick(target.uniqueId, information)
+            val replacements = Utils.ticketReplacements(ticket)
 
-        notificationManager.reply(sender, Messages.TICKET__ASSIGN, "%target%", target.name!! , *replacements)
-        notificationManager.send(target.uniqueId, Messages.NOTIFICATIONS__ASSIGN, "%user%", sender.name, *replacements)
-        notificationManager.send(information.player, Messages.NOTIFICATIONS__PICK, "%user%", target.name!!, *replacements)
-        notificationManager.announce(Messages.ANNOUNCEMENTS__ASSIGN_TICKET, "%user%", sender.name, "%target%", target.name!!, *replacements)
+            switchContext(SynchronizationContext.SYNC)
+
+            notificationManager.reply(sender, Messages.TICKET__ASSIGN, "%target%", target.name!!, *replacements)
+            notificationManager.send(target.uniqueId, Messages.NOTIFICATIONS__ASSIGN, "%user%", sender.name, *replacements)
+            notificationManager.send(information.player, Messages.NOTIFICATIONS__PICK, "%user%", target.name!!, *replacements)
+            notificationManager.announce(Messages.ANNOUNCEMENTS__ASSIGN_TICKET, "%user%", sender.name, "%target%", target.name!!, *replacements)
+        }
     }
 
     @Subcommand("%done")
@@ -129,13 +156,17 @@ class TicketCommand : BaseCommand() {
     @Description("Done-mark a ticket")
     @Syntax("<Player> [Index]")
     fun onDone(sender: CommandSender, offlinePlayer: OfflinePlayer, @Optional index: Int?) {
-        val information = generateInformation(offlinePlayer, index, false)
-        val ticket = ticketManager.done(sender.asUUID(), information)
-        val replacements = Utils.ticketReplacements(ticket)
+        taskManager.schedule {
+            val information = generateInformation(offlinePlayer, index, false)
+            val ticket = ticketManager.done(sender.asUUID(), information)
+            val replacements = Utils.ticketReplacements(ticket)
 
-        notificationManager.reply(sender, Messages.TICKET__DONE, *replacements)
-        notificationManager.send(information.player, Messages.NOTIFICATIONS__DONE, "%user%", sender.name, *replacements)
-        notificationManager.announce(Messages.ANNOUNCEMENTS__DONE_TICKET, "%user%", sender.name, *replacements)
+            switchContext(SynchronizationContext.SYNC)
+
+            notificationManager.reply(sender, Messages.TICKET__DONE, *replacements)
+            notificationManager.send(information.player, Messages.NOTIFICATIONS__DONE, "%user%", sender.name, *replacements)
+            notificationManager.announce(Messages.ANNOUNCEMENTS__DONE_TICKET, "%user%", sender.name, *replacements)
+        }
     }
 
     @Subcommand("%yield")
@@ -144,13 +175,17 @@ class TicketCommand : BaseCommand() {
     @Description("Yield a ticket")
     @Syntax("<Player> [Index]")
     fun onYield(sender: CommandSender, offlinePlayer: OfflinePlayer, @Optional index: Int?) {
-        val information = generateInformation(offlinePlayer, index, false)
-        val ticket = ticketManager.yield(sender.asUUID(), information)
-        val replacements = Utils.ticketReplacements(ticket)
+        taskManager.schedule {
+            val information = generateInformation(offlinePlayer, index, false)
+            val ticket = ticketManager.yield(sender.asUUID(), information)
+            val replacements = Utils.ticketReplacements(ticket)
 
-        notificationManager.reply(sender, Messages.TICKET__YIELDED, *replacements)
-        notificationManager.send(information.player, Messages.NOTIFICATIONS__YIELD, "%user%", sender.name, *replacements)
-        notificationManager.announce(Messages.ANNOUNCEMENTS__YIELDED_TICKET, "%user%", sender.name, *replacements)
+            switchContext(SynchronizationContext.SYNC)
+
+            notificationManager.reply(sender, Messages.TICKET__YIELDED, *replacements)
+            notificationManager.send(information.player, Messages.NOTIFICATIONS__YIELD, "%user%", sender.name, *replacements)
+            notificationManager.announce(Messages.ANNOUNCEMENTS__YIELDED_TICKET, "%user%", sender.name, *replacements)
+        }
     }
 
     @Subcommand("%reopen")
@@ -159,13 +194,17 @@ class TicketCommand : BaseCommand() {
     @Description("Reopen a ticket")
     @Syntax("<Player> [Index]")
     fun onReopen(sender: CommandSender, offlinePlayer: OfflinePlayer, @Optional index: Int?) {
-        val information = generateInformation(offlinePlayer, index, true)
-        val ticket = ticketManager.reopen(sender.asUUID(), information)
-        val replacements = Utils.ticketReplacements(ticket)
+        taskManager.schedule {
+            val information = generateInformation(offlinePlayer, index, true)
+            val ticket = ticketManager.reopen(sender.asUUID(), information)
+            val replacements = Utils.ticketReplacements(ticket)
 
-        notificationManager.reply(sender, Messages.TICKET__REOPENED, *replacements)
-        notificationManager.send(information.player, Messages.NOTIFICATIONS__REOPEN, "%user%", sender.name, *replacements)
-        notificationManager.announce(Messages.ANNOUNCEMENTS__REOPEN_TICKET, "%user%", sender.name, *replacements)
+            switchContext(SynchronizationContext.SYNC)
+
+            notificationManager.reply(sender, Messages.TICKET__REOPENED, *replacements)
+            notificationManager.send(information.player, Messages.NOTIFICATIONS__REOPEN, "%user%", sender.name, *replacements)
+            notificationManager.announce(Messages.ANNOUNCEMENTS__REOPEN_TICKET, "%user%", sender.name, *replacements)
+        }
     }
 
     @Subcommand("%teleport")
@@ -174,16 +213,20 @@ class TicketCommand : BaseCommand() {
     @Description("Teleport to a ticket creation location")
     @Syntax("<Player> [Index]")
     fun onTeleport(player: Player, offlinePlayer: OfflinePlayer, @Optional index: Int?) {
-        val information = generateInformation(offlinePlayer, index, false)
-        val ticket = ticketManager[offlinePlayer.uniqueId, information.index]
-        val replacements = Utils.ticketReplacements(ticket)
-        val location = ticket?.location
+        taskManager.schedule {
+            val information = generateInformation(offlinePlayer, index, false)
+            val ticket = ticketManager[offlinePlayer.uniqueId, information.index]
+            val replacements = Utils.ticketReplacements(ticket)
+            val location = ticket?.location
 
-        if (location == null) {
-            notificationManager.reply(player, Messages.TICKET__TELEPORT_ERROR, *replacements)
-        } else {
-            notificationManager.reply(player, Messages.TICKET__TELEPORT, *replacements)
-            player.teleport(ticket.location)
+            switchContext(SynchronizationContext.SYNC)
+
+            if (location == null) {
+                notificationManager.reply(player, Messages.TICKET__TELEPORT_ERROR, *replacements)
+            } else {
+                notificationManager.reply(player, Messages.TICKET__TELEPORT, *replacements)
+                player.teleport(ticket.location)
+            }
         }
     }
 
@@ -193,15 +236,19 @@ class TicketCommand : BaseCommand() {
     @Description("Log tickets messages")
     @Syntax("<Player> [Index]")
     fun onLog(sender: CommandSender, offlinePlayer: OfflinePlayer, @Optional index: Int?) {
-        val information = generateInformation(offlinePlayer, index, true)
-        val ticket = ticketManager[information.player, information.index] ?: return
-        val replacements = Utils.ticketReplacements(ticket)
+        taskManager.schedule {
+            val information = generateInformation(offlinePlayer, index, true)
+            val ticket = ticketManager[information.player, information.index] ?: return@schedule
+            val replacements = Utils.ticketReplacements(ticket)
 
-        notificationManager.reply(sender, Messages.TITLES__TICKET_LOG, *replacements)
+            switchContext(SynchronizationContext.SYNC)
 
-        ticket.messages.forEach {
-            sender.sendMessage("§f§l" + it.reason.name + " §8@ §f" + it.date?.formatted() + "§8 - §f" + (it.data
-                    ?: it.sender.asName()))
+            notificationManager.reply(sender, Messages.TITLES__TICKET_LOG, *replacements)
+
+            ticket.messages.forEach {
+                sender.sendMessage("§f§l" + it.reason.name + " §8@ §f" + it.date?.formatted() + "§8 - §f" + (it.data
+                        ?: it.sender.asName()))
+            }
         }
     }
 

@@ -1,19 +1,20 @@
 package co.uk.magmo.puretickets.tasks
 
-import co.uk.magmo.puretickets.configuration.Config
-import co.uk.magmo.puretickets.interactions.NotificationManager
-import co.uk.magmo.puretickets.ticket.TicketManager
-import co.uk.magmo.puretickets.utils.minuteToTick
+import com.okkero.skedule.BukkitSchedulerController
+import com.okkero.skedule.SynchronizationContext
+import com.okkero.skedule.schedule
+import org.bukkit.Bukkit
 import org.bukkit.plugin.Plugin
+import org.bukkit.scheduler.BukkitRunnable
 import org.bukkit.scheduler.BukkitTask
 
-class TaskManager(plugin: Plugin, ticketManager: TicketManager, notificationManager: NotificationManager) {
+class TaskManager(private val plugin: Plugin) {
+    private val scheduler = Bukkit.getScheduler()
     private val tasks = ArrayList<BukkitTask>()
 
-    init {
-        tasks += ReminderTask(ticketManager, notificationManager)
-                .runTaskTimerAsynchronously(plugin, Config.reminderDelay.minuteToTick(), Config.reminderRepeat.minuteToTick())
-    }
+    fun schedule(initialContext: SynchronizationContext = SynchronizationContext.ASYNC, co: suspend BukkitSchedulerController.() -> Unit) = scheduler.schedule(plugin, initialContext, co)
+
+    fun addRepeatingTask(task: BukkitRunnable, delay: Long, repeat: Long) = tasks.add(task.runTaskTimerAsynchronously(plugin, delay, repeat))
 
     fun clear() = tasks.forEach { it.cancel() }
 }

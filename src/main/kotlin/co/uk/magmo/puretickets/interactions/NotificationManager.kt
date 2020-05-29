@@ -2,9 +2,14 @@ package co.uk.magmo.puretickets.interactions
 
 import co.uk.magmo.puretickets.locale.Messages
 import co.uk.magmo.puretickets.commands.CommandManager
+import co.uk.magmo.puretickets.configuration.Config
 import co.uk.magmo.puretickets.storage.SQLFunctions
+import co.uk.magmo.puretickets.tasks.ReminderTask
+import co.uk.magmo.puretickets.tasks.TaskManager
+import co.uk.magmo.puretickets.ticket.TicketManager
 import co.uk.magmo.puretickets.user.UserManager
 import co.uk.magmo.puretickets.utils.Constants
+import co.uk.magmo.puretickets.utils.minuteToTick
 import org.bukkit.Bukkit
 import org.bukkit.command.CommandSender
 import org.bukkit.event.EventHandler
@@ -12,8 +17,13 @@ import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerJoinEvent
 import java.util.UUID
 
-class NotificationManager(private val userManager: UserManager, private val commandManager: CommandManager) : Listener {
+class NotificationManager(private val userManager: UserManager, private val commandManager: CommandManager, ticketManager: TicketManager, taskManager: TaskManager) : Listener {
     private val awaiting = SQLFunctions.retrieveNotifications()
+
+    init {
+        taskManager.addRepeatingTask(ReminderTask(ticketManager, this),
+                Config.reminderDelay.minuteToTick(), Config.reminderRepeat.minuteToTick())
+    }
 
     fun reply(commandSender: CommandSender, messageKey: Messages, vararg replacements: String) {
         val ci = commandManager.getCommandIssuer(commandSender)
