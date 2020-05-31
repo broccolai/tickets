@@ -34,6 +34,7 @@ announcements:
 titles:
   specific_tickets: "<c3> §l§m====§r </c3> <c2>ALL TICKETS</c2> <c1>FOR %player%</c1> <c3> §l§m====§r </c3>"
   all_tickets: "<c3> §l§m====§r </c3> <c2>ALL TICKETS</c2> <c3> §l§m====§r </c3>"
+  your_tickets: "<c3> §l§m====§r </c3> <c2>YOUR TICKETS</c2> <c3> §l§m====§r </c3>"
   specific_status: "<c3> §l§m====§r </c3> <c2>TICKET TICKETS</c2> <c1>FOR %player%</c1> <c3> §l§m====§r </c3>"
   ticket_status: "<c3> §l§m====§r </c3> <c2>TICKET STATUS</c2> <c3> §l§m====§r </c3>"
   show_ticket: "<c3> §l§m====§r </c3> <c2>TICKET #§l%id%</c2> <c3> §l§m====§r </c3>"

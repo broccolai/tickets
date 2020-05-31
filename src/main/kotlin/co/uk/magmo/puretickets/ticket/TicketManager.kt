@@ -13,7 +13,7 @@ class TicketManager {
 
     operator fun get(uuid: UUID?, id: Int): Ticket? = tickets[uuid].first { ticket -> ticket.id == id }
 
-    operator fun get(uuid: UUID?): MutableList<Ticket> = tickets[uuid]
+    operator fun get(uuid: UUID?): List<Ticket> = tickets[uuid]
 
     operator fun contains(player: OfflinePlayer) = tickets.containsKey(player.uniqueId)
 

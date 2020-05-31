@@ -5,7 +5,6 @@ import org.bukkit.Bukkit
 import org.bukkit.configuration.file.FileConfiguration
 import org.bukkit.plugin.Plugin
 import java.io.File
-import java.lang.reflect.Field
 import java.util.logging.Level
 
 object Config {

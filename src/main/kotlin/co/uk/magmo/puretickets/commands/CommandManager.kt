@@ -3,7 +3,6 @@ package co.uk.magmo.puretickets.commands
 import co.aikar.commands.MessageType
 import co.aikar.commands.PaperCommandManager
 import co.uk.magmo.puretickets.configuration.Config
-import co.uk.magmo.puretickets.interactions.NotificationManager
 import co.uk.magmo.puretickets.storage.SQLFunctions
 import co.uk.magmo.puretickets.ticket.*
 import co.uk.magmo.puretickets.utils.Utils
@@ -121,6 +120,7 @@ class CommandManager(plugin: Plugin) : PaperCommandManager(plugin) {
     fun registerCommands() {
         registerCommand(TicketCommand())
         registerCommand(TicketsCommand())
+        registerCommand(PureTicketsCommand())
     }
 
     private fun loadLocales() {

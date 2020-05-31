@@ -12,7 +12,7 @@ class TaskManager(private val plugin: Plugin) {
     private val scheduler = Bukkit.getScheduler()
     private val tasks = ArrayList<BukkitTask>()
 
-    fun schedule(initialContext: SynchronizationContext = SynchronizationContext.ASYNC, co: suspend BukkitSchedulerController.() -> Unit) = scheduler.schedule(plugin, initialContext, co)
+    operator fun invoke(initialContext: SynchronizationContext = SynchronizationContext.ASYNC, co: suspend BukkitSchedulerController.() -> Unit) = scheduler.schedule(plugin, initialContext, co)
 
     fun addRepeatingTask(task: BukkitRunnable, delay: Long, repeat: Long) = tasks.add(task.runTaskTimerAsynchronously(plugin, delay, repeat))
 
