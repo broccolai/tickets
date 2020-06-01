@@ -47,7 +47,7 @@ object Config {
             aliasClose = process("alias.close", aliasClose)
             aliasShow = process("alias.show", aliasShow)
             aliasPick = process("alias.pick", aliasPick)
-            aliasAssign = process("alias.alias", aliasAssign)
+            aliasAssign = process("alias.assign", aliasAssign)
             aliasDone = process("alias.done", aliasDone)
             aliasYield = process("alias.yield", aliasYield)
             aliasNote = process("alias.note", aliasNote)
