@@ -204,40 +204,32 @@ class TicketsCommand : PureBaseCommand() {
     @Description("List all tickets")
     @Syntax("[Player]")
     fun onList(sender: CommandSender, @Optional offlinePlayer: OfflinePlayer?, @Optional status: TicketStatus?) {
-        if (sender.hasPermission(Constants.STAFF_PERMISSION + ".list")) {
-            if (offlinePlayer != null) {
-                taskManager {
-                    var tickets = SQLFunctions.retrieveClosedTickets(offlinePlayer.uniqueId)
-                    if (status != null) tickets = tickets.filter { ticket -> ticket.status == status }
+        if (offlinePlayer != null) {
+            taskManager {
+                var tickets = SQLFunctions.retrieveClosedTickets(offlinePlayer.uniqueId)
+                if (status != null) tickets = tickets.filter { ticket -> ticket.status == status }
 
-                    switchContext(SynchronizationContext.SYNC)
+                switchContext(SynchronizationContext.SYNC)
 
-                    notificationManager.reply(sender, Messages.TITLES__SPECIFIC_TICKETS, "%player%", offlinePlayer.name!!)
+                notificationManager.reply(sender, Messages.TITLES__SPECIFIC_TICKETS, "%player%", offlinePlayer.name!!)
 
-                    tickets.forEach { ticket ->
-                        val replacements = Utils.ticketReplacements(ticket)
+                tickets.forEach { ticket ->
+                    val replacements = Utils.ticketReplacements(ticket)
 
-                        notificationManager.reply(sender, Messages.FORMAT__LIST_ITEM, *replacements)
-                    }
-                }
-            } else {
-                notificationManager.reply(sender, Messages.TITLES__ALL_TICKETS)
-
-                ticketManager.asMap().forEach { (uuid, tickets) ->
-                    sender.sendMessage(ChatColor.GREEN.toString() + uuid.asName())
-
-                    tickets.forEach { ticket ->
-                        val replacements = Utils.ticketReplacements(ticket)
-
-                        notificationManager.reply(sender, Messages.FORMAT__LIST_ITEM, *replacements)
-                    }
+                    notificationManager.reply(sender, Messages.FORMAT__LIST_ITEM, *replacements)
                 }
             }
-        } else if (sender.hasPermission(Constants.USER_PERMISSION + ".list")) {
-            ticketManager[sender.asUUID()].forEach {
-                val replacements = Utils.ticketReplacements(it)
+        } else {
+            notificationManager.reply(sender, Messages.TITLES__ALL_TICKETS)
 
-                notificationManager.reply(sender, Messages.FORMAT__LIST_ITEM, *replacements)
+            ticketManager.asMap().forEach { (uuid, tickets) ->
+                sender.sendMessage(ChatColor.GREEN.toString() + uuid.asName())
+
+                tickets.forEach { ticket ->
+                    val replacements = Utils.ticketReplacements(ticket)
+
+                    notificationManager.reply(sender, Messages.FORMAT__LIST_ITEM, *replacements)
+                }
             }
         }
     }
