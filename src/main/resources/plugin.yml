@@ -1,6 +1,6 @@
 name: PureTickets
 main: co.uk.magmo.puretickets.PureTickets
-version: 2.1.2
+version: 2.2.0
 api-version: 1.13
 
 permissions:
@@ -17,6 +17,15 @@ permissions:
     default: true
     description: Allows a user to manage their personal settings
   tickets.user.close:
+    default: true
+    description: Allows a user to close a ticket
+  tickets.user.show:
+    default: true
+    description: Allows a user to close a ticket
+  tickets.user.list:
+    default: true
+    description: Allows a user to close a ticket
+  tickets.user.log:
     default: true
     description: Allows a user to close a ticket
   tickets.staff.*:
