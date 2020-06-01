@@ -2,9 +2,9 @@ package co.uk.magmo.puretickets.commands
 
 import co.aikar.commands.BaseCommand
 import co.aikar.commands.CommandIssuer
-import co.aikar.commands.InvalidCommandArgument
 import co.aikar.commands.annotation.*
 import co.uk.magmo.puretickets.PureTickets
+import co.uk.magmo.puretickets.exceptions.InvalidSettingType
 import co.uk.magmo.puretickets.interactions.NotificationManager
 import co.uk.magmo.puretickets.locale.Messages
 import co.uk.magmo.puretickets.user.UserManager
@@ -34,7 +34,7 @@ class PureTicketsCommand : BaseCommand() {
             when(setting.toLowerCase()) {
                 "announcements" -> settings.announcements = value
 
-                else -> throw InvalidCommandArgument("Provided setting is not an option")
+                else -> throw InvalidSettingType()
             }
         }
 

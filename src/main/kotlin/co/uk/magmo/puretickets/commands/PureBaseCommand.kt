@@ -2,10 +2,10 @@ package co.uk.magmo.puretickets.commands
 
 import co.aikar.commands.BaseCommand
 import co.aikar.commands.CommandHelp
-import co.aikar.commands.InvalidCommandArgument
 import co.aikar.commands.annotation.Default
 import co.aikar.commands.annotation.Dependency
 import co.aikar.commands.annotation.HelpCommand
+import co.uk.magmo.puretickets.exceptions.TicketNotFound
 import co.uk.magmo.puretickets.interactions.NotificationManager
 import co.uk.magmo.puretickets.locale.Messages
 import co.uk.magmo.puretickets.storage.SQLFunctions
@@ -63,13 +63,13 @@ open class PureBaseCommand : BaseCommand() {
         var index = input
 
         if (index == null) {
-            index = SQLFunctions.highestTicket(offlinePlayer.uniqueId, offline) ?: throw InvalidCommandArgument()
+            index = SQLFunctions.highestTicket(offlinePlayer.uniqueId, offline) ?: throw TicketNotFound()
         } else {
             if (!ticketManager[offlinePlayer.uniqueId].any { it.id == input }) {
                 if (offline) {
-                    if (!SQLFunctions.ticketExists(offlinePlayer.uniqueId, index)) throw InvalidCommandArgument()
+                    if (!SQLFunctions.ticketExists(offlinePlayer.uniqueId, index)) throw TicketNotFound()
                 } else {
-                    throw InvalidCommandArgument()
+                    throw TicketNotFound()
                 }
             }
         }
