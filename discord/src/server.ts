@@ -5,4 +5,4 @@ require('dotenv').config();
 
 client.login(process.env.DISCORD_ACCESS_TOKEN);
 
-app.listen(80, () => console.log(`App listening on port $80!`));
+app.listen(process.env.PORT, () => console.log(`App listening!`));
