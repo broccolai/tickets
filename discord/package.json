@@ -1,0 +1,30 @@
+{
+  "name": "PureTickets",
+  "version": "1.0.0",
+  "main": "src/server.ts",
+  "author": "broccolai",
+  "license": "MIT",
+  "scripts": {
+    "build": "node_modules/.bin/tsc",
+    "start": "yarn build && node ./dist/server.js",
+    "lint": "eslint \"src/**\" --fix",
+    "dev": "yarn lint && yarn start"
+  },
+  "dependencies": {
+    "discord.js": "^12.2.0",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "sqlite3": "^4.2.0"
+  },
+  "devDependencies": {
+    "@types/node": "^13.9.3",
+    "@types/node-fetch": "^2.5.5",
+    "@typescript-eslint/eslint-plugin": "^2.25.0",
+    "@typescript-eslint/parser": "^2.25.0",
+    "eslint": "^6.8.0",
+    "eslint-config-prettier": "^6.10.1",
+    "eslint-plugin-prettier": "^3.1.2",
+    "prettier": "^2.0.2",
+    "typescript": "^3.8.3"
+  }
+}
