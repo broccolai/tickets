@@ -21,4 +21,8 @@ app.post('/announce/:guild/:token', async (req, res) => {
   }
 });
 
+app.get('/status', async (_req, res) => {
+    res.send("working")
+})
+
 export default app;
