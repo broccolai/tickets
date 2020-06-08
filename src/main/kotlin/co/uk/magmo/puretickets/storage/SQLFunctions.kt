@@ -43,6 +43,13 @@ object SQLFunctions {
             version++
         }
 
+        if (version <= 1) {
+            plugin.logger.log(Level.INFO, "Updated PureTickets database to remove tickets with empty locations and remove all pending notifications")
+            DB.executeUpdate("DELETE FROM ticket WHERE location IS NULL OR trim(location) = ?", "")
+            DB.executeUpdate("DELETE FROM notification")
+            version++
+        }
+
         DB.executeUpdate("PRAGMA user_version = $version")
     }
 
@@ -50,12 +57,12 @@ object SQLFunctions {
 
     fun retrieveUserSettings(uuid: UUID): UserSettings {
         val data = DB.getFirstRow("SELECT announcements FROM settings WHERE uuid = ?", uuid)
-        val announcements = data.getString("announcements")?.toBoolean() ?: true
+        val announcements = data.getString("announcements") == "1"
 
         return UserSettings(announcements)
     }
 
-    fun insertUserSettings(uuid: UUID, settings: UserSettings) = DB.executeInsert("INSERT INTO settings(uuid, announcements) VALUES(?, ?)",
+    fun insertUserSettings(uuid: UUID, settings: UserSettings): Long = DB.executeInsert("INSERT INTO settings(uuid, announcements) VALUES(?, ?)",
         uuid, settings)
 
     fun updateUserSettings(uuid: UUID, settings: UserSettings) = DB.executeUpdate("UPDATE settings SET announcements = ? WHERE uuid = ?",
@@ -82,7 +89,7 @@ object SQLFunctions {
     fun currentTicketId() = DB.getFirstColumn<Int>("SELECT max(id) FROM ticket") ?: 0
 
     fun insertTicket(t: Ticket): Long = DB.executeInsert("INSERT INTO ticket(id, uuid, status, picker, location) VALUES(?, ?, ?, ?, ?)",
-            t.id, t.playerUUID, t.status.name, t.pickerUUID, t.location?.save())
+            t.id, t.playerUUID, t.status.name, t.pickerUUID, t.location.save())
 
     fun updateTicket(t: Ticket): CompletableFuture<Int> = DB.executeUpdateAsync("UPDATE ticket SET status = ?, picker = ? WHERE id = ?",
             t.status.name, t.pickerUUID, t.id)
@@ -151,8 +158,8 @@ object SQLFunctions {
 
     private fun Location.save() = world?.name + "|" + blockX + "|" + blockY + "|" + blockZ
 
-    private fun DbRow.getLocation(column: String): Location? {
-        val split = getString(column)?.split("|") ?: return null
+    private fun DbRow.getLocation(column: String): Location {
+        val split = getString(column)?.split("|")!!
         val world = Bukkit.getWorld(split[0])
 
         return Location(world, split[1].toDouble(), split[2].toDouble(), split[3].toDouble())
