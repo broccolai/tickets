@@ -3,12 +3,14 @@ package co.uk.magmo.puretickets.commands
 import co.aikar.commands.MessageType
 import co.aikar.commands.PaperCommandManager
 import co.uk.magmo.puretickets.configuration.Config
+import co.uk.magmo.puretickets.locale.TargetType
 import co.uk.magmo.puretickets.storage.SQLFunctions
 import co.uk.magmo.puretickets.ticket.*
 import co.uk.magmo.puretickets.utils.Utils
 import org.bukkit.Bukkit
 import org.bukkit.ChatColor
 import org.bukkit.OfflinePlayer
+import org.bukkit.configuration.file.YamlConfiguration
 import org.bukkit.plugin.Plugin
 import java.io.File
 import java.nio.file.FileSystems
@@ -128,8 +130,23 @@ class CommandManager(plugin: Plugin) : PaperCommandManager(plugin) {
             val localeName = file.name.replace(".yml", "")
             val locale = Locale.forLanguageTag(localeName)
 
+            val yamlConfiguration = YamlConfiguration()
+            yamlConfiguration.load(file)
+
+            val prefixables = TargetType.values().filter { it.hasPrefix }.map { it.name }
+            val prefix = yamlConfiguration.getString("general.prefix")
+
+            yamlConfiguration.getKeys(false).forEach { key ->
+                if (prefixables.contains(key.toUpperCase())) {
+                    yamlConfiguration.getConfigurationSection(key)?.getKeys(false)?.forEach { subKey ->
+                        val path = key + "." + subKey
+                        yamlConfiguration.set(path, prefix + yamlConfiguration.getString(path))
+                    }
+                }
+            }
+
             addSupportedLanguage(locale)
-            locales.loadYamlLanguageFile(file, locale)
+            locales.loadLanguage(yamlConfiguration, locale)
         }
     }
 
