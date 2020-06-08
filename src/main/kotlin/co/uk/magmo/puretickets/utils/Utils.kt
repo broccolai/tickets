@@ -32,7 +32,7 @@ object Utils {
         results += message
 
         results += "%statusColor%"
-        results += ticket.status.color.toString()
+        results += ticket.status.color.chatColor.toString()
 
         results += "%status%"
         results += ticket.status.name

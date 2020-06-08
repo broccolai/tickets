@@ -1,11 +1,9 @@
 package co.uk.magmo.puretickets.ticket
 
 import co.uk.magmo.puretickets.storage.SQLFunctions
-import co.uk.magmo.puretickets.utils.asUUID
 import org.bukkit.OfflinePlayer
-import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
-import java.util.UUID
+import java.util.*
 
 class TicketManager {
     private val tickets = SQLFunctions.retrieveAllTickets()
@@ -31,7 +29,7 @@ class TicketManager {
         }
     }
 
-    fun update(information: TicketInformation, message: Message): Ticket? {
+    fun update(information: TicketInformation, message: Message): Ticket {
         val ticket = tickets[information.player].first { ticket -> ticket.id == information.index }
         val index = tickets[information.player].indexOf(ticket)
 
@@ -41,7 +39,7 @@ class TicketManager {
         return ticket
     }
 
-    fun pick(uuid: UUID?, information: TicketInformation): Ticket? {
+    fun pick(uuid: UUID?, information: TicketInformation): Ticket {
         val ticket = tickets[information.player].first { ticket -> ticket.id == information.index }
         val index = tickets[information.player].indexOf(ticket)
         val message = Message(MessageReason.PICKED, null, uuid)
@@ -54,7 +52,7 @@ class TicketManager {
         return ticket
     }
 
-    fun yield(uuid: UUID?, information: TicketInformation): Ticket? {
+    fun yield(uuid: UUID?, information: TicketInformation): Ticket {
         val ticket = tickets[information.player].first { ticket -> ticket.id == information.index }
         val index = tickets[information.player].indexOf(ticket)
         val message = Message(MessageReason.YIELDED, null, uuid)
@@ -68,7 +66,7 @@ class TicketManager {
         return ticket
     }
 
-    fun close(uuid: UUID?, information: TicketInformation): Ticket? {
+    fun close(uuid: UUID?, information: TicketInformation): Ticket {
         val ticket = tickets[information.player].first { ticket -> ticket.id == information.index }
         val message = Message(MessageReason.CLOSED, null, uuid)
 
@@ -79,7 +77,7 @@ class TicketManager {
         return ticket
     }
 
-    fun done(uuid: UUID?, information: TicketInformation): Ticket? {
+    fun done(uuid: UUID?, information: TicketInformation): Ticket {
         val ticket = tickets[information.player].first { ticket -> ticket.id == information.index }
         val message = Message(MessageReason.DONE_MARKED, null, uuid)
 

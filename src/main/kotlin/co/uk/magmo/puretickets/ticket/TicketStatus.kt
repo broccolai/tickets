@@ -1,9 +1,9 @@
 package co.uk.magmo.puretickets.ticket
 
-import org.bukkit.ChatColor
+import co.uk.magmo.puretickets.utils.PureColors
 
-enum class TicketStatus(val color: ChatColor) {
-    OPEN(ChatColor.GREEN), PICKED(ChatColor.YELLOW), CLOSED(ChatColor.RED);
+enum class TicketStatus(val color: PureColors) {
+    OPEN(PureColors.GREEN), PICKED(PureColors.YELLOW), CLOSED(PureColors.RED);
 
     companion object {
         fun from(input: String): TicketStatus {
