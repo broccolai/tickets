@@ -5,7 +5,7 @@ import com.github.kittinunf.fuel.Fuel
 import com.google.gson.JsonObject
 
 class DiscordManager {
-    private val domain = "http://localhost:400"
+    private val domain = "https://tickets.magmo.co.uk"
     private val enabled = Config.discordEnabled
     private val guild = Config.discordGuild
     private val token = Config.discordToken
@@ -31,10 +31,8 @@ class DiscordManager {
             json.add("fields", content)
         }
 
-        val e = Fuel.post("$domain/announce/$guild/$token")
+        Fuel.post("$domain/announce/$guild/$token")
                 .body(json.toString()).timeout(1000).set("Content-Type", "application/json").response().second
-
-        println(e)
     }
 }
 

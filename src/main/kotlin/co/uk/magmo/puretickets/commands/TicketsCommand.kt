@@ -54,9 +54,9 @@ class TicketsCommand : PureBaseCommand() {
         taskManager {
             val ticket = ticketManager.pick(target.uniqueId, information)
 
-            notificationManager.send(sender, offlinePlayer.uniqueId, MessageNames.ASSIGN_TICKET, ticket) { fields ->
+            notificationManager.send(sender, target.uniqueId, MessageNames.ASSIGN_TICKET, ticket) { fields ->
                 fields["ASSIGNER"] = sender.name
-                fields["ASSIGNEE"] = offlinePlayer.name ?: ""
+                fields["ASSIGNEE"] = target.name ?: ""
             }
         }
     }
