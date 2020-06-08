@@ -12,6 +12,10 @@ object Config {
     var reminderDelay = 5
     var reminderRepeat = 15
 
+    var discordEnabled = false
+    var discordGuild = ""
+    var discordToken = ""
+
     var aliasCreate = "create|c"
     var aliasUpdate = "update|u"
     var aliasClose = "close|cl"
@@ -41,6 +45,10 @@ object Config {
             locale = process("locale", locale)
             reminderDelay = process("reminder.delay", reminderDelay)
             reminderRepeat = process("reminder.repeat", reminderRepeat)
+
+            discordEnabled = process("discord.enabled", discordEnabled)
+            discordGuild = process("discord.guild", discordGuild)
+            discordToken = process("discord.token", discordToken)
 
             aliasCreate = process("alias.create", aliasCreate)
             aliasUpdate = process("alias.update", aliasUpdate)

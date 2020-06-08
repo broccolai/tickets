@@ -4,6 +4,11 @@ reminder:
   delay: 5
   repeat: 15
 
+discord:
+  enabled: false
+  guild: ""
+  token: ""
+
 alias:
   create: "create|c"
   update: "update|u"
