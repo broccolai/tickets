@@ -14,8 +14,8 @@ client.on('message', async (message) => {
   const command = args.shift().toLowerCase();
 
   if (command == 'setup') {
-    let token;
-    let output;
+    let token: string;
+    let output: string;
 
     if (servers.has(message.guild.id)) {
       const data = servers.get(message.guild.id);
@@ -25,7 +25,6 @@ client.on('message', async (message) => {
     } else {
       token = crypto.randomBytes(30).toString('hex');
       output = message.channel.id;
-
       db.run('INSERT INTO server(guild, token, outputChannel) VALUES(?, ?, ?)', message.guild.id, token, output);
     }
 
@@ -34,7 +33,7 @@ client.on('message', async (message) => {
     const embed = new MessageEmbed()
       .setColor('#0099ff')
       .setTitle('Pure Tickets Integration Setup')
-      .addField(':ticket:  Your Token', token.toString('hex'))
+      .addField(':ticket:  Your Token', token)
       .addField(':house:  Guild Id', message.guild.id, true)
       .addField(':office:  Output Channel', output, true);
 
