@@ -1,3 +1,4 @@
+import { MessageEmbed } from 'discord.js';
 import express from 'express';
 import client from './client';
 import { TextChannel } from 'discord.js';
@@ -14,15 +15,28 @@ app.post('/announce/:guild/:token', async (req, res) => {
   if (data.token == req.params.token) {
     res.send(200);
 
+    const json = req.body;
+
     const channel = client.channels.cache.get(data.output) as TextChannel;
-    channel.send(req.body.data);
+    const message = new MessageEmbed()
+      .setColor(json['color'])
+      .setAuthor(json['author'] + ' #' + json['id'], 'https://live.staticflickr.com/7367/10134745566_a7c6dab5bb_z.jpg')
+      .setTitle('**' + json['action'] + '**');
+
+    if (json['fields']) {
+      Object.entries(json['fields']).forEach(([key, value]) => {
+        message.addField('**' + key + '**', value, true);
+      });
+    }
+
+    channel.send(message);
   } else {
     res.send(401);
   }
 });
 
 app.get('/status', async (_req, res) => {
-    res.send("working")
-})
+  res.send('working');
+});
 
 export default app;
