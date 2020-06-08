@@ -17,6 +17,6 @@ class ReminderTask(private val ticketManager: TicketManager, private val notific
 
         Bukkit.getOnlinePlayers()
                 .filter { it.hasPermission(Constants.STAFF_PERMISSION + ".remind") }
-                .forEach { notificationManager.reply(it, Messages.TASKS__REMINDER, "%amount%", amount.toString()) }
+                .forEach { notificationManager.basic(it, Messages.OTHER__REMINDER, "%amount%", amount.toString()) }
     }
 }

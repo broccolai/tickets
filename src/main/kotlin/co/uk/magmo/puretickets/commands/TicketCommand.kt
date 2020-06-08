@@ -1,10 +1,10 @@
 package co.uk.magmo.puretickets.commands
 
 import co.aikar.commands.annotation.*
+import co.uk.magmo.puretickets.locale.MessageNames
 import co.uk.magmo.puretickets.locale.Messages
 import co.uk.magmo.puretickets.ticket.*
 import co.uk.magmo.puretickets.utils.*
-import com.okkero.skedule.SynchronizationContext
 import org.bukkit.entity.Player
 
 @CommandAlias("ticket|ti")
@@ -17,12 +17,10 @@ class TicketCommand : PureBaseCommand() {
     fun onCreate(player: Player, message: Message) {
         taskManager {
             val ticket = ticketManager.createTicket(player, message)
-            val replacements = Utils.ticketReplacements(ticket)
 
-            switchContext(SynchronizationContext.SYNC)
-
-            notificationManager.reply(player, Messages.TICKET__CREATED, *replacements)
-            notificationManager.announce(Messages.ANNOUNCEMENTS__NEW_TICKET, "%user%", player.name, *replacements)
+            notificationManager.send(player, null, MessageNames.NEW_TICKET, ticket) { fields ->
+                fields["MESSAGE"] = message.data!!
+            }
         }
     }
 
@@ -36,12 +34,10 @@ class TicketCommand : PureBaseCommand() {
 
         taskManager {
             val ticket = ticketManager.update(information, message)
-            val replacements = Utils.ticketReplacements(ticket)
 
-            switchContext(SynchronizationContext.SYNC)
-
-            notificationManager.reply(player, Messages.TICKET__UPDATED, *replacements)
-            notificationManager.announce(Messages.ANNOUNCEMENTS__UPDATED_TICKET, "%user%", player.name, *replacements)
+            notificationManager.send(player, null, MessageNames.UPDATE_TICKET, ticket) { fields ->
+                fields["MESSAGE"] = message.data!!
+            }
         }
     }
 
@@ -55,12 +51,8 @@ class TicketCommand : PureBaseCommand() {
 
         taskManager {
             val ticket = ticketManager.close(player.asUUID(), information)
-            val replacements = Utils.ticketReplacements(ticket)
 
-            switchContext(SynchronizationContext.SYNC)
-
-            notificationManager.reply(player, Messages.TICKET__CLOSED, *replacements)
-            notificationManager.announce(Messages.ANNOUNCEMENTS__CLOSED_TICKET, "%user%", player.name, *replacements)
+            notificationManager.send(player, null, MessageNames.CLOSE_TICKET, ticket)
         }
     }
 
@@ -72,7 +64,7 @@ class TicketCommand : PureBaseCommand() {
     fun onShow(player: Player, @Optional index: Int?) {
         val information = generateInformation(player, index, false)
 
-        processShowCommand(player, information)
+        processShowCommand(currentCommandIssuer, information)
     }
 
     @Subcommand("%list")
@@ -85,12 +77,12 @@ class TicketCommand : PureBaseCommand() {
 
         if (status != null) tickets = tickets.filter { ticket -> ticket.status == status }
 
-        notificationManager.reply(player, Messages.TITLES__YOUR_TICKETS)
+        currentCommandIssuer.sendInfo(Messages.TITLES__YOUR_TICKETS)
 
         tickets.forEach {
             val replacements = Utils.ticketReplacements(it)
 
-            notificationManager.reply(player, Messages.FORMAT__LIST_ITEM, *replacements)
+            currentCommandIssuer.sendInfo(Messages.GENERAL__LIST_FORMAT, *replacements)
         }
     }
 
@@ -102,18 +94,6 @@ class TicketCommand : PureBaseCommand() {
     fun onLog(player: Player, @Optional index: Int?) {
         val information = generateInformation(player, index, true)
 
-        taskManager {
-            val ticket = ticketManager[information.player, information.index] ?: return@taskManager
-            val replacements = Utils.ticketReplacements(ticket)
-
-            switchContext(SynchronizationContext.SYNC)
-
-            notificationManager.reply(player, Messages.TITLES__TICKET_LOG, *replacements)
-
-            ticket.messages.forEach {
-                player.sendMessage("§f§l" + it.reason.name + " §8@ §f" + it.date?.formatted() + "§8 - §f" + (it.data
-                        ?: it.sender.asName()))
-            }
-        }
+        processLogCommand(currentCommandIssuer, information)
     }
 }

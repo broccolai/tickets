@@ -5,7 +5,6 @@ import co.aikar.commands.CommandIssuer
 import co.aikar.commands.annotation.*
 import co.uk.magmo.puretickets.PureTickets
 import co.uk.magmo.puretickets.exceptions.InvalidSettingType
-import co.uk.magmo.puretickets.interactions.NotificationManager
 import co.uk.magmo.puretickets.locale.Messages
 import co.uk.magmo.puretickets.user.UserManager
 import co.uk.magmo.puretickets.utils.Constants
@@ -17,8 +16,6 @@ class PureTicketsCommand : BaseCommand() {
     private lateinit var plugin: PureTickets
     @Dependency
     private lateinit var userManager: UserManager
-    @Dependency
-    private lateinit var notificationManager: NotificationManager
 
     @Default
     @Subcommand("info")
@@ -39,7 +36,7 @@ class PureTicketsCommand : BaseCommand() {
         }
 
         val status = if (value) "enabled" else "disabled"
-        notificationManager.reply(player, Messages.FORMAT__SETTING_UPDATE, "%setting%", setting, "%status%", status)
+        currentCommandIssuer.sendInfo(Messages.OTHER__SETTING_UPDATE, "%setting%", setting, "%status%", status)
     }
 
     @Subcommand("reload")

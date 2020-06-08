@@ -1,16 +1,12 @@
 package co.uk.magmo.puretickets.commands
 
 import co.aikar.commands.annotation.*
-import co.uk.magmo.puretickets.interactions.NotificationManager
+import co.uk.magmo.puretickets.locale.MessageNames
 import co.uk.magmo.puretickets.locale.Messages
 import co.uk.magmo.puretickets.storage.SQLFunctions
-import co.uk.magmo.puretickets.tasks.TaskManager
-import co.uk.magmo.puretickets.ticket.MessageReason
-import co.uk.magmo.puretickets.ticket.TicketManager
 import co.uk.magmo.puretickets.ticket.TicketStatus
 import co.uk.magmo.puretickets.utils.*
 import com.okkero.skedule.SynchronizationContext
-import org.bukkit.Bukkit
 import org.bukkit.ChatColor
 import org.bukkit.OfflinePlayer
 import org.bukkit.command.CommandSender
@@ -27,7 +23,7 @@ class TicketsCommand : PureBaseCommand() {
     fun onShow(sender: CommandSender, offlinePlayer: OfflinePlayer, @Optional index: Int?) {
         val information = generateInformation(offlinePlayer, index, false)
 
-        processShowCommand(sender, information)
+        processShowCommand(currentCommandIssuer, information)
     }
 
     @Subcommand("%pick")
@@ -40,13 +36,10 @@ class TicketsCommand : PureBaseCommand() {
 
         taskManager {
             val ticket = ticketManager.pick(sender.asUUID(), information)
-            val replacements = Utils.ticketReplacements(ticket)
 
-            switchContext(SynchronizationContext.SYNC)
-
-            notificationManager.reply(sender, Messages.TICKET__PICKED, *replacements)
-            notificationManager.send(information.player, Messages.NOTIFICATIONS__PICK, "%user%", sender.name, *replacements)
-            notificationManager.announce(Messages.ANNOUNCEMENTS__PICKED_TICKET, "%user%", sender.name, *replacements)
+            notificationManager.send(sender, offlinePlayer.uniqueId, MessageNames.PICK_TICKET, ticket) { fields ->
+                fields["PICKER"] = sender.name
+            }
         }
     }
 
@@ -60,14 +53,11 @@ class TicketsCommand : PureBaseCommand() {
 
         taskManager {
             val ticket = ticketManager.pick(target.uniqueId, information)
-            val replacements = Utils.ticketReplacements(ticket)
 
-            switchContext(SynchronizationContext.SYNC)
-
-            notificationManager.reply(sender, Messages.TICKET__ASSIGN, "%target%", target.name!!, *replacements)
-            notificationManager.send(target.uniqueId, Messages.NOTIFICATIONS__ASSIGN, "%user%", sender.name, *replacements)
-            notificationManager.send(information.player, Messages.NOTIFICATIONS__PICK, "%user%", target.name!!, *replacements)
-            notificationManager.announce(Messages.ANNOUNCEMENTS__ASSIGN_TICKET, "%user%", sender.name, "%target%", target.name!!, *replacements)
+            notificationManager.send(sender, offlinePlayer.uniqueId, MessageNames.ASSIGN_TICKET, ticket) { fields ->
+                fields["ASSIGNER"] = sender.name
+                fields["ASSIGNEE"] = offlinePlayer.name ?: ""
+            }
         }
     }
 
@@ -81,13 +71,8 @@ class TicketsCommand : PureBaseCommand() {
 
         taskManager {
             val ticket = ticketManager.done(sender.asUUID(), information)
-            val replacements = Utils.ticketReplacements(ticket)
 
-            switchContext(SynchronizationContext.SYNC)
-
-            notificationManager.reply(sender, Messages.TICKET__DONE, *replacements)
-            notificationManager.send(information.player, Messages.NOTIFICATIONS__DONE, "%user%", sender.name, *replacements)
-            notificationManager.announce(Messages.ANNOUNCEMENTS__DONE_TICKET, "%user%", sender.name, *replacements)
+            notificationManager.send(sender, offlinePlayer.uniqueId, MessageNames.DONE_TICKET, ticket)
         }
     }
 
@@ -101,13 +86,8 @@ class TicketsCommand : PureBaseCommand() {
 
         taskManager {
             val ticket = ticketManager.yield(sender.asUUID(), information)
-            val replacements = Utils.ticketReplacements(ticket)
 
-            switchContext(SynchronizationContext.SYNC)
-
-            notificationManager.reply(sender, Messages.TICKET__YIELDED, *replacements)
-            notificationManager.send(information.player, Messages.NOTIFICATIONS__YIELD, "%user%", sender.name, *replacements)
-            notificationManager.announce(Messages.ANNOUNCEMENTS__YIELDED_TICKET, "%user%", sender.name, *replacements)
+            notificationManager.send(sender, offlinePlayer.uniqueId, MessageNames.YIELD_TICKET, ticket)
         }
     }
 
@@ -115,19 +95,16 @@ class TicketsCommand : PureBaseCommand() {
     @CommandCompletion("@AllTicketHolders @UserTicketIds")
     @CommandPermission(Constants.STAFF_PERMISSION + ".note")
     @Description("Make a note on a ticket")
-    @Syntax("<Player> [Index]")
+    @Syntax("<Player> <Index> <Message>")
     fun onNote(sender: CommandSender, offlinePlayer: OfflinePlayer, index: Int, message: String) {
         val information = generateInformation(offlinePlayer, index, false)
 
         taskManager {
             val ticket = ticketManager.note(sender.asUUID(), information, message)
-            val replacements = Utils.ticketReplacements(ticket)
 
-            switchContext(SynchronizationContext.SYNC)
-
-            notificationManager.reply(sender, Messages.TICKET__NOTE, *replacements)
-            notificationManager.send(information.player, Messages.NOTIFICATIONS__NOTE, "%user%", sender.name, "%note%", message, *replacements)
-            notificationManager.announce(Messages.ANNOUNCEMENTS__NOTE_TICKET, "%user%", sender.name, "%note%", message, *replacements)
+            notificationManager.send(sender, offlinePlayer.uniqueId, MessageNames.NOTE_TICKET, ticket) { fields ->
+                fields["NOTE"] = message
+            }
         }
     }
 
@@ -141,13 +118,8 @@ class TicketsCommand : PureBaseCommand() {
 
         taskManager {
             val ticket = ticketManager.reopen(sender.asUUID(), information)
-            val replacements = Utils.ticketReplacements(ticket)
 
-            switchContext(SynchronizationContext.SYNC)
-
-            notificationManager.reply(sender, Messages.TICKET__REOPENED, *replacements)
-            notificationManager.send(information.player, Messages.NOTIFICATIONS__REOPEN, "%user%", sender.name, *replacements)
-            notificationManager.announce(Messages.ANNOUNCEMENTS__REOPEN_TICKET, "%user%", sender.name, *replacements)
+            notificationManager.send(sender, offlinePlayer.uniqueId, MessageNames.REOPEN_TICKET, ticket)
         }
     }
 
@@ -160,18 +132,11 @@ class TicketsCommand : PureBaseCommand() {
         val information = generateInformation(offlinePlayer, index, false)
 
         taskManager {
-            val ticket = ticketManager[offlinePlayer.uniqueId, information.index]
-            val replacements = Utils.ticketReplacements(ticket)
-            val location = ticket?.location
+            val ticket = ticketManager[offlinePlayer.uniqueId, information.index]!!
+            notificationManager.send(player, offlinePlayer.uniqueId, MessageNames.TELEPORT_TICKET, ticket)
 
             switchContext(SynchronizationContext.SYNC)
-
-            if (location == null) {
-                notificationManager.reply(player, Messages.TICKET__TELEPORT_ERROR, *replacements)
-            } else {
-                notificationManager.reply(player, Messages.TICKET__TELEPORT, *replacements)
-                player.teleport(ticket.location)
-            }
+            player.teleport(ticket.location)
         }
     }
 
@@ -183,19 +148,7 @@ class TicketsCommand : PureBaseCommand() {
     fun onLog(sender: CommandSender, offlinePlayer: OfflinePlayer, @Optional index: Int?) {
         val information = generateInformation(offlinePlayer, index, true)
 
-        taskManager {
-            val ticket = ticketManager[information.player, information.index] ?: return@taskManager
-            val replacements = Utils.ticketReplacements(ticket)
-
-            switchContext(SynchronizationContext.SYNC)
-
-            notificationManager.reply(sender, Messages.TITLES__TICKET_LOG, *replacements)
-
-            ticket.messages.forEach {
-                sender.sendMessage("§f§l" + it.reason.name + " §8@ §f" + it.date?.formatted() + "§8 - §f" + (it.data
-                        ?: it.sender.asName()))
-            }
-        }
+        processLogCommand(currentCommandIssuer, information)
     }
 
     @Subcommand("%list")
@@ -204,31 +157,31 @@ class TicketsCommand : PureBaseCommand() {
     @Description("List all tickets")
     @Syntax("[Player]")
     fun onList(sender: CommandSender, @Optional offlinePlayer: OfflinePlayer?, @Optional status: TicketStatus?) {
-        if (offlinePlayer != null) {
-            taskManager {
+        val issuer = currentCommandIssuer
+
+        taskManager {
+            if (offlinePlayer != null) {
                 var tickets = SQLFunctions.retrieveClosedTickets(offlinePlayer.uniqueId)
                 if (status != null) tickets = tickets.filter { ticket -> ticket.status == status }
 
-                switchContext(SynchronizationContext.SYNC)
-
-                notificationManager.reply(sender, Messages.TITLES__SPECIFIC_TICKETS, "%player%", offlinePlayer.name!!)
+                issuer.sendInfo(Messages.TITLES__SPECIFIC_TICKETS, "%player%", offlinePlayer.name!!)
 
                 tickets.forEach { ticket ->
                     val replacements = Utils.ticketReplacements(ticket)
 
-                    notificationManager.reply(sender, Messages.FORMAT__LIST_ITEM, *replacements)
+                    issuer.sendInfo(Messages.GENERAL__LIST_FORMAT, *replacements)
                 }
-            }
-        } else {
-            notificationManager.reply(sender, Messages.TITLES__ALL_TICKETS)
+            } else {
+                issuer.sendInfo(Messages.TITLES__ALL_TICKETS)
 
-            ticketManager.asMap().forEach { (uuid, tickets) ->
-                sender.sendMessage(ChatColor.GREEN.toString() + uuid.asName())
+                ticketManager.asMap().forEach { (uuid, tickets) ->
+                    sender.sendMessage(ChatColor.GREEN.toString() + uuid.asName())
 
-                tickets.forEach { ticket ->
-                    val replacements = Utils.ticketReplacements(ticket)
+                    tickets.forEach { ticket ->
+                        val replacements = Utils.ticketReplacements(ticket)
 
-                    notificationManager.reply(sender, Messages.FORMAT__LIST_ITEM, *replacements)
+                        issuer.sendInfo(Messages.GENERAL__LIST_FORMAT, *replacements)
+                    }
                 }
             }
         }
@@ -240,17 +193,15 @@ class TicketsCommand : PureBaseCommand() {
     @Description("View amount of tickets in")
     @Syntax("[Player]")
     fun onStatus(sender: CommandSender, @Optional offlinePlayer: OfflinePlayer?) {
+        val issuer = currentCommandIssuer
+
         taskManager {
             val data = if (offlinePlayer != null) {
-                notificationManager.reply(sender, Messages.TITLES__SPECIFIC_STATUS, "%player%", offlinePlayer.name!!)
-
-                switchContext(SynchronizationContext.SYNC)
+                issuer.sendInfo(Messages.TITLES__SPECIFIC_STATUS, "%player%", offlinePlayer.name!!)
 
                 SQLFunctions.selectCurrentTickets(offlinePlayer.uniqueId)
             } else {
-                notificationManager.reply(sender, Messages.TITLES__TICKET_STATUS)
-
-                switchContext(SynchronizationContext.SYNC)
+                issuer.sendInfo(Messages.TITLES__TICKET_STATUS)
 
                 SQLFunctions.selectCurrentTickets(null)
             }
