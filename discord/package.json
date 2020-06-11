@@ -5,10 +5,10 @@
   "author": "broccolai",
   "license": "MIT",
   "scripts": {
-    "build": "node_modules/.bin/tsc",
-    "start": "npm run build && node ./dist/server.js",
+    "build": "tsc",
+    "start": "npm run lint && npm run build && node ./dist/server.js",
     "lint": "eslint \"src/**\" --fix",
-    "dev": "npm run lint && npm run build && npm run start"
+    "dev": "concurrently \"tsc -w\" \"nodemon dist/server.js\""
   },
   "dependencies": {
     "@types/cors": "^2.8.6",
@@ -24,10 +24,13 @@
     "@types/node-fetch": "^2.5.5",
     "@typescript-eslint/eslint-plugin": "^2.25.0",
     "@typescript-eslint/parser": "^2.25.0",
+    "concurrently": "^5.2.0",
     "eslint": "^6.8.0",
     "eslint-config-prettier": "^6.10.1",
     "eslint-plugin-prettier": "^3.1.2",
+    "nodemon": "^2.0.4",
     "prettier": "^2.0.2",
+    "ts-node": "^8.10.2",
     "typescript": "^3.8.3"
   }
 }
