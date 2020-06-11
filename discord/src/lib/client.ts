@@ -47,7 +47,7 @@ client.on('message', async (message) => {
     message.member.send(
       'Keep your guilds token secret. if you need to change the broadcast channel, re-run setup in the desired channel',
     );
-    message.channel.send(':envelope: You have been private messaged with setup information');
+    message.channel.send(':envelope: You have been sent a private message with setup information');
   }
 });
 
