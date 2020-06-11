@@ -1,5 +1,6 @@
 import { MessageEmbed } from 'discord.js';
 import express from 'express';
+import cors from 'cors';
 import client from './client';
 import { TextChannel } from 'discord.js';
 import { servers } from './storage';
@@ -7,6 +8,7 @@ import { servers } from './storage';
 const app = express();
 
 app.use(express.json());
+app.use(cors());
 
 app.post('/announce/:guild/:token', async (req, res) => {
   const guild = req.params.guild;
@@ -36,7 +38,7 @@ app.post('/announce/:guild/:token', async (req, res) => {
 });
 
 app.get('/status', async (_req, res) => {
-  res.send('working');
+  res.send('2423');
 });
 
 export default app;
