@@ -7,6 +7,15 @@ permissions:
   tickets.user.*:
     default: true
     description: Allows access to all ticket user permissions
+    children:
+      tickets.user: true
+      tickets.user.create: true
+      tickets.user.update: true
+      tickets.user.settings: true
+      tickets.user.close: true
+      tickets.user.show: true
+      tickets.user.list: true
+      tickets.user.log: true
   tickets.user.create:
     default: true
     description: Allows a user to create a ticket
@@ -31,6 +40,20 @@ permissions:
   tickets.staff.*:
     default: op
     description: Allows access to all ticket staff permissions
+    children:
+      tickets.staff: true
+      tickets.user.show: true
+      tickets.user.pick: true
+      tickets.user.assign: true
+      tickets.user.done: true
+      tickets.user.yield: true
+      tickets.user.reopen: true
+      tickets.user.teleport: true
+      tickets.user.log: true
+      tickets.user.list: true
+      tickets.user.announce: true
+      tickets.user.remind: true
+      tickets.user.reload: false
   tickets.staff.show:
     default: op
     description: Allows a user to view a ticket
