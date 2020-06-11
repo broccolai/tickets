@@ -1,7 +1,8 @@
+import * as crypto from 'crypto';
 import { Client, MessageEmbed } from 'discord.js';
+
 import db from './database';
 import { servers } from './storage';
-import * as crypto from 'crypto';
 
 const client = new Client();
 
@@ -14,6 +15,11 @@ client.on('message', async (message) => {
   const command = args.shift().toLowerCase();
 
   if (command == 'setup') {
+    if (!message.member.hasPermission('ADMINISTRATOR')) {
+      message.reply('Only administrators can use this command');
+      return;
+    }
+
     let token: string;
     let output: string;
 
@@ -37,7 +43,10 @@ client.on('message', async (message) => {
       .addField(':house:  Guild Id', message.guild.id, true)
       .addField(':office:  Output Channel', output, true);
 
-    message.channel.send(embed);
+    message.member.send(embed);
+    message.member.send(
+      'Keep your guilds token secret. if you need to change the broadcast channel, re-run setup in the desired channel',
+    );
   }
 });
 

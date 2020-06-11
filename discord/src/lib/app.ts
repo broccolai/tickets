@@ -1,8 +1,8 @@
-import { MessageEmbed } from 'discord.js';
-import express from 'express';
 import cors from 'cors';
+import { MessageEmbed, TextChannel } from 'discord.js';
+import express from 'express';
+
 import client from './client';
-import { TextChannel } from 'discord.js';
 import { servers } from './storage';
 
 const app = express();
@@ -38,7 +38,7 @@ app.post('/announce/:guild/:token', async (req, res) => {
 });
 
 app.get('/status', async (_req, res) => {
-  res.send('2423');
+  res.send(client.guilds.cache.size.toString());
 });
 
 export default app;
