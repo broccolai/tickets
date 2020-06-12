@@ -1,5 +1,6 @@
 package co.uk.magmo.puretickets.utils
 
+import co.uk.magmo.puretickets.ticket.MessageReason
 import co.uk.magmo.puretickets.ticket.Ticket
 import co.uk.magmo.puretickets.ticket.TicketStatus
 import org.bukkit.configuration.file.YamlConfiguration
@@ -48,6 +49,9 @@ object Utils {
 
         results += "%date%"
         results += ticket.dateOpened().formatted()
+
+        results += "%note%"
+        results += ticket.messages.firstOrNull { it.reason == MessageReason.NOTE }?.data ?: ""
 
         return results.toTypedArray()
     }

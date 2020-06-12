@@ -39,7 +39,7 @@ class NotificationManager(private val userManager: UserManager, private val comm
                 Config.reminderDelay.minuteToTick(), Config.reminderRepeat.minuteToTick())
     }
 
-    fun ServerOperator.asIssuer(): CommandIssuer = commandManager.getCommandIssuer(this)
+    private fun ServerOperator.asIssuer(): CommandIssuer = commandManager.getCommandIssuer(this)
 
     // TODO: Needs to be made more generic
     fun send(sender: CommandSender, target: UUID?, names: MessageNames, ticket: Ticket, addFields: ((HashMap<String, String>) -> Unit) = {}) {
