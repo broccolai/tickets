@@ -5,7 +5,8 @@ import co.uk.magmo.puretickets.commands.CommandManager
 import co.uk.magmo.puretickets.configuration.Config
 import co.uk.magmo.puretickets.integrations.DiscordManager
 import co.uk.magmo.puretickets.interactions.NotificationManager
-import co.uk.magmo.puretickets.storage.SQLFunctions
+import co.uk.magmo.puretickets.storage.MySQLManager
+import co.uk.magmo.puretickets.storage.SQLiteManager
 import co.uk.magmo.puretickets.tasks.TaskManager
 import co.uk.magmo.puretickets.ticket.TicketManager
 import co.uk.magmo.puretickets.user.UserManager
@@ -17,32 +18,37 @@ class PureTickets : JavaPlugin() {
 
     override fun onEnable() {
         Config.loadFile(this)
-        SQLFunctions.setup(this)
 
-        val userManager = UserManager()
+        val sqlManager = if (Config.storageMySQL) {
+            MySQLManager()
+        } else {
+            SQLiteManager()
+        }
+
+        sqlManager.setup(this)
+
+        val userManager = UserManager(sqlManager)
         val discordManager = DiscordManager()
-        commandManager = CommandManager(this)
-        val ticketManager = TicketManager()
+        val commandManager = CommandManager(this)
+        val ticketManager = TicketManager(sqlManager)
 
         taskManager = TaskManager(this)
-        notificationManager = NotificationManager(userManager, commandManager, discordManager, ticketManager, taskManager)
+        notificationManager = NotificationManager(userManager, commandManager, discordManager, sqlManager, ticketManager, taskManager)
 
-        commandManager.registerCompletions(ticketManager)
-        commandManager.registerInjections(userManager, ticketManager, notificationManager, taskManager)
+        commandManager.registerCompletions(ticketManager, sqlManager)
+        commandManager.registerInjections(userManager, ticketManager, notificationManager, taskManager, sqlManager)
         commandManager.registerCommands()
 
         server.pluginManager.registerEvents(notificationManager, this)
     }
 
     override fun onDisable() {
-        taskManager.clear()
-        notificationManager.save()
+        if (::taskManager.isInitialized)
+            taskManager.clear()
+
+        if (::notificationManager.isInitialized)
+            notificationManager.save()
 
         DB.close()
-    }
-
-    // TODO: Write my own locale manager
-    companion object {
-        lateinit var commandManager: CommandManager
     }
 }

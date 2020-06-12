@@ -3,7 +3,6 @@ package co.uk.magmo.puretickets.commands
 import co.aikar.commands.annotation.*
 import co.uk.magmo.puretickets.locale.MessageNames
 import co.uk.magmo.puretickets.locale.Messages
-import co.uk.magmo.puretickets.storage.SQLFunctions
 import co.uk.magmo.puretickets.ticket.TicketStatus
 import co.uk.magmo.puretickets.utils.*
 import com.okkero.skedule.SynchronizationContext
@@ -161,7 +160,7 @@ class TicketsCommand : PureBaseCommand() {
 
         taskManager {
             if (offlinePlayer != null) {
-                var tickets = SQLFunctions.retrieveClosedTickets(offlinePlayer.uniqueId)
+                var tickets = sqlManager.ticket.selectAll(offlinePlayer.uniqueId)
                 if (status != null) tickets = tickets.filter { ticket -> ticket.status == status }
 
                 issuer.sendInfo(Messages.TITLES__SPECIFIC_TICKETS, "%player%", offlinePlayer.name!!)
@@ -196,15 +195,13 @@ class TicketsCommand : PureBaseCommand() {
         val issuer = currentCommandIssuer
 
         taskManager {
-            val data = if (offlinePlayer != null) {
+            if (offlinePlayer != null) {
                 issuer.sendInfo(Messages.TITLES__SPECIFIC_STATUS, "%player%", offlinePlayer.name!!)
-
-                SQLFunctions.selectCurrentTickets(offlinePlayer.uniqueId)
             } else {
                 issuer.sendInfo(Messages.TITLES__TICKET_STATUS)
-
-                SQLFunctions.selectCurrentTickets(null)
             }
+
+            val data = sqlManager.ticket.selectTicketStats(offlinePlayer?.uniqueId)
 
             data.forEach { (status, amount) ->
                 if (amount != 0) sender.sendMessage(amount.toString() + " " + status.name.toLowerCase())

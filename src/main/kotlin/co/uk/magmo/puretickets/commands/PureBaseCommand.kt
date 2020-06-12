@@ -9,7 +9,7 @@ import co.aikar.commands.annotation.HelpCommand
 import co.uk.magmo.puretickets.exceptions.TicketNotFound
 import co.uk.magmo.puretickets.interactions.NotificationManager
 import co.uk.magmo.puretickets.locale.Messages
-import co.uk.magmo.puretickets.storage.SQLFunctions
+import co.uk.magmo.puretickets.storage.SQLManager
 import co.uk.magmo.puretickets.tasks.TaskManager
 import co.uk.magmo.puretickets.ticket.MessageReason
 import co.uk.magmo.puretickets.ticket.TicketInformation
@@ -30,6 +30,9 @@ open class PureBaseCommand : BaseCommand() {
 
     @Dependency
     protected lateinit var taskManager: TaskManager
+
+    @Dependency
+    protected lateinit var sqlManager: SQLManager
 
     @Default
     @HelpCommand
@@ -75,11 +78,11 @@ open class PureBaseCommand : BaseCommand() {
         var index = input
 
         if (index == null) {
-            index = SQLFunctions.highestTicket(offlinePlayer.uniqueId, offline) ?: throw TicketNotFound()
+            index = sqlManager.ticket.selectHighestId(offlinePlayer.uniqueId, !offline) ?: throw TicketNotFound()
         } else {
             if (!ticketManager[offlinePlayer.uniqueId].any { it.id == input }) {
                 if (offline) {
-                    if (!SQLFunctions.ticketExists(offlinePlayer.uniqueId, index)) throw TicketNotFound()
+                    if (!sqlManager.ticket.exists(index)) throw TicketNotFound()
                 } else {
                     throw TicketNotFound()
                 }

@@ -8,7 +8,7 @@ import co.uk.magmo.puretickets.integrations.DiscordManager
 import co.uk.magmo.puretickets.locale.MessageNames
 import co.uk.magmo.puretickets.locale.Messages
 import co.uk.magmo.puretickets.locale.TargetType.*
-import co.uk.magmo.puretickets.storage.SQLFunctions
+import co.uk.magmo.puretickets.storage.SQLManager
 import co.uk.magmo.puretickets.tasks.ReminderTask
 import co.uk.magmo.puretickets.tasks.TaskManager
 import co.uk.magmo.puretickets.ticket.Ticket
@@ -31,8 +31,8 @@ import kotlin.collections.HashMap
 import kotlin.collections.filter
 import kotlin.collections.forEach
 
-class NotificationManager(private val userManager: UserManager, private val commandManager: CommandManager, private val discordManager: DiscordManager, ticketManager: TicketManager, taskManager: TaskManager) : Listener {
-    private val awaiting = SQLFunctions.retrieveNotifications()
+class NotificationManager(private val userManager: UserManager, private val commandManager: CommandManager, private val discordManager: DiscordManager, private val sqlManager: SQLManager, ticketManager: TicketManager, taskManager: TaskManager) : Listener {
+    private val awaiting = sqlManager.notification.selectAllAndClear()
 
     init {
         taskManager.addRepeatingTask(ReminderTask(ticketManager, this),
@@ -88,7 +88,7 @@ class NotificationManager(private val userManager: UserManager, private val comm
     }
 
     fun save() {
-        SQLFunctions.saveNotifications(awaiting)
+        sqlManager.notification.insertAll(awaiting)
     }
 
     @EventHandler

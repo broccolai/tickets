@@ -4,6 +4,14 @@ reminder:
   delay: 5
   repeat: 15
 
+storage:
+  mysql: false
+  user: "UserName"
+  password: "UserPassword"
+  name: "DatabaseName"
+  host: "0.0.0.0:0000"
+  ssl: true
+
 discord:
   enabled: false
   guild: ""

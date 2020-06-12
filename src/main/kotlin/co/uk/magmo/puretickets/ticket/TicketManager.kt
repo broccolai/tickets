@@ -1,13 +1,13 @@
 package co.uk.magmo.puretickets.ticket
 
-import co.uk.magmo.puretickets.storage.SQLFunctions
+import co.uk.magmo.puretickets.storage.SQLManager
 import org.bukkit.OfflinePlayer
 import org.bukkit.entity.Player
 import java.util.*
 
-class TicketManager {
-    private val tickets = SQLFunctions.retrieveAllTickets()
-    private var current = SQLFunctions.currentTicketId()
+class TicketManager(private val sqlManager: SQLManager) {
+    private val tickets = sqlManager.ticket.selectActive()
+    private var current = sqlManager.ticket.currentId()
 
     operator fun get(uuid: UUID?, id: Int): Ticket? = tickets[uuid].first { ticket -> ticket.id == id }
 
@@ -24,8 +24,8 @@ class TicketManager {
         return Ticket(current, player.uniqueId, arrayListOf(message), TicketStatus.OPEN, null, player.location).also {
             tickets.put(player.uniqueId, it)
 
-            SQLFunctions.insertTicket(it)
-            SQLFunctions.insertMessage(it, message)
+            sqlManager.ticket.insert(it)
+            sqlManager.message.insert(it, message)
         }
     }
 
@@ -89,7 +89,7 @@ class TicketManager {
     }
 
     fun reopen(uuid: UUID?, information: TicketInformation): Ticket {
-        val ticket = SQLFunctions.retrieveSingleTicket(information.index)
+        val ticket = sqlManager.ticket.select(information.index)
         val message = Message(MessageReason.REOPENED, null, uuid)
 
         ticket.status = TicketStatus.OPEN
@@ -111,7 +111,8 @@ class TicketManager {
 
     private fun Ticket.addMessageAndUpdate(message: Message) {
         messages.add(message)
-        SQLFunctions.insertMessage(this, message)
-        SQLFunctions.updateTicket(this)
+
+        sqlManager.message.insert(this, message)
+        sqlManager.ticket.update(this)
     }
 }

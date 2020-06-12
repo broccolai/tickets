@@ -12,6 +12,13 @@ object Config {
     var reminderDelay = 5
     var reminderRepeat = 15
 
+    var storageMySQL = false
+    var storageUser = "UserName"
+    var storagePassword = "UserPassword"
+    var storageName = "DatabaseName"
+    var storageHost = "0.0.0.0:0000"
+    var storageSSL = true
+
     var discordEnabled = false
     var discordGuild = ""
     var discordToken = ""
@@ -45,6 +52,13 @@ object Config {
             locale = process("locale", locale)
             reminderDelay = process("reminder.delay", reminderDelay)
             reminderRepeat = process("reminder.repeat", reminderRepeat)
+
+            storageMySQL = process("storage.mysql", storageMySQL)
+            storageUser = process("storage.user", storageUser)
+            storagePassword = process("storage.password", storagePassword)
+            storageName = process("storage.name", storageName)
+            storageHost = process("storage.host", storageHost)
+            storageSSL = process("storage.host", storageSSL)
 
             discordEnabled = process("discord.enabled", discordEnabled)
             discordGuild = process("discord.guild", discordGuild)

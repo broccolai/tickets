@@ -4,7 +4,7 @@ import co.aikar.commands.MessageType
 import co.aikar.commands.PaperCommandManager
 import co.uk.magmo.puretickets.configuration.Config
 import co.uk.magmo.puretickets.locale.TargetType
-import co.uk.magmo.puretickets.storage.SQLFunctions
+import co.uk.magmo.puretickets.storage.SQLManager
 import co.uk.magmo.puretickets.ticket.*
 import co.uk.magmo.puretickets.utils.Utils
 import org.bukkit.Bukkit
@@ -53,7 +53,7 @@ class CommandManager(plugin: Plugin) : PaperCommandManager(plugin) {
         commandReplacements.addReplacement("status", Config.aliasStatus)
     }
 
-    fun registerCompletions(ticketManager: TicketManager) {
+    fun registerCompletions(ticketManager: TicketManager, sqlManager: SQLManager) {
         commandCompletions.registerAsyncCompletion("AllTicketHolders") {
             ticketManager.allKeys().map { uuid -> Bukkit.getOfflinePlayer(uuid) }.map { it.name }
         }
@@ -88,7 +88,7 @@ class CommandManager(plugin: Plugin) : PaperCommandManager(plugin) {
 
         commandCompletions.registerAsyncCompletion("UserNames") {
             try {
-                SQLFunctions.retrieveTicketNames()
+                sqlManager.ticket.selectNames()
             } catch (e: Exception) {
                 return@registerAsyncCompletion null
             }
@@ -96,7 +96,7 @@ class CommandManager(plugin: Plugin) : PaperCommandManager(plugin) {
 
         commandCompletions.registerAsyncCompletion("UserOfflineNames") {
             try {
-                SQLFunctions.retrieveClosedTicketNames()
+                sqlManager.ticket.selectNames(TicketStatus.CLOSED)
             } catch (e: Exception) {
                 return@registerAsyncCompletion null
             }
@@ -104,7 +104,8 @@ class CommandManager(plugin: Plugin) : PaperCommandManager(plugin) {
 
         commandCompletions.registerAsyncCompletion("UserOfflineTicketIDs") { c ->
             try {
-                SQLFunctions.retrieveClosedTicketIds(c.getContextValue(OfflinePlayer::class.java).uniqueId).map { it.toString() }
+                sqlManager.ticket.selectIds(c.getContextValue(OfflinePlayer::class.java).uniqueId, TicketStatus.CLOSED)
+                        .map { it.toString() }
             } catch (e: Exception) {
                 return@registerAsyncCompletion null
             }
