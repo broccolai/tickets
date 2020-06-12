@@ -79,9 +79,10 @@ class MySQLManager : SQLManager {
             val sql = "SELECT id from puretickets_ticket WHERE uuid = ?"
 
             val results = if (status == null) {
-                DB.getResults(sql, uuid)
+                DB.getResults(sql, uuid.toString()
+                )
             } else {
-                DB.getResults(sql + " AND status = ?", uuid, status.name)
+                DB.getResults(sql + " AND status = ?", uuid.toString(), status.name)
             }
 
             return results.map { it.buildTicket() }
@@ -92,9 +93,9 @@ class MySQLManager : SQLManager {
             val sql = "SELECT id, uuid, status, picker, location from puretickets_ticket WHERE uuid = ?"
 
             return if (status == null) {
-                DB.getFirstColumnResults(sql, uuid)
+                DB.getFirstColumnResults(sql, uuid.toString())
             } else {
-                DB.getFirstColumnResults(sql + " AND status = ?", uuid, status.name)
+                DB.getFirstColumnResults(sql + " AND status = ?", uuid.toString(), status.name)
             }
         }
 
@@ -102,9 +103,9 @@ class MySQLManager : SQLManager {
             val sql = "SELECT max(id) from puretickets_ticket WHERE uuid = ? AND status"
 
             return if (isActive) {
-                DB.getFirstColumn(sql + "<> ?", uuid, TicketStatus.CLOSED.name)
+                DB.getFirstColumn(sql + "<> ?", uuid.toString(), TicketStatus.CLOSED.name)
             } else {
-                DB.getFirstColumn(sql + "= ?", uuid, TicketStatus.CLOSED.name)
+                DB.getFirstColumn(sql + "= ?", uuid.toString(), TicketStatus.CLOSED.name)
             }
         }
 
@@ -129,7 +130,7 @@ class MySQLManager : SQLManager {
             """.trimIndent()
 
             val row = if (uuid != null) {
-                DB.getFirstRow(sql + " WHERE uuid = ?", uuid)
+                DB.getFirstRow(sql + " WHERE uuid = ?", uuid.toString())
             } else {
                 DB.getFirstRow(sql)
             }
@@ -144,17 +145,17 @@ class MySQLManager : SQLManager {
         }
 
         override fun exists(id: Int): Boolean {
-            return DB.getFirstColumn<Int>("SELECT EXISTS(SELECT 1 from puretickets_ticket WHERE id = ?)", id) == 1
+            return DB.getFirstColumn<Long>("SELECT EXISTS(SELECT 1 from puretickets_ticket WHERE id = ?)", id) == 1.toLong()
         }
 
         override fun insert(ticket: Ticket) {
             DB.executeInsert("INSERT INTO puretickets_ticket(id, uuid, status, picker, location) VALUES(?, ?, ?, ?, ?)",
-                    ticket.id, ticket.playerUUID, ticket.status.name, ticket.pickerUUID, ticket.location.serialized())
+                    ticket.id, ticket.playerUUID.toString(), ticket.status.name, ticket.pickerUUID.toString(), ticket.location.serialized())
         }
 
         override fun update(ticket: Ticket) {
             DB.executeUpdateAsync("UPDATE puretickets_ticket SET status = ?, picker = ? WHERE id = ?",
-                    ticket.status.name, ticket.pickerUUID, ticket.id)
+                    ticket.status.name, ticket.pickerUUID.toString(), ticket.id)
         }
     }
 
@@ -168,7 +169,7 @@ class MySQLManager : SQLManager {
 
         override fun insert(ticket: Ticket, message: Message) {
             DB.executeInsert("INSERT INTO puretickets_message(ticket, reason, data, sender, date) VALUES(?, ?, ?, ?, ?)",
-                    ticket.id, message.reason.name, message.data, message.sender, message.date.serialized())
+                    ticket.id, message.reason.name, message.data, message.sender.toString(), message.date.serialized())
         }
     }
 
@@ -197,22 +198,22 @@ class MySQLManager : SQLManager {
 
     override val settings = object : SQLManager.SettingsFunctions {
         override fun select(uuid: UUID): UserSettings {
-            val data = DB.getFirstRow("SELECT announcements from puretickets_settings WHERE uuid = ?", uuid)
+            val data = DB.getFirstRow("SELECT announcements from puretickets_settings WHERE uuid = ?", uuid.toString())
             val announcements = data.getString("announcements") == "1"
 
             return UserSettings(announcements)
         }
 
         override fun exists(uuid: UUID): Boolean {
-            return DB.getFirstColumn<Int>("SELECT EXISTS(SELECT 1 from puretickets_settings WHERE uuid = ?)", uuid) == 1
+            return DB.getFirstColumn<Long>("SELECT EXISTS(SELECT 1 from puretickets_settings WHERE uuid = ?)", uuid.toString()) == 1.toLong()
         }
 
         override fun insert(uuid: UUID, settings: UserSettings) {
-            DB.executeInsert("INSERT INTO puretickets_settings(uuid, announcements) VALUES(?, ?)", uuid, settings)
+            DB.executeInsert("INSERT INTO puretickets_settings(uuid, announcements) VALUES(?, ?)", uuid.toString(), settings.announcements)
         }
 
         override fun update(uuid: UUID, settings: UserSettings) {
-            DB.executeUpdate("UPDATE puretickets_settings SET announcements = ? WHERE uuid = ?", settings.announcements, uuid)
+            DB.executeUpdate("UPDATE puretickets_settings SET announcements = ? WHERE uuid = ?", settings.announcements, uuid.toString())
         }
     }
 

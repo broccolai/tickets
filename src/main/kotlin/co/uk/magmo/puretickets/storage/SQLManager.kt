@@ -12,6 +12,7 @@ import com.google.common.collect.ArrayListMultimap
 import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.plugin.Plugin
+import java.sql.SQLException
 import java.time.Instant
 import java.time.LocalDateTime
 import java.time.ZoneId
@@ -76,8 +77,10 @@ interface SQLManager {
 
     // Helper Functions
 
-    fun DbRow.getUUID(column: String): UUID {
-        return UUID.fromString(getString(column))
+    fun DbRow.getUUID(column: String): UUID? {
+        val raw = getString(column)
+
+        return if (raw == "null" || raw == null) null else UUID.fromString(raw)
     }
 
     fun DbRow.getLocation(column: String): Location {
@@ -114,7 +117,7 @@ interface SQLManager {
 
     fun DbRow.buildTicket(): Ticket {
         val id = getInt("id")
-        val player = getUUID("uuid")
+        val player = getUUID("uuid") ?: throw SQLException()
         val messages = message.selectAll(id)
         val status = getEnumValue(TicketStatus::class.java, "status")
         val picker = getUUID("picker")

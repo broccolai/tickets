@@ -58,7 +58,7 @@ object Config {
             storagePassword = process("storage.password", storagePassword)
             storageName = process("storage.name", storageName)
             storageHost = process("storage.host", storageHost)
-            storageSSL = process("storage.host", storageSSL)
+            storageSSL = process("storage.ssl", storageSSL)
 
             discordEnabled = process("discord.enabled", discordEnabled)
             discordGuild = process("discord.guild", discordGuild)
