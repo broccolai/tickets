@@ -3,6 +3,7 @@ package co.uk.magmo.puretickets.locale
 import co.aikar.locales.MessageKey
 import co.aikar.locales.MessageKeyProvider
 
+@Suppress("unused")
 enum class Messages : MessageKeyProvider {
     // GENERAL
     GENERAL__LIST_FORMAT, GENERAL__LOG_FORMAT,
@@ -25,7 +26,7 @@ enum class Messages : MessageKeyProvider {
     // SHOW NAMES
     SHOW__SENDER, SHOW__PICKER, SHOW__UNPICKED, SHOW__MESSAGE,
     // EXCEPTIONS
-    EXCEPTIONS__TICKET_NOT_FOUND, EXCEPTIONS__INVALID_SETTING_TYPE,
+    EXCEPTIONS__TICKET_NOT_FOUND, EXCEPTIONS__INVALID_SETTING_TYPE, EXCEPTIONS__TOO_MANY_OPEN_TICKETS,
     // OTHER
     OTHER__REMINDER, OTHER__SETTING_UPDATE;
 

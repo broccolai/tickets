@@ -1,6 +1,8 @@
 package co.uk.magmo.puretickets.commands
 
 import co.aikar.commands.annotation.*
+import co.uk.magmo.puretickets.configuration.Config
+import co.uk.magmo.puretickets.exceptions.TooManyOpenTickets
 import co.uk.magmo.puretickets.locale.MessageNames
 import co.uk.magmo.puretickets.locale.Messages
 import co.uk.magmo.puretickets.ticket.*
@@ -16,6 +18,10 @@ class TicketCommand : PureBaseCommand() {
     @Syntax("<Message>")
     fun onCreate(player: Player, message: Message) {
         taskManager {
+            if (ticketManager[player.uniqueId].size >= Config.limitOpenTicket) {
+                throw TooManyOpenTickets()
+            }
+
             val ticket = ticketManager.createTicket(player, message)
 
             notificationManager.send(player, null, MessageNames.NEW_TICKET, ticket) { fields ->

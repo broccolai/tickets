@@ -12,6 +12,8 @@ object Config {
     var reminderDelay = 5
     var reminderRepeat = 15
 
+    var limitOpenTicket = 5
+
     var storageMySQL = false
     var storageUser = "UserName"
     var storagePassword = "UserPassword"
@@ -52,6 +54,8 @@ object Config {
             locale = process("locale", locale)
             reminderDelay = process("reminder.delay", reminderDelay)
             reminderRepeat = process("reminder.repeat", reminderRepeat)
+
+            limitOpenTicket = process("limit.openTicket", limitOpenTicket)
 
             storageMySQL = process("storage.mysql", storageMySQL)
             storageUser = process("storage.user", storageUser)

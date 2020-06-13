@@ -1,5 +1,8 @@
 locale: "en"
 
+limit:
+  open_tickets: 5
+
 reminder:
   delay: 5
   repeat: 15
