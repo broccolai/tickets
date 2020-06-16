@@ -45,9 +45,6 @@ shadowJar {
     relocate "com.github.kittinunf.fuel", base + "fuel"
     relocate "com.github.kittinunf.result", base + "result"
 
-    relocate "ninja.leaping.configurate", base + "configurate"
-    relocate "com.typesafe.config", base + "config"
-
     relocate "co.aikar.commands", base + "commands"
     relocate "co.aikar.locales", base + "locales"
     relocate 'co.aikar.idb', base + "idb"
@@ -55,8 +52,6 @@ shadowJar {
     relocate 'com.zaxxer.hikari', base + "hikari"
     relocate 'com.okkero.skedule', base + "skedule"
     relocate "net.jodah.expiringmap", base + "expiringmap"
-
-    exclude "com/google/common/**/*.class"
 
     archiveFileName = name + ".jar"
     mergeServiceFiles()
