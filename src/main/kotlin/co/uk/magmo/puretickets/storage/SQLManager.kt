@@ -30,11 +30,9 @@ interface SQLManager {
     val settings: SettingsFunctions
 
     interface TicketFunctions {
-        fun currentId(): Int
-
-        fun selectActive(): ArrayListMultimap<UUID, Ticket>
-
         fun select(id: Int): Ticket
+
+        fun selectAll(status: TicketStatus? = null): List<Ticket>
 
         fun selectAll(uuid: UUID, status: TicketStatus? = null): List<Ticket>
 
@@ -48,7 +46,9 @@ interface SQLManager {
 
         fun exists(id: Int): Boolean
 
-        fun insert(ticket: Ticket)
+        fun count(status: TicketStatus? = null): Int
+
+        fun insert(uuid: UUID, status: TicketStatus, picker: UUID?, location: Location): Int
 
         fun update(ticket: Ticket)
     }

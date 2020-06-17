@@ -8,6 +8,7 @@ import co.uk.magmo.puretickets.ticket.TicketStatus
 import co.uk.magmo.puretickets.user.UserSettings
 import co.uk.magmo.puretickets.utils.asName
 import com.google.common.collect.ArrayListMultimap
+import org.bukkit.Location
 import org.bukkit.plugin.Plugin
 import org.intellij.lang.annotations.Language
 import java.io.File
@@ -47,29 +48,25 @@ class SQLiteManager : SQLManager {
     }
 
     override val ticket = object : SQLManager.TicketFunctions {
-        override fun currentId(): Int {
-            return DB.getFirstColumn<Int>("SELECT max(id) FROM ticket") ?: 0
-        }
-
-        override fun selectActive(): ArrayListMultimap<UUID, Ticket> {
-            val multimap = ArrayListMultimap.create<UUID, Ticket>()
-
-            DB.getResults("SELECT id, uuid, status, picker, location FROM ticket WHERE status <> ?", TicketStatus.CLOSED.name)
-                    .map { it.getUUID("uuid") to it.buildTicket() }
-                    .forEach { (uuid, ticket) -> multimap.put(uuid, ticket) }
-
-            return multimap
-        }
-
         override fun select(id: Int): Ticket {
             val row = DB.getFirstRow("SELECT id, uuid, status, picker, location FROM ticket WHERE id = ?", id)
 
             return row.buildTicket()
         }
 
+        override fun selectAll(status: TicketStatus?): List<Ticket> {
+            val results = if (status == null) {
+                DB.getResults("SELECT id, uuid, status, picker, location FROM ticket")
+            } else {
+                DB.getResults("SELECT id, uuid, status, picker, location FROM ticket WHERE status = ?", status.name)
+            }
+
+            return results.map { it.buildTicket() }
+        }
+
         override fun selectAll(uuid: UUID, status: TicketStatus?): List<Ticket> {
             @Language("SQL")
-            val sql = "SELECT id FROM ticket WHERE uuid = ?"
+            val sql = "SELECT id, uuid, status, picker, location FROM ticket WHERE uuid = ?"
 
             val results = if (status == null) {
                 DB.getResults(sql, uuid)
@@ -103,9 +100,9 @@ class SQLiteManager : SQLManager {
 
         override fun selectNames(status: TicketStatus?): List<String> {
             val row = if (status == null) {
-                DB.getFirstColumnResults<String>("SELECT uuid FROM ticket")
+                DB.getFirstColumnResults<String>("SELECT DISTINCT uuid FROM ticket")
             } else {
-                DB.getFirstColumnResults("SELECT uuid FROM ticket WHERE status = ?", status.name)
+                DB.getFirstColumnResults("SELECT DISTINCT uuid FROM ticket WHERE status = ?", status.name)
             }
 
             return row.mapNotNull { UUID.fromString(it).asName() }
@@ -140,9 +137,22 @@ class SQLiteManager : SQLManager {
             return DB.getFirstColumn<Int>("SELECT EXISTS(SELECT 1 FROM ticket WHERE id = ?)", id) == 1
         }
 
-        override fun insert(ticket: Ticket) {
+        override fun count(status: TicketStatus?): Int {
+            return if (status == null) {
+                DB.getFirstColumn("SELECT COUNT(id) FROM tickets")
+            } else {
+                DB.getFirstColumn("SELECT COUNT(id) FROM tickets WHERE status = ?", status.name)
+            }
+        }
+
+        override fun insert(uuid: UUID, status: TicketStatus, picker: UUID?, location: Location): Int {
+            var index = DB.getFirstColumn<Int>("SELECT max(id) FROM ticket") ?: 0
+            index++
+
             DB.executeInsert("INSERT INTO ticket(id, uuid, status, picker, location) VALUES(?, ?, ?, ?, ?)",
-                    ticket.id, ticket.playerUUID, ticket.status.name, ticket.pickerUUID, ticket.location.serialized())
+                    index, uuid, status.name, picker, location.serialized())
+
+            return index
         }
 
         override fun update(ticket: Ticket) {
