@@ -139,9 +139,9 @@ class SQLiteManager : SQLManager {
 
         override fun count(status: TicketStatus?): Int {
             return if (status == null) {
-                DB.getFirstColumn("SELECT COUNT(id) FROM tickets")
+                DB.getFirstColumn("SELECT COUNT(id) FROM ticket")
             } else {
-                DB.getFirstColumn("SELECT COUNT(id) FROM tickets WHERE status = ?", status.name)
+                DB.getFirstColumn("SELECT COUNT(id) FROM ticket WHERE status = ?", status.name)
             }
         }
 
