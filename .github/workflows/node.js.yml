@@ -20,11 +20,16 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-    - run: cd discord
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v1
       with:
         node-version: ${{ matrix.node-version }}
-    - run: npm install
-    - run: npm run lint
-    - run: npm run build
+    - run: |
+        cd discord
+        npm install
+    - run: |
+        cd discord
+        npm run lint
+    - run: |
+        cd discord
+        npm run build
