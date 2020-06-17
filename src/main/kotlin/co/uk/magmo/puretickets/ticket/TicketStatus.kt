@@ -6,8 +6,8 @@ enum class TicketStatus(val color: PureColors) {
     OPEN(PureColors.GREEN), PICKED(PureColors.YELLOW), CLOSED(PureColors.RED);
 
     companion object {
-        fun from(input: String): TicketStatus {
-            return valueOf(input.toUpperCase())
+        fun from(input: String): TicketStatus? {
+            return values().firstOrNull { it.name == input }
         }
     }
 }
