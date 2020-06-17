@@ -13,6 +13,7 @@ repositories {
     jcenter()
 
     maven { url "https://hub.spigotmc.org/nexus/content/repositories/snapshots/" }
+    maven { url 'https://repo.spongepowered.org/maven' }
     maven { url "https://oss.sonatype.org/content/repositories/public/" }
     maven { url "https://repo.aikar.co/content/groups/aikar/" }
     maven { url "http://nexus.okkero.com/repository/maven-releases/" }
@@ -21,11 +22,11 @@ repositories {
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib"
     implementation 'com.github.kittinunf.fuel:fuel:2.2.3'
+    
     api "co.aikar:acf-paper:0.5.0-SNAPSHOT"
     api "co.aikar:idb-core:1.0.0-SNAPSHOT"
     api "com.okkero.skedule:skedule:1.2.6"
     api "com.zaxxer:HikariCP:2.7.9"
-
 
     compileOnly "org.spigotmc:spigot-api:1.15-R0.1-SNAPSHOT"
 }
@@ -39,11 +40,17 @@ compileJava {
 shadowJar {
     String base = "co.uk.magmo.puretickets.lib."
 
-    relocate "org.jetbrains.kotlin", base + "kotlin"
+    relocate "kotlin", base + "kotlin"
+
+    relocate "com.github.kittinunf.fuel", base + "fuel"
+    relocate "com.github.kittinunf.result", base + "result"
+
     relocate "co.aikar.commands", base + "commands"
     relocate "co.aikar.locales", base + "locales"
     relocate 'co.aikar.idb', base + "idb"
-    relocate 'co.aikar.skedule', base + "skedule"
+
+    relocate 'com.zaxxer.hikari', base + "hikari"
+    relocate 'com.okkero.skedule', base + "skedule"
     relocate "net.jodah.expiringmap", base + "expiringmap"
 
     archiveFileName = name + ".jar"

@@ -55,7 +55,7 @@ object Config {
             reminderDelay = process("reminder.delay", reminderDelay)
             reminderRepeat = process("reminder.repeat", reminderRepeat)
 
-            limitOpenTicket = process("limit.openTicket", limitOpenTicket)
+            limitOpenTicket = process("limit.open_tickets", limitOpenTicket)
 
             storageMySQL = process("storage.mysql", storageMySQL)
             storageUser = process("storage.user", storageUser)

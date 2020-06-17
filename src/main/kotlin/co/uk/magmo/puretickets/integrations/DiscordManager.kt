@@ -32,7 +32,7 @@ class DiscordManager {
         }
 
         Fuel.post("$domain/announce/$guild/$token")
-                .body(json.toString()).timeout(1000).set("Content-Type", "application/json").response().second
+                .body(json.toString()).timeout(1000).set("Content-Type", "application/json").response()
     }
 }
 
