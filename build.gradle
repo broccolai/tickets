@@ -26,7 +26,7 @@ dependencies {
     api "co.aikar:acf-paper:0.5.0-SNAPSHOT"
     api "co.aikar:idb-core:1.0.0-SNAPSHOT"
     api "com.okkero.skedule:skedule:1.2.6"
-    api "com.zaxxer:HikariCP:2.7.9"
+    api "com.zaxxer:HikariCP:3.4.5"
 
     compileOnly "org.spigotmc:spigot-api:1.15-R0.1-SNAPSHOT"
 }
