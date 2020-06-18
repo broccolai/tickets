@@ -10,8 +10,7 @@ import org.bukkit.scheduler.BukkitRunnable
 
 class ReminderTask(private val ticketManager: TicketManager, private val notificationManager: NotificationManager) : BukkitRunnable() {
     override fun run() {
-        val amount = ticketManager.asMap().values.flatten()
-                .count { it.status == TicketStatus.OPEN }
+        val amount = ticketManager.count(TicketStatus.OPEN)
 
         if (amount == 0) return
 

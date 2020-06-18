@@ -38,7 +38,7 @@ interface SQLManager {
 
         fun selectIds(uuid: UUID, status: TicketStatus? = null): List<Int>
 
-        fun selectHighestId(uuid: UUID, isActive: Boolean): Int?
+        fun selectHighestId(uuid: UUID, vararg status: TicketStatus?): Int?
 
         fun selectNames(status: TicketStatus? = null): List<String>
 

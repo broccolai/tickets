@@ -88,14 +88,22 @@ class SQLiteManager : SQLManager {
             }
         }
 
-        override fun selectHighestId(uuid: UUID, isActive: Boolean): Int? {
-            val sql = "SELECT max(id) FROM ticket WHERE uuid = ? AND status"
+        override fun selectHighestId(uuid: UUID, vararg status: TicketStatus?): Int? {
+            @Language("SQL")
+            var sql = "SELECT max(id) FROM ticket WHERE uuid = ?"
+            val replacements = mutableListOf<String>()
 
-            return if (isActive) {
-                DB.getFirstColumn(sql + "<> ?", uuid, TicketStatus.CLOSED.name)
-            } else {
-                DB.getFirstColumn(sql + "= ?", uuid, TicketStatus.CLOSED.name)
+            for (i in status.indices) {
+                sql += if (i == 0) {
+                    " AND status = ?"
+                } else {
+                    " OR status = ?"
+                }
+
+                replacements.add(status[i]!!.name)
             }
+
+            return DB.getFirstColumn(sql, uuid, *replacements.toTypedArray())
         }
 
         override fun selectNames(status: TicketStatus?): List<String> {
