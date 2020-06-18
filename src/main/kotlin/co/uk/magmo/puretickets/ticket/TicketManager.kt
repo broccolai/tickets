@@ -9,7 +9,7 @@ class TicketManager(private val sqlManager: SQLManager) {
 
     operator fun get(uuid: UUID, status: TicketStatus? = null) = sqlManager.ticket.selectAll(uuid, status)
 
-    operator fun get(status: TicketStatus? = null) = sqlManager.ticket.selectAll(status)
+    fun getIds(uuid: UUID, status: TicketStatus? = null) = sqlManager.ticket.selectIds(uuid, status)
 
     fun exists(id: Int) = sqlManager.ticket.exists(id)
 

@@ -60,7 +60,7 @@ class CommandManager(plugin: Plugin) : PaperCommandManager(plugin) {
             try {
                 val target = c.getContextValue(OfflinePlayer::class.java, c.getConfig("parameter")?.toInt())
 
-                ticketManager[target.uniqueId].map { it.id.toString() }
+                ticketManager.getIds(target.uniqueId).map { it.toString() }
             } catch (e: Exception) {
                 return@registerAsyncCompletion null
             }
