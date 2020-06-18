@@ -173,7 +173,7 @@ class TicketsCommand : PureBaseCommand() {
             } else {
                 issuer.sendInfo(Messages.TITLES__ALL_TICKETS)
 
-                ticketManager.all().groupBy { it.playerUUID }.forEach { (uuid, tickets) ->
+                ticketManager.all().filter { it.status != TicketStatus.CLOSED }.groupBy { it.playerUUID }.forEach { (uuid, tickets) ->
                     sender.sendMessage(ChatColor.GREEN.toString() + uuid.asName())
 
                     tickets.forEach { ticket ->
