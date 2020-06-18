@@ -9,10 +9,8 @@ import co.aikar.commands.annotation.HelpCommand
 import co.uk.magmo.puretickets.exceptions.TicketNotFound
 import co.uk.magmo.puretickets.interactions.NotificationManager
 import co.uk.magmo.puretickets.locale.Messages
-import co.uk.magmo.puretickets.storage.SQLManager
 import co.uk.magmo.puretickets.tasks.TaskManager
 import co.uk.magmo.puretickets.ticket.MessageReason
-import co.uk.magmo.puretickets.ticket.TicketInformation
 import co.uk.magmo.puretickets.ticket.TicketManager
 import co.uk.magmo.puretickets.ticket.TicketStatus
 import co.uk.magmo.puretickets.utils.Utils
