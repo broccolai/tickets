@@ -99,7 +99,7 @@ interface SQLManager {
     }
 
     fun DbRow.getDate(column: String): LocalDateTime {
-        val instant = Instant.ofEpochMilli(getPureLong("date"))
+        val instant = Instant.ofEpochSecond(getPureLong("date"))
 
         return LocalDateTime.ofInstant(instant, ZoneId.systemDefault())
     }
