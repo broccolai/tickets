@@ -3,6 +3,7 @@ package co.uk.magmo.puretickets.integrations
 import co.uk.magmo.puretickets.configuration.Config
 import com.github.kittinunf.fuel.Fuel
 import com.google.gson.JsonObject
+import org.bukkit.Bukkit
 
 class DiscordManager {
     private val domain = "https://tickets.magmo.co.uk"
@@ -31,8 +32,14 @@ class DiscordManager {
             json.add("fields", content)
         }
 
-        Fuel.post("$domain/announce/$guild/$token")
-                .body(json.toString()).timeout(1000).set("Content-Type", "application/json").response()
+        val response = Fuel.post("$domain/announce/$guild/$token")
+                .body(json.toString()).timeout(1000).set("Content-Type", "application/json").response().second
+
+        if (response.statusCode != 200) {
+            Bukkit.getLogger().warning("Error connecting to discord integration")
+            Bukkit.getLogger().warning(response.responseMessage)
+            Bukkit.getLogger().warning(response.url.toString())
+        }
     }
 }
 
