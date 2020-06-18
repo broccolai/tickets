@@ -59,15 +59,22 @@ class CommandManager(plugin: Plugin) : PaperCommandManager(plugin) {
         commandCompletions.registerAsyncCompletion("TargetIds") { c ->
             try {
                 val target = c.getContextValue(OfflinePlayer::class.java, c.getConfig("parameter")?.toInt())
+                val status = TicketStatus.from(c.getConfig("status"))
 
-                ticketManager.getIds(target.uniqueId).map { it.toString() }
+                ticketManager.getIds(target.uniqueId, status).map { it.toString() }
             } catch (e: Exception) {
                 return@registerAsyncCompletion null
             }
         }
 
         commandCompletions.registerAsyncCompletion("IssuerIds") { c ->
-            ticketManager[c.issuer.uniqueId].map { ticket -> ticket.id.toString() }
+            try {
+                val status = TicketStatus.from(c.getConfig("status"))
+
+                ticketManager.getIds(c.issuer.uniqueId, status).map { it.toString() }
+            } catch (e: Exception) {
+                return@registerAsyncCompletion null
+            }
         }
 
         commandCompletions.registerStaticCompletion("TicketStatus", TicketStatus.values().map { it.name.toLowerCase() })

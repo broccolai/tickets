@@ -26,7 +26,7 @@ class TicketsCommand : PureBaseCommand() {
     }
 
     @Subcommand("%pick")
-    @CommandCompletion("@TicketHolders:status=OPEN @TargetIds")
+    @CommandCompletion("@TicketHolders:status=OPEN @TargetIds:status=OPEN")
     @CommandPermission(Constants.STAFF_PERMISSION + ".pick")
     @Description("Pick a ticket")
     @Syntax("<Player> [Index]")
@@ -43,7 +43,7 @@ class TicketsCommand : PureBaseCommand() {
     }
 
     @Subcommand("%assign")
-    @CommandCompletion("@Players @TicketHolders:status=OPEN @TargetIds:parameter=2")
+    @CommandCompletion("@Players @TicketHolders:status=OPEN @TargetIds:parameter=2,status=OPEN")
     @CommandPermission(Constants.STAFF_PERMISSION + ".assign")
     @Description("Assign a ticket to a staff member")
     @Syntax("<TargetPlayer> <Player> [Index]")
@@ -61,7 +61,7 @@ class TicketsCommand : PureBaseCommand() {
     }
 
     @Subcommand("%done")
-    @CommandCompletion("@TicketHolders:status=PICK @TargetIds")
+    @CommandCompletion("@TicketHolders:status=PICK @TargetIds:status=PICK")
     @CommandPermission(Constants.STAFF_PERMISSION + ".done")
     @Description("Done-mark a ticket")
     @Syntax("<Player> [Index]")
@@ -76,7 +76,7 @@ class TicketsCommand : PureBaseCommand() {
     }
 
     @Subcommand("%yield")
-    @CommandCompletion("@TicketHolders:status=PICK @TargetIds")
+    @CommandCompletion("@TicketHolders:status=PICK @TargetIds:status=PICK")
     @CommandPermission(Constants.STAFF_PERMISSION + ".yield")
     @Description("Yield a ticket")
     @Syntax("<Player> [Index]")
@@ -108,7 +108,7 @@ class TicketsCommand : PureBaseCommand() {
     }
 
     @Subcommand("%reopen")
-    @CommandCompletion("@TicketHolders:status=CLOSED @TargetIds")
+    @CommandCompletion("@TicketHolders:status=CLOSED @TargetIds:status=CLOSED")
     @CommandPermission(Constants.STAFF_PERMISSION + ".reopen")
     @Description("Reopen a ticket")
     @Syntax("<Player> [Index]")
