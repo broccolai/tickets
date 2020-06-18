@@ -63,9 +63,9 @@ class MySQLManager : SQLManager {
 
         override fun selectAll(status: TicketStatus?): List<Ticket> {
             val results = if (status == null) {
-                DB.getResults("SELECT id, uuid, status, picker, location FROM ticket")
+                DB.getResults("SELECT id, uuid, status, picker, location FROM puretickets_ticket")
             } else {
-                DB.getResults("SELECT id, uuid, status, picker, location FROM ticket WHERE status = ?", status.name)
+                DB.getResults("SELECT id, uuid, status, picker, location FROM puretickets_ticket WHERE status = ?", status.name)
             }
 
             return results.map { it.buildTicket() }
