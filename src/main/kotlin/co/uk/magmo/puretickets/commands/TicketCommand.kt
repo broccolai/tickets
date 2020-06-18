@@ -31,15 +31,15 @@ class TicketCommand : PureBaseCommand() {
     }
 
     @Subcommand("%update")
-    @CommandCompletion("@IssuerTicketIds")
+    @CommandCompletion("@IssuerIds")
     @CommandPermission(Constants.USER_PERMISSION + ".update")
     @Description("Update a ticket")
     @Syntax("<Index> <Message>")
     fun onUpdate(player: Player, index: Int, message: Message) {
-        val information = generateInformation(player, index, false)
+        val id = generateId(player, index, TicketStatus.OPEN, TicketStatus.PICKED)
 
         taskManager {
-            val ticket = ticketManager.update(information, message)
+            val ticket = ticketManager.update(id, message) ?: return@taskManager
 
             notificationManager.send(player, null, MessageNames.UPDATE_TICKET, ticket) { fields ->
                 fields["MESSAGE"] = message.data!!
@@ -48,29 +48,29 @@ class TicketCommand : PureBaseCommand() {
     }
 
     @Subcommand("%close")
-    @CommandCompletion("@IssuerTicketIds")
+    @CommandCompletion("@IssuerIds")
     @CommandPermission(Constants.USER_PERMISSION + ".close")
     @Description("Close a ticket")
     @Syntax("[Index]")
     fun onClose(player: Player, @Optional index: Int?) {
-        val information = generateInformation(player, index, false)
+        val id = generateId(player, index, TicketStatus.OPEN, TicketStatus.PICKED)
 
         taskManager {
-            val ticket = ticketManager.close(player.asUUID(), information)
+            val ticket = ticketManager.close(player.asUUID(), id) ?: return@taskManager
 
             notificationManager.send(player, null, MessageNames.CLOSE_TICKET, ticket)
         }
     }
 
     @Subcommand("%show")
-    @CommandCompletion("@IssuerTicketIds")
+    @CommandCompletion("@IssuerIds")
     @CommandPermission(Constants.USER_PERMISSION + ".show")
     @Description("Show a ticket")
     @Syntax("[Index]")
     fun onShow(player: Player, @Optional index: Int?) {
-        val information = generateInformation(player, index, false)
+        val id = generateId(player, index)
 
-        processShowCommand(currentCommandIssuer, information)
+        processShowCommand(currentCommandIssuer, id)
     }
 
     @Subcommand("%list")
@@ -93,13 +93,13 @@ class TicketCommand : PureBaseCommand() {
     }
 
     @Subcommand("%log")
-    @CommandCompletion("@IssuerTicketIds")
+    @CommandCompletion("@IssuerIds")
     @CommandPermission(Constants.USER_PERMISSION + ".log")
     @Description("Log tickets messages")
     @Syntax("[Index]")
     fun onLog(player: Player, @Optional index: Int?) {
-        val information = generateInformation(player, index, true)
+        val id = generateId(player, index)
 
-        processLogCommand(currentCommandIssuer, information)
+        processLogCommand(currentCommandIssuer, id)
     }
 }

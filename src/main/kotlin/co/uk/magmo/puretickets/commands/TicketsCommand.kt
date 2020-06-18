@@ -15,26 +15,26 @@ import org.bukkit.entity.Player
 @CommandPermission(Constants.STAFF_PERMISSION)
 class TicketsCommand : PureBaseCommand() {
     @Subcommand("%show")
-    @CommandCompletion("@AllTicketHolders @UserTicketIds")
+    @CommandCompletion("@TicketHolders @TargetIds")
     @CommandPermission(Constants.STAFF_PERMISSION + ".show")
     @Description("Show a ticket")
     @Syntax("<Player> [Index]")
     fun onShow(sender: CommandSender, offlinePlayer: OfflinePlayer, @Optional index: Int?) {
-        val information = generateInformation(offlinePlayer, index, false)
+        val information = generateId(offlinePlayer, index)
 
         processShowCommand(currentCommandIssuer, information)
     }
 
     @Subcommand("%pick")
-    @CommandCompletion("@AllTicketHolders @UserTicketIds")
+    @CommandCompletion("@TicketHolders:status=OPEN @TargetIds")
     @CommandPermission(Constants.STAFF_PERMISSION + ".pick")
     @Description("Pick a ticket")
     @Syntax("<Player> [Index]")
     fun onPick(sender: CommandSender, offlinePlayer: OfflinePlayer, @Optional index: Int?) {
-        val information = generateInformation(offlinePlayer, index, false)
+        val id = generateId(offlinePlayer, index, TicketStatus.OPEN, TicketStatus.PICKED)
 
         taskManager {
-            val ticket = ticketManager.pick(sender.asUUID(), information)
+            val ticket = ticketManager.pick(sender.asUUID(), id) ?: return@taskManager
 
             notificationManager.send(sender, offlinePlayer.uniqueId, MessageNames.PICK_TICKET, ticket) { fields ->
                 fields["PICKER"] = sender.name
@@ -43,15 +43,15 @@ class TicketsCommand : PureBaseCommand() {
     }
 
     @Subcommand("%assign")
-    @CommandCompletion("@Players @AllTicketHolders @UserTicketIdsWithTarget")
+    @CommandCompletion("@Players @TicketHolders:status=OPEN @TargetIds:parameter=2")
     @CommandPermission(Constants.STAFF_PERMISSION + ".assign")
     @Description("Assign a ticket to a staff member")
     @Syntax("<TargetPlayer> <Player> [Index]")
     fun onAssign(sender: CommandSender, target: OfflinePlayer, offlinePlayer: OfflinePlayer, @Optional index: Int?) {
-        val information = generateInformation(offlinePlayer, index, false)
+        val id = generateId(offlinePlayer, index, TicketStatus.OPEN, TicketStatus.PICKED)
 
         taskManager {
-            val ticket = ticketManager.pick(target.uniqueId, information)
+            val ticket = ticketManager.pick(target.uniqueId, id) ?: return@taskManager
 
             notificationManager.send(sender, target.uniqueId, MessageNames.ASSIGN_TICKET, ticket) { fields ->
                 fields["ASSIGNER"] = sender.name
@@ -61,45 +61,45 @@ class TicketsCommand : PureBaseCommand() {
     }
 
     @Subcommand("%done")
-    @CommandCompletion("@AllTicketHolders @UserTicketIds")
+    @CommandCompletion("@TicketHolders:status=PICK @TargetIds")
     @CommandPermission(Constants.STAFF_PERMISSION + ".done")
     @Description("Done-mark a ticket")
     @Syntax("<Player> [Index]")
     fun onDone(sender: CommandSender, offlinePlayer: OfflinePlayer, @Optional index: Int?) {
-        val information = generateInformation(offlinePlayer, index, false)
+        val id = generateId(offlinePlayer, index, TicketStatus.OPEN, TicketStatus.PICKED)
 
         taskManager {
-            val ticket = ticketManager.done(sender.asUUID(), information)
+            val ticket = ticketManager.done(sender.asUUID(), id) ?: return@taskManager
 
             notificationManager.send(sender, offlinePlayer.uniqueId, MessageNames.DONE_TICKET, ticket)
         }
     }
 
     @Subcommand("%yield")
-    @CommandCompletion("@AllTicketHolders @UserTicketIds")
+    @CommandCompletion("@TicketHolders:status=PICK @TargetIds")
     @CommandPermission(Constants.STAFF_PERMISSION + ".yield")
     @Description("Yield a ticket")
     @Syntax("<Player> [Index]")
     fun onYield(sender: CommandSender, offlinePlayer: OfflinePlayer, @Optional index: Int?) {
-        val information = generateInformation(offlinePlayer, index, false)
+        val id = generateId(offlinePlayer, index, TicketStatus.PICKED)
 
         taskManager {
-            val ticket = ticketManager.yield(sender.asUUID(), information)
+            val ticket = ticketManager.yield(sender.asUUID(), id) ?: return@taskManager
 
             notificationManager.send(sender, offlinePlayer.uniqueId, MessageNames.YIELD_TICKET, ticket)
         }
     }
 
     @Subcommand("%note")
-    @CommandCompletion("@AllTicketHolders @UserTicketIds")
+    @CommandCompletion("@TicketHolders @TargetIds")
     @CommandPermission(Constants.STAFF_PERMISSION + ".note")
     @Description("Make a note on a ticket")
     @Syntax("<Player> <Index> <Message>")
     fun onNote(sender: CommandSender, offlinePlayer: OfflinePlayer, index: Int, message: String) {
-        val information = generateInformation(offlinePlayer, index, false)
+        val id = generateId(offlinePlayer, index)
 
         taskManager {
-            val ticket = ticketManager.note(sender.asUUID(), information, message)
+            val ticket = ticketManager.note(sender.asUUID(), id, message) ?: return@taskManager
 
             notificationManager.send(sender, offlinePlayer.uniqueId, MessageNames.NOTE_TICKET, ticket) { fields ->
                 fields["NOTE"] = message
@@ -108,30 +108,30 @@ class TicketsCommand : PureBaseCommand() {
     }
 
     @Subcommand("%reopen")
-    @CommandCompletion("@UserOfflineNames @UserOfflineTicketIDs")
+    @CommandCompletion("@TicketHolders:status=CLOSED @TargetIds")
     @CommandPermission(Constants.STAFF_PERMISSION + ".reopen")
     @Description("Reopen a ticket")
     @Syntax("<Player> [Index]")
     fun onReopen(sender: CommandSender, offlinePlayer: OfflinePlayer, @Optional index: Int?) {
-        val information = generateInformation(offlinePlayer, index, true)
+        val id = generateId(offlinePlayer, index, TicketStatus.CLOSED)
 
         taskManager {
-            val ticket = ticketManager.reopen(sender.asUUID(), information)
+            val ticket = ticketManager.reopen(sender.asUUID(), id) ?: return@taskManager
 
             notificationManager.send(sender, offlinePlayer.uniqueId, MessageNames.REOPEN_TICKET, ticket)
         }
     }
 
     @Subcommand("%teleport")
-    @CommandCompletion("@AllTicketHolders @UserTicketIdsWithPlayer")
+    @CommandCompletion("@TicketHolders @TargetIds:parameter=1")
     @CommandPermission(Constants.STAFF_PERMISSION + ".teleport")
     @Description("Teleport to a ticket creation location")
     @Syntax("<Player> [Index]")
     fun onTeleport(player: Player, offlinePlayer: OfflinePlayer, @Optional index: Int?) {
-        val information = generateInformation(offlinePlayer, index, false)
+        val id = generateId(offlinePlayer, index)
 
         taskManager {
-            val ticket = ticketManager[offlinePlayer.uniqueId, information.index]!!
+            val ticket = ticketManager[id] ?: return@taskManager
             notificationManager.send(player, offlinePlayer.uniqueId, MessageNames.TELEPORT_TICKET, ticket)
 
             switchContext(SynchronizationContext.SYNC)
@@ -140,18 +140,18 @@ class TicketsCommand : PureBaseCommand() {
     }
 
     @Subcommand("%log")
-    @CommandCompletion("@AllTicketHolders @UserTicketIds")
+    @CommandCompletion("@TicketHolders @TargetIds")
     @CommandPermission(Constants.STAFF_PERMISSION + ".log")
     @Description("Log tickets messages")
     @Syntax("<Player> [Index]")
     fun onLog(sender: CommandSender, offlinePlayer: OfflinePlayer, @Optional index: Int?) {
-        val information = generateInformation(offlinePlayer, index, true)
+        val id = generateId(offlinePlayer, index)
 
-        processLogCommand(currentCommandIssuer, information)
+        processLogCommand(currentCommandIssuer, id)
     }
 
     @Subcommand("%list")
-    @CommandCompletion("@UserNames @TicketStatus")
+    @CommandCompletion("@TicketHolders @TicketStatus")
     @CommandPermission(Constants.STAFF_PERMISSION + ".list")
     @Description("List all tickets")
     @Syntax("[Player]")
@@ -160,7 +160,7 @@ class TicketsCommand : PureBaseCommand() {
 
         taskManager {
             if (offlinePlayer != null) {
-                var tickets = sqlManager.ticket.selectAll(offlinePlayer.uniqueId)
+                var tickets = ticketManager[offlinePlayer.uniqueId]
                 if (status != null) tickets = tickets.filter { ticket -> ticket.status == status }
 
                 issuer.sendInfo(Messages.TITLES__SPECIFIC_TICKETS, "%player%", offlinePlayer.name!!)
@@ -173,7 +173,7 @@ class TicketsCommand : PureBaseCommand() {
             } else {
                 issuer.sendInfo(Messages.TITLES__ALL_TICKETS)
 
-                ticketManager.asMap().forEach { (uuid, tickets) ->
+                ticketManager.all().groupBy { it.playerUUID }.forEach { (uuid, tickets) ->
                     sender.sendMessage(ChatColor.GREEN.toString() + uuid.asName())
 
                     tickets.forEach { ticket ->
@@ -187,7 +187,7 @@ class TicketsCommand : PureBaseCommand() {
     }
 
     @Subcommand("%status")
-    @CommandCompletion("@UserNames")
+    @CommandCompletion("@TicketHolders")
     @CommandPermission(Constants.STAFF_PERMISSION + ".status")
     @Description("View amount of tickets in")
     @Syntax("[Player]")
@@ -201,7 +201,7 @@ class TicketsCommand : PureBaseCommand() {
                 issuer.sendInfo(Messages.TITLES__TICKET_STATUS)
             }
 
-            val data = sqlManager.ticket.selectTicketStats(offlinePlayer?.uniqueId)
+            val data = ticketManager.stats(offlinePlayer?.uniqueId)
 
             data.forEach { (status, amount) ->
                 if (amount != 0) sender.sendMessage(amount.toString() + " " + status.name.toLowerCase())

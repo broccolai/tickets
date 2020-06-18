@@ -38,9 +38,9 @@ open class PureBaseCommand : BaseCommand() {
         help.showHelp()
     }
 
-    protected fun processShowCommand(issuer: CommandIssuer, information: TicketInformation) {
+    protected fun processShowCommand(issuer: CommandIssuer, id: Int) {
         taskManager {
-            val ticket = ticketManager[information.player, information.index] ?: return@taskManager
+            val ticket = ticketManager[id] ?: return@taskManager
             val replacements = Utils.ticketReplacements(ticket)
             val message = ticket.currentMessage()!!
 
@@ -57,35 +57,32 @@ open class PureBaseCommand : BaseCommand() {
         }
     }
 
-    protected fun processLogCommand(issuer: CommandIssuer, information: TicketInformation) {
+    protected fun processLogCommand(issuer: CommandIssuer, id: Int) {
         taskManager {
-            val ticket = ticketManager[information.player, information.index] ?: return@taskManager
+            val ticket = ticketManager[id] ?: return@taskManager
             val replacements = Utils.ticketReplacements(ticket)
 
             issuer.sendInfo(Messages.TITLES__TICKET_LOG, *replacements)
 
             ticket.messages.forEach {
                 val suffix = it.data ?: it.sender.asName()
-                issuer.sendInfo(Messages.GENERAL__LOG_FORMAT, "%reason%", it.reason.name, "%date%", it.date?.formatted(), "%suffix%", suffix)
+                issuer.sendInfo(Messages.GENERAL__LOG_FORMAT, "%reason%", it.reason.name, "%date%", it.date.formatted(), "%suffix%", suffix)
             }
         }
     }
 
-    protected fun generateInformation(offlinePlayer: OfflinePlayer, input: Int?, offline: Boolean): TicketInformation {
+
+
+    protected fun generateId(player: OfflinePlayer, input: Int?, vararg status: TicketStatus): Int {
         var index = input
 
         if (index == null) {
-            index = sqlManager.ticket.selectHighestId(offlinePlayer.uniqueId, !offline) ?: throw TicketNotFound()
-        } else {
-            if (!ticketManager[offlinePlayer.uniqueId].any { it.id == input }) {
-                if (offline) {
-                    if (!sqlManager.ticket.exists(index)) throw TicketNotFound()
-                } else {
-                    throw TicketNotFound()
-                }
-            }
+            index = ticketManager.getHighest(player.uniqueId, *status)
+                    ?: ticketManager.getHighest(player.uniqueId, *status) ?: throw TicketNotFound()
+        } else if (!ticketManager.exists(index)) {
+            throw TicketNotFound()
         }
 
-        return TicketInformation(offlinePlayer.uniqueId, index)
+        return index
     }
 }

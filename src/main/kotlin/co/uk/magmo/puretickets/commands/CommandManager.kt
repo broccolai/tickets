@@ -4,10 +4,8 @@ import co.aikar.commands.MessageType
 import co.aikar.commands.PaperCommandManager
 import co.uk.magmo.puretickets.configuration.Config
 import co.uk.magmo.puretickets.locale.TargetType
-import co.uk.magmo.puretickets.storage.SQLManager
 import co.uk.magmo.puretickets.ticket.*
 import co.uk.magmo.puretickets.utils.Utils
-import org.bukkit.Bukkit
 import org.bukkit.ChatColor
 import org.bukkit.OfflinePlayer
 import org.bukkit.configuration.file.YamlConfiguration
@@ -53,62 +51,23 @@ class CommandManager(plugin: Plugin) : PaperCommandManager(plugin) {
         commandReplacements.addReplacement("status", Config.aliasStatus)
     }
 
-    fun registerCompletions(ticketManager: TicketManager, sqlManager: SQLManager) {
-        commandCompletions.registerAsyncCompletion("AllTicketHolders") {
-            ticketManager.allKeys().map { uuid -> Bukkit.getOfflinePlayer(uuid) }.map { it.name }
+    fun registerCompletions(ticketManager: TicketManager) {
+        commandCompletions.registerAsyncCompletion("TicketHolders") { c ->
+            ticketManager.allNames(TicketStatus.from(c.getConfig("status")))
         }
 
-        commandCompletions.registerAsyncCompletion("UserTicketIds") { c ->
+        commandCompletions.registerAsyncCompletion("TargetIds") { c ->
             try {
-                ticketManager[c.getContextValue(OfflinePlayer::class.java).uniqueId].map { ticket -> ticket.id.toString() }
+                val target = c.getContextValue(OfflinePlayer::class.java, c.getConfig("parameter")?.toInt())
+
+                ticketManager[target.uniqueId].map { it.id.toString() }
             } catch (e: Exception) {
                 return@registerAsyncCompletion null
             }
         }
 
-        commandCompletions.registerAsyncCompletion("UserTicketIdsWithPlayer") { c ->
-            try {
-                ticketManager[c.getContextValue(OfflinePlayer::class.java, 1).uniqueId].map { ticket -> ticket.id.toString() }
-            } catch (e: Exception) {
-                return@registerAsyncCompletion null
-            }
-        }
-
-        commandCompletions.registerAsyncCompletion("UserTicketIdsWithTarget") { c ->
-            try {
-                ticketManager[c.getContextValue(OfflinePlayer::class.java, 2).uniqueId].map { ticket -> ticket.id.toString() }
-            } catch (e: Exception) {
-                return@registerAsyncCompletion null
-            }
-        }
-
-        commandCompletions.registerAsyncCompletion("IssuerTicketIds") { c ->
+        commandCompletions.registerAsyncCompletion("IssuerIds") { c ->
             ticketManager[c.issuer.uniqueId].map { ticket -> ticket.id.toString() }
-        }
-
-        commandCompletions.registerAsyncCompletion("UserNames") {
-            try {
-                sqlManager.ticket.selectNames()
-            } catch (e: Exception) {
-                return@registerAsyncCompletion null
-            }
-        }
-
-        commandCompletions.registerAsyncCompletion("UserOfflineNames") {
-            try {
-                sqlManager.ticket.selectNames(TicketStatus.CLOSED)
-            } catch (e: Exception) {
-                return@registerAsyncCompletion null
-            }
-        }
-
-        commandCompletions.registerAsyncCompletion("UserOfflineTicketIDs") { c ->
-            try {
-                sqlManager.ticket.selectIds(c.getContextValue(OfflinePlayer::class.java).uniqueId, TicketStatus.CLOSED)
-                        .map { it.toString() }
-            } catch (e: Exception) {
-                return@registerAsyncCompletion null
-            }
         }
 
         commandCompletions.registerStaticCompletion("TicketStatus", TicketStatus.values().map { it.name.toLowerCase() })
