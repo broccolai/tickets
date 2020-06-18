@@ -81,7 +81,11 @@ class TicketCommand : PureBaseCommand() {
     fun onList(player: Player, @Optional status: TicketStatus?) {
         var tickets = ticketManager[player.uniqueId]
 
-        if (status != null) tickets = tickets.filter { ticket -> ticket.status == status }
+        tickets = if (status != null) {
+            tickets.filter { ticket -> ticket.status == status }
+        } else {
+            tickets.filter { ticket -> ticket.status != TicketStatus.CLOSED }
+        }
 
         currentCommandIssuer.sendInfo(Messages.TITLES__YOUR_TICKETS)
 
