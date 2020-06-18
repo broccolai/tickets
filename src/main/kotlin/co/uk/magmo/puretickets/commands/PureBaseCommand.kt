@@ -31,9 +31,6 @@ open class PureBaseCommand : BaseCommand() {
     @Dependency
     protected lateinit var taskManager: TaskManager
 
-    @Dependency
-    protected lateinit var sqlManager: SQLManager
-
     @Default
     @HelpCommand
     fun onHelp(sender: CommandSender, help: CommandHelp) {

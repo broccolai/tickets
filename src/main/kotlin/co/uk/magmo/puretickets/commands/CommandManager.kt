@@ -114,9 +114,7 @@ class CommandManager(plugin: Plugin) : PaperCommandManager(plugin) {
         commandCompletions.registerStaticCompletion("TicketStatus", TicketStatus.values().map { it.name.toLowerCase() })
     }
 
-    fun registerInjections(sqlManager: SQLManager, vararg inputs: Any) {
-        registerDependency(SQLManager::class.java, sqlManager)
-
+    fun registerInjections(vararg inputs: Any) {
         inputs.forEach {
             registerDependency(it::class.java, it)
         }
