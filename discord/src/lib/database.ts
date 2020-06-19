@@ -1,21 +1,21 @@
 import sqlite3 from 'sqlite3';
 
+import PureGuild from '../constructs/pureGuild';
+
 const db = new sqlite3.Database('./storage.db', sqlite3.OPEN_READWRITE);
 
 db.run('CREATE TABLE IF NOT EXISTS server(guild TEXT, token TEXT, outputChannel TEXT)');
 
-export const getData = () => {
-  const servers = new Map();
+export const getData = (): Map<string, PureGuild> => {
+  const servers = new Map<string, PureGuild>();
 
   db.all('SELECT guild, token, outputChannel FROM server', (err, rows) => {
     if (err) return;
 
     rows.forEach((row) => {
-      const guild = row['guild'];
-      const token = row['token'];
-      const output = row['outputChannel'];
+      const guild = new PureGuild(row['guild'], row['token'], row['outputChannel']);
 
-      servers.set(guild, { token: token, output: output });
+      servers.set(guild.id, guild);
     });
   });
 
