@@ -1,6 +1,7 @@
 import * as crypto from 'crypto';
 import { Client, MessageEmbed } from 'discord.js';
 
+import PureGuild from '../constructs/pureGuild';
 import db from './database';
 import { servers } from './storage';
 
@@ -34,14 +35,16 @@ client.on('message', async (message) => {
       db.run('INSERT INTO server(guild, token, outputChannel) VALUES(?, ?, ?)', message.guild.id, token, output);
     }
 
-    servers.set(message.guild.id, { token: token, output: output });
+    const guild = new PureGuild(message.guild.id, token, output);
+
+    servers.set(guild.id, guild);
 
     const embed = new MessageEmbed()
       .setColor('#0099ff')
       .setTitle('Pure Tickets Integration Setup')
-      .addField(':ticket:  Your Token', token)
-      .addField(':house:  Guild Id', message.guild.id, true)
-      .addField(':office:  Output Channel', output, true);
+      .addField(':ticket:  Your Token', guild.token)
+      .addField(':house:  Guild Id', guild.id, true)
+      .addField(':office:  Output Channel', guild.output, true);
 
     message.member.send(embed);
     message.member.send(
