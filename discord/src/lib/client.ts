@@ -1,11 +1,19 @@
-import * as crypto from 'crypto';
-import { Client, MessageEmbed } from 'discord.js';
+import { ActivityOptions, Client } from 'discord.js';
 
 import PureGuild from '../constructs/pureGuild';
 import db from './database';
 import { servers } from './storage';
 
 const client = new Client();
+
+client.once('ready', () => {
+  const options: ActivityOptions = {};
+
+  options.name = client.guilds.cache.size.toString() + ' servers';
+  options.type = 'WATCHING';
+
+  client.user.setActivity(options);
+});
 
 client.on('message', async (message) => {
   if (message.author.bot) return;
