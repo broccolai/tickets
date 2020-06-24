@@ -5,12 +5,14 @@ import setup from './commands/setup';
 const client = new Client();
 
 client.once('ready', () => {
-  const options: ActivityOptions = {};
+  setInterval(async () => {
+    const options: ActivityOptions = {};
 
-  options.name = client.guilds.cache.size.toString() + ' servers';
-  options.type = 'WATCHING';
+    options.name = client.guilds.cache.size.toString() + ' servers';
+    options.type = 'WATCHING';
 
-  client.user.setActivity(options);
+    client.user.setActivity(options);
+  }, 300000);
 });
 
 client.on('message', async (message) => {
