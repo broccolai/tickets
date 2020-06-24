@@ -1,3 +1,5 @@
+import org.apache.tools.ant.filters.ReplaceTokens
+
 plugins {
     id "java"
     id "java-library"
@@ -64,6 +66,12 @@ build {
 
 if (file("$rootDir/local.gradle").exists()) {
     apply from: "$rootDir/local.gradle"
+}
+
+processResources {
+    from(sourceSets.main.resources.srcDirs) {
+        filter ReplaceTokens, tokens: [version: version]
+    }
 }
 
 compileKotlin {
