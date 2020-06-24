@@ -111,7 +111,7 @@ class MySQLManager : SQLManager {
                 replacements.add(status[i]!!.name)
             }
 
-            return DB.getFirstColumn(sql, uuid, *replacements.toTypedArray())
+            return DB.getFirstColumn(sql, uuid.toString(), *replacements.toTypedArray())
         }
 
         override fun selectNames(status: TicketStatus?): List<String> {
@@ -150,7 +150,7 @@ class MySQLManager : SQLManager {
         }
 
         override fun exists(id: Int): Boolean {
-            return DB.getFirstColumn<Long>("SELECT EXISTS(SELECT 1 from puretickets_ticket WHERE id = ?)", id) == 1.toLong()
+            return DB.getFirstColumn<Int>("SELECT EXISTS(SELECT 1 from puretickets_ticket WHERE id = ?)", id) == 1
         }
 
         override fun count(status: TicketStatus?): Int {
@@ -166,7 +166,7 @@ class MySQLManager : SQLManager {
             index++
 
             DB.executeInsert("INSERT INTO puretickets_ticket(id, uuid, status, picker, location) VALUES(?, ?, ?, ?, ?)",
-                    index, uuid, status.name, picker, location.serialized())
+                    index, uuid.toString(), status.name, picker, location.serialized())
 
             return index
         }
@@ -209,7 +209,7 @@ class MySQLManager : SQLManager {
                 val message = notification.messageKey.name
                 val replacements = notification.replacements.joinToString("|")
 
-                DB.executeInsert("INSERT INTO puretickets_notification(uuid, message, replacements) VALUES(?, ?, ?)", uuid, message, replacements)
+                DB.executeInsert("INSERT INTO puretickets_notification(uuid, message, replacements) VALUES(?, ?, ?)", uuid.toString(), message, replacements)
             }
         }
     }
@@ -223,7 +223,7 @@ class MySQLManager : SQLManager {
         }
 
         override fun exists(uuid: UUID): Boolean {
-            return DB.getFirstColumn<Long>("SELECT EXISTS(SELECT 1 from puretickets_settings WHERE uuid = ?)", uuid.toString()) == 1.toLong()
+            return DB.getFirstColumn<Int>("SELECT EXISTS(SELECT 1 from puretickets_settings WHERE uuid = ?)", uuid.toString()) == 1
         }
 
         override fun insert(uuid: UUID, settings: UserSettings) {
