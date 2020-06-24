@@ -52,7 +52,7 @@ show:
   sender: "<c2>Created:</c2> <c1>%date% by %player%</c1>"
   picker: "<c2>Picker:</c2> <c1>%date% by %player%</c1>"
   unpicked: "<c2>Picker:</c2> <c1>Unpicked</c1>"
-  message: "<c2>Current Message:</c2> <c1>%date% by %message%</c1>"
+  message: "<c2>Current Message:</c2> <c1>%message%</c1>"
 exceptions:
   ticket_not_found: "Ticket could not be found"
   invalid_setting_type: "Invalid setting type"

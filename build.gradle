@@ -1,3 +1,5 @@
+import org.apache.tools.ant.filters.ReplaceTokens
+
 plugins {
     id "java"
     id "java-library"
@@ -7,7 +9,7 @@ plugins {
 
 def name = 'PureTickets'
 group 'co.uk.magmo.pureTickets'
-version '2.4'
+version '2.4.1'
 
 repositories {
     jcenter()
@@ -64,6 +66,12 @@ build {
 
 if (file("$rootDir/local.gradle").exists()) {
     apply from: "$rootDir/local.gradle"
+}
+
+processResources {
+    from(sourceSets.main.resources.srcDirs) {
+        filter ReplaceTokens, tokens: [version: version]
+    }
 }
 
 compileKotlin {
