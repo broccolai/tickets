@@ -39,6 +39,7 @@ object Config {
     var aliasLog = "log"
     var aliasList = "list|l"
     var aliasStatus = "status"
+    var aliasHighscore = "highscore|hs"
 
     fun loadFile(plugin: Plugin) {
         plugin.saveDefaultConfig()
@@ -82,6 +83,7 @@ object Config {
             aliasLog = process("alias.log", aliasLog)
             aliasList = process("alias.list", aliasList)
             aliasStatus = process("alias.status", aliasStatus)
+            aliasHighscore = process("alias.highscore", aliasHighscore)
         }
     }
 

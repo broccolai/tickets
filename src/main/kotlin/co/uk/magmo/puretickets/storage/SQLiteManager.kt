@@ -12,8 +12,12 @@ import org.bukkit.Location
 import org.bukkit.plugin.Plugin
 import org.intellij.lang.annotations.Language
 import java.io.File
+import java.sql.Time
+import java.time.LocalDateTime
+import java.time.ZoneId
 import java.util.*
 import java.util.logging.Level
+import kotlin.collections.HashMap
 
 class SQLiteManager : SQLManager {
     override fun setup(plugin: Plugin) {
@@ -45,6 +49,28 @@ class SQLiteManager : SQLManager {
         }
 
         DB.executeUpdate("PRAGMA user_version = $version")
+    }
+
+    override fun highscores(span: TimeAmount): HashMap<UUID, Int> {
+        val data = HashMap<UUID, Int>()
+
+        val length = if (span.length != null) {
+            LocalDateTime.now().atZone(ZoneId.systemDefault()).toEpochSecond() - span.length
+        } else {
+            0
+        }
+
+        DB.getResults("""
+            SELECT picker, COUNT(*) AS `num`
+            FROM ticket
+            WHERE status = ?
+            AND picker IS NOT NULL
+            and id in (SELECT DISTINCT ticket FROM message WHERE date > ?)
+            GROUP BY picker
+        """.trimIndent(), TicketStatus.CLOSED.name, length)
+                .forEach { data[it.getUUID("picker")!!] = it.getInt("num") }
+
+        return data
     }
 
     override val ticket = object : SQLManager.TicketFunctions {

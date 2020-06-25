@@ -1,9 +1,11 @@
 package co.uk.magmo.puretickets.commands
 
+import co.aikar.commands.InvalidCommandArgument
 import co.aikar.commands.MessageType
 import co.aikar.commands.PaperCommandManager
 import co.uk.magmo.puretickets.configuration.Config
 import co.uk.magmo.puretickets.locale.TargetType
+import co.uk.magmo.puretickets.storage.TimeAmount
 import co.uk.magmo.puretickets.ticket.*
 import co.uk.magmo.puretickets.utils.Utils
 import org.bukkit.ChatColor
@@ -34,6 +36,14 @@ class CommandManager(plugin: Plugin) : PaperCommandManager(plugin) {
             TicketStatus.from(c.popFirstArg())
         }
 
+        commandContexts.registerContext(TimeAmount::class.java) { c ->
+            try {
+                TimeAmount.valueOf(c.popFirstArg().toUpperCase())
+            } catch (e: Exception) {
+                throw InvalidCommandArgument()
+            }
+        }
+
         // Replacements
         commandReplacements.addReplacement("create", Config.aliasCreate)
         commandReplacements.addReplacement("update", Config.aliasUpdate)
@@ -49,6 +59,7 @@ class CommandManager(plugin: Plugin) : PaperCommandManager(plugin) {
         commandReplacements.addReplacement("log", Config.aliasLog)
         commandReplacements.addReplacement("list", Config.aliasList)
         commandReplacements.addReplacement("status", Config.aliasStatus)
+        commandReplacements.addReplacement("highscore", Config.aliasHighscore)
     }
 
     fun registerCompletions(ticketManager: TicketManager) {
@@ -78,6 +89,8 @@ class CommandManager(plugin: Plugin) : PaperCommandManager(plugin) {
         }
 
         commandCompletions.registerStaticCompletion("TicketStatus", TicketStatus.values().map { it.name.toLowerCase() })
+
+        commandCompletions.registerStaticCompletion("TimeAmounts", TimeAmount.values().map { it.name.toLowerCase() })
     }
 
     fun registerInjections(vararg inputs: Any) {

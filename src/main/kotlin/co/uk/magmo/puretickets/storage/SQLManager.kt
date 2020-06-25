@@ -17,9 +17,12 @@ import java.time.Instant
 import java.time.LocalDateTime
 import java.time.ZoneId
 import java.util.*
+import kotlin.collections.HashMap
 
 interface SQLManager {
     fun setup(plugin: Plugin)
+
+    fun highscores(span: TimeAmount = TimeAmount.FOREVER): HashMap<UUID, Int>
 
     val ticket: TicketFunctions
 

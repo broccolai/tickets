@@ -3,6 +3,7 @@ package co.uk.magmo.puretickets.commands
 import co.aikar.commands.annotation.*
 import co.uk.magmo.puretickets.locale.MessageNames
 import co.uk.magmo.puretickets.locale.Messages
+import co.uk.magmo.puretickets.storage.TimeAmount
 import co.uk.magmo.puretickets.ticket.TicketStatus
 import co.uk.magmo.puretickets.utils.*
 import com.okkero.skedule.SynchronizationContext
@@ -205,6 +206,23 @@ class TicketsCommand : PureBaseCommand() {
 
             data.forEach { (status, amount) ->
                 if (amount != 0) sender.sendMessage(amount.toString() + " " + status.name.toLowerCase())
+            }
+        }
+    }
+
+    @Subcommand("%highscore")
+    @CommandCompletion("@TimeAmounts")
+    @CommandPermission(Constants.STAFF_PERMISSION + ".highscore")
+    @Description("View highscores of ticket completions")
+    fun onHighscore(sender: CommandSender, amount: TimeAmount) {
+        val issuer = currentCommandIssuer
+
+        taskManager {
+            val highscores = ticketManager.highscores(amount)
+            issuer.sendInfo(Messages.TITLES__HIGHSCORES)
+
+            highscores.forEach { (uuid, number) ->
+                issuer.sendInfo(Messages.GENERAL__HS_FORMAT, "%target%", uuid.asName(), "%amount%", number.toString())
             }
         }
     }

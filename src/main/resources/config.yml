@@ -40,3 +40,4 @@ alias:
   log: "log"
   list: "list|l"
   status: "status"
+  highscore: "highscore|hs"

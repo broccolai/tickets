@@ -1,6 +1,7 @@
 package co.uk.magmo.puretickets.ticket
 
 import co.uk.magmo.puretickets.storage.SQLManager
+import co.uk.magmo.puretickets.storage.TimeAmount
 import org.bukkit.entity.Player
 import java.util.*
 
@@ -22,6 +23,8 @@ class TicketManager(private val sqlManager: SQLManager) {
     fun allNames(status: TicketStatus? = null) = sqlManager.ticket.selectNames(status)
 
     fun getHighest(uuid: UUID, vararg status: TicketStatus) = sqlManager.ticket.selectHighestId(uuid, *status)
+
+    fun highscores(amount: TimeAmount) = sqlManager.highscores(amount)
 
     fun createTicket(player: Player, message: Message): Ticket {
         val id = sqlManager.ticket.insert(player.uniqueId, TicketStatus.OPEN, null, player.location)

@@ -42,18 +42,19 @@ permissions:
     description: Allows access to all ticket staff permissions
     children:
       tickets.staff: true
-      tickets.user.show: true
-      tickets.user.pick: true
-      tickets.user.assign: true
-      tickets.user.done: true
-      tickets.user.yield: true
-      tickets.user.reopen: true
-      tickets.user.teleport: true
-      tickets.user.log: true
-      tickets.user.list: true
-      tickets.user.announce: true
-      tickets.user.remind: true
-      tickets.user.reload: false
+      tickets.staff.show: true
+      tickets.staff.pick: true
+      tickets.staff.assign: true
+      tickets.staff.done: true
+      tickets.staff.yield: true
+      tickets.staff.reopen: true
+      tickets.staff.teleport: true
+      tickets.staff.log: true
+      tickets.staff.list: true
+      tickets.staff.announce: true
+      tickets.staff.remind: true
+      tickets.staff.reload: false
+      tickets.staff.highscore: true
   tickets.staff.show:
     default: op
     description: Allows a user to view a ticket
@@ -90,3 +91,6 @@ permissions:
   tickets.staff.reload:
     default: op
     description: Allows a user to reload parts of tickets
+  tickets.staff.highscore:
+    default: op
+    description: Allows a user to view highscores of ticket completions
