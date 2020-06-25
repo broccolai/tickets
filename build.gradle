@@ -9,7 +9,7 @@ plugins {
 
 def name = 'PureTickets'
 group 'co.uk.magmo.pureTickets'
-version '2.4.1'
+version '2.5.0'
 
 repositories {
     jcenter()
