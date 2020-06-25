@@ -1,5 +1,5 @@
 name: PureTickets
-main: co.uk.magmo.puretickets.PureTickets
+main: PureTickets
 version: @version@
 api-version: 1.13
 
