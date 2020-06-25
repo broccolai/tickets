@@ -30,7 +30,7 @@ dependencies {
     api "com.okkero.skedule:skedule:1.2.6"
     api "com.zaxxer:HikariCP:2.7.9"
 
-    compileOnly "org.spigotmc:spigot-api:1.15-R0.1-SNAPSHOT"
+    compileOnly "org.spigotmc:spigot-api:1.16.1-R0.1-SNAPSHOT"
 }
 
 compileJava {
