@@ -1,8 +1,12 @@
 package co.uk.magmo.puretickets.configuration;
 
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.Plugin;
 
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.lang.reflect.Field;
 
 public class Config {
@@ -41,19 +45,26 @@ public class Config {
 
     public Config(Plugin plugin) {
         plugin.saveDefaultConfig();
-
         FileConfiguration config = plugin.getConfig();
+
+        InputStream stream = plugin.getClass().getResourceAsStream("/config.yml");
+        InputStreamReader streamReader = new InputStreamReader(stream);
+        FileConfiguration sourceConfig = YamlConfiguration.loadConfiguration(streamReader);
 
         for (Field field : this.getClass().getDeclaredFields()) {
             field.setAccessible(true);
 
             String fieldName = field.getName().toLowerCase().replace('_', '.');
-            Object sourceValue = config.get(fieldName);
+            Object targetValue = config.get(fieldName, null);
+
+            if (targetValue == null) {
+                targetValue = sourceConfig.get(fieldName);
+            }
 
             try {
-                field.set(this, sourceValue);
-            } catch (IllegalAccessException e) {
-                // handle this
+                field.set(this, targetValue);
+            } catch (IllegalAccessException ignored) {
+                Bukkit.getLogger().warning("PureTickets failed to set the " + fieldName + " configuration value");
             }
         }
     }
