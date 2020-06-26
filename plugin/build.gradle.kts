@@ -14,9 +14,12 @@ repositories {
     maven("https://hub.spigotmc.org/nexus/content/repositories/snapshots/")
     maven("https://oss.sonatype.org/content/repositories/public/")
     maven("https://repo.aikar.co/content/groups/aikar/")
+    maven("https://mvnrepository.com/artifact/org.jetbrains/annotations")
 }
 
 dependencies {
+    implementation("org.jetbrains:annotations:19.0.0")
+
     api("co.aikar:acf-paper:0.5.0-SNAPSHOT")
     api("co.aikar:idb-core:1.0.0-SNAPSHOT")
     api("com.zaxxer:HikariCP:2.7.9")
