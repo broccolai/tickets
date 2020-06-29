@@ -219,7 +219,7 @@ public class TicketFunctions {
         }
 
         DB.executeUpdateAsync("UPDATE puretickets_ticket SET status = ?, picker = ? WHERE id = ?",
-                ticket.getStatus().name(), ticket.getPickerUUID().toString(), ticket.getId());
+                ticket.getStatus().name(), picker, ticket.getId());
     }
 
     public HashMap<UUID, Integer> highscores(TimeAmount span) {
