@@ -81,7 +81,7 @@ public class HelpersSQL {
         Location location = getLocation(row, "location");
         UUID picker = getUUID(row, "picker");
 
-        return new Ticket(id, player, messages, status, location, picker);
+        return new Ticket(id, player, messages, location, status, picker);
     }
 
     Message buildMessage(DbRow row) {
