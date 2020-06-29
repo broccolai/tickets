@@ -20,6 +20,7 @@ repositories {
 dependencies {
     implementation("org.jetbrains:annotations:19.0.0")
 
+    api("co.aikar:taskchain-bukkit:3.7.2")
     api("co.aikar:acf-paper:0.5.0-SNAPSHOT")
     api("co.aikar:idb-core:1.0.0-SNAPSHOT")
     api("com.zaxxer:HikariCP:2.7.9")
@@ -34,8 +35,9 @@ configure<JavaPluginConvention> {
 
 tasks {
     shadowJar {
-        val base = group + ".lib."
+        val base = "$group.lib."
 
+        relocate("co.aikar.taskchain", base + "taskchain")
         relocate("co.aikar.commands", base + "commands")
         relocate("co.aikar.locales", base + "locales")
         relocate("co.aikar.idb", base + "idb")
