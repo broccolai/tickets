@@ -9,21 +9,21 @@ import java.util.ArrayList;
 import java.util.UUID;
 
 public class Ticket {
-    Integer id;
-    UUID playerUUID;
-    ArrayList<Message> messages;
-    TicketStatus status;
-    Location location;
+    private final Integer id;
+    private final UUID playerUUID;
+    private final ArrayList<Message> messages;
+    private final Location location;
+    private TicketStatus status;
 
     @Nullable
-    UUID pickerUUID;
+    private UUID pickerUUID;
 
-    public Ticket(Integer id, UUID playerUUID, ArrayList<Message> messages, TicketStatus status, Location location, @Nullable UUID pickerUUID) {
+    public Ticket(Integer id, UUID playerUUID, ArrayList<Message> messages, Location location, TicketStatus status, @Nullable UUID pickerUUID) {
         this.id = id;
         this.playerUUID = playerUUID;
         this.messages = messages;
-        this.status = status;
         this.location = location;
+        this.status = status;
         this.pickerUUID = pickerUUID;
     }
 
@@ -47,16 +47,16 @@ public class Ticket {
         return messages;
     }
 
+    public Location getLocation() {
+        return location;
+    }
+
     public TicketStatus getStatus() {
         return status;
     }
 
     public void setStatus(TicketStatus status) {
         this.status = status;
-    }
-
-    public Location getLocation() {
-        return location;
     }
 
     public @Nullable UUID getPickerUUID() {
