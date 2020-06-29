@@ -12,4 +12,12 @@ public enum PureColor {
         this.color = color;
         this.hex = hex;
     }
+
+    public ChatColor getColor() {
+        return color;
+    }
+
+    public String getHex() {
+        return hex;
+    }
 }

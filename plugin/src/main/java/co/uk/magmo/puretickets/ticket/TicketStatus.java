@@ -10,4 +10,8 @@ public enum TicketStatus {
     TicketStatus(PureColor pureColor) {
         this.pureColor = pureColor;
     }
+
+    public PureColor getPureColor() {
+        return pureColor;
+    }
 }
