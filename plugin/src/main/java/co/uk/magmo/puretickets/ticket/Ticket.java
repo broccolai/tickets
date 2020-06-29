@@ -34,4 +34,36 @@ public class Ticket {
     public LocalDateTime dateOpened() {
         return messages.get(0).getDate();
     }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public UUID getPlayerUUID() {
+        return playerUUID;
+    }
+
+    public ArrayList<Message> getMessages() {
+        return messages;
+    }
+
+    public TicketStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(TicketStatus status) {
+        this.status = status;
+    }
+
+    public Location getLocation() {
+        return location;
+    }
+
+    public @Nullable UUID getPickerUUID() {
+        return pickerUUID;
+    }
+
+    public void setPickerUUID(@Nullable UUID pickerUUID) {
+        this.pickerUUID = pickerUUID;
+    }
 }
