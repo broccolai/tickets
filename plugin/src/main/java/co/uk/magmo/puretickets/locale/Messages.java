@@ -1,10 +1,10 @@
-package co.uk.magmo.puretickets.locale
+package co.uk.magmo.puretickets.locale;
 
-import co.aikar.locales.MessageKey
-import co.aikar.locales.MessageKeyProvider
+import co.aikar.locales.MessageKey;
+import co.aikar.locales.MessageKeyProvider;
 
-@Suppress("unused")
-enum class Messages : MessageKeyProvider {
+@SuppressWarnings("unused")
+public enum Messages implements MessageKeyProvider {
     // GENERAL
     GENERAL__LIST_FORMAT, GENERAL__LOG_FORMAT, GENERAL__HS_FORMAT,
     // SENDER
@@ -30,13 +30,12 @@ enum class Messages : MessageKeyProvider {
     // OTHER
     OTHER__REMINDER, OTHER__SETTING_UPDATE;
 
-    override fun getMessageKey(): MessageKey {
-        return MessageKey.of(name.toLowerCase().replace("__", "."))
+    @Override
+    public MessageKey getMessageKey() {
+        return MessageKey.of(name().toLowerCase().replace("__", "."));
     }
 
-    companion object {
-        fun retrieve(targetType: TargetType, messageNames: MessageNames): Messages {
-            return valueOf(targetType.name + "__" + messageNames.name)
-        }
+    public static Messages retrieve(TargetType targetType, MessageNames messageNames) {
+        return valueOf(targetType.name() + "__" + messageNames.name());
     }
 }
