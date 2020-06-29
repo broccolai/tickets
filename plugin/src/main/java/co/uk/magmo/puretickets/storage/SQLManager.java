@@ -7,13 +7,14 @@ public abstract class SQLManager {
     HelpersSQL helpers = new HelpersSQL();
 
     Discrete discrete;
-    TicketFunctions ticket;
+    TicketFunctions ticket = new TicketFunctions(helpers);
     MessageSQL message = new MessageSQL(helpers);
     NotificationSQL notification = new NotificationSQL(helpers);
     SettingsSQL setting = new SettingsSQL();
 
     public SQLManager(Discrete discrete) {
         this.discrete = discrete;
+        helpers.setup(message);
     }
 
     public TicketFunctions getTicket() {

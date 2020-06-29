@@ -19,6 +19,12 @@ import java.util.ArrayList;
 import java.util.UUID;
 
 public class HelpersSQL {
+    private MessageSQL messageSQL;
+
+    public void setup(MessageSQL messageSQL) {
+        this.messageSQL = messageSQL;
+    }
+
     @Nullable UUID getUUID(DbRow row, String column) {
         String raw = row.getString(column);
 
@@ -71,7 +77,7 @@ public class HelpersSQL {
     Ticket buildTicket(DbRow row) {
         Integer id = row.getInt("id");
         UUID player = getUUID(row, "uuid");
-        ArrayList<Message> messages = null; // = row.getInt("id");
+        ArrayList<Message> messages = messageSQL.selectAll(row.getInt("id"));
         TicketStatus status = getEnumValue(row, TicketStatus.class, "status");
         Location location = getLocation(row, "location");
         UUID picker = getUUID(row, "picker");
