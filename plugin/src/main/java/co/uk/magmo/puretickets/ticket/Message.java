@@ -26,6 +26,13 @@ public class Message {
         this.sender = sender;
     }
 
+    public Message(MessageReason reason, LocalDateTime date, @Nullable String data, @Nullable UUID sender) {
+        this.reason = reason;
+        this.date = date;
+        this.data = data;
+        this.sender = sender;
+    }
+
     public MessageReason getReason() {
         return reason;
     }

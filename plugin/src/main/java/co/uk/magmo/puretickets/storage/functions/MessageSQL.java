@@ -18,7 +18,7 @@ public class MessageSQL {
         this.helpers = helpers;
     }
 
-    ArrayList<Message> selectAll(Integer id) {
+    public ArrayList<Message> selectAll(Integer id) {
         List<DbRow> results;
 
         try {
@@ -36,7 +36,7 @@ public class MessageSQL {
         return output;
     }
 
-    void insert(Ticket ticket, Message message) {
+    public void insert(Ticket ticket, Message message) {
         UUID sender = message.getSender();
         Long date = helpers.serializeLocalDateTime(message.getDate());
         String senderName;
