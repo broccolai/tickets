@@ -10,38 +10,38 @@ import java.io.InputStreamReader;
 import java.lang.reflect.Field;
 
 public class Config {
-    String LOCALE;
-    Integer REMINDER_DELAY;
-    Integer REMINDER_REPEAT;
+    public String LOCALE;
+    public Integer REMINDER_DELAY;
+    public Integer REMINDER_REPEAT;
 
-    Integer LIMIT_OPEN_TICKET;
+    public Integer LIMIT_OPEN_TICKET;
 
-    Boolean STORAGE_MYSQL;
-    String STORAGE_USER;
-    String STORAGE_PASSWORD;
-    String STORAGE_NAME;
-    String STORAGE_HOST;
-    Boolean STORAGE_SSL;
+    public Boolean STORAGE_MYSQL;
+    public String STORAGE_USER;
+    public String STORAGE_PASSWORD;
+    public String STORAGE_NAME;
+    public String STORAGE_HOST;
+    public Boolean STORAGE_SSL;
 
-    Boolean DISCORD_ENABLED;
-    String DISCORD_GUILD;
-    String DISCORD_TOKEN;
+    public Boolean DISCORD_ENABLED;
+    public String DISCORD_GUILD;
+    public String DISCORD_TOKEN;
 
-    String ALIAS_CREATE;
-    String ALIAS_UPDATE;
-    String ALIAS_CLOSE;
-    String ALIAS_SHOW;
-    String ALIAS_PICK;
-    String ALIAS_ASSIGN;
-    String ALIAS_DONE;
-    String ALIAS_YIELD;
-    String ALIAS_NOTE;
-    String ALIAS_REOPEN;
-    String ALIAS_TELEPORT;
-    String ALIAS_LOG;
-    String ALIAS_LIST;
-    String ALIAS_STATUS;
-    String ALIAS_HIGHSCORE;
+    public String ALIAS_CREATE;
+    public String ALIAS_UPDATE;
+    public String ALIAS_CLOSE;
+    public String ALIAS_SHOW;
+    public String ALIAS_PICK;
+    public String ALIAS_ASSIGN;
+    public String ALIAS_DONE;
+    public String ALIAS_YIELD;
+    public String ALIAS_NOTE;
+    public String ALIAS_REOPEN;
+    public String ALIAS_TELEPORT;
+    public String ALIAS_LOG;
+    public String ALIAS_LIST;
+    public String ALIAS_STATUS;
+    public String ALIAS_HIGHSCORE;
 
     public Config(Plugin plugin) {
         plugin.saveDefaultConfig();
