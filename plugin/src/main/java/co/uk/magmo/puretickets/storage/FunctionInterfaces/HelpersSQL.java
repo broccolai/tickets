@@ -19,9 +19,11 @@ import java.util.ArrayList;
 import java.util.UUID;
 
 public class HelpersSQL {
+    private PlatformFunctions platformFunctions;
     private MessageSQL messageSQL;
 
-    public void setup(MessageSQL messageSQL) {
+    public void setup(PlatformFunctions platformFunctions, MessageSQL messageSQL) {
+        this.platformFunctions = platformFunctions;
         this.messageSQL = messageSQL;
     }
 
@@ -47,12 +49,8 @@ public class HelpersSQL {
         return location.getWorld() + "|" + location.getBlockX() + "|" + location.getBlockY() + "|" + location.getBlockZ();
     }
 
-    Long getPureLong(DbRow row, String column) {
-        return row.getLong(column);
-    }
-
     LocalDateTime getDate(DbRow row, String column) {
-        Instant instant = Instant.ofEpochSecond(getPureLong(row, column));
+        Instant instant = Instant.ofEpochSecond(platformFunctions.getPureLong(row, column));
 
         return LocalDateTime.ofInstant(instant, ZoneId.systemDefault());
     }
