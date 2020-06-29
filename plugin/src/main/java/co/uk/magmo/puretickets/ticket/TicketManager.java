@@ -2,12 +2,15 @@ package co.uk.magmo.puretickets.ticket;
 
 import co.uk.magmo.puretickets.storage.SQLManager;
 import co.uk.magmo.puretickets.storage.TimeAmount;
+import com.google.common.collect.Lists;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Nullable;
 
+import java.time.LocalDateTime;
 import java.util.*;
 
-class TicketManager {
+public class TicketManager {
     private SQLManager sqlManager;
 
     public TicketManager(SQLManager sqlManager) {
@@ -18,106 +21,109 @@ class TicketManager {
         return sqlManager.getTicket().select(id);
     }
 
-    operator fun get(uuid: UUID, status: TicketStatus? = null) = sqlManager.ticket.selectAll(uuid, status)
-
-    fun getIds(uuid: UUID, status: TicketStatus? = null) = sqlManager.ticket.selectIds(uuid, status)
-
-    fun exists(id: Int) = sqlManager.ticket.exists(id)
-
-    fun count(status: TicketStatus? = null) = sqlManager.ticket.count(status)
-
-    fun stats(uuid: UUID? = null) = sqlManager.ticket.selectTicketStats(uuid)
-
-    fun all(status: TicketStatus? = null) = sqlManager.ticket.selectAll(status)
-
-    fun allNames(status: TicketStatus? = null) = sqlManager.ticket.selectNames(status)
-
-    fun getHighest(uuid: UUID, vararg status: TicketStatus) = sqlManager.ticket.selectHighestId(uuid, *status)
-
-    fun highscores(amount: TimeAmount) = sqlManager.highscores(amount)
-
-    fun createTicket(player: Player, message: Message): Ticket {
-        val id = sqlManager.ticket.insert(player.uniqueId, TicketStatus.OPEN, null, player.location)
-        val ticket = Ticket(id, player.uniqueId, arrayListOf(message), TicketStatus.OPEN, null, player.location)
-
-        sqlManager.message.insert(ticket, message)
-
-        return ticket
+    public List<Ticket> getAll(UUID uuid, TicketStatus status) {
+        return sqlManager.getTicket().selectAll(uuid, status);
     }
 
-    fun update(id: Int, message: Message): Ticket? {
-        val ticket = get(id) ?: return null
-
-        ticket.addMessageAndUpdate(message)
-
-        return ticket
+    public List<Integer> getIds(UUID uuid, TicketStatus status) {
+        return sqlManager.getTicket().selectIds(uuid, status);
     }
 
-    fun pick(uuid: UUID?, id: Int): Ticket? {
-        val ticket = get(id) ?: return null
-        val message = Message(MessageReason.PICKED, null, uuid)
-
-        ticket.status = TicketStatus.PICKED
-        ticket.pickerUUID = uuid
-        ticket.addMessageAndUpdate(message)
-
-        return ticket
+    public Boolean exists(Integer id) {
+        return sqlManager.getTicket().exists(id);
     }
 
-    fun yield(uuid: UUID?, id: Int): Ticket? {
-        val ticket = get(id) ?: return null
-        val message = Message(MessageReason.YIELDED, null, uuid)
-
-        ticket.status = TicketStatus.OPEN
-        ticket.pickerUUID = null
-        ticket.addMessageAndUpdate(message)
-
-        return ticket
+    public Integer count(TicketStatus status) {
+        return sqlManager.getTicket().count(status);
     }
 
-    fun close(uuid: UUID?, id: Int): Ticket? {
-        val ticket = get(id) ?: return null
-        val message = Message(MessageReason.CLOSED, null, uuid)
-
-        ticket.status = TicketStatus.CLOSED
-        ticket.addMessageAndUpdate(message)
-
-        return ticket
+    public EnumMap<TicketStatus, Integer> stats(UUID uuid) {
+        return sqlManager.getTicket().selectTicketStats(uuid);
     }
 
-    fun done(uuid: UUID?, id: Int): Ticket? {
-        val ticket = get(id) ?: return null
-        val message = Message(MessageReason.DONE_MARKED, null, uuid)
-
-        ticket.status = TicketStatus.CLOSED
-        ticket.addMessageAndUpdate(message)
-
-        return ticket
+    public List<Ticket> all(TicketStatus status) {
+        return sqlManager.getTicket().selectAll(status);
     }
 
-    fun reopen(uuid: UUID?, id: Int): Ticket? {
-        val ticket = get(id) ?: return null
-        val message = Message(MessageReason.REOPENED, null, uuid)
-
-        ticket.status = TicketStatus.OPEN
-        ticket.addMessageAndUpdate(message)
-
-        return ticket
+    public List<String> allNames(TicketStatus status) {
+        return sqlManager.getTicket().selectNames(status);
     }
 
-    fun note(uuid: UUID?, id: Int, input: String): Ticket? {
-        val ticket = get(id) ?: return null
-        val message = Message(MessageReason.NOTE, input, uuid)
-
-        ticket.addMessageAndUpdate(message)
-
-        return ticket
+    public Integer getHighestId(UUID uuid, TicketStatus... statuses) {
+        return sqlManager.getTicket().selectHighestId(uuid, statuses);
     }
 
-    private fun Ticket.addMessageAndUpdate(message: Message) {
-        messages.add(message)
+    public HashMap<UUID, Integer> highscores(TimeAmount span) {
+        return sqlManager.getTicket().highscores(span);
+    }
 
-        sqlManager.message.insert(this, message)
-        sqlManager.ticket.update(this)
+    public Ticket createTicket(Player player, Message message) {
+        UUID uuid = player.getUniqueId();
+        Location location = player.getLocation();
+
+        Integer id = sqlManager.getTicket().insert(uuid, TicketStatus.OPEN, null, location);
+        Ticket ticket = new Ticket(id, uuid, Lists.newArrayList(message), location, TicketStatus.OPEN, null);
+
+        sqlManager.getMessage().insert(ticket, message);
+
+        return ticket;
+    }
+
+    public Ticket update(Integer id, Message message) {
+        return addMessageAndUpdate(get(id), message);
+    }
+
+    public Ticket pick(UUID uuid, Integer id) {
+        Ticket ticket = get(id);
+        Message message = new Message(MessageReason.PICKED, LocalDateTime.now(), uuid);
+
+        ticket.setStatus(TicketStatus.PICKED);
+        ticket.setPickerUUID(uuid);
+
+        return addMessageAndUpdate(ticket, message);
+    }
+
+    public Ticket yield(UUID uuid, Integer id) {
+        Ticket ticket = get(id);
+        Message message = new Message(MessageReason.REOPENED, LocalDateTime.now(), uuid);
+
+        ticket.setStatus(TicketStatus.OPEN);
+        ticket.setPickerUUID(uuid);
+
+        return addMessageAndUpdate(ticket, message);
+    }
+
+    public Ticket close(UUID uuid, Integer id) {
+        Ticket ticket = get(id);
+        Message message = new Message(MessageReason.CLOSED, LocalDateTime.now(), uuid);
+
+        ticket.setStatus(TicketStatus.CLOSED);
+
+        return addMessageAndUpdate(ticket, message);
+    }
+
+    public Ticket reopen(UUID uuid, Integer id) {
+        Ticket ticket = get(id);
+        Message message = new Message(MessageReason.REOPENED, LocalDateTime.now(), uuid);
+
+        ticket.setStatus(TicketStatus.OPEN);
+
+        return addMessageAndUpdate(ticket, message);
+    }
+
+    public Ticket note(UUID uuid, Integer id, String input) {
+        Ticket ticket = get(id);
+        Message message = new Message(MessageReason.NOTE, LocalDateTime.now(), input, uuid);
+
+        return addMessageAndUpdate(ticket, message);
+    }
+
+    private Ticket addMessageAndUpdate(Ticket ticket, Message message) {
+        ticket.getMessages().add(message);
+
+        sqlManager.getMessage().insert(ticket, message);
+        sqlManager.getTicket().update(ticket);
+
+        return ticket;
     }
 }
