@@ -2,7 +2,6 @@ package co.uk.magmo.puretickets.storage.platforms;
 
 import co.aikar.idb.*;
 import co.uk.magmo.puretickets.configuration.Config;
-import co.uk.magmo.puretickets.storage.FunctionInterfaces.PlatformFunctions;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 
@@ -10,7 +9,7 @@ import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
 
-public class SQLite implements PlatformFunctions {
+public class SQLite implements Platform {
     @Override
     public void setup(Plugin plugin, Config config) {
         int version = 0;

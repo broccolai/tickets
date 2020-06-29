@@ -1,4 +1,4 @@
-package co.uk.magmo.puretickets.storage.FunctionInterfaces;
+package co.uk.magmo.puretickets.storage.functions;
 
 import co.aikar.idb.DB;
 import co.aikar.idb.DbRow;

@@ -1,21 +1,21 @@
 package co.uk.magmo.puretickets.storage;
 
-import co.uk.magmo.puretickets.storage.FunctionInterfaces.*;
-import org.bukkit.plugin.Plugin;
+import co.uk.magmo.puretickets.storage.functions.*;
+import co.uk.magmo.puretickets.storage.platforms.Platform;
 
 public class SQLManager {
     HelpersSQL helpers = new HelpersSQL();
 
-    PlatformFunctions platformFunctions;
+    Platform platform;
     TicketFunctions ticket = new TicketFunctions(helpers);
     MessageSQL message = new MessageSQL(helpers);
     NotificationSQL notification = new NotificationSQL(helpers);
     SettingsSQL setting = new SettingsSQL();
 
-    public SQLManager(PlatformFunctions platformFunctions) {
-        this.platformFunctions = platformFunctions;
+    public SQLManager(Platform platform) {
+        this.platform = platform;
 
-        helpers.setup(platformFunctions, message);
+        helpers.setup(platform, message);
     }
 
     public TicketFunctions getTicket() {

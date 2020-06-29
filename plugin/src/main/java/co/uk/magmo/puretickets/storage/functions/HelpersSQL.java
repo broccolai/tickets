@@ -1,8 +1,9 @@
-package co.uk.magmo.puretickets.storage.FunctionInterfaces;
+package co.uk.magmo.puretickets.storage.functions;
 
 import co.aikar.idb.DbRow;
 import co.uk.magmo.puretickets.interactions.PendingNotification;
 import co.uk.magmo.puretickets.locale.Messages;
+import co.uk.magmo.puretickets.storage.platforms.Platform;
 import co.uk.magmo.puretickets.ticket.Message;
 import co.uk.magmo.puretickets.ticket.MessageReason;
 import co.uk.magmo.puretickets.ticket.Ticket;
@@ -19,11 +20,11 @@ import java.util.ArrayList;
 import java.util.UUID;
 
 public class HelpersSQL {
-    private PlatformFunctions platformFunctions;
+    private Platform platform;
     private MessageSQL messageSQL;
 
-    public void setup(PlatformFunctions platformFunctions, MessageSQL messageSQL) {
-        this.platformFunctions = platformFunctions;
+    public void setup(Platform platform, MessageSQL messageSQL) {
+        this.platform = platform;
         this.messageSQL = messageSQL;
     }
 
@@ -50,7 +51,7 @@ public class HelpersSQL {
     }
 
     LocalDateTime getDate(DbRow row, String column) {
-        Instant instant = Instant.ofEpochSecond(platformFunctions.getPureLong(row, column));
+        Instant instant = Instant.ofEpochSecond(platform.getPureLong(row, column));
 
         return LocalDateTime.ofInstant(instant, ZoneId.systemDefault());
     }
