@@ -28,7 +28,7 @@ import java.time.LocalDateTime;
 import java.util.*;
 
 public class CommandManager extends PaperCommandManager {
-    public CommandManager(Plugin plugin, Config config) {
+    public CommandManager(Plugin plugin, Config config, TicketManager ticketManager) {
         super(plugin);
 
         enableUnstableAPI("help");
@@ -40,6 +40,14 @@ public class CommandManager extends PaperCommandManager {
         setFormat(MessageType.INFO, ChatColor.WHITE, ChatColor.AQUA, ChatColor.DARK_GRAY);
 
         // Contexts
+        getCommandContexts().registerContext(Ticket.class, c -> {
+            try {
+                return ticketManager.get(Integer.parseInt(c.popFirstArg()));
+            } catch (Exception e) {
+                throw new InvalidCommandArgument();
+            }
+        });
+
         getCommandContexts().registerContext(Message.class, c ->
                 new Message(MessageReason.MESSAGE, LocalDateTime.now(), c.joinArgs())
         );
@@ -116,6 +124,7 @@ public class CommandManager extends PaperCommandManager {
     }
 
     public void registerCommands() {
+        registerCommand(new PureBaseCommand());
 //        registerCommand(TicketCommand());
 //        registerCommand(TicketsCommand());
 //        registerCommand(PureTicketsCommand());
