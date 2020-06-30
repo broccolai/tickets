@@ -18,6 +18,10 @@ public class SQLManager {
         helpers.setup(platform, message);
     }
 
+    public Platform getPlatform() {
+        return platform;
+    }
+
     public TicketFunctions getTicket() {
         return ticket;
     }
