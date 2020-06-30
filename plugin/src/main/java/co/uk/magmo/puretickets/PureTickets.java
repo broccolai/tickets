@@ -21,19 +21,11 @@ public class PureTickets extends JavaPlugin {
     @Override
     public void onEnable() {
         Config config = new Config(this);
-        SQLManager sqlManager;
-
-        if (config.STORAGE_MYSQL) {
-            sqlManager = new SQLManager(new MySQL());
-        } else {
-            sqlManager = new SQLManager(new SQLite());
-        }
-
-        sqlManager.getPlatform().setup(this, config);
+        DiscordManager discordManager = new DiscordManager(config);
+        SQLManager sqlManager = new SQLManager(this, config);
+        CommandManager commandManager = new CommandManager(this, config);
 
         UserManager userManager = new UserManager(sqlManager);
-        DiscordManager discordManager = new DiscordManager(config);
-        CommandManager commandManager = new CommandManager(this, config);
         TicketManager ticketManager = new TicketManager(sqlManager);
 
         taskManager = new TaskManager(this);
