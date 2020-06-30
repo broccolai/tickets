@@ -1,6 +1,6 @@
 package co.uk.magmo.puretickets.locale;
 
-enum TargetType {
+public enum TargetType {
     SENDER(true), NOTIFICATION(true), ANNOUNCEMENT(true), DISCORD(false);
 
     private final Boolean hasPrefix;
