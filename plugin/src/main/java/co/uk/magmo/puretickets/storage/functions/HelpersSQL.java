@@ -89,18 +89,9 @@ public class HelpersSQL {
         LocalDateTime date = getDate(row, "date");
 
         String data = row.getString("data");
-
-        if (data != null) {
-            return new Message(reason, date, data);
-        }
-
         UUID sender = getUUID(row, "sender");
 
-        if (sender != null) {
-            return new Message(reason, date, sender);
-        }
-
-        throw new IllegalArgumentException();
+        return new Message(reason, date, data, sender);
     }
 
     PendingNotification buildNotification(DbRow row) {
