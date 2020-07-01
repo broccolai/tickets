@@ -8,6 +8,7 @@ import co.uk.magmo.puretickets.locale.TargetType;
 import co.uk.magmo.puretickets.storage.TimeAmount;
 import co.uk.magmo.puretickets.ticket.*;
 import co.uk.magmo.puretickets.utilities.ListUtilities;
+import co.uk.magmo.puretickets.utilities.NumberUtilities;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
@@ -40,12 +41,39 @@ public class CommandManager extends PaperCommandManager {
         setFormat(MessageType.INFO, ChatColor.WHITE, ChatColor.AQUA, ChatColor.DARK_GRAY);
 
         // Contexts
-        getCommandContexts().registerContext(Ticket.class, c -> {
-            try {
-                return ticketManager.get(Integer.parseInt(c.popFirstArg()));
-            } catch (Exception e) {
-                throw new InvalidCommandArgument();
-            }
+        getCommandContexts().registerOptionalContext(FutureTicket.class, c -> {
+            FutureTicket future = new FutureTicket();
+
+            Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
+                try {
+                    String input = c.popFirstArg();
+
+                    if (input != null) {
+                        future.complete(ticketManager.get(Integer.parseInt(input)));
+                        return;
+                    }
+
+                    OfflinePlayer player;
+
+                    if (c.hasFlag("issuer")) {
+                        player = (OfflinePlayer) c.getResolvedArg("player");
+                    } else {
+                        player = (OfflinePlayer) c.getResolvedArg("offlinePlayer");
+                    }
+
+                    Ticket potentialTicket = ticketManager.getLatestTicket(player.getUniqueId());
+
+                    if (potentialTicket == null) {
+                        throw new InvalidCommandArgument();
+                    }
+
+                    future.complete(potentialTicket);
+                } catch (Exception e) {
+                    throw new InvalidCommandArgument();
+                }
+            });
+
+            return future;
         });
 
         getCommandContexts().registerContext(Message.class, c ->
