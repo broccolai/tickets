@@ -35,7 +35,7 @@ configure<JavaPluginConvention> {
 
 tasks {
     shadowJar {
-        val base = "$group.lib."
+        val base = project.group.toString() + ".lib."
 
         relocate("co.aikar.taskchain", base + "taskchain")
         relocate("co.aikar.commands", base + "commands")
