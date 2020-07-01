@@ -117,7 +117,7 @@ public class CommandManager extends PaperCommandManager {
 
         getCommandCompletions().registerAsyncCompletion("TargetIds", c -> {
             try {
-                OfflinePlayer target = c.getContextValue(OfflinePlayer.class, Integer.valueOf(c.getConfig("parameter")));
+                OfflinePlayer target = c.getContextValue(OfflinePlayer.class, NumberUtilities.valueOfOrNull(c.getConfig("parameter")));
                 TicketStatus status = TicketStatus.from(c.getConfig("status"));
 
                 return ListUtilities.map(ticketManager.getIds(target.getUniqueId(), status), Object::toString);
