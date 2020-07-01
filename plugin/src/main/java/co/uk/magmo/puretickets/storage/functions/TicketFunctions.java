@@ -234,10 +234,10 @@ public class TicketFunctions {
 
         @Language("SQL")
         String sql = "SELECT picker, COUNT(*) AS `num` " +
-                "FROM ticket " +
+                "FROM puretickets_ticket " +
                 "WHERE status = ? " +
                 "AND picker IS NOT NULL " +
-                "and id in (SELECT DISTINCT ticket FROM message WHERE date > ?) " +
+                "and id in (SELECT DISTINCT ticket FROM puretickets_message WHERE date > ?) " +
                 "GROUP BY picker";
 
         List<DbRow> results;
