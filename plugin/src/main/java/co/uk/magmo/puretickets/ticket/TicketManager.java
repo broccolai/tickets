@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 import java.util.*;
 
 public class TicketManager {
-    private SQLManager sqlManager;
+    private final SQLManager sqlManager;
 
     public TicketManager(SQLManager sqlManager) {
         this.sqlManager = sqlManager;
@@ -23,6 +23,10 @@ public class TicketManager {
 
     public List<Ticket> getAll(UUID uuid, TicketStatus status) {
         return sqlManager.getTicket().selectAll(uuid, status);
+    }
+
+    public Ticket getLatestTicket(UUID uuid, TicketStatus... statuses) {
+        return sqlManager.getTicket().selectLastTicket(uuid, statuses);
     }
 
     public List<Integer> getIds(UUID uuid, TicketStatus status) {
@@ -47,10 +51,6 @@ public class TicketManager {
 
     public List<String> allNames(TicketStatus status) {
         return sqlManager.getTicket().selectNames(status);
-    }
-
-    public Integer getHighestId(UUID uuid, TicketStatus... statuses) {
-        return sqlManager.getTicket().selectHighestId(uuid, statuses);
     }
 
     public HashMap<UUID, Integer> highscores(TimeAmount span) {

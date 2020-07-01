@@ -7,6 +7,7 @@ import co.uk.magmo.puretickets.ticket.Ticket;
 import co.uk.magmo.puretickets.ticket.TicketStatus;
 import co.uk.magmo.puretickets.utilities.ListUtilities;
 import co.uk.magmo.puretickets.utilities.UserUtilities;
+import com.google.common.collect.ObjectArrays;
 import org.bukkit.Location;
 import org.intellij.lang.annotations.Language;
 
@@ -88,11 +89,11 @@ public class TicketFunctions {
         return results;
     }
 
-    public Integer selectHighestId(UUID uuid, TicketStatus... statuses) {
+    public Ticket selectLastTicket(UUID uuid, TicketStatus... statuses) {
         ArrayList<String> replacements = new ArrayList<>();
 
         @Language("SQL")
-        String sql = "SELECT max(id) FROM puretickets_ticket WHERE uuid = ?";
+        String sql = "SELECT max(id) AS 'id', uuid, status, picker, location FROM puretickets_ticket WHERE uuid = ?";
 
         for (int i = 0; i < statuses.length; i++) {
             if (i == 0) {
@@ -105,7 +106,7 @@ public class TicketFunctions {
         }
 
         try {
-            return DB.getFirstColumn(sql, uuid.toString(), replacements);
+            return helpers.buildTicket(DB.getFirstRow(sql, ObjectArrays.concat(uuid.toString(), replacements.toArray())));
         } catch (SQLException e) {
             throw new IllegalArgumentException();
         }
