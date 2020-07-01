@@ -152,9 +152,8 @@ public class CommandManager extends PaperCommandManager {
     }
 
     public void registerCommands() {
-        registerCommand(new PureBaseCommand());
-//        registerCommand(TicketCommand());
-//        registerCommand(TicketsCommand());
+        registerCommand(new TicketCommand());
+        registerCommand(new TicketsCommand());
 //        registerCommand(PureTicketsCommand());
     }
 
