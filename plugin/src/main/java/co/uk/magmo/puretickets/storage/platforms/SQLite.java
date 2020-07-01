@@ -18,6 +18,7 @@ public class SQLite implements Platform {
         try {
             file.createNewFile();
         } catch (IOException e) {
+            e.printStackTrace();
             Bukkit.getPluginManager().disablePlugin(plugin);
         }
 
@@ -34,6 +35,7 @@ public class SQLite implements Platform {
 
             version = DB.getFirstColumn("PRAGMA user_version");
         } catch (SQLException e) {
+            e.printStackTrace();
             Bukkit.getPluginManager().disablePlugin(plugin);
         }
 
@@ -50,12 +52,23 @@ public class SQLite implements Platform {
                 DB.executeUpdate("DELETE FROM notification");
                 version++;
             }
+
+            if (version <= 2) {
+                plugin.getLogger().info("Updated PureTickets database to prefix table names");
+                DB.getFirstColumn("ALTER TABLE ticket RENAME TO puretickets_ticket;");
+                DB.getFirstColumn("ALTER TABLE message RENAME TO puretickets_message;");
+                DB.getFirstColumn("ALTER TABLE notification RENAME TO puretickets_notification;");
+                DB.getFirstColumn("ALTER TABLE settings RENAME TO puretickets_settings;");
+                version++;
+            }
         } catch (SQLException e) {
+            e.printStackTrace();
             Bukkit.getPluginManager().disablePlugin(plugin);
         } finally {
             try {
-                DB.executeUpdate("PRAGMA user_version = ?", version);
+                DB.executeUpdate("PRAGMA user_version = " + version);
             } catch (SQLException e) {
+                e.printStackTrace();
                 Bukkit.getPluginManager().disablePlugin(plugin);
             }
         }
