@@ -4,6 +4,7 @@ import co.aikar.commands.InvalidCommandArgument;
 import co.aikar.commands.MessageType;
 import co.aikar.commands.PaperCommandManager;
 import co.uk.magmo.puretickets.configuration.Config;
+import co.uk.magmo.puretickets.locale.Messages;
 import co.uk.magmo.puretickets.locale.TargetType;
 import co.uk.magmo.puretickets.storage.TimeAmount;
 import co.uk.magmo.puretickets.ticket.*;
@@ -45,32 +46,38 @@ public class CommandManager extends PaperCommandManager {
             FutureTicket future = new FutureTicket();
 
             Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
-                try {
-                    String input = c.popFirstArg();
+                String input = c.popFirstArg();
 
-                    if (input != null) {
-                        future.complete(ticketManager.get(Integer.parseInt(input)));
+                if (input != null) {
+                    Ticket ticket = ticketManager.get(Integer.parseInt(input));
+
+                    if (ticket == null || (c.hasFlag("issuer")  && ticket.getPlayerUUID() != c.getPlayer().getUniqueId())) {
+                        future.cancel(true);
+                        c.getIssuer().sendInfo(Messages.EXCEPTIONS__TICKET_NOT_FOUND);
                         return;
                     }
 
-                    OfflinePlayer player;
-
-                    if (c.hasFlag("issuer")) {
-                        player = (OfflinePlayer) c.getResolvedArg("player");
-                    } else {
-                        player = (OfflinePlayer) c.getResolvedArg("offlinePlayer");
-                    }
-
-                    Ticket potentialTicket = ticketManager.getLatestTicket(player.getUniqueId());
-
-                    if (potentialTicket == null) {
-                        throw new InvalidCommandArgument();
-                    }
-
-                    future.complete(potentialTicket);
-                } catch (Exception e) {
-                    throw new InvalidCommandArgument();
+                    future.complete(ticket);
+                    return;
                 }
+
+                OfflinePlayer player;
+
+                if (c.hasFlag("issuer")) {
+                    player = (OfflinePlayer) c.getResolvedArg("player");
+                } else {
+                    player = (OfflinePlayer) c.getResolvedArg("offlinePlayer");
+                }
+
+                Ticket potentialTicket = ticketManager.getLatestTicket(player.getUniqueId());
+
+                if (potentialTicket == null) {
+                    future.cancel(true);
+                    c.getIssuer().sendInfo(Messages.EXCEPTIONS__TICKET_NOT_FOUND);
+                    return;
+                }
+
+                future.complete(potentialTicket);
             });
 
             return future;
