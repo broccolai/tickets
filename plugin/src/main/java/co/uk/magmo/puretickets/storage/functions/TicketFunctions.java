@@ -32,7 +32,7 @@ public class TicketFunctions {
             throw new IllegalArgumentException();
         }
 
-        return helpers.buildTicket(row);
+        return row != null ? helpers.buildTicket(row) : null;
     }
 
     public List<Ticket> selectAll(TicketStatus status) {
