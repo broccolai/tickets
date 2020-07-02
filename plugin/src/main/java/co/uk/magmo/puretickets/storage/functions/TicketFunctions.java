@@ -173,6 +173,14 @@ public class TicketFunctions {
         }
     }
 
+    public Integer count(UUID uuid) {
+        try {
+            return DB.getFirstColumn("SELECT COUNT(id) FROM puretickets_ticket WHERE uuid = ?", uuid.toString());
+        } catch (SQLException e) {
+            throw new IllegalArgumentException();
+        }
+    }
+
     public Integer count(TicketStatus status) {
         @Language("SQL")
         String sql = "SELECT COUNT(id) FROM puretickets_ticket";

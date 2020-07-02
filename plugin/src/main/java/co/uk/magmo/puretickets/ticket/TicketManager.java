@@ -37,6 +37,10 @@ public class TicketManager {
         return sqlManager.getTicket().exists(id);
     }
 
+    public Integer count(UUID uuid) {
+        return sqlManager.getTicket().count(uuid);
+    }
+
     public Integer count(TicketStatus status) {
         return sqlManager.getTicket().count(status);
     }
