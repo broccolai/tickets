@@ -4,6 +4,7 @@ import co.aikar.commands.BaseCommand;
 import co.aikar.commands.CommandHelp;
 import co.aikar.commands.CommandIssuer;
 import co.aikar.commands.annotation.*;
+import co.uk.magmo.puretickets.configuration.Config;
 import co.uk.magmo.puretickets.interactions.NotificationManager;
 import co.uk.magmo.puretickets.locale.Messages;
 import co.uk.magmo.puretickets.tasks.TaskManager;
@@ -14,6 +15,8 @@ import co.uk.magmo.puretickets.utilities.UserUtilities;
 import org.bukkit.command.CommandSender;
 
 public class PureBaseCommand extends BaseCommand {
+    @Dependency
+    protected Config config;
 
     @Dependency
     protected NotificationManager notificationManager;
