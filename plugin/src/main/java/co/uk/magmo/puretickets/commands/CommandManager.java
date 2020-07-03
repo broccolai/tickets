@@ -223,7 +223,7 @@ public class CommandManager extends PaperCommandManager {
                                 Bukkit.getLogger().warning("Could not save locale file");
                             }
                         } else {
-//                            Utils.mergeYAML(stream, target);
+                            FileUtilities.mergeYaml(stream, target);
                         }
                     });
 

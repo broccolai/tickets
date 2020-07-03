@@ -1,10 +1,12 @@
 package co.uk.magmo.puretickets.configuration;
 
+import co.uk.magmo.puretickets.utilities.FileUtilities;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.Plugin;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -46,9 +48,11 @@ public class Config {
 
     public Config(Plugin plugin) {
         plugin.saveDefaultConfig();
-        FileConfiguration config = plugin.getConfig();
-
         InputStream stream = plugin.getClass().getResourceAsStream("/config.yml");
+
+        FileUtilities.mergeYaml(stream, new File(plugin.getDataFolder(), "config.yml"));
+
+        FileConfiguration config = plugin.getConfig();
         InputStreamReader streamReader = new InputStreamReader(stream);
         FileConfiguration sourceConfig = YamlConfiguration.loadConfiguration(streamReader);
 
