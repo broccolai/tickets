@@ -6,6 +6,7 @@ import co.uk.magmo.puretickets.locale.Messages;
 import co.uk.magmo.puretickets.locale.TargetType;
 import co.uk.magmo.puretickets.storage.TimeAmount;
 import co.uk.magmo.puretickets.ticket.*;
+import co.uk.magmo.puretickets.utilities.FileUtilities;
 import co.uk.magmo.puretickets.utilities.ListUtilities;
 import co.uk.magmo.puretickets.utilities.NumberUtilities;
 import org.bukkit.Bukkit;
@@ -180,6 +181,8 @@ public class CommandManager extends PaperCommandManager {
 
             List<TargetType> filteredTargets = ListUtilities.filter(TargetType.values(), TargetType::getHasPrefix);
             List<String> prefixables = ListUtilities.map(filteredTargets, Enum::name);
+
+            prefixables.add("EXCEPTIONS");
 
             String prefix = yamlConfiguration.getString("general.prefix");
 
