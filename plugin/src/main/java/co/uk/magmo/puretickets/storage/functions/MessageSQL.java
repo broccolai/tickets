@@ -49,7 +49,7 @@ public class MessageSQL {
 
         try {
             DB.executeInsert("INSERT INTO puretickets_message(ticket, reason, data, sender, date) VALUES(?, ?, ?, ?, ?)",
-                    ticket.getLocation(), message.getReason().name(), message.getData(), senderName, date);
+                    ticket.getId(), message.getReason().name(), message.getData(), senderName, date);
         } catch (SQLException e) {
             Bukkit.getLogger().warning("Failed to insert message, ticket id #" + ticket.getId());
         }
