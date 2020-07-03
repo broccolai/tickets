@@ -13,12 +13,12 @@ public class MySQL implements Platform {
     @Override
     public void setup(Plugin plugin, Config config) {
         Integer version = null;
-        DatabaseOptions options = DatabaseOptions.builder().mysql(config.STORAGE_USER, config.STORAGE_PASSWORD, config.STORAGE_NAME, config.STORAGE_HOST).build();
+        DatabaseOptions options = DatabaseOptions.builder().mysql(config.STORAGE__USER, config.STORAGE__PASSWORD, config.STORAGE__NAME, config.STORAGE__HOST).build();
         PooledDatabaseOptions pooledOptions = PooledDatabaseOptions.builder().options(options).build();
 
         HashMap<String, Object> properties = new HashMap<>();
 
-        properties.put("useSSL", config.STORAGE_SSL);
+        properties.put("useSSL", config.STORAGE__SSL);
 
         pooledOptions.setDataSourceProperties(properties);
 

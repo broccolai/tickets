@@ -100,21 +100,21 @@ public class CommandManager extends PaperCommandManager {
         });
 
         // Replacements
-        getCommandReplacements().addReplacement("create", config.ALIAS_CREATE);
-        getCommandReplacements().addReplacement("update", config.ALIAS_UPDATE);
-        getCommandReplacements().addReplacement("close", config.ALIAS_CLOSE);
-        getCommandReplacements().addReplacement("show", config.ALIAS_SHOW);
-        getCommandReplacements().addReplacement("pick", config.ALIAS_PICK);
-        getCommandReplacements().addReplacement("assign", config.ALIAS_ASSIGN);
-        getCommandReplacements().addReplacement("done", config.ALIAS_DONE);
-        getCommandReplacements().addReplacement("yield", config.ALIAS_YIELD);
-        getCommandReplacements().addReplacement("note", config.ALIAS_NOTE);
-        getCommandReplacements().addReplacement("reopen", config.ALIAS_REOPEN);
-        getCommandReplacements().addReplacement("teleport", config.ALIAS_TELEPORT);
-        getCommandReplacements().addReplacement("log", config.ALIAS_LOG);
-        getCommandReplacements().addReplacement("list", config.ALIAS_LIST);
-        getCommandReplacements().addReplacement("status", config.ALIAS_STATUS);
-        getCommandReplacements().addReplacement("highscore", config.ALIAS_HIGHSCORE);
+        getCommandReplacements().addReplacement("create", config.ALIAS__CREATE);
+        getCommandReplacements().addReplacement("update", config.ALIAS__UPDATE);
+        getCommandReplacements().addReplacement("close", config.ALIAS__CLOSE);
+        getCommandReplacements().addReplacement("show", config.ALIAS__SHOW);
+        getCommandReplacements().addReplacement("pick", config.ALIAS__PICK);
+        getCommandReplacements().addReplacement("assign", config.ALIAS__ASSIGN);
+        getCommandReplacements().addReplacement("done", config.ALIAS__DONE);
+        getCommandReplacements().addReplacement("yield", config.ALIAS__YIELD);
+        getCommandReplacements().addReplacement("note", config.ALIAS__NOTE);
+        getCommandReplacements().addReplacement("reopen", config.ALIAS__REOPEN);
+        getCommandReplacements().addReplacement("teleport", config.ALIAS__TELEPORT);
+        getCommandReplacements().addReplacement("log", config.ALIAS__LOG);
+        getCommandReplacements().addReplacement("list", config.ALIAS__LIST);
+        getCommandReplacements().addReplacement("status", config.ALIAS__STATUS);
+        getCommandReplacements().addReplacement("highscore", config.ALIAS__HIGHSCORE);
     }
 
     public void registerCompletions(TicketManager ticketManager) {

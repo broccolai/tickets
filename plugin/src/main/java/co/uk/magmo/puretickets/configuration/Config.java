@@ -12,37 +12,37 @@ import java.lang.reflect.Field;
 
 public class Config {
     public String LOCALE;
-    public Integer REMINDER_DELAY;
-    public Integer REMINDER_REPEAT;
+    public Integer REMINDER__DELAY;
+    public Integer REMINDER__REPEAT;
 
-    public Integer LIMIT_OPEN_TICKET;
+    public Integer LIMIT__OPEN_TICKETS;
 
-    public Boolean STORAGE_MYSQL;
-    public String STORAGE_USER;
-    public String STORAGE_PASSWORD;
-    public String STORAGE_NAME;
-    public String STORAGE_HOST;
-    public Boolean STORAGE_SSL;
+    public Boolean STORAGE__MYSQL;
+    public String STORAGE__USER;
+    public String STORAGE__PASSWORD;
+    public String STORAGE__NAME;
+    public String STORAGE__HOST;
+    public Boolean STORAGE__SSL;
 
-    public Boolean DISCORD_ENABLED;
-    public String DISCORD_GUILD;
-    public String DISCORD_TOKEN;
+    public Boolean DISCORD__ENABLED;
+    public String DISCORD__GUILD;
+    public String DISCORD__TOKEN;
 
-    public String ALIAS_CREATE;
-    public String ALIAS_UPDATE;
-    public String ALIAS_CLOSE;
-    public String ALIAS_SHOW;
-    public String ALIAS_PICK;
-    public String ALIAS_ASSIGN;
-    public String ALIAS_DONE;
-    public String ALIAS_YIELD;
-    public String ALIAS_NOTE;
-    public String ALIAS_REOPEN;
-    public String ALIAS_TELEPORT;
-    public String ALIAS_LOG;
-    public String ALIAS_LIST;
-    public String ALIAS_STATUS;
-    public String ALIAS_HIGHSCORE;
+    public String ALIAS__CREATE;
+    public String ALIAS__UPDATE;
+    public String ALIAS__CLOSE;
+    public String ALIAS__SHOW;
+    public String ALIAS__PICK;
+    public String ALIAS__ASSIGN;
+    public String ALIAS__DONE;
+    public String ALIAS__YIELD;
+    public String ALIAS__NOTE;
+    public String ALIAS__REOPEN;
+    public String ALIAS__TELEPORT;
+    public String ALIAS__LOG;
+    public String ALIAS__LIST;
+    public String ALIAS__STATUS;
+    public String ALIAS__HIGHSCORE;
 
     public Config(Plugin plugin) {
         plugin.saveDefaultConfig();
@@ -55,7 +55,7 @@ public class Config {
         for (Field field : this.getClass().getDeclaredFields()) {
             field.setAccessible(true);
 
-            String fieldName = field.getName().toLowerCase().replace('_', '.');
+            String fieldName = field.getName().toLowerCase().replace("__", ".");
             Object targetValue = config.get(fieldName, null);
 
             if (targetValue == null) {

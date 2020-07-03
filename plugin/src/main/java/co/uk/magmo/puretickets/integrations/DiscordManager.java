@@ -18,9 +18,9 @@ public class DiscordManager {
     private final String token;
 
     public DiscordManager(Config config) {
-        this.enabled = config.DISCORD_ENABLED;
-        this.guild = config.DISCORD_GUILD;
-        this.token = config.DISCORD_TOKEN;
+        this.enabled = config.DISCORD__ENABLED;
+        this.guild = config.DISCORD__GUILD;
+        this.token = config.DISCORD__TOKEN;
     }
 
     public void sendInformation(String color, String author, Integer id, String action, HashMap<String, String> fields) {

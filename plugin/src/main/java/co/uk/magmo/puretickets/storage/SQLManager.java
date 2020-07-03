@@ -17,7 +17,7 @@ public class SQLManager {
     SettingsSQL setting = new SettingsSQL();
 
     public SQLManager(Plugin plugin, Config config) {
-        if (config.STORAGE_MYSQL) {
+        if (config.STORAGE__MYSQL) {
             platform = new MySQL();
         } else {
             platform = new SQLite();

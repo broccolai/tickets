@@ -51,7 +51,7 @@ public class NotificationManager implements Listener {
         awaiting = sqlManager.getNotification().selectAllAndClear();
 
         taskManager.addRepeatingTask(new ReminderTask(ticketManager, this),
-                TimeUtilities.minuteToLong(config.REMINDER_DELAY), TimeUtilities.minuteToLong(config.REMINDER_REPEAT));
+                TimeUtilities.minuteToLong(config.REMINDER__DELAY), TimeUtilities.minuteToLong(config.REMINDER__REPEAT));
     }
 
     public void send(CommandSender sender, UUID target, MessageNames names, Ticket ticket, Consumer<HashMap<String, String>> addFields) {
