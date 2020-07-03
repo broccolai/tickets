@@ -92,7 +92,10 @@ public class NotificationManager implements Listener {
 
                case DISCORD:
                     HashMap<String, String> fields = new HashMap<>();
-                    addFields.accept(fields);
+
+                    if (addFields != null) {
+                        addFields.accept(fields);
+                    }
 
                     String action = commandManager.formatMessage(senderAsIssuer(Bukkit.getConsoleSender()), MessageType.INFO, message);
                     action = ChatColor.stripColor(action);
