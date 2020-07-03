@@ -37,6 +37,7 @@ public class PureBaseCommand extends BaseCommand {
     protected void processShowCommand(CommandIssuer issuer, FutureTicket future) {
         taskManager.use()
                 .future(future)
+                .abortIfNull()
                 .asyncLast((ticket) -> {
                     String[] replacements = ReplacementUtilities.ticketReplacements(ticket);
 
@@ -56,6 +57,7 @@ public class PureBaseCommand extends BaseCommand {
     protected void processLogCommand(CommandIssuer issuer, FutureTicket future) {
         taskManager.use()
                 .future(future)
+                .abortIfNull()
                 .asyncLast((ticket) -> {
                     String[] replacements = ReplacementUtilities.ticketReplacements(ticket);
 

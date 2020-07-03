@@ -1,8 +1,6 @@
 package co.uk.magmo.puretickets.commands;
 
-import co.aikar.commands.InvalidCommandArgument;
-import co.aikar.commands.MessageType;
-import co.aikar.commands.PaperCommandManager;
+import co.aikar.commands.*;
 import co.uk.magmo.puretickets.configuration.Config;
 import co.uk.magmo.puretickets.locale.Messages;
 import co.uk.magmo.puretickets.locale.TargetType;
@@ -51,8 +49,8 @@ public class CommandManager extends PaperCommandManager {
                 if (input != null) {
                     Ticket ticket = ticketManager.get(Integer.parseInt(input));
 
-                    if (ticket == null || (c.hasFlag("issuer")  && ticket.getPlayerUUID() != c.getPlayer().getUniqueId())) {
-                        future.cancel(true);
+                    if (ticket == null || (c.hasFlag("issuer") && !ticket.getPlayerUUID().equals(c.getPlayer().getUniqueId()))) {
+                        future.complete(null);
                         c.getIssuer().sendInfo(Messages.EXCEPTIONS__TICKET_NOT_FOUND);
                         return;
                     }
@@ -72,7 +70,7 @@ public class CommandManager extends PaperCommandManager {
                 Ticket potentialTicket = ticketManager.getLatestTicket(player.getUniqueId());
 
                 if (potentialTicket == null) {
-                    future.cancel(true);
+                    future.complete(null);
                     c.getIssuer().sendInfo(Messages.EXCEPTIONS__TICKET_NOT_FOUND);
                     return;
                 }
