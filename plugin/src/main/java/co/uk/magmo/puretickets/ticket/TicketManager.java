@@ -1,5 +1,8 @@
 package co.uk.magmo.puretickets.ticket;
 
+import co.uk.magmo.puretickets.configuration.Config;
+import co.uk.magmo.puretickets.exceptions.TicketClosed;
+import co.uk.magmo.puretickets.exceptions.TooManyOpenTickets;
 import co.uk.magmo.puretickets.storage.SQLManager;
 import co.uk.magmo.puretickets.storage.TimeAmount;
 import com.google.common.collect.Lists;
@@ -11,9 +14,11 @@ import java.time.LocalDateTime;
 import java.util.*;
 
 public class TicketManager {
+    private final Config config;
     private final SQLManager sqlManager;
 
-    public TicketManager(SQLManager sqlManager) {
+    public TicketManager(Config config, SQLManager sqlManager) {
+        this.config = config;
         this.sqlManager = sqlManager;
     }
 
@@ -61,7 +66,11 @@ public class TicketManager {
         return sqlManager.getTicket().highscores(span);
     }
 
-    public Ticket createTicket(Player player, Message message) {
+    public Ticket createTicket(Player player, Message message) throws TooManyOpenTickets {
+        if (count(player.getUniqueId()) >= config.LIMIT__OPEN_TICKETS) {
+            throw new TooManyOpenTickets(config);
+        }
+
         UUID uuid = player.getUniqueId();
         Location location = player.getLocation();
 
@@ -73,12 +82,15 @@ public class TicketManager {
         return ticket;
     }
 
-    public Ticket update(Integer id, Message message) {
-        return addMessageAndUpdate(get(id), message);
+    public Ticket update(Ticket ticket, Message message) throws TicketClosed {
+        if (ticket.getStatus() == TicketStatus.CLOSED) {
+            throw new TicketClosed();
+        }
+
+        return addMessageAndUpdate(ticket, message);
     }
 
-    public Ticket pick(UUID uuid, Integer id) {
-        Ticket ticket = get(id);
+    public Ticket pick(UUID uuid, Ticket ticket) {
         Message message = new Message(MessageReason.PICKED, LocalDateTime.now(), uuid);
 
         ticket.setStatus(TicketStatus.PICKED);
@@ -87,8 +99,7 @@ public class TicketManager {
         return addMessageAndUpdate(ticket, message);
     }
 
-    public Ticket yield(UUID uuid, Integer id) {
-        Ticket ticket = get(id);
+    public Ticket yield(UUID uuid, Ticket ticket) {
         Message message = new Message(MessageReason.REOPENED, LocalDateTime.now(), uuid);
 
         ticket.setStatus(TicketStatus.OPEN);
@@ -97,8 +108,11 @@ public class TicketManager {
         return addMessageAndUpdate(ticket, message);
     }
 
-    public Ticket close(UUID uuid, Integer id) {
-        Ticket ticket = get(id);
+    public Ticket close(UUID uuid, Ticket ticket) throws TicketClosed {
+        if (ticket.getStatus() == TicketStatus.CLOSED) {
+            throw new TicketClosed();
+        }
+
         Message message = new Message(MessageReason.CLOSED, LocalDateTime.now(), uuid);
 
         ticket.setStatus(TicketStatus.CLOSED);
@@ -106,8 +120,7 @@ public class TicketManager {
         return addMessageAndUpdate(ticket, message);
     }
 
-    public Ticket reopen(UUID uuid, Integer id) {
-        Ticket ticket = get(id);
+    public Ticket reopen(UUID uuid, Ticket ticket) {
         Message message = new Message(MessageReason.REOPENED, LocalDateTime.now(), uuid);
 
         ticket.setStatus(TicketStatus.OPEN);
@@ -115,8 +128,7 @@ public class TicketManager {
         return addMessageAndUpdate(ticket, message);
     }
 
-    public Ticket note(UUID uuid, Integer id, String input) {
-        Ticket ticket = get(id);
+    public Ticket note(UUID uuid, Ticket ticket, String input) {
         Message message = new Message(MessageReason.NOTE, LocalDateTime.now(), input, uuid);
 
         return addMessageAndUpdate(ticket, message);
