@@ -59,6 +59,7 @@ exceptions:
   ticket_not_found: "Ticket could not be found"
   invalid_setting_type: "Invalid setting type"
   too_many_open_tickets: "You have too many open tickets, the limit is %limit%"
+  ticket_closed: "This ticket is closed"
 other:
   reminder: "§a§lT §8» §fThere are %amount% ticket(s) currently open"
   setting_update: "§a§lT §8» §fSetting §a%setting% §fis now %status%"
