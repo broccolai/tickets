@@ -9,8 +9,8 @@ import co.uk.magmo.puretickets.ticket.Message;
 import co.uk.magmo.puretickets.ticket.Ticket;
 import co.uk.magmo.puretickets.ticket.TicketStatus;
 import co.uk.magmo.puretickets.utilities.Constants;
-import co.uk.magmo.puretickets.utilities.ListUtilities;
-import co.uk.magmo.puretickets.utilities.ReplacementUtilities;
+import co.uk.magmo.puretickets.utilities.generic.ListUtilities;
+import co.uk.magmo.puretickets.utilities.generic.ReplacementUtilities;
 import org.bukkit.entity.Player;
 
 import java.util.List;

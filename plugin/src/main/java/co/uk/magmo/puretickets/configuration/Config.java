@@ -1,6 +1,6 @@
 package co.uk.magmo.puretickets.configuration;
 
-import co.uk.magmo.puretickets.utilities.FileUtilities;
+import co.uk.magmo.puretickets.utilities.generic.FileUtilities;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;

@@ -1,4 +1,4 @@
-package co.uk.magmo.puretickets.utilities;
+package co.uk.magmo.puretickets.utilities.generic;
 
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;

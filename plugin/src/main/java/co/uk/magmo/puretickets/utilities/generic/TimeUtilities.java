@@ -1,4 +1,4 @@
-package co.uk.magmo.puretickets.utilities;
+package co.uk.magmo.puretickets.utilities.generic;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;

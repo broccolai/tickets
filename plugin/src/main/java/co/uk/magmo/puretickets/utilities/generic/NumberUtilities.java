@@ -1,4 +1,4 @@
-package co.uk.magmo.puretickets.utilities;
+package co.uk.magmo.puretickets.utilities.generic;
 
 public class NumberUtilities {
     public static Integer valueOfOrNull(String input) {

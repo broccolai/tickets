@@ -1,6 +1,6 @@
 package co.uk.magmo.puretickets.ticket;
 
-import co.uk.magmo.puretickets.utilities.ListUtilities;
+import co.uk.magmo.puretickets.utilities.generic.ListUtilities;
 import com.google.common.collect.Iterables;
 import org.bukkit.Location;
 import org.jetbrains.annotations.Nullable;

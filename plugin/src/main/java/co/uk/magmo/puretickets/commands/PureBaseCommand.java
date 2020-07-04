@@ -9,9 +9,9 @@ import co.uk.magmo.puretickets.interactions.NotificationManager;
 import co.uk.magmo.puretickets.locale.Messages;
 import co.uk.magmo.puretickets.tasks.TaskManager;
 import co.uk.magmo.puretickets.ticket.*;
-import co.uk.magmo.puretickets.utilities.ReplacementUtilities;
-import co.uk.magmo.puretickets.utilities.TimeUtilities;
-import co.uk.magmo.puretickets.utilities.UserUtilities;
+import co.uk.magmo.puretickets.utilities.generic.ReplacementUtilities;
+import co.uk.magmo.puretickets.utilities.generic.TimeUtilities;
+import co.uk.magmo.puretickets.utilities.generic.UserUtilities;
 import org.bukkit.command.CommandSender;
 
 public class PureBaseCommand extends BaseCommand {

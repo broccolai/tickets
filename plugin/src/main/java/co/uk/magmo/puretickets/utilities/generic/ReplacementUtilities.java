@@ -1,4 +1,4 @@
-package co.uk.magmo.puretickets.utilities;
+package co.uk.magmo.puretickets.utilities.generic;
 
 import co.uk.magmo.puretickets.ticket.Message;
 import co.uk.magmo.puretickets.ticket.MessageReason;
