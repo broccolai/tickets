@@ -1,5 +1,6 @@
 package co.uk.magmo.puretickets.ticket;
 
+import co.uk.magmo.puretickets.utilities.ListUtilities;
 import com.google.common.collect.Iterables;
 import org.bukkit.Location;
 import org.jetbrains.annotations.Nullable;
@@ -28,7 +29,7 @@ public class Ticket {
     }
 
     public Message currentMessage() {
-        return Iterables.getLast(messages);
+        return Iterables.getLast(ListUtilities.filter(messages, message -> message.getReason() == MessageReason.MESSAGE));
     }
 
     public LocalDateTime dateOpened() {
