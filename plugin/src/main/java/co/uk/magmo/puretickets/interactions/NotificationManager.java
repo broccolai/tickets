@@ -101,7 +101,7 @@ public class NotificationManager implements Listener {
                     action = ChatColor.stripColor(action);
 
                     discordManager.sendInformation(ticket.getStatus().getPureColor().getHex(),
-                            UserUtilities.nameFromUUID(ticket.getPickerUUID()), ticket.getId(), action, fields);
+                            UserUtilities.nameFromUUID(ticket.getPlayerUUID()), ticket.getId(), action, fields);
             }
         }
     }
