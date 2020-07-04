@@ -1,6 +1,7 @@
 general:
   prefix: "§a§lT §8» §f"
   list_format: "%statusColor%#§f§l%id% §8- §f%message%"
+  list_header_format: "§a%name%"
   log_format: "§f§l%reason% §8@ §f%date%§8 - §f%suffix%"
   hs_format: "§a%target% §8- §f§l%amount%"
 sender:
