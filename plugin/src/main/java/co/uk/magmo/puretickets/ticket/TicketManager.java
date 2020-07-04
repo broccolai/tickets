@@ -134,7 +134,7 @@ public class TicketManager {
             throw new TicketClosed();
         }
 
-        Message message = new Message(MessageReason.DONE_MARKED, null, uuid);
+        Message message = new Message(MessageReason.DONE_MARKED, LocalDateTime.now(), uuid);
 
         ticket.setStatus(TicketStatus.CLOSED);
 
