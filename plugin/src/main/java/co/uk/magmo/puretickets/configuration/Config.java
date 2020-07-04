@@ -49,9 +49,9 @@ public class Config {
     public Config(Plugin plugin) {
         plugin.saveDefaultConfig();
         InputStream stream = plugin.getClass().getResourceAsStream("/config.yml");
-
         FileUtilities.mergeYaml(stream, new File(plugin.getDataFolder(), "config.yml"));
 
+        stream = plugin.getClass().getResourceAsStream("/config.yml");
         FileConfiguration config = plugin.getConfig();
         InputStreamReader streamReader = new InputStreamReader(stream);
         FileConfiguration sourceConfig = YamlConfiguration.loadConfiguration(streamReader);
