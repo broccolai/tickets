@@ -2,6 +2,7 @@ package co.uk.magmo.puretickets.ticket;
 
 import co.uk.magmo.puretickets.configuration.Config;
 import co.uk.magmo.puretickets.exceptions.TicketClosed;
+import co.uk.magmo.puretickets.exceptions.TicketOpen;
 import co.uk.magmo.puretickets.exceptions.TooManyOpenTickets;
 import co.uk.magmo.puretickets.storage.SQLManager;
 import co.uk.magmo.puretickets.storage.TimeAmount;
@@ -90,7 +91,11 @@ public class TicketManager {
         return addMessageAndUpdate(ticket, message);
     }
 
-    public Ticket pick(UUID uuid, Ticket ticket) {
+    public Ticket pick(UUID uuid, Ticket ticket) throws TicketClosed {
+        if (ticket.getStatus() == TicketStatus.CLOSED) {
+            throw new TicketClosed();
+        }
+
         Message message = new Message(MessageReason.PICKED, LocalDateTime.now(), uuid);
 
         ticket.setStatus(TicketStatus.PICKED);
@@ -99,7 +104,11 @@ public class TicketManager {
         return addMessageAndUpdate(ticket, message);
     }
 
-    public Ticket yield(UUID uuid, Ticket ticket) {
+    public Ticket yield(UUID uuid, Ticket ticket) throws TicketOpen {
+        if (ticket.getStatus() == TicketStatus.OPEN) {
+            throw new TicketOpen();
+        }
+
         Message message = new Message(MessageReason.REOPENED, LocalDateTime.now(), uuid);
 
         ticket.setStatus(TicketStatus.OPEN);
@@ -120,7 +129,23 @@ public class TicketManager {
         return addMessageAndUpdate(ticket, message);
     }
 
-    public Ticket reopen(UUID uuid, Ticket ticket) {
+    public Ticket done(UUID uuid, Ticket ticket) throws TicketClosed {
+        if (ticket.getStatus() == TicketStatus.CLOSED) {
+            throw new TicketClosed();
+        }
+
+        Message message = new Message(MessageReason.DONE_MARKED, null, uuid);
+
+        ticket.setStatus(TicketStatus.CLOSED);
+
+        return addMessageAndUpdate(ticket, message);
+    }
+
+    public Ticket reopen(UUID uuid, Ticket ticket) throws TicketOpen {
+        if (ticket.getStatus() == TicketStatus.OPEN) {
+            throw new TicketOpen();
+        }
+
         Message message = new Message(MessageReason.REOPENED, LocalDateTime.now(), uuid);
 
         ticket.setStatus(TicketStatus.OPEN);
