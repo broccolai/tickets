@@ -43,8 +43,8 @@ public class TicketManager {
         return sqlManager.getTicket().exists(id);
     }
 
-    public Integer count(UUID uuid) {
-        return sqlManager.getTicket().count(uuid);
+    public Integer count(UUID uuid, TicketStatus status) {
+        return sqlManager.getTicket().count(uuid, status);
     }
 
     public Integer count(TicketStatus status) {
@@ -68,7 +68,7 @@ public class TicketManager {
     }
 
     public Ticket createTicket(Player player, Message message) throws TooManyOpenTickets {
-        if (count(player.getUniqueId()) >= config.LIMIT__OPEN_TICKETS) {
+        if (count(player.getUniqueId(), TicketStatus.OPEN) >= config.LIMIT__OPEN_TICKETS + 1) {
             throw new TooManyOpenTickets(config);
         }
 

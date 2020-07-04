@@ -173,9 +173,10 @@ public class TicketFunctions {
         }
     }
 
-    public Integer count(UUID uuid) {
+    public Integer count(UUID uuid, TicketStatus status) {
         try {
-            return DB.<Long>getFirstColumn("SELECT COUNT(id) FROM puretickets_ticket WHERE uuid = ?", uuid.toString()).intValue();
+            return DB.<Long>getFirstColumn("SELECT COUNT(id) FROM puretickets_ticket WHERE uuid = ? AND status = ?",
+                    uuid.toString(), status.name()).intValue();
         } catch (SQLException e) {
             throw new IllegalArgumentException();
         }
