@@ -8,6 +8,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 public class TaskManager {
     private final Plugin plugin;
@@ -29,9 +30,13 @@ public class TaskManager {
     }
 
     public void clear() {
-        for (BukkitTask task : tasks) {
+        Iterator<BukkitTask> iterator = tasks.iterator();
+
+        while (iterator.hasNext()) {
+            BukkitTask task = iterator.next();
+
             task.cancel();
-            tasks.remove(task);
+            iterator.remove();
         }
     }
 }
