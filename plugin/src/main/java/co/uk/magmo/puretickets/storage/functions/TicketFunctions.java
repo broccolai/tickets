@@ -40,7 +40,7 @@ public class TicketFunctions {
 
         try {
             if (status == null) {
-                results = DB.getResults("SELECT id, uuid, status, picker, location FROM puretickets_ticket");
+                results = DB.getResults("SELECT id, uuid, status, picker, location FROM puretickets_ticket WHERE status <> ?", TicketStatus.CLOSED.name());
             } else {
                 results = DB.getResults("SELECT id, uuid, status, picker, location FROM puretickets_ticket WHERE status = ?", status.name());
             }
@@ -59,7 +59,7 @@ public class TicketFunctions {
 
         try {
             if (status == null) {
-                results = DB.getResults(sql, uuid.toString());
+                results = DB.getResults(sql + " AND status <> ?", uuid.toString(), TicketStatus.CLOSED.name());
             } else {
                 results = DB.getResults(sql + " AND status = ?", uuid.toString(), status.name());
             }
