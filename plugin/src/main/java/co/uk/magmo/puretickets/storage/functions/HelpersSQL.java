@@ -47,7 +47,7 @@ public class HelpersSQL {
     }
 
     String serializeLocation(Location location) {
-        return location.getWorld() + "|" + location.getBlockX() + "|" + location.getBlockY() + "|" + location.getBlockZ();
+        return location.getWorld().getName() + "|" + location.getBlockX() + "|" + location.getBlockY() + "|" + location.getBlockZ();
     }
 
     LocalDateTime getDate(DbRow row, String column) {
