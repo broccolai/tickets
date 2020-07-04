@@ -160,7 +160,7 @@ public class CommandManager extends PaperCommandManager {
     public void registerCommands() {
         registerCommand(new TicketCommand());
         registerCommand(new TicketsCommand());
-//        registerCommand(PureTicketsCommand());
+        registerCommand(new PureTicketsCommand());
     }
 
     private void loadLocales() {
