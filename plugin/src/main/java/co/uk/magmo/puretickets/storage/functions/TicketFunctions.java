@@ -187,9 +187,9 @@ public class TicketFunctions {
 
         try {
             if (status == null) {
-                return DB.getFirstColumn(sql);
+                return DB.<Long>getFirstColumn(sql).intValue();
             } else {
-                return DB.getFirstColumn(sql + " WHERE status = ?", status.name());
+                return DB.<Long>getFirstColumn(sql + " WHERE status = ?", status.name()).intValue();
             }
         } catch (SQLException e) {
             throw new IllegalArgumentException();
