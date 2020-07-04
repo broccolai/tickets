@@ -1,8 +1,6 @@
 package co.uk.magmo.puretickets.utilities;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
@@ -33,5 +31,21 @@ public class ListUtilities {
 
     public static <R, T> ArrayList<R> map(T[] input, Function<T, R> function) {
         return map(Arrays.asList(input), function);
+    }
+
+    public static <R, T> Map<R, List<T>> group(List<T> input, Function<T, R> function) {
+        Map<R, List<T>> output = new HashMap<>();
+
+        input.forEach(value -> {
+            R type = function.apply(value);
+            output.putIfAbsent(type, new ArrayList<>());
+
+            List<T> current = output.get(type);
+            current.add(value);
+
+            output.put(type, current);
+        });
+
+        return output;
     }
 }
