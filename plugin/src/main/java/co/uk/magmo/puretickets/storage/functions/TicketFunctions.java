@@ -175,7 +175,7 @@ public class TicketFunctions {
 
     public Integer count(UUID uuid) {
         try {
-            return DB.getFirstColumn("SELECT COUNT(id) FROM puretickets_ticket WHERE uuid = ?", uuid.toString());
+            return DB.<Long>getFirstColumn("SELECT COUNT(id) FROM puretickets_ticket WHERE uuid = ?", uuid.toString()).intValue();
         } catch (SQLException e) {
             throw new IllegalArgumentException();
         }
