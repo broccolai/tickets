@@ -26,10 +26,10 @@ public class SettingsSQL {
 
     public Boolean exists(UUID uuid) {
         try {
-            Integer value = DB.getFirstColumn("SELECT EXISTS(SELECT 1 from puretickets_settings WHERE uuid = ?)",
+            Long value = DB.getFirstColumn("SELECT EXISTS(SELECT 1 from puretickets_settings WHERE uuid = ?)",
                     uuid.toString());
 
-            return value == 1;
+            return value.intValue() == 1;
         } catch (SQLException e) {
             return false;
         }
