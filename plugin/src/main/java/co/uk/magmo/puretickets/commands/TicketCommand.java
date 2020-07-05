@@ -63,7 +63,7 @@ public class TicketCommand extends PureBaseCommand {
     @CommandPermission(Constants.USER_PERMISSION + ".close")
     @Description("Close a ticket")
     @Syntax("[Index]")
-    public void onClose(Player player, @Optional @Flags("issuer") FutureTicket future) {
+    public void onClose(Player player, @Optional @AutoStatuses("OPEN,PICKED") @Flags("issuer") FutureTicket future) {
         taskManager.use()
                 .future(future)
                 .abortIfNull()

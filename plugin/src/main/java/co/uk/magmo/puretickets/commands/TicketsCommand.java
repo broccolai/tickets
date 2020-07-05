@@ -39,7 +39,7 @@ public class TicketsCommand extends PureBaseCommand {
     @CommandPermission(Constants.STAFF_PERMISSION + ".pick")
     @Description("Pick a ticket")
     @Syntax("<Player> [Index]")
-    public void onPick(CommandSender sender, OfflinePlayer offlinePlayer, @Optional FutureTicket future) {
+    public void onPick(CommandSender sender, OfflinePlayer offlinePlayer, @Optional @AutoStatuses("OPEN") FutureTicket future) {
         taskManager.use()
                 .future(future)
                 .abortIfNull()
@@ -61,7 +61,7 @@ public class TicketsCommand extends PureBaseCommand {
     @CommandPermission(Constants.STAFF_PERMISSION + ".assign")
     @Description("Assign a ticket to a staff member")
     @Syntax("<TargetPlayer> <Player> [Index]")
-    public void onAssign(CommandSender sender, OfflinePlayer target, OfflinePlayer offlinePlayer, @Optional FutureTicket future) {
+    public void onAssign(CommandSender sender, OfflinePlayer target, OfflinePlayer offlinePlayer, @Optional @AutoStatuses("OPEN") FutureTicket future) {
         taskManager.use()
                 .future(future)
                 .abortIfNull()
@@ -85,7 +85,7 @@ public class TicketsCommand extends PureBaseCommand {
     @CommandPermission(Constants.STAFF_PERMISSION + ".done")
     @Description("Done-mark a ticket")
     @Syntax("<Player> [Index]")
-    public void onDone(CommandSender sender, OfflinePlayer offlinePlayer, @Optional FutureTicket future) {
+    public void onDone(CommandSender sender, OfflinePlayer offlinePlayer, @Optional @AutoStatuses("PICKED") FutureTicket future) {
         taskManager.use()
                 .future(future)
                 .abortIfNull()
@@ -106,7 +106,7 @@ public class TicketsCommand extends PureBaseCommand {
     @CommandPermission(Constants.STAFF_PERMISSION + ".yield")
     @Description("Yield a ticket")
     @Syntax("<Player> [Index]")
-    public void onYield(CommandSender sender, OfflinePlayer offlinePlayer, @Optional FutureTicket future) {
+    public void onYield(CommandSender sender, OfflinePlayer offlinePlayer, @Optional @AutoStatuses("PICKED") FutureTicket future) {
         taskManager.use()
                 .future(future)
                 .abortIfNull()
@@ -146,7 +146,7 @@ public class TicketsCommand extends PureBaseCommand {
     @CommandPermission(Constants.STAFF_PERMISSION + ".reopen")
     @Description("Reopen a ticket")
     @Syntax("<Player> [Index]")
-    public void onReopen(CommandSender sender, OfflinePlayer offlinePlayer, @Optional FutureTicket future) {
+    public void onReopen(CommandSender sender, OfflinePlayer offlinePlayer, @Optional @AutoStatuses("CLOSED") FutureTicket future) {
         taskManager.use()
                 .future(future)
                 .abortIfNull()

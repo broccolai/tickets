@@ -68,7 +68,18 @@ public class CommandManager extends PaperCommandManager {
                     player = (OfflinePlayer) c.getResolvedArg("offlinePlayer");
                 }
 
-                Ticket potentialTicket = ticketManager.getLatestTicket(player.getUniqueId());
+                List<TicketStatus> statuses = new ArrayList<>();
+
+                if (c.hasAnnotation(AutoStatuses.class)) {
+                    String value = c.getAnnotationValue(AutoStatuses.class);
+                    String[] values = value.split(",");
+
+                    for (String s : values) {
+                        statuses.add(TicketStatus.valueOf(s));
+                    }
+                }
+
+                Ticket potentialTicket = ticketManager.getLatestTicket(player.getUniqueId(), statuses.toArray(new TicketStatus[0]));
 
                 if (potentialTicket == null) {
                     future.complete(null);
