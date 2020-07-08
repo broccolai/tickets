@@ -4,6 +4,7 @@ import co.aikar.idb.DB;
 import co.aikar.idb.DbRow;
 import co.uk.magmo.puretickets.interactions.PendingNotification;
 import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.Multimap;
 import org.bukkit.Bukkit;
 
 import java.sql.SQLException;
@@ -17,8 +18,8 @@ public class NotificationSQL {
         this.helpers = helpers;
     }
 
-    public ArrayListMultimap<UUID, PendingNotification> selectAllAndClear() {
-        ArrayListMultimap<UUID, PendingNotification> output = ArrayListMultimap.create();
+    public Multimap<UUID, PendingNotification> selectAllAndClear() {
+        Multimap<UUID, PendingNotification> output = ArrayListMultimap.create();
         List<DbRow> results;
 
         try {
@@ -38,7 +39,7 @@ public class NotificationSQL {
         return output;
     }
 
-    public void insertAll(ArrayListMultimap<UUID, PendingNotification> notifications) {
+    public void insertAll(Multimap<UUID, PendingNotification> notifications) {
         notifications.forEach(((uuid, notification) -> {
             String message = notification.getMessageKey().name();
             String replacements = String.join("|", notification.getReplacements());

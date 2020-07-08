@@ -16,7 +16,7 @@ import org.jetbrains.annotations.Nullable;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 public class HelpersSQL {
@@ -76,7 +76,7 @@ public class HelpersSQL {
     Ticket buildTicket(DbRow row) {
         Integer id = row.getInt("id");
         UUID player = getUUID(row, "uuid");
-        ArrayList<Message> messages = messageSQL.selectAll(row.getInt("id"));
+        List<Message> messages = messageSQL.selectAll(row.getInt("id"));
         TicketStatus status = getEnumValue(row, TicketStatus.class, "status");
         Location location = getLocation(row, "location");
         UUID picker = getUUID(row, "picker");

@@ -90,7 +90,7 @@ public class TicketFunctions {
     }
 
     public Ticket selectLastTicket(UUID uuid, TicketStatus... statuses) {
-        ArrayList<String> replacements = new ArrayList<>();
+        List<String> replacements = new ArrayList<>();
 
         @Language("SQL")
         String sql = "SELECT max(id) AS 'id', uuid, status, picker, location FROM puretickets_ticket WHERE uuid = ?";

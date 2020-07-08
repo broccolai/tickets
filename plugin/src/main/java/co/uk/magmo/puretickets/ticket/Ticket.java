@@ -6,20 +6,20 @@ import org.bukkit.Location;
 import org.jetbrains.annotations.Nullable;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 public class Ticket {
     private final Integer id;
     private final UUID playerUUID;
-    private final ArrayList<Message> messages;
+    private final List<Message> messages;
     private final Location location;
     private TicketStatus status;
 
     @Nullable
     private UUID pickerUUID;
 
-    public Ticket(Integer id, UUID playerUUID, ArrayList<Message> messages, Location location, TicketStatus status, @Nullable UUID pickerUUID) {
+    public Ticket(Integer id, UUID playerUUID, List<Message> messages, Location location, TicketStatus status, @Nullable UUID pickerUUID) {
         this.id = id;
         this.playerUUID = playerUUID;
         this.messages = messages;
@@ -44,7 +44,7 @@ public class Ticket {
         return playerUUID;
     }
 
-    public ArrayList<Message> getMessages() {
+    public List<Message> getMessages() {
         return messages;
     }
 

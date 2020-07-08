@@ -18,7 +18,7 @@ import co.uk.magmo.puretickets.utilities.Constants;
 import co.uk.magmo.puretickets.utilities.generic.ReplacementUtilities;
 import co.uk.magmo.puretickets.utilities.generic.TimeUtilities;
 import co.uk.magmo.puretickets.utilities.generic.UserUtilities;
-import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.Multimap;
 import com.google.common.collect.ObjectArrays;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -39,7 +39,7 @@ public class NotificationManager implements Listener {
     private final CommandManager commandManager;
     private final DiscordManager discordManager;
 
-    private final ArrayListMultimap<UUID, PendingNotification> awaiting;
+    private final Multimap<UUID, PendingNotification> awaiting;
 
     public NotificationManager(Config config, SQLManager sqlManager, TaskManager taskManager, UserManager userManager, CommandManager commandManager, DiscordManager discordManager, TicketManager ticketManager) {
         this.config = config;

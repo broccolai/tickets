@@ -18,7 +18,7 @@ public class MessageSQL {
         this.helpers = helpers;
     }
 
-    public ArrayList<Message> selectAll(Integer id) {
+    public List<Message> selectAll(Integer id) {
         List<DbRow> results;
 
         try {
@@ -27,7 +27,7 @@ public class MessageSQL {
             return new ArrayList<>();
         }
 
-        ArrayList<Message> output = new ArrayList<>();
+        List<Message> output = new ArrayList<>();
 
         for (DbRow result : results) {
             output.add(helpers.buildMessage(result));

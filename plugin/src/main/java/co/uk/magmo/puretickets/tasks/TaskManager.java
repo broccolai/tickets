@@ -9,11 +9,12 @@ import org.bukkit.scheduler.BukkitTask;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 public class TaskManager {
     private final Plugin plugin;
     private final TaskChainFactory taskChainFactory;
-    private final ArrayList<BukkitTask> tasks = new ArrayList<>();
+    private final List<BukkitTask> tasks = new ArrayList<>();
 
     public TaskManager(Plugin plugin) {
         this.plugin = plugin;

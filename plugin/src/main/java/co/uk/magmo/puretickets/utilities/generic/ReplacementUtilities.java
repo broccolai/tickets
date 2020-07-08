@@ -10,7 +10,7 @@ import java.util.List;
 
 public class ReplacementUtilities {
     public static String[] ticketReplacements(Ticket ticket) {
-        ArrayList<String> results = new ArrayList<>();
+        List<String> results = new ArrayList<>();
 
         if (ticket == null) return new String[0];
 
