@@ -15,6 +15,14 @@ repositories {
     maven("https://oss.sonatype.org/content/repositories/public/")
     maven("https://repo.aikar.co/content/groups/aikar/")
     maven("https://mvnrepository.com/artifact/org.jetbrains/annotations")
+    maven {
+        name = "GitHubPackages"
+        url = uri("https://maven.pkg.github.com/broccolai/corn")
+        credentials {
+            username = System.getenv("GH_USERNAME")
+            password = System.getenv("GH_TOKEN")
+        }
+    }
 }
 
 dependencies {
@@ -24,6 +32,7 @@ dependencies {
     api("co.aikar:acf-paper:0.5.0-SNAPSHOT")
     api("co.aikar:idb-core:1.0.0-SNAPSHOT")
     api("com.zaxxer:HikariCP:2.7.9")
+    api("co.uk.magmo:corn-core:1.0.0-SNAPSHOT")
 
     compileOnly("org.spigotmc:spigot-api:1.16.1-R0.1-SNAPSHOT")
 }
