@@ -28,3 +28,5 @@ jobs:
       run: |
         cd plugin
         ./gradlew build
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
