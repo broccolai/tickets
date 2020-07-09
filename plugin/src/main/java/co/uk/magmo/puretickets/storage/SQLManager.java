@@ -11,10 +11,10 @@ public class SQLManager {
     HelpersSQL helpers = new HelpersSQL();
 
     Platform platform;
-    TicketFunctions ticket = new TicketFunctions(helpers);
-    MessageSQL message = new MessageSQL(helpers);
-    NotificationSQL notification = new NotificationSQL(helpers);
-    SettingsSQL setting = new SettingsSQL();
+    TicketFunctions ticket;
+    MessageSQL message;
+    NotificationSQL notification;
+    SettingsSQL setting;
 
     public SQLManager(Plugin plugin, Config config) {
         if (config.STORAGE__MYSQL) {
@@ -23,12 +23,13 @@ public class SQLManager {
             platform = new SQLite();
         }
 
+        ticket = new TicketFunctions(helpers, platform);
+        message = new MessageSQL(helpers);
+        notification = new NotificationSQL(helpers);
+        setting = new SettingsSQL(platform);
+
         helpers.setup(platform, message);
         platform.setup(plugin, config);
-    }
-
-    public Platform getPlatform() {
-        return platform;
     }
 
     public TicketFunctions getTicket() {

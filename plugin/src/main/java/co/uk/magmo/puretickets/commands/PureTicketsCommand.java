@@ -35,6 +35,7 @@ public class PureTicketsCommand extends BaseCommand {
             switch (setting.toLowerCase()) {
                 case "announcements":
                     settings.setAnnouncements(value);
+                    return settings;
 
                 default:
                     throw new InvalidSettingType();

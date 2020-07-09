@@ -3,6 +3,7 @@ package co.uk.magmo.puretickets.storage.functions;
 import co.aikar.idb.DB;
 import co.aikar.idb.DbRow;
 import co.uk.magmo.puretickets.storage.TimeAmount;
+import co.uk.magmo.puretickets.storage.platforms.Platform;
 import co.uk.magmo.puretickets.ticket.Ticket;
 import co.uk.magmo.puretickets.ticket.TicketStatus;
 import co.uk.magmo.puretickets.utilities.generic.ListUtilities;
@@ -18,9 +19,11 @@ import java.util.*;
 
 public class TicketFunctions {
     private final HelpersSQL helpers;
+    private final Platform platform;
 
-    public TicketFunctions(HelpersSQL helpers) {
+    public TicketFunctions(HelpersSQL helpers, Platform platform) {
         this.helpers = helpers;
+        this.platform = platform;
     }
 
     public Ticket select(Integer id) {
@@ -175,8 +178,8 @@ public class TicketFunctions {
 
     public Integer count(UUID uuid, TicketStatus status) {
         try {
-            return DB.<Long>getFirstColumn("SELECT COUNT(id) FROM puretickets_ticket WHERE uuid = ? AND status = ?",
-                    uuid.toString(), status.name()).intValue();
+            return platform.getPureInteger(DB.getFirstColumn("SELECT COUNT(id) FROM puretickets_ticket WHERE uuid = ? AND status = ?",
+                    uuid.toString(), status.name()));
         } catch (SQLException e) {
             throw new IllegalArgumentException();
         }
@@ -188,9 +191,9 @@ public class TicketFunctions {
 
         try {
             if (status == null) {
-                return DB.<Long>getFirstColumn(sql).intValue();
+                return platform.getPureInteger(DB.getFirstColumn(sql));
             } else {
-                return DB.<Long>getFirstColumn(sql + " WHERE status = ?", status.name()).intValue();
+                return platform.getPureInteger(DB.getFirstColumn(sql + " WHERE status = ?", status.name()));
             }
         } catch (SQLException e) {
             throw new IllegalArgumentException();

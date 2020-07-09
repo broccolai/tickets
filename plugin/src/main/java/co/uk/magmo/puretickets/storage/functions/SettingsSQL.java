@@ -2,6 +2,7 @@ package co.uk.magmo.puretickets.storage.functions;
 
 import co.aikar.idb.DB;
 import co.aikar.idb.DbRow;
+import co.uk.magmo.puretickets.storage.platforms.Platform;
 import co.uk.magmo.puretickets.user.UserSettings;
 import org.bukkit.Bukkit;
 
@@ -9,6 +10,12 @@ import java.sql.SQLException;
 import java.util.UUID;
 
 public class SettingsSQL {
+    private final Platform platform;
+
+    public SettingsSQL(Platform platform) {
+        this.platform = platform;
+    }
+
     public UserSettings select(UUID uuid) {
         DbRow result;
 
@@ -26,10 +33,8 @@ public class SettingsSQL {
 
     public Boolean exists(UUID uuid) {
         try {
-            Long value = DB.getFirstColumn("SELECT EXISTS(SELECT 1 from puretickets_settings WHERE uuid = ?)",
-                    uuid.toString());
-
-            return value.intValue() == 1;
+            return platform.getPureInteger(DB.getFirstColumn("SELECT EXISTS(SELECT 1 from puretickets_settings WHERE uuid = ?)",
+                    uuid.toString())) == 1;
         } catch (SQLException e) {
             return false;
         }

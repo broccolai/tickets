@@ -71,4 +71,9 @@ public class MySQL implements Platform {
     public Long getPureLong(DbRow row, String column) {
         return Long.valueOf(row.getString(column));
     }
+
+    @Override
+    public Integer getPureInteger(Object value) {
+        return ((Long) value).intValue();
+    }
 }

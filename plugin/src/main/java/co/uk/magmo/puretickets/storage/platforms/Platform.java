@@ -8,4 +8,6 @@ public interface Platform {
     void setup(Plugin plugin, Config config);
 
     Long getPureLong(DbRow row, String column);
+
+    Integer getPureInteger(Object value);
 }

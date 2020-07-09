@@ -1,6 +1,8 @@
 package co.uk.magmo.puretickets.user;
 
 import co.uk.magmo.puretickets.storage.SQLManager;
+import org.jetbrains.annotations.NotNull;
+
 import java.util.*;
 import java.util.function.Function;
 
@@ -12,7 +14,7 @@ public class UserManager {
         this.sqlManager = sqlManager;
     }
 
-    public UserSettings get(UUID uuid) {
+    public @NotNull UserSettings get(UUID uuid) {
         UserSettings settings = users.get(uuid);
 
         if (settings != null) {
@@ -21,17 +23,17 @@ public class UserManager {
 
         if (sqlManager.getSetting().exists(uuid)) {
             settings = sqlManager.getSetting().select(uuid);
-            users.put(uuid, settings);
         } else {
             settings = new UserSettings(true);
             sqlManager.getSetting().insert(uuid, settings);
         }
 
+        users.put(uuid, settings);
         return settings;
     }
 
     public void update(UUID uuid, Function<UserSettings, UserSettings> action) {
-        UserSettings settings = users.get(uuid);
+        UserSettings settings = get(uuid);
         settings = action.apply(settings);
 
         users.put(uuid, settings);
