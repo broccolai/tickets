@@ -1,6 +1,11 @@
 package co.uk.magmo.puretickets.storage.platforms;
 
-import co.aikar.idb.*;
+import co.aikar.idb.DB;
+import co.aikar.idb.Database;
+import co.aikar.idb.DatabaseOptions;
+import co.aikar.idb.DbRow;
+import co.aikar.idb.HikariPooledDatabase;
+import co.aikar.idb.PooledDatabaseOptions;
 import co.uk.magmo.puretickets.configuration.Config;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;

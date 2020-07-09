@@ -1,6 +1,13 @@
 package co.uk.magmo.puretickets.commands;
 
-import co.aikar.commands.annotation.*;
+import co.aikar.commands.annotation.CommandAlias;
+import co.aikar.commands.annotation.CommandCompletion;
+import co.aikar.commands.annotation.CommandPermission;
+import co.aikar.commands.annotation.Description;
+import co.aikar.commands.annotation.Flags;
+import co.aikar.commands.annotation.Optional;
+import co.aikar.commands.annotation.Subcommand;
+import co.aikar.commands.annotation.Syntax;
 import co.uk.magmo.corn.core.Lists;
 import co.uk.magmo.puretickets.exceptions.PureException;
 import co.uk.magmo.puretickets.locale.MessageNames;

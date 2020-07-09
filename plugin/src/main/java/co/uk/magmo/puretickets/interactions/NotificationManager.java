@@ -29,7 +29,9 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.permissions.ServerOperator;
-import java.util.*;
+
+import java.util.HashMap;
+import java.util.UUID;
 import java.util.function.Consumer;
 
 public class NotificationManager implements Listener {

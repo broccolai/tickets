@@ -1,7 +1,11 @@
 package co.uk.magmo.puretickets.storage;
 
 import co.uk.magmo.puretickets.configuration.Config;
-import co.uk.magmo.puretickets.storage.functions.*;
+import co.uk.magmo.puretickets.storage.functions.HelpersSQL;
+import co.uk.magmo.puretickets.storage.functions.MessageSQL;
+import co.uk.magmo.puretickets.storage.functions.NotificationSQL;
+import co.uk.magmo.puretickets.storage.functions.SettingsSQL;
+import co.uk.magmo.puretickets.storage.functions.TicketFunctions;
 import co.uk.magmo.puretickets.storage.platforms.MySQL;
 import co.uk.magmo.puretickets.storage.platforms.Platform;
 import co.uk.magmo.puretickets.storage.platforms.SQLite;

@@ -6,8 +6,6 @@ import co.uk.magmo.puretickets.configuration.Config;
 import co.uk.magmo.puretickets.integrations.DiscordManager;
 import co.uk.magmo.puretickets.interactions.NotificationManager;
 import co.uk.magmo.puretickets.storage.SQLManager;
-import co.uk.magmo.puretickets.storage.platforms.MySQL;
-import co.uk.magmo.puretickets.storage.platforms.SQLite;
 import co.uk.magmo.puretickets.tasks.TaskManager;
 import co.uk.magmo.puretickets.ticket.TicketManager;
 import co.uk.magmo.puretickets.user.UserManager;

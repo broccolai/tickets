@@ -3,7 +3,8 @@ package co.uk.magmo.puretickets.user;
 import co.uk.magmo.puretickets.storage.SQLManager;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.UUID;
 import java.util.function.Function;
 
 public class UserManager {
