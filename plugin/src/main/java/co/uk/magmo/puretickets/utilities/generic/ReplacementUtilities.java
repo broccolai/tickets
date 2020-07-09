@@ -1,5 +1,6 @@
 package co.uk.magmo.puretickets.utilities.generic;
 
+import co.uk.magmo.corn.core.Lists;
 import co.uk.magmo.puretickets.ticket.Message;
 import co.uk.magmo.puretickets.ticket.MessageReason;
 import co.uk.magmo.puretickets.ticket.Ticket;
@@ -48,7 +49,7 @@ public class ReplacementUtilities {
         results.add("%picker%");
         results.add(picker);
 
-        List<Message> pickMessages = ListUtilities.filter(ticket.getMessages(), msg -> msg.getReason() == MessageReason.PICKED);
+        List<Message> pickMessages = Lists.filter(ticket.getMessages(), msg -> msg.getReason() == MessageReason.PICKED);
         Message pickMessage = Iterators.getLast(pickMessages.iterator(), null);
 
         results.add("pickerDate");
@@ -57,7 +58,7 @@ public class ReplacementUtilities {
         results.add("%date%");
         results.add(TimeUtilities.formatted(ticket.dateOpened()));
 
-        List<Message> noteMessages = ListUtilities.filter(ticket.getMessages(), msg -> msg.getReason() == MessageReason.NOTE);
+        List<Message> noteMessages = Lists.filter(ticket.getMessages(), msg -> msg.getReason() == MessageReason.NOTE);
         Message noteMessage = Iterators.getLast(noteMessages.iterator(), null);
 
         results.add("%note%");

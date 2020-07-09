@@ -51,6 +51,8 @@ tasks {
         relocate("co.aikar.locales", base + "locales")
         relocate("co.aikar.idb", base + "idb")
 
+        relocate("co.uk.magmo.corn.core", base + "corn.core")
+
         relocate("com.zaxxer.hikari", base + "hikari")
         relocate("net.jodah.expiringmap", base + "expiringmap")
 

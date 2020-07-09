@@ -1,6 +1,7 @@
 package co.uk.magmo.puretickets.commands;
 
 import co.aikar.commands.annotation.*;
+import co.uk.magmo.corn.core.Lists;
 import co.uk.magmo.puretickets.exceptions.PureException;
 import co.uk.magmo.puretickets.locale.MessageNames;
 import co.uk.magmo.puretickets.locale.Messages;
@@ -9,7 +10,6 @@ import co.uk.magmo.puretickets.ticket.FutureTicket;
 import co.uk.magmo.puretickets.ticket.Ticket;
 import co.uk.magmo.puretickets.ticket.TicketStatus;
 import co.uk.magmo.puretickets.utilities.Constants;
-import co.uk.magmo.puretickets.utilities.generic.ListUtilities;
 import co.uk.magmo.puretickets.utilities.generic.ReplacementUtilities;
 import co.uk.magmo.puretickets.utilities.generic.UserUtilities;
 import org.bukkit.OfflinePlayer;
@@ -208,7 +208,7 @@ public class TicketsCommand extends PureBaseCommand {
                     } else {
                         notificationManager.basic(sender, Messages.TITLES__ALL_TICKETS);
 
-                        ListUtilities.group(ticketManager.all(status), Ticket::getPlayerUUID).forEach((uuid, tickets) -> {
+                        Lists.group(ticketManager.all(status), Ticket::getPlayerUUID).forEach((uuid, tickets) -> {
                             notificationManager.basic(sender, Messages.GENERAL__LIST_HEADER_FORMAT,
                                     "%name%", UserUtilities.nameFromUUID(uuid));
 

@@ -1,6 +1,7 @@
 package co.uk.magmo.puretickets.commands;
 
 import co.aikar.commands.annotation.*;
+import co.uk.magmo.corn.core.Lists;
 import co.uk.magmo.puretickets.exceptions.PureException;
 import co.uk.magmo.puretickets.locale.MessageNames;
 import co.uk.magmo.puretickets.locale.Messages;
@@ -9,7 +10,6 @@ import co.uk.magmo.puretickets.ticket.Message;
 import co.uk.magmo.puretickets.ticket.Ticket;
 import co.uk.magmo.puretickets.ticket.TicketStatus;
 import co.uk.magmo.puretickets.utilities.Constants;
-import co.uk.magmo.puretickets.utilities.generic.ListUtilities;
 import co.uk.magmo.puretickets.utilities.generic.ReplacementUtilities;
 import org.bukkit.entity.Player;
 
@@ -97,7 +97,7 @@ public class TicketCommand extends PureBaseCommand {
                 .async(() -> {
                     List<Ticket> tickets = ticketManager.getAll(player.getUniqueId(), null);
 
-                    tickets = ListUtilities.filter(tickets, ticket ->
+                    tickets = Lists.filter(tickets, ticket ->
                             status == null ? ticket.getStatus() != TicketStatus.CLOSED : ticket.getStatus() == status
                     );
 

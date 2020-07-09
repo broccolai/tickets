@@ -2,11 +2,11 @@ package co.uk.magmo.puretickets.storage.functions;
 
 import co.aikar.idb.DB;
 import co.aikar.idb.DbRow;
+import co.uk.magmo.corn.core.Lists;
 import co.uk.magmo.puretickets.storage.TimeAmount;
 import co.uk.magmo.puretickets.storage.platforms.Platform;
 import co.uk.magmo.puretickets.ticket.Ticket;
 import co.uk.magmo.puretickets.ticket.TicketStatus;
-import co.uk.magmo.puretickets.utilities.generic.ListUtilities;
 import co.uk.magmo.puretickets.utilities.generic.UserUtilities;
 import com.google.common.collect.ObjectArrays;
 import org.bukkit.Location;
@@ -51,7 +51,7 @@ public class TicketFunctions {
             throw new IllegalArgumentException();
         }
 
-        return ListUtilities.map(results, helpers::buildTicket);
+        return Lists.map(results, helpers::buildTicket);
     }
 
     public List<Ticket> selectAll(UUID uuid, TicketStatus status) {
@@ -70,7 +70,7 @@ public class TicketFunctions {
             throw new IllegalArgumentException();
         }
 
-        return ListUtilities.map(results, helpers::buildTicket);
+        return Lists.map(results, helpers::buildTicket);
     }
 
     public List<Integer> selectIds(UUID uuid, TicketStatus status) {
@@ -131,7 +131,7 @@ public class TicketFunctions {
             throw new IllegalArgumentException();
         }
 
-        return ListUtilities.map(results, result -> {
+        return Lists.map(results, result -> {
             UUID uuid = UUID.fromString(result);
             return UserUtilities.nameFromUUID(uuid);
         });

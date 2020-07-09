@@ -1,13 +1,20 @@
 package co.uk.magmo.puretickets.commands;
 
-import co.aikar.commands.*;
+import co.aikar.commands.InvalidCommandArgument;
+import co.aikar.commands.MessageType;
+import co.aikar.commands.PaperCommandManager;
+import co.uk.magmo.corn.core.Lists;
 import co.uk.magmo.puretickets.configuration.Config;
 import co.uk.magmo.puretickets.locale.Messages;
 import co.uk.magmo.puretickets.locale.TargetType;
 import co.uk.magmo.puretickets.storage.TimeAmount;
-import co.uk.magmo.puretickets.ticket.*;
+import co.uk.magmo.puretickets.ticket.FutureTicket;
+import co.uk.magmo.puretickets.ticket.Message;
+import co.uk.magmo.puretickets.ticket.MessageReason;
+import co.uk.magmo.puretickets.ticket.Ticket;
+import co.uk.magmo.puretickets.ticket.TicketManager;
+import co.uk.magmo.puretickets.ticket.TicketStatus;
 import co.uk.magmo.puretickets.utilities.generic.FileUtilities;
-import co.uk.magmo.puretickets.utilities.generic.ListUtilities;
 import co.uk.magmo.puretickets.utilities.generic.NumberUtilities;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -26,12 +33,17 @@ import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
 
 public class CommandManager extends PaperCommandManager {
     public CommandManager(Plugin plugin, Config config, TicketManager ticketManager) {
         super(plugin);
 
+        //noinspection deprecation
         enableUnstableAPI("help");
         saveLocales();
         loadLocales();
@@ -137,7 +149,7 @@ public class CommandManager extends PaperCommandManager {
                 OfflinePlayer target = c.getContextValue(OfflinePlayer.class, NumberUtilities.valueOfOrNull(c.getConfig("parameter")));
                 TicketStatus status = TicketStatus.from(c.getConfig("status"));
 
-                return ListUtilities.map(ticketManager.getIds(target.getUniqueId(), status), Object::toString);
+                return Lists.map(ticketManager.getIds(target.getUniqueId(), status), Object::toString);
             } catch (Exception e) {
                 return null;
             }
@@ -147,17 +159,17 @@ public class CommandManager extends PaperCommandManager {
             try {
                 TicketStatus status = TicketStatus.from(c.getConfig("status"));
 
-                return ListUtilities.map(ticketManager.getIds(c.getIssuer().getUniqueId(), status), Object::toString);
+                return Lists.map(ticketManager.getIds(c.getIssuer().getUniqueId(), status), Object::toString);
             } catch (Exception e) {
                 return null;
             }
         });
 
-        getCommandCompletions().registerStaticCompletion("TicketStatus", ListUtilities.map(Arrays.asList(TicketStatus.values()), value ->
+        getCommandCompletions().registerStaticCompletion("TicketStatus", Lists.map(Arrays.asList(TicketStatus.values()), value ->
                 value.name().toLowerCase()
         ));
 
-        getCommandCompletions().registerStaticCompletion("TimeAmounts", ListUtilities.map(Arrays.asList(TimeAmount.values()), value ->
+        getCommandCompletions().registerStaticCompletion("TimeAmounts", Lists.map(Arrays.asList(TimeAmount.values()), value ->
                 value.name().toLowerCase()
         ));
     }
@@ -190,8 +202,8 @@ public class CommandManager extends PaperCommandManager {
                 return;
             }
 
-            List<TargetType> filteredTargets = ListUtilities.filter(TargetType.values(), TargetType::getHasPrefix);
-            List<String> prefixables = ListUtilities.map(filteredTargets, Enum::name);
+            List<TargetType> filteredTargets = Lists.filter(Arrays.asList(TargetType.values()), TargetType::getHasPrefix);
+            List<String> prefixables = Lists.map(filteredTargets, Enum::name);
 
             prefixables.add("EXCEPTIONS");
 
