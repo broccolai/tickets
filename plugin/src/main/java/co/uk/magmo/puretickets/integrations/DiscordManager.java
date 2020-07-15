@@ -1,24 +1,28 @@
 package co.uk.magmo.puretickets.integrations;
 
 import co.uk.magmo.puretickets.configuration.Config;
+import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import org.bukkit.Bukkit;
+import com.intellectualsites.http.EntityMapper;
+import com.intellectualsites.http.HttpClient;
+import com.intellectualsites.http.external.GsonMapper;
 
-import java.io.IOException;
-import java.io.OutputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
+import java.util.logging.Logger;
 
 public class DiscordManager {
-    private final String domain = "https://tickets.magmo.co.uk";
+    HttpClient client = HttpClient.newBuilder()
+            .withBaseURL("https://tickets.magmo.co.uk/api/v2")
+            .build();
+
+    private final Logger logger;
 
     private final Boolean enabled;
     private final String guild;
     private final String token;
 
-    public DiscordManager(Config config) {
+    public DiscordManager(Logger logger, Config config) {
+        this.logger = logger;
         this.enabled = config.DISCORD__ENABLED;
         this.guild = config.DISCORD__GUILD;
         this.token = config.DISCORD__TOKEN;
@@ -43,38 +47,17 @@ public class DiscordManager {
             json.add("fields", content);
         }
 
-        URL url;
-        int responseCode;
+        EntityMapper entityMapper = EntityMapper.newInstance()
+                .registerSerializer(JsonObject.class, GsonMapper.serializer(JsonObject.class, new Gson()));
 
-        try {
-            url = new URL(domain + "/announce/" + guild + "/" + token);
-            HttpURLConnection http = (HttpURLConnection) url.openConnection();
-
-            http.setConnectTimeout(1000);
-            http.setRequestMethod("POST");
-            http.setDoOutput(true);
-
-            byte[] out = json.toString().getBytes(StandardCharsets.UTF_8);
-            int length = out.length;
-
-            http.setFixedLengthStreamingMode(length);
-            http.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
-            http.connect();
-
-            try (OutputStream os = http.getOutputStream()) {
-                os.write(out);
-            }
-
-            responseCode = http.getResponseCode();
-        } catch (IOException e) {
-            Bukkit.getLogger().warning("Error connecting to discord integration");
-            return;
-        }
-
-        if (responseCode != 200) {
-            Bukkit.getLogger().warning("Error connecting to discord integration");
-            Bukkit.getLogger().warning(url.toString());
-        }
+        client.post("/announce")
+                .withMapper(entityMapper)
+                // todo: add actual auth header when backend is rewritten
+                .withHeader(guild, token)
+                .onException(Throwable::printStackTrace)
+                .onStatus(200, response -> {})
+                .onRemaining(response -> logger.warning(String.valueOf(response.getStatusCode())))
+                .execute();
     }
 }
 
