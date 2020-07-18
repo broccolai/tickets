@@ -1,9 +1,9 @@
 import * as crypto from 'crypto';
 import { Message, MessageEmbed } from 'discord.js';
 
-import PureGuild from '../../constructs/pureGuild';
-import db from '../database';
-import { servers } from '../storage';
+import PureGuild from '../../constructs/PureGuild';
+import db from '../providers/database';
+import { servers } from '../providers/storage';
 
 export default (message: Message): void => {
   if (!message.member.hasPermission('ADMINISTRATOR')) {

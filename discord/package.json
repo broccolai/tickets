@@ -18,6 +18,7 @@
     "discord.js": "^12.2.0",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
+    "express-basic-auth": "^1.2.0",
     "sqlite3": "^5.0.0"
   },
   "devDependencies": {
