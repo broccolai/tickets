@@ -4,7 +4,9 @@ type MessageData = {
   author: string;
   color: string;
   action: string;
-  fields?: Array<[string, string]>;
+  fields?: {
+    [key: string]: string;
+  };
 };
 
 export default MessageData;
