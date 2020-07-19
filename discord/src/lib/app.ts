@@ -13,7 +13,9 @@ app.use(cors());
 
 app.use('/', legacy);
 
-app.use('/status', status);
-app.use('/announce', auth, announce);
+const api = '/api/v1';
+
+app.use(api + '/status', status);
+app.use(api + '/announce', auth, announce);
 
 export default app;
