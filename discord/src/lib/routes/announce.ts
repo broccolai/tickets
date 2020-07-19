@@ -18,7 +18,7 @@ router.post('/', async (req, res) => {
 
   const data = req.body as MessageData;
 
-  const channel = client.channels.get(guild.output) as TextChannel;
+  const channel = (await client.channels.fetch(guild.output)) as TextChannel;
 
   channel.send((mb) =>
     mb.setEmbed((embed: Embed) => {
@@ -28,7 +28,7 @@ router.post('/', async (req, res) => {
         .setTitle('**' + data.action + '**');
 
       if (data.fields) {
-        data.fields.forEach(([key, value]) => {
+        Object.entries(data.fields).forEach(([key, value]) => {
           embed.addField('**' + key + '**', value, true);
         });
       }
