@@ -11,7 +11,7 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
-app.use('/legacy', legacy);
+app.use('/', legacy);
 
 app.use('/status', status);
 app.use('/announce', auth, announce);

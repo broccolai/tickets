@@ -1,8 +1,10 @@
-import { MessageEmbed, TextChannel } from 'discord.js';
 import express from 'express';
+
+import { Embed, TextChannel } from '@klasa/core';
 
 import client from '../client';
 import { servers } from '../providers/storage';
+import { hashToHex } from '../utilities/number';
 
 // All routes here are to be removed.
 const router = express.Router();
@@ -16,19 +18,27 @@ router.post('/announce/:guild/:token', async (req, res) => {
 
     const json = req.body;
 
-    const channel = client.channels.cache.get(data.output) as TextChannel;
-    const message = new MessageEmbed()
-      .setColor(json['color'])
-      .setAuthor(json['author'] + ' #' + json['id'], 'https://live.staticflickr.com/7367/10134745566_a7c6dab5bb_z.jpg')
-      .setTitle('**' + json['action'] + '**');
+    const channel = (await client.channels.fetch(data.output)) as TextChannel;
 
-    if (json['fields']) {
-      Object.entries(json['fields']).forEach(([key, value]) => {
-        message.addField('**' + key + '**', value, true);
-      });
-    }
+    channel.send((mb) =>
+      mb.setEmbed((embed: Embed) => {
+        embed
+          .setColor(hashToHex(json['color']))
+          .setAuthor(
+            json['author'] + ' #' + json['id'],
+            'https://live.staticflickr.com/7367/10134745566_a7c6dab5bb_z.jpg',
+          )
+          .setTitle('**' + json['action'] + '**');
 
-    channel.send(message);
+        if (json['fields']) {
+          Object.entries(json['fields']).forEach(([key, value]) => {
+            embed.addField('**' + key + '**', value, true);
+          });
+        }
+
+        return embed;
+      }),
+    );
   } else {
     res.send(401);
   }
