@@ -3,7 +3,7 @@ import { IBasicAuthedRequest } from 'express-basic-auth';
 
 import { Embed, TextChannel } from '@klasa/core';
 
-import MessageData from '../../constructs/messageData';
+import MessageData from '../../constructs/MessageData';
 import client from '../client';
 import { servers } from '../providers/storage';
 import { hashToHex } from '../utilities/number';
