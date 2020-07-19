@@ -1,10 +1,12 @@
-import { MessageEmbed, TextChannel } from 'discord.js';
 import express from 'express';
 import { IBasicAuthedRequest } from 'express-basic-auth';
+
+import { Embed, TextChannel } from '@klasa/core';
 
 import MessageData from '../../constructs/messageData';
 import client from '../client';
 import { servers } from '../providers/storage';
+import { hashToHex } from '../utilities/number';
 
 const router = express.Router();
 
@@ -16,19 +18,24 @@ router.post('/', async (req, res) => {
 
   const data = req.body as MessageData;
 
-  const channel = client.channels.cache.get(guild.output) as TextChannel;
-  const message = new MessageEmbed()
-    .setColor(data.color)
-    .setAuthor(data.author + ' #' + data.id, 'https://live.staticflickr.com/7367/10134745566_a7c6dab5bb_z.jpg')
-    .setTitle('**' + data.action + '**');
+  const channel = client.channels.get(guild.output) as TextChannel;
 
-  if (data.fields) {
-    data.fields.forEach(([key, value]) => {
-      message.addField('**' + key + '**', value, true);
-    });
-  }
+  channel.send((mb) =>
+    mb.setEmbed((embed: Embed) => {
+      embed
+        .setColor(hashToHex(data.color))
+        .setAuthor(data.author + ' #' + data.id, 'https://crafatar.com/avatars/' + data.uuid)
+        .setTitle('**' + data.action + '**');
 
-  channel.send(message);
+      if (data.fields) {
+        data.fields.forEach(([key, value]) => {
+          embed.addField('**' + key + '**', value, true);
+        });
+      }
+
+      return embed;
+    }),
+  );
 });
 
 export default router;

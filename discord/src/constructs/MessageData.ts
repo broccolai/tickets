@@ -1,5 +1,6 @@
 type MessageData = {
   id: string;
+  uuid: string;
   author: string;
   color: string;
   action: string;
