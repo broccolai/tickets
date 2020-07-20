@@ -32,6 +32,7 @@ dependencies {
     api("co.aikar:taskchain-bukkit:3.7.2")
     api("co.aikar:acf-paper:0.5.0-SNAPSHOT")
     api("co.aikar:idb-core:1.0.0-SNAPSHOT")
+    api("org.slf4j:slf4j-simple:1.7.13")
     api("com.zaxxer:HikariCP:2.7.9")
     api("co.uk.magmo:corn-core:1.0.0-SNAPSHOT")
     api("com.intellectualsites.http:HTTP4J:1.0-SNAPSHOT")
