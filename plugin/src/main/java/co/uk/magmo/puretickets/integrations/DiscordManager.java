@@ -20,7 +20,7 @@ public class DiscordManager {
 
     public DiscordManager(Logger logger, Config config) {
         this.client = HttpClient.newBuilder()
-                .withBaseURL("http://localhost:400/api/v1")
+                .withBaseURL("http://tickets.broccol.ai/api/v1")
                 .withDecorator((req) -> {
                     String raw = config.DISCORD__GUILD + ":" + config.DISCORD__TOKEN;
                     byte[] encoded = Base64.getEncoder().encode(raw.getBytes());
@@ -57,8 +57,8 @@ public class DiscordManager {
         EntityMapper entityMapper = EntityMapper.newInstance()
                 .registerSerializer(JsonObject.class, GsonMapper.serializer(JsonObject.class, new GsonBuilder().create()));
         client.post("/announce")
-                .withInput(() -> json)
                 .withMapper(entityMapper)
+                .withInput(() -> json)
                 .onException(Throwable::printStackTrace)
                 .onStatus(200, response -> {})
                 .onRemaining(response -> logger.warning(String.valueOf(response.getStatusCode())))
