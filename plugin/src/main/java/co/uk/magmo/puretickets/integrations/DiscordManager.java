@@ -20,7 +20,7 @@ public class DiscordManager {
 
     public DiscordManager(Logger logger, Config config) {
         this.client = HttpClient.newBuilder()
-                .withBaseURL("http://tickets.broccol.ai/api/v1")
+                .withBaseURL("https://tickets.broccol.ai/api/v1")
                 .withDecorator((req) -> {
                     String raw = config.DISCORD__GUILD + ":" + config.DISCORD__TOKEN;
                     byte[] encoded = Base64.getEncoder().encode(raw.getBytes());
