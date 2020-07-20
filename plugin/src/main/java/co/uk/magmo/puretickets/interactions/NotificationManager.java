@@ -35,7 +35,6 @@ import java.util.UUID;
 import java.util.function.Consumer;
 
 public class NotificationManager implements Listener {
-    private final Config config;
     private final SQLManager sqlManager;
     private final UserManager userManager;
     private final CommandManager commandManager;
@@ -44,7 +43,6 @@ public class NotificationManager implements Listener {
     private final Multimap<UUID, PendingNotification> awaiting;
 
     public NotificationManager(Config config, SQLManager sqlManager, TaskManager taskManager, UserManager userManager, CommandManager commandManager, DiscordManager discordManager, TicketManager ticketManager) {
-        this.config = config;
         this.sqlManager = sqlManager;
         this.userManager = userManager;
         this.commandManager = commandManager;
@@ -57,7 +55,7 @@ public class NotificationManager implements Listener {
     }
 
     public void send(CommandSender sender, UUID target, MessageNames names, Ticket ticket, Consumer<HashMap<String, String>> addFields) {
-        String[] specificReplacements = { "%user%", sender.getName(), "%target%", UserUtilities.nameFromUUID(target) };
+        String[] specificReplacements = {"%user%", sender.getName(), "%target%", UserUtilities.nameFromUUID(target)};
         String[] genericReplacements = ReplacementUtilities.ticketReplacements(ticket);
 
         String[] replacements = ObjectArrays.concat(specificReplacements, genericReplacements, String.class);
@@ -70,7 +68,7 @@ public class NotificationManager implements Listener {
                     senderAsIssuer(sender).sendInfo(message, replacements);
                     break;
 
-               case NOTIFICATION:
+                case NOTIFICATION:
                     OfflinePlayer op = Bukkit.getOfflinePlayer(target);
 
                     if (op.isOnline()) {
@@ -81,18 +79,19 @@ public class NotificationManager implements Listener {
 
                     break;
 
-               case ANNOUNCEMENT:
+                case ANNOUNCEMENT:
                     for (Player player : Bukkit.getOnlinePlayers()) {
                         if (!player.hasPermission(Constants.STAFF_PERMISSION + ".announce")) continue;
                         if (!userManager.get(player.getUniqueId()).getAnnouncements()) continue;
-                        if (sender instanceof Player && ((Player) sender).getUniqueId() == player.getUniqueId()) continue;
+                        if (sender instanceof Player && ((Player) sender).getUniqueId() == player.getUniqueId())
+                            continue;
 
                         senderAsIssuer(player).sendInfo(message, replacements);
                     }
 
                     break;
 
-               case DISCORD:
+                case DISCORD:
                     HashMap<String, String> fields = new HashMap<>();
 
                     if (addFields != null) {
@@ -103,7 +102,7 @@ public class NotificationManager implements Listener {
                     action = ChatColor.stripColor(action);
 
                     discordManager.sendInformation(ticket.getStatus().getPureColor().getHex(),
-                            UserUtilities.nameFromUUID(ticket.getPlayerUUID()), ticket.getId(), action, fields);
+                            UserUtilities.nameFromUUID(ticket.getPlayerUUID()), ticket.getPlayerUUID(), ticket.getId(), action, fields);
             }
         }
     }

@@ -19,7 +19,7 @@ public class PureTickets extends JavaPlugin {
     @Override
     public void onEnable() {
         Config config = new Config(this);
-        DiscordManager discordManager = new DiscordManager(config);
+        DiscordManager discordManager = new DiscordManager(this.getLogger(), config);
         SQLManager sqlManager = new SQLManager(this, config);
 
         UserManager userManager = new UserManager(sqlManager);

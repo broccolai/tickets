@@ -1,30 +1,40 @@
 package co.uk.magmo.puretickets.integrations;
 
 import co.uk.magmo.puretickets.configuration.Config;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
-import org.bukkit.Bukkit;
+import com.intellectualsites.http.EntityMapper;
+import com.intellectualsites.http.HttpClient;
+import com.intellectualsites.http.external.GsonMapper;
 
-import java.io.IOException;
-import java.io.OutputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 import java.util.HashMap;
+import java.util.UUID;
+import java.util.logging.Logger;
 
 public class DiscordManager {
-    private final String domain = "https://tickets.magmo.co.uk";
+    private final HttpClient client;
 
+    private final Logger logger;
     private final Boolean enabled;
-    private final String guild;
-    private final String token;
 
-    public DiscordManager(Config config) {
+    public DiscordManager(Logger logger, Config config) {
+        this.client = HttpClient.newBuilder()
+                .withBaseURL("http://tickets.broccol.ai/api/v1")
+                .withDecorator((req) -> {
+                    String raw = config.DISCORD__GUILD + ":" + config.DISCORD__TOKEN;
+                    byte[] encoded = Base64.getEncoder().encode(raw.getBytes());
+                    String header = "Basic " + new String(encoded);
+
+                    req.withHeader("Authorization", header);
+                })
+                .build();
+
+        this.logger = logger;
         this.enabled = config.DISCORD__ENABLED;
-        this.guild = config.DISCORD__GUILD;
-        this.token = config.DISCORD__TOKEN;
     }
 
-    public void sendInformation(String color, String author, Integer id, String action, HashMap<String, String> fields) {
+    public void sendInformation(String color, String author, UUID uuid, Integer id, String action, HashMap<String, String> fields) {
         if (!enabled) return;
 
         JsonObject json = new JsonObject();
@@ -32,6 +42,7 @@ public class DiscordManager {
         json.addProperty("color", color);
         json.addProperty("author", author);
         json.addProperty("id", id);
+        json.addProperty("uuid", uuid.toString());
         json.addProperty("action", action);
         json.addProperty("color", color);
 
@@ -43,38 +54,15 @@ public class DiscordManager {
             json.add("fields", content);
         }
 
-        URL url;
-        int responseCode;
-
-        try {
-            url = new URL(domain + "/announce/" + guild + "/" + token);
-            HttpURLConnection http = (HttpURLConnection) url.openConnection();
-
-            http.setConnectTimeout(1000);
-            http.setRequestMethod("POST");
-            http.setDoOutput(true);
-
-            byte[] out = json.toString().getBytes(StandardCharsets.UTF_8);
-            int length = out.length;
-
-            http.setFixedLengthStreamingMode(length);
-            http.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
-            http.connect();
-
-            try (OutputStream os = http.getOutputStream()) {
-                os.write(out);
-            }
-
-            responseCode = http.getResponseCode();
-        } catch (IOException e) {
-            Bukkit.getLogger().warning("Error connecting to discord integration");
-            return;
-        }
-
-        if (responseCode != 200) {
-            Bukkit.getLogger().warning("Error connecting to discord integration");
-            Bukkit.getLogger().warning(url.toString());
-        }
+        EntityMapper entityMapper = EntityMapper.newInstance()
+                .registerSerializer(JsonObject.class, GsonMapper.serializer(JsonObject.class, new GsonBuilder().create()));
+        client.post("/announce")
+                .withMapper(entityMapper)
+                .withInput(() -> json)
+                .onException(Throwable::printStackTrace)
+                .onStatus(200, response -> {})
+                .onRemaining(response -> logger.warning(String.valueOf(response.getStatusCode())))
+                .execute();
     }
 }
 

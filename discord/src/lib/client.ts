@@ -1,29 +1,25 @@
-import { ActivityOptions, Client } from 'discord.js';
+import { Client, ClientEvents, Message } from '@klasa/core';
 
 import setup from './commands/setup';
 
 const client = new Client();
 
-client.once('ready', () => {
+client.on(ClientEvents.Ready, async () => {
   setInterval(async () => {
-    const options: ActivityOptions = {};
+    const name = client.guilds.size + ' servers';
 
-    options.name = client.guilds.cache.size.toString() + ' servers';
-    options.type = 'WATCHING';
-
-    client.user.setActivity(options);
+    client.user.presence.modify((builder) => builder.setStatus('online').setGame((game) => game.setName(name)));
   }, 300000);
 });
 
-client.on('message', async (message) => {
-  if (message.author.bot) return;
+client.on(ClientEvents.MessageCreate, async (message: Message) => {
+  if (message.author.bot || !message.content.startsWith('!')) {
+    return;
+  }
 
-  if (message.content.indexOf('!') !== 0) return;
+  const cmd = message.content.slice(1).trim().split(' ').shift().toLowerCase();
 
-  const args = message.content.slice('!'.length).trim().split(/ +/g);
-  const command = args.shift().toLowerCase();
-
-  switch (command) {
+  switch (cmd) {
     case 'setup':
       setup(message);
       break;

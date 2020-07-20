@@ -15,6 +15,7 @@ repositories {
     maven("https://oss.sonatype.org/content/repositories/public/")
     maven("https://repo.aikar.co/content/groups/aikar/")
     maven("https://mvnrepository.com/artifact/org.jetbrains/annotations")
+    maven("https://mvn.intellectualsites.com/content/repositories/snapshots")
     maven {
         name = "GitHubPackages"
         url = uri("https://maven.pkg.github.com/broccolai/corn")
@@ -31,8 +32,10 @@ dependencies {
     api("co.aikar:taskchain-bukkit:3.7.2")
     api("co.aikar:acf-paper:0.5.0-SNAPSHOT")
     api("co.aikar:idb-core:1.0.0-SNAPSHOT")
+    api("org.slf4j:slf4j-simple:1.7.13")
     api("com.zaxxer:HikariCP:2.7.9")
     api("co.uk.magmo:corn-core:1.0.0-SNAPSHOT")
+    api("com.intellectualsites.http:HTTP4J:1.3-SNAPSHOT")
 
     compileOnly("org.spigotmc:spigot-api:1.16.1-R0.1-SNAPSHOT")
 }
