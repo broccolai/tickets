@@ -113,7 +113,8 @@ public class TicketFunctions {
         }
 
         try {
-            return helpers.buildTicket(DB.getFirstRow(sql, ObjectArrays.concat(uuid.toString(), replacements.toArray())));
+            DbRow row = DB.getFirstRow(sql, ObjectArrays.concat(uuid.toString(), replacements.toArray()));
+            return row.get("id") == null ? null : helpers.buildTicket(row);
         } catch (SQLException e) {
             throw new IllegalArgumentException();
         }
