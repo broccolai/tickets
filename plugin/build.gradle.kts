@@ -5,7 +5,7 @@ plugins {
     id("com.github.johnrengelman.shadow") version "6.0.0"
 }
 
-version = "3.0.0"
+version = "3.0.1"
 group = "co.uk.magmo.puretickets"
 
 repositories {
