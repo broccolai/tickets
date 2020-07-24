@@ -48,6 +48,8 @@ public class CommandManager extends PaperCommandManager {
         saveLocales();
         loadLocales();
 
+        getLocales().setDefaultLocale(Locale.forLanguageTag(config.LOCALE));
+
         // Colours
         setFormat(MessageType.HELP, ChatColor.WHITE, ChatColor.AQUA, ChatColor.DARK_GRAY);
         setFormat(MessageType.INFO, ChatColor.WHITE, ChatColor.AQUA, ChatColor.DARK_GRAY);
