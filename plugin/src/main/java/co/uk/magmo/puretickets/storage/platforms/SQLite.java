@@ -49,14 +49,18 @@ public class SQLite implements Platform {
                 DB.executeUpdate("ALTER TABLE ticket ADD location TEXT");
                 version++;
             }
+        } catch (SQLException ignored) { }
 
+        try {
             if (version <= 1) {
                 plugin.getLogger().info("Updated PureTickets database to remove tickets with empty locations and remove all pending notifications");
                 DB.executeUpdate("DELETE FROM ticket WHERE location IS NULL OR trim(location) = ?", "");
                 DB.executeUpdate("DELETE FROM notification");
                 version++;
             }
+        } catch (SQLException ignored) { }
 
+        try {
             if (version <= 2) {
                 plugin.getLogger().info("Updated PureTickets database to prefix table names");
                 DB.getFirstColumn("ALTER TABLE ticket RENAME TO puretickets_ticket;");
@@ -65,16 +69,13 @@ public class SQLite implements Platform {
                 DB.getFirstColumn("ALTER TABLE settings RENAME TO puretickets_settings;");
                 version++;
             }
+        } catch (SQLException ignored) { }
+
+        try {
+            DB.executeUpdate("PRAGMA user_version = " + version);
         } catch (SQLException e) {
             e.printStackTrace();
             Bukkit.getPluginManager().disablePlugin(plugin);
-        } finally {
-            try {
-                DB.executeUpdate("PRAGMA user_version = " + version);
-            } catch (SQLException e) {
-                e.printStackTrace();
-                Bukkit.getPluginManager().disablePlugin(plugin);
-            }
         }
     }
 
