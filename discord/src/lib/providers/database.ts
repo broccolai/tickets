@@ -1,6 +1,6 @@
 import sqlite3 from 'sqlite3';
 
-import PureGuild from '../../constructs/PureGuild';
+import PureGuild from '../constructs/PureGuild';
 
 const db = new sqlite3.Database('./storage.db', sqlite3.OPEN_READWRITE);
 

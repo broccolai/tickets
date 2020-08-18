@@ -1,9 +1,9 @@
 import cors from 'cors';
 import express from 'express';
 
+import announce from '../apis/v1/routes/announce';
+import status from '../apis/v1/routes/status';
 import auth from './providers/auth';
-import announce from './routes/announce';
-import status from './routes/status';
 
 const app = express();
 

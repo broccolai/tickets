@@ -2,7 +2,7 @@ import * as crypto from 'crypto';
 
 import { Embed, Message } from '@klasa/core';
 
-import PureGuild from '../../constructs/PureGuild';
+import PureGuild from '../constructs/PureGuild';
 import db from '../providers/database';
 import { servers } from '../providers/storage';
 

@@ -3,10 +3,10 @@ import { IBasicAuthedRequest } from 'express-basic-auth';
 
 import { Embed, TextChannel } from '@klasa/core';
 
-import MessageData from '../../constructs/MessageData';
-import client from '../client';
-import { servers } from '../providers/storage';
-import { hashToHex } from '../utilities/number';
+import client from '../../../lib/client';
+import { servers } from '../../../lib/providers/storage';
+import { hashToHex } from '../../../lib/utilities/number';
+import MessageData from '../constructs/MessageData';
 
 const router = express.Router();
 
