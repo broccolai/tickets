@@ -6,6 +6,7 @@ import co.uk.magmo.puretickets.ticket.MessageReason;
 import co.uk.magmo.puretickets.ticket.Ticket;
 import co.uk.magmo.puretickets.ticket.TicketStatus;
 import com.google.common.collect.Iterators;
+import org.bukkit.Location;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -64,6 +65,20 @@ public class ReplacementUtilities {
 
         results.add("%note%");
         results.add(noteMessage != null ? noteMessage.getData() : "");
+
+        Location location = ticket.getLocation();
+
+        results.add("%world%");
+        results.add(location.getWorld().getName());
+
+        results.add("%x%");
+        results.add(String.valueOf(location.getBlockX()));
+
+        results.add("%y%");
+        results.add(String.valueOf(location.getBlockY()));
+
+        results.add("%z%");
+        results.add(String.valueOf(location.getBlockZ()));
 
         return results.toArray(new String[0]);
     }

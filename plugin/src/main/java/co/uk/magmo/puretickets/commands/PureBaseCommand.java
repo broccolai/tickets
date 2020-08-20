@@ -48,6 +48,7 @@ public class PureBaseCommand extends BaseCommand {
                     issuer.sendInfo(Messages.TITLES__SHOW_TICKET, replacements);
                     issuer.sendInfo(Messages.SHOW__SENDER, replacements);
                     issuer.sendInfo(Messages.SHOW__MESSAGE, replacements);
+                    issuer.sendInfo(Messages.SHOW__LOCATION, replacements);
 
                     if (ticket.getStatus() != TicketStatus.PICKED) {
                         issuer.sendInfo(Messages.SHOW__UNPICKED);
