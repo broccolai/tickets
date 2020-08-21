@@ -5,13 +5,13 @@ import java.util.UUID;
 import org.jetbrains.annotations.Nullable;
 
 public class Message {
-    MessageReason reason;
-    LocalDateTime date;
+    private final MessageReason reason;
+    private final LocalDateTime date;
 
     @Nullable
-    String data;
+    private String data;
     @Nullable
-    UUID sender;
+    private UUID sender;
 
     public Message(MessageReason reason, LocalDateTime date, @Nullable String data) {
         this.reason = reason;
