@@ -1,5 +1,4 @@
 import { Client, ClientEvents, Message } from '@klasa/core';
-
 import setup from './commands/setup';
 
 const client = new Client();

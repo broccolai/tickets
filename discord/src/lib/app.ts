@@ -1,8 +1,7 @@
+import one from '@api/v1/router';
+import two from '@api/v2/router';
 import cors from 'cors';
 import express from 'express';
-
-import one from '../apis/v1/one';
-import two from '../apis/v2/two';
 
 const app = express();
 

@@ -1,5 +1,4 @@
 import 'dotenv/config.js';
-
 import app from './lib/app';
 import client from './lib/client';
 
