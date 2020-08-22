@@ -25,11 +25,11 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
     - run: |
-        cd discord
+        cd backend
         npm install
     - run: |
-        cd discord
+        cd backend
         npm run lint
     - run: |
-        cd discord
+        cd backend
         npm run build
