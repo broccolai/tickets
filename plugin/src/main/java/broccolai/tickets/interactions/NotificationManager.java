@@ -17,14 +17,12 @@ import broccolai.tickets.utilities.generic.ReplacementUtilities;
 import broccolai.tickets.utilities.generic.TimeUtilities;
 import broccolai.tickets.utilities.generic.UserUtilities;
 import co.aikar.commands.CommandIssuer;
-import co.aikar.commands.MessageType;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.ObjectArrays;
 import java.util.HashMap;
 import java.util.UUID;
 import java.util.function.Consumer;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -122,7 +120,11 @@ public class NotificationManager implements Listener {
     public void onJoin(PlayerJoinEvent e) {
         CommandIssuer ci = commandManager.getCommandIssuer(e.getPlayer());
 
-        awaiting.get(ci.getUniqueId()).forEach(n -> ci.sendInfo(n.getMessageKey(), n.getReplacements()));
+        awaiting.get(ci.getUniqueId()).forEach(n -> {
+            try {
+                ci.sendInfo(n.getMessageKey(), n.getReplacements());
+            } catch (IllegalArgumentException ignored) { }
+        });
 
         awaiting.removeAll(ci.getUniqueId());
     }
