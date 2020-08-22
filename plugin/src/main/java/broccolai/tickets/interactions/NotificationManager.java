@@ -103,11 +103,9 @@ public class NotificationManager implements Listener {
                         addFields.accept(fields);
                     }
 
-                    String action = commandManager.formatMessage(senderAsIssuer(Bukkit.getConsoleSender()), MessageType.INFO, message);
-                    action = ChatColor.stripColor(action);
+                    UUID uuid = sender instanceof Player ? ((Player) sender).getUniqueId() : null;
 
-                    discordManager.sendInformation(ticket.getStatus().getPureColor().getHex(),
-                        UserUtilities.nameFromUUID(ticket.getPlayerUUID()), ticket.getPlayerUUID(), ticket.getId(), action, fields);
+                    discordManager.sendInformation(ticket, uuid, names.name());
             }
         }
     }

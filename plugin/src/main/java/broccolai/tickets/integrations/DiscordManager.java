@@ -1,13 +1,14 @@
 package broccolai.tickets.integrations;
 
 import broccolai.tickets.configuration.Config;
+import broccolai.tickets.ticket.Ticket;
+import broccolai.tickets.utilities.generic.UserUtilities;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.intellectualsites.http.EntityMapper;
 import com.intellectualsites.http.HttpClient;
 import com.intellectualsites.http.external.GsonMapper;
 import java.util.Base64;
-import java.util.HashMap;
 import java.util.UUID;
 import java.util.logging.Logger;
 
@@ -19,7 +20,7 @@ public class DiscordManager {
 
     public DiscordManager(Logger logger, Config config) {
         this.client = HttpClient.newBuilder()
-            .withBaseURL("https://tickets.broccol.ai/api/v1")
+            .withBaseURL("https://tickets.broccol.ai/api/v2")
             .withDecorator((req) -> {
                 String raw = config.DISCORD__GUILD + ":" + config.DISCORD__TOKEN;
                 byte[] encoded = Base64.getEncoder().encode(raw.getBytes());
@@ -33,27 +34,25 @@ public class DiscordManager {
         this.enabled = config.DISCORD__ENABLED;
     }
 
-    public void sendInformation(String color, String author, UUID uuid, Integer id, String action, HashMap<String, String> fields) {
+    public void sendInformation(Ticket ticket, UUID author, String action) {
         if (!enabled) {
             return;
         }
 
         JsonObject json = new JsonObject();
+        JsonObject authorJson = new JsonObject();
 
-        json.addProperty("color", color);
-        json.addProperty("author", author);
-        json.addProperty("id", id);
-        json.addProperty("uuid", uuid.toString());
-        json.addProperty("action", action);
-        json.addProperty("color", color);
-
-        if (!fields.isEmpty()) {
-            JsonObject content = new JsonObject();
-
-            fields.forEach(content::addProperty);
-
-            json.add("fields", content);
+        if (author == null) {
+            authorJson.addProperty("name", "Console");
+            authorJson.addProperty("uuid", "f78a4d8d-d51b-4b39-98a3-230f2de0c670");
+        } else {
+            authorJson.addProperty("name", UserUtilities.nameFromUUID(author));
+            authorJson.addProperty("uuid", author.toString());
         }
+
+        json.add("ticket", ticket.toJson());
+        json.add("author", authorJson);
+        json.addProperty("action", action);
 
         EntityMapper entityMapper = EntityMapper.newInstance()
             .registerSerializer(JsonObject.class, GsonMapper.serializer(JsonObject.class, new GsonBuilder().create()));
