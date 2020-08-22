@@ -56,7 +56,7 @@ show:
   picker: "<c2>Picker:</c2> <c1>%pickerDate% by %picker%</c1>"
   unpicked: "<c2>Picker:</c2> <c1>Unpicked</c1>"
   message: "<c2>Current Message:</c2> <c1>%message%</c1>"
-  location: "<c2>Location:</c2> <c1>%world% at X %x%, Y %y%, Z %z%</c1>"
+  location: "<c2>Location:</c2> <c1>X %x%, Y %y%, Z %z% in %world%</c1>"
 exceptions:
   ticket_not_found: "Ticket could not be found"
   invalid_setting_type: "Invalid setting type"
