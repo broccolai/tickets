@@ -3,12 +3,22 @@ import { IBasicAuthedRequest } from 'express-basic-auth';
 
 import { Embed, TextChannel } from '@klasa/core';
 
-import client from '../../../lib/client';
-import { servers } from '../../../lib/providers/storage';
-import { hashToHex } from '../../../lib/utilities/number';
-import MessageData from '../constructs/MessageData';
+import client from '@lib/client';
+import { servers } from '@lib/providers/storage';
+import { hashToHex } from '@lib/utilities/number';
 
 const router = express.Router();
+
+type MessageData = {
+  id: string;
+  uuid: string;
+  author: string;
+  color: string;
+  action: string;
+  fields?: {
+    [key: string]: string;
+  };
+};
 
 router.post('/', async (req, res) => {
   const authReq = req as IBasicAuthedRequest;

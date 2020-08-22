@@ -25,7 +25,9 @@
     "types": ["node"],
     "baseUrl": "src",
     "paths": {
-      "@api/*": ["api/*"]
+      "@api/*": ["api/*"],
+      "@lib/*": ["lib/*"],
+      "@constructs/*": ["constructs/*"]
     }
   },
   "exclude": ["node_modules", "dist"]

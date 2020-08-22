@@ -3,12 +3,12 @@ import { IBasicAuthedRequest } from 'express-basic-auth';
 
 import { Embed, TextChannel } from '@klasa/core';
 
-import client from '../../../lib/client';
-import { servers } from '../../../lib/providers/storage';
-import { wrap } from '../../../lib/utilities/strings';
-import Action from '../constructs/Action';
-import MessageData from '../constructs/MessageData';
-import TicketStatus from '../constructs/TicketStatus';
+import client from '@lib/client';
+import { servers } from '@lib/providers/storage';
+import { wrap } from '@lib/utilities/strings';
+import Action from '@constructs/Action';
+import MessageData from '@constructs/MessageData';
+import TicketStatus from '@constructs/TicketStatus';
 
 const router = express.Router();
 

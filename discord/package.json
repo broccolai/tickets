@@ -37,6 +37,8 @@
     "typescript": "3.9.6"
   },
   "_moduleAliases": {
-    "@api": "dist/api"
+    "@api": "dist/api",
+    "@lib": "dist/lib",
+    "@constructs": "dist/constructs"
   }
 }

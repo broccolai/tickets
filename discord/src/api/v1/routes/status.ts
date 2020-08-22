@@ -1,6 +1,6 @@
 import express from 'express';
 
-import client from '../../../lib/client';
+import client from '@lib/client';
 
 const router = express.Router();
 
