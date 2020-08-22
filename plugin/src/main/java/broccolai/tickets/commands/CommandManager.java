@@ -61,7 +61,14 @@ public class CommandManager extends PaperCommandManager {
                 String input = c.popFirstArg();
 
                 if (input != null) {
-                    Ticket ticket = ticketManager.get(Integer.parseInt(input));
+                    Ticket ticket;
+
+                    try {
+                        int inputId = Integer.parseInt(input);
+                        ticket = ticketManager.get(inputId);
+                    } catch (NumberFormatException e) {
+                        ticket = null;
+                    }
 
                     if (ticket == null || (c.hasFlag("issuer") && !ticket.getPlayerUUID().equals(c.getPlayer().getUniqueId()))) {
                         future.complete(null);
