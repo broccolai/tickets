@@ -2,6 +2,7 @@ import { Client, ClientEvents, Message } from '@klasa/core';
 import setup from './commands/setup';
 
 const client = new Client();
+const PREFIX = process.env.DISCORD_PREFIX || '!'
 
 client.on(ClientEvents.Ready, async () => {
   setInterval(async () => {
@@ -12,7 +13,7 @@ client.on(ClientEvents.Ready, async () => {
 });
 
 client.on(ClientEvents.MessageCreate, async (message: Message) => {
-  if (message.author.bot || !message.content.startsWith('!')) {
+  if (message.author.bot || !message.content.startsWith(PREFIX)) {
     return;
   }
 
