@@ -8,7 +8,7 @@ import { servers } from '@lib/providers/storage';
 import { wrap } from '@lib/utilities/strings';
 import Action from '@constructs/Action';
 import MessageData from '@constructs/MessageData';
-import TicketStatus, { serialiseTicketStatus } from '@constructs/TicketStatus';
+import TicketStatus from '@constructs/TicketStatus';
 import Ticket from '@constructs/Ticket';
 import db from '@lib/providers/database';
 import { serialiseLocation } from '@constructs/Location';
