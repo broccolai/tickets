@@ -1,3 +1,3 @@
-import { getData } from './database';
+import { getGuilds } from './database';
 
-export const servers = getData();
+export const servers = await getGuilds();
