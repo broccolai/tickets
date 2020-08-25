@@ -2,7 +2,7 @@ import { Client, ClientEvents, Message } from '@klasa/core';
 import setup from './commands/setup';
 
 const client = new Client();
-const PREFIX = process.env.DISCORD_PREFIX || '!'
+const PREFIX = process.env.DISCORD_PREFIX || '!';
 
 client.on(ClientEvents.Ready, async () => {
   setInterval(async () => {
