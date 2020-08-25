@@ -6,7 +6,7 @@
     "scripts": {
       "dev": "next",
       "build": "$npm_execpath run jslint && next build && next export",
-      "jslint": "eslint \"components/**\" \"pages/**\" --fix"
+      "jslint": "eslint \"components/**\" \"pages/**\"  --fix"
     },
     "dependencies": {
       "next": "^9.5.2",
