@@ -45,6 +45,8 @@ public class Config {
     public String ALIAS__STATUS;
     public String ALIAS__HIGHSCORE;
 
+    public String API__DOMAIN;
+
     public Config(Plugin plugin) {
         plugin.saveDefaultConfig();
         InputStream stream = plugin.getClass().getResourceAsStream("/config.yml");

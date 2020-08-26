@@ -41,3 +41,6 @@ alias:
   list: "list|l"
   status: "status"
   highscore: "highscore|hs"
+
+api:
+  domain: "https://tickets.broccol.ai"
