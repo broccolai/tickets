@@ -2,7 +2,7 @@ import sqlite3 from 'sqlite3';
 
 import PureGuild from '../constructs/PureGuild';
 
-const db = new sqlite3.Database('./storage.db', sqlite3.OPEN_READWRITE);
+const db = new sqlite3.Database('./storage.db', sqlite3.OPEN_READWRITE | sqlite3.OPEN_CREATE);
 
 db.run('CREATE TABLE IF NOT EXISTS server(guild TEXT, token TEXT, outputChannel TEXT)');
 db.run(
