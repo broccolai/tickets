@@ -30,3 +30,7 @@ jobs:
         ./gradlew build
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - uses: actions/upload-artifact@v2
+      with:
+          name: tickets.jar
+          path: plugin/build/libs/PureTickets.jar
