@@ -1,24 +1,22 @@
-import { Client, ClientEvents, Message } from '@klasa/core';
+import { Client, Message } from 'discord.js';
 import setup from './commands/setup';
 
 const client = new Client();
 const PREFIX = process.env.DISCORD_PREFIX || '!';
 
-client.on(ClientEvents.ShardReady, () => {
+client.on('ready', () => {
   const update = () => {
-    client.user.presence.modify((builder) =>
-      builder.setStatus('online').setGame((game) => {
-        const name = client.guilds.size + ' servers';
-        return game.setName(name);
-      }),
-    );
+    const name = client.guilds.cache.size + ' servers';
+
+    client.user.setStatus('online');
+    client.user.setActivity(name);
   };
 
   update();
   setInterval(update, 300000);
 });
 
-client.on(ClientEvents.MessageCreate, async (message: Message) => {
+client.on('message', async (message: Message) => {
   if (message.author.bot || !message.content.startsWith(PREFIX)) {
     return;
   }

@@ -1,11 +1,10 @@
 import express from 'express';
 import { IBasicAuthedRequest } from 'express-basic-auth';
 
-import { Embed, TextChannel } from '@klasa/core';
-
 import client from '@lib/client';
 import { servers } from '@lib/providers/storage';
 import { hashToHex } from '@lib/utilities/number';
+import { MessageEmbed, TextChannel } from 'discord.js';
 
 const router = express.Router();
 
@@ -27,25 +26,20 @@ router.post('/', async (req, res) => {
   res.sendStatus(200);
 
   const data = req.body as MessageData;
-
   const channel = (await client.channels.fetch(guild.output)) as TextChannel;
 
-  channel.send((mb) =>
-    mb.setEmbed((embed: Embed) => {
-      embed
-        .setColor(hashToHex(data.color))
-        .setAuthor(data.author + ' #' + data.id, 'https://crafatar.com/avatars/' + data.uuid)
-        .setTitle('**' + data.action + '**');
+  const embed = new MessageEmbed()
+    .setColor(hashToHex(data.color))
+    .setAuthor(data.author + ' #' + data.id, 'https://crafatar.com/avatars/' + data.uuid)
+    .setTitle('**' + data.action + '**');
 
-      if (data.fields) {
-        Object.entries(data.fields).forEach(([key, value]) => {
-          embed.addField('**' + key + '**', value, true);
-        });
-      }
+  if (data.fields) {
+    Object.entries(data.fields).forEach(([key, value]) => {
+      embed.addField('**' + key + '**', value, true);
+    });
+  }
 
-      return embed;
-    }),
-  );
+  channel.send(embed);
 });
 
 export default router;

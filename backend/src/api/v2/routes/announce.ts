@@ -1,8 +1,6 @@
 import express from 'express';
 import { IBasicAuthedRequest } from 'express-basic-auth';
 
-import { Embed, TextChannel } from '@klasa/core';
-
 import client from '@lib/client';
 import { servers } from '@lib/providers/storage';
 import { wrap } from '@lib/utilities/strings';
@@ -11,6 +9,7 @@ import MessageData from '@constructs/MessageData';
 import TicketStatus from '@constructs/TicketStatus';
 import db from '@lib/providers/database';
 import { serialiseLocation } from '@constructs/Location';
+import { MessageEmbed, TextChannel } from 'discord.js';
 
 const router = express.Router();
 
@@ -23,23 +22,21 @@ router.post('/', async (req, res) => {
   const { id, player, location, status, message } = ticket;
   const channel = (await client.channels.fetch(output)) as TextChannel;
 
-  await channel.send((mb) =>
-    mb.setEmbed((embed: Embed) => {
-      return embed
-        .setColor(TicketStatus[status])
-        .setAuthor(player.name, 'https://crafatar.com/avatars/' + player.uuid)
-        .setTitle(Action[action].title + ' - #' + id)
-        .setDescription(
-          `\`\`\`YAML
+  const embed = new MessageEmbed()
+    .setColor(TicketStatus[status])
+    .setAuthor(player.name, 'https://crafatar.com/avatars/' + player.uuid)
+    .setTitle(Action[action].title + ' - #' + id)
+    .setDescription(
+      `\`\`\`YAML
 UUID: ${player.uuid}
 World: ${location.world}
 Location: X: ${location.x}, Y: ${location.y}, Z: ${location.z}\`\`\``,
-        )
-        .addField('MESSAGE', wrap(message, 65))
-        .setTimestamp(Date.now())
-        .setFooter(Action[action].author + author.name, 'https://crafatar.com/avatars/' + author.uuid);
-    }),
-  );
+    )
+    .addField('MESSAGE', wrap(message, 65))
+    .setTimestamp(Date.now())
+    .setFooter(Action[action].author + author.name, 'https://crafatar.com/avatars/' + author.uuid);
+
+  channel.send(embed);
 
   db.run('INSERT INTO player(uuid, name) values(?, ?) ON CONFLICT(uuid) DO UPDATE set name = ?', [player.uuid, player.name, player.name]);
 
