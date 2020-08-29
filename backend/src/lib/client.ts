@@ -4,12 +4,18 @@ import setup from './commands/setup';
 const client = new Client();
 const PREFIX = process.env.DISCORD_PREFIX || '!';
 
-client.on(ClientEvents.Ready, async () => {
-  setInterval(async () => {
-    const name = client.guilds.size + ' servers';
+client.on(ClientEvents.ShardReady, () => {
+  const update = () => {
+    client.user.presence.modify((builder) =>
+      builder.setStatus('online').setGame((game) => {
+        const name = client.guilds.size + ' servers';
+        return game.setName(name);
+      }),
+    );
+  };
 
-    client.user.presence.modify((builder) => builder.setStatus('online').setGame((game) => game.setName(name)));
-  }, 300000);
+  update();
+  setInterval(update, 300000);
 });
 
 client.on(ClientEvents.MessageCreate, async (message: Message) => {
