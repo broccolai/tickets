@@ -6,10 +6,13 @@ const PREFIX = process.env.DISCORD_PREFIX || '!';
 
 client.on('ready', () => {
   const update = () => {
-    const name = client.guilds.cache.size + ' servers';
-
-    client.user.setStatus('online');
-    client.user.setActivity(name);
+    client.user.setPresence({
+      status: 'online',
+      activity: {
+        name: 'Tickets',
+        type: 'WATCHING',
+      }
+    })
   };
 
   update();
