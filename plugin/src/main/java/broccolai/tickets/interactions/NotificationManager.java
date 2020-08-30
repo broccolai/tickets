@@ -104,6 +104,9 @@ public class NotificationManager implements Listener {
                     UUID uuid = sender instanceof Player ? ((Player) sender).getUniqueId() : null;
 
                     discordManager.sendInformation(ticket, uuid, names.name());
+
+                default:
+                    throw new UnsupportedOperationException();
             }
         }
     }
