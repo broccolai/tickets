@@ -5,7 +5,7 @@ plugins {
     id("com.github.johnrengelman.shadow") version "6.0.0"
 }
 
-version = "3.1.0"
+version = "3.1.1"
 group = "brocolai.tickets"
 
 repositories {
