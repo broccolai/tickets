@@ -9,6 +9,7 @@ import co.aikar.idb.HikariPooledDatabase;
 import co.aikar.idb.PooledDatabaseOptions;
 import java.sql.SQLException;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Level;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
@@ -20,7 +21,7 @@ public class MySQL implements Platform {
         DatabaseOptions options = DatabaseOptions.builder().mysql(config.STORAGE__USER, config.STORAGE__PASSWORD, config.STORAGE__NAME, config.STORAGE__HOST).build();
         PooledDatabaseOptions pooledOptions = PooledDatabaseOptions.builder().options(options).build();
 
-        HashMap<String, Object> properties = new HashMap<>();
+        Map<String, Object> properties = new HashMap<>();
 
         properties.put("useSSL", config.STORAGE__SSL);
 
