@@ -6,7 +6,7 @@ plugins {
 }
 
 version = "3.1.1"
-group = "brocolai.tickets"
+group = "broccolai.tickets"
 
 repositories {
     mavenCentral()
