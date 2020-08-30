@@ -18,9 +18,11 @@ router.post('/', async (req, res) => {
 
   const authReq = req as IBasicAuthedRequest;
   const { output } = servers.get(authReq.auth.user);
-  const { ticket, author, action } = req.body as MessageData;
+  const { server, ticket, author, action } = req.body as MessageData;
   const { id, player, location, status, message } = ticket;
   const channel = (await client.channels.fetch(output)) as TextChannel;
+
+  const serverText = server != null ? 'Server: ' + server : '';
 
   const embed = new MessageEmbed()
     .setColor(TicketStatus[status])
@@ -28,6 +30,7 @@ router.post('/', async (req, res) => {
     .setTitle(Action[action].title + ' - #' + id)
     .setDescription(
       `\`\`\`YAML
+${serverText}
 UUID: ${player.uuid}
 World: ${location.world}
 Location: X: ${location.x}, Y: ${location.y}, Z: ${location.z}\`\`\``,

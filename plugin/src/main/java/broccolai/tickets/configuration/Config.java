@@ -28,6 +28,7 @@ public class Config {
     public Boolean DISCORD__ENABLED;
     public String DISCORD__GUILD;
     public String DISCORD__TOKEN;
+    public String DISCORD__NAME;
 
     public String ALIAS__CREATE;
     public String ALIAS__UPDATE;

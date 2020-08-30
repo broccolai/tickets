@@ -16,6 +16,7 @@ public class DiscordManager {
     private final HttpClient client;
 
     private final Logger logger;
+    private final String serverName;
     private final Boolean enabled;
 
     public DiscordManager(Logger logger, Config config) {
@@ -32,6 +33,12 @@ public class DiscordManager {
 
         this.logger = logger;
         this.enabled = config.DISCORD__ENABLED;
+
+        if (config.DISCORD__NAME.length() > 0) {
+            this.serverName = config.DISCORD__NAME;
+        } else {
+            this.serverName = null;
+        }
     }
 
     public void sendInformation(Ticket ticket, UUID author, String action) {
@@ -50,6 +57,7 @@ public class DiscordManager {
             authorJson.addProperty("uuid", author.toString());
         }
 
+        json.addProperty("server", serverName);
         json.add("ticket", ticket.toJson());
         json.add("author", authorJson);
         json.addProperty("action", action);

@@ -24,6 +24,7 @@ discord:
   enabled: false
   guild: ""
   token: ""
+  name: ""
 
 alias:
   create: "create|c"
