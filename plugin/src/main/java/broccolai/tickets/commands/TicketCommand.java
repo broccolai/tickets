@@ -34,8 +34,7 @@ public class TicketCommand extends PureBaseCommand {
             .async(() -> {
                 try {
                     Ticket ticket = ticketManager.createTicket(player, message);
-                    notificationManager.send(player, null, MessageNames.NEW_TICKET, ticket,
-                        fields -> fields.put("MESSAGE", message.getData()));
+                    notificationManager.send(player, null, MessageNames.NEW_TICKET, ticket);
                 } catch (PureException e) {
                     notificationManager.basic(player, e.getMessageKey(), e.getReplacements());
                 }
@@ -55,8 +54,7 @@ public class TicketCommand extends PureBaseCommand {
             .asyncLast((ticket) -> {
                 try {
                     Ticket edited = ticketManager.update(ticket, message);
-                    notificationManager.send(player, null, MessageNames.UPDATE_TICKET, edited,
-                        fields -> fields.put("MESSAGE", message.getData()));
+                    notificationManager.send(player, null, MessageNames.UPDATE_TICKET, edited);
                 } catch (PureException e) {
                     notificationManager.basic(player, e.getMessageKey(), e.getReplacements());
                 }
@@ -76,7 +74,7 @@ public class TicketCommand extends PureBaseCommand {
             .asyncLast((ticket) -> {
                 try {
                     Ticket edited = ticketManager.close(player.getUniqueId(), ticket);
-                    notificationManager.send(player, null, MessageNames.CLOSE_TICKET, edited, null);
+                    notificationManager.send(player, null, MessageNames.CLOSE_TICKET, edited);
                 } catch (PureException e) {
                     notificationManager.basic(player, e.getMessageKey(), e.getReplacements());
                 }

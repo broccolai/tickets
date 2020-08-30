@@ -19,9 +19,7 @@ import broccolai.tickets.utilities.generic.UserUtilities;
 import co.aikar.commands.CommandIssuer;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.ObjectArrays;
-import java.util.HashMap;
 import java.util.UUID;
-import java.util.function.Consumer;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
@@ -52,7 +50,7 @@ public class NotificationManager implements Listener {
             TimeUtilities.minuteToLong(config.REMINDER__DELAY), TimeUtilities.minuteToLong(config.REMINDER__REPEAT));
     }
 
-    public void send(CommandSender sender, UUID target, MessageNames names, Ticket ticket, Consumer<HashMap<String, String>> addFields) {
+    public void send(CommandSender sender, UUID target, MessageNames names, Ticket ticket) {
         String[] specificReplacements = {"%user%", sender.getName(), "%target%", UserUtilities.nameFromUUID(target)};
         String[] genericReplacements = ReplacementUtilities.ticketReplacements(ticket);
 
@@ -95,12 +93,6 @@ public class NotificationManager implements Listener {
                     break;
 
                 case DISCORD:
-                    HashMap<String, String> fields = new HashMap<>();
-
-                    if (addFields != null) {
-                        addFields.accept(fields);
-                    }
-
                     UUID uuid = sender instanceof Player ? ((Player) sender).getUniqueId() : null;
 
                     discordManager.sendInformation(ticket, uuid, names.name());

@@ -18,13 +18,14 @@ import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Optional;
 import co.aikar.commands.annotation.Subcommand;
 import co.aikar.commands.annotation.Syntax;
-import java.util.EnumMap;
-import java.util.HashMap;
-import java.util.List;
-import java.util.UUID;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+
+import java.util.EnumMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 @SuppressWarnings("unused")
 @CommandAlias("tickets|tis")
@@ -52,8 +53,7 @@ public class TicketsCommand extends PureBaseCommand {
                 try {
                     Ticket edited = ticketManager.pick(UserUtilities.uuidFromSender(sender), ticket);
 
-                    notificationManager.send(sender, offlinePlayer.getUniqueId(), MessageNames.PICK_TICKET, ticket,
-                        fields -> fields.put("PICKER", sender.getName()));
+                    notificationManager.send(sender, offlinePlayer.getUniqueId(), MessageNames.PICK_TICKET, ticket);
                 } catch (PureException e) {
                     notificationManager.basic(sender, e.getMessageKey(), e.getReplacements());
                 }
@@ -74,10 +74,7 @@ public class TicketsCommand extends PureBaseCommand {
                 try {
                     Ticket edited = ticketManager.pick(target.getUniqueId(), ticket);
 
-                    notificationManager.send(sender, target.getUniqueId(), MessageNames.ASSIGN_TICKET, ticket, fields -> {
-                        fields.put("ASSIGNER", sender.getName());
-                        fields.put("ASSIGNEE", target.getName() == null ? "" : target.getName());
-                    });
+                    notificationManager.send(sender, target.getUniqueId(), MessageNames.ASSIGN_TICKET, ticket);
                 } catch (PureException e) {
                     notificationManager.basic(sender, e.getMessageKey(), e.getReplacements());
                 }
@@ -98,7 +95,7 @@ public class TicketsCommand extends PureBaseCommand {
                 try {
                     Ticket edited = ticketManager.done(UserUtilities.uuidFromSender(sender), ticket);
 
-                    notificationManager.send(sender, offlinePlayer.getUniqueId(), MessageNames.DONE_TICKET, ticket, null);
+                    notificationManager.send(sender, offlinePlayer.getUniqueId(), MessageNames.DONE_TICKET, ticket);
                 } catch (PureException e) {
                     notificationManager.basic(sender, e.getMessageKey(), e.getReplacements());
                 }
@@ -119,7 +116,7 @@ public class TicketsCommand extends PureBaseCommand {
                 try {
                     Ticket edited = ticketManager.yield(UserUtilities.uuidFromSender(sender), ticket);
 
-                    notificationManager.send(sender, offlinePlayer.getUniqueId(), MessageNames.YIELD_TICKET, ticket, null);
+                    notificationManager.send(sender, offlinePlayer.getUniqueId(), MessageNames.YIELD_TICKET, ticket);
                 } catch (PureException e) {
                     notificationManager.basic(sender, e.getMessageKey(), e.getReplacements());
                 }
@@ -139,9 +136,7 @@ public class TicketsCommand extends PureBaseCommand {
             .asyncLast((ticket) -> {
                 Ticket edited = ticketManager.note(UserUtilities.uuidFromSender(sender), ticket, message);
 
-                notificationManager.send(sender, offlinePlayer.getUniqueId(), MessageNames.NOTE_TICKET, ticket,
-                    fields -> fields.put("NOTE", message)
-                );
+                notificationManager.send(sender, offlinePlayer.getUniqueId(), MessageNames.NOTE_TICKET, ticket);
             })
             .execute();
     }
@@ -159,7 +154,7 @@ public class TicketsCommand extends PureBaseCommand {
                 try {
                     Ticket edited = ticketManager.reopen(UserUtilities.uuidFromSender(sender), ticket);
 
-                    notificationManager.send(sender, offlinePlayer.getUniqueId(), MessageNames.REOPEN_TICKET, ticket, null);
+                    notificationManager.send(sender, offlinePlayer.getUniqueId(), MessageNames.REOPEN_TICKET, ticket);
                 } catch (PureException e) {
                     notificationManager.basic(sender, e.getMessageKey(), e.getReplacements());
                 }
@@ -177,7 +172,7 @@ public class TicketsCommand extends PureBaseCommand {
             .future(future)
             .abortIfNull()
             .asyncLast((ticket) ->
-                notificationManager.send(sender, offlinePlayer.getUniqueId(), MessageNames.TELEPORT_TICKET, ticket, null)
+                notificationManager.send(sender, offlinePlayer.getUniqueId(), MessageNames.TELEPORT_TICKET, ticket)
             )
             .future(future)
             .sync((ticket) -> sender.teleport(ticket.getLocation()))
@@ -259,7 +254,7 @@ public class TicketsCommand extends PureBaseCommand {
     public void onHighscore(CommandSender sender, TimeAmount amount) {
         taskManager.use()
             .async(() -> {
-                HashMap<UUID, Integer> highscores = ticketManager.highscores(amount);
+                Map<UUID, Integer> highscores = ticketManager.highscores(amount);
                 notificationManager.basic(sender, Messages.TITLES__HIGHSCORES);
 
                 highscores.forEach((uuid, number) ->
