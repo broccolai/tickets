@@ -13,6 +13,9 @@ import broccolai.tickets.ticket.TicketManager;
 import broccolai.tickets.ticket.TicketStatus;
 import broccolai.tickets.utilities.generic.FileUtilities;
 import broccolai.tickets.utilities.generic.NumberUtilities;
+import co.aikar.commands.BukkitCommandExecutionContext;
+import co.aikar.commands.CommandContexts;
+import co.aikar.commands.CommandReplacements;
 import co.aikar.commands.InvalidCommandArgument;
 import co.aikar.commands.MessageType;
 import co.aikar.commands.PaperCommandManager;
@@ -37,10 +40,25 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.Plugin;
+import org.jetbrains.annotations.NotNull;
 
+/**
+ * The Command Manager.
+ */
 public class CommandManager extends PaperCommandManager {
-    public CommandManager(Plugin plugin, Config config, TicketManager ticketManager) {
+    @NotNull
+    private final TicketManager ticketManager;
+
+    /**
+     * Initialise the Command Manager.
+     * @param plugin the plugin to register commands against
+     * @param config the config instance to use
+     * @param ticketManager the ticket manager instance to use
+     */
+    public CommandManager(@NotNull Plugin plugin, @NotNull Config config, @NotNull TicketManager ticketManager) {
         super(plugin);
+
+        this.ticketManager = ticketManager;
 
         //noinspection deprecation
         enableUnstableAPI("help");
@@ -53,8 +71,17 @@ public class CommandManager extends PaperCommandManager {
         setFormat(MessageType.HELP, ChatColor.WHITE, ChatColor.AQUA, ChatColor.DARK_GRAY);
         setFormat(MessageType.INFO, ChatColor.WHITE, ChatColor.AQUA, ChatColor.DARK_GRAY);
 
-        // Contexts
-        getCommandContexts().registerOptionalContext(FutureTicket.class, c -> {
+        registerContexts();
+        registerReplacements(config);
+        registerCompletions();
+    }
+
+    /**
+     * Register command contexts.
+     */
+    public void registerContexts() {
+        CommandContexts<BukkitCommandExecutionContext> commandContexts = getCommandContexts();
+        commandContexts.registerOptionalContext(FutureTicket.class, c -> {
             FutureTicket future = new FutureTicket();
 
             Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
@@ -113,41 +140,50 @@ public class CommandManager extends PaperCommandManager {
             return future;
         });
 
-        getCommandContexts().registerContext(Message.class, c ->
+        commandContexts.registerContext(Message.class, c ->
             new Message(MessageReason.MESSAGE, LocalDateTime.now(), c.joinArgs())
         );
 
-        getCommandContexts().registerContext(TicketStatus.class, c ->
+        commandContexts.registerContext(TicketStatus.class, c ->
             TicketStatus.from(c.popFirstArg())
         );
 
-        getCommandContexts().registerContext(TimeAmount.class, c -> {
+        commandContexts.registerContext(TimeAmount.class, c -> {
             try {
                 return TimeAmount.valueOf(c.popFirstArg().toUpperCase());
             } catch (Exception e) {
                 throw new InvalidCommandArgument();
             }
         });
-
-        // Replacements
-        getCommandReplacements().addReplacement("create", config.ALIAS__CREATE);
-        getCommandReplacements().addReplacement("update", config.ALIAS__UPDATE);
-        getCommandReplacements().addReplacement("close", config.ALIAS__CLOSE);
-        getCommandReplacements().addReplacement("show", config.ALIAS__SHOW);
-        getCommandReplacements().addReplacement("pick", config.ALIAS__PICK);
-        getCommandReplacements().addReplacement("assign", config.ALIAS__ASSIGN);
-        getCommandReplacements().addReplacement("done", config.ALIAS__DONE);
-        getCommandReplacements().addReplacement("yield", config.ALIAS__YIELD);
-        getCommandReplacements().addReplacement("note", config.ALIAS__NOTE);
-        getCommandReplacements().addReplacement("reopen", config.ALIAS__REOPEN);
-        getCommandReplacements().addReplacement("teleport", config.ALIAS__TELEPORT);
-        getCommandReplacements().addReplacement("log", config.ALIAS__LOG);
-        getCommandReplacements().addReplacement("list", config.ALIAS__LIST);
-        getCommandReplacements().addReplacement("status", config.ALIAS__STATUS);
-        getCommandReplacements().addReplacement("highscore", config.ALIAS__HIGHSCORE);
     }
 
-    public void registerCompletions(TicketManager ticketManager) {
+    /**
+     * Register command replacements.
+     * @param config the config instance to use
+     */
+    private void registerReplacements(@NotNull Config config) {
+        CommandReplacements commandReplacements = getCommandReplacements();
+        commandReplacements.addReplacement("create", config.ALIAS__CREATE);
+        commandReplacements.addReplacement("update", config.ALIAS__UPDATE);
+        commandReplacements.addReplacement("close", config.ALIAS__CLOSE);
+        commandReplacements.addReplacement("show", config.ALIAS__SHOW);
+        commandReplacements.addReplacement("pick", config.ALIAS__PICK);
+        commandReplacements.addReplacement("assign", config.ALIAS__ASSIGN);
+        commandReplacements.addReplacement("done", config.ALIAS__DONE);
+        commandReplacements.addReplacement("yield", config.ALIAS__YIELD);
+        commandReplacements.addReplacement("note", config.ALIAS__NOTE);
+        commandReplacements.addReplacement("reopen", config.ALIAS__REOPEN);
+        commandReplacements.addReplacement("teleport", config.ALIAS__TELEPORT);
+        commandReplacements.addReplacement("log", config.ALIAS__LOG);
+        commandReplacements.addReplacement("list", config.ALIAS__LIST);
+        commandReplacements.addReplacement("status", config.ALIAS__STATUS);
+        commandReplacements.addReplacement("highscore", config.ALIAS__HIGHSCORE);
+    }
+
+    /**
+     * Register the commands completions.
+     */
+    private void registerCompletions() {
         getCommandCompletions().registerAsyncCompletion("TicketHolders", c ->
             ticketManager.allNames(TicketStatus.from(c.getConfig("status")))
         );
@@ -182,12 +218,19 @@ public class CommandManager extends PaperCommandManager {
         ));
     }
 
+    /**
+     * Register dependencies to the commands.
+     * @param inputs the dependencies to register
+     */
     public void registerInjections(Object... inputs) {
         for (Object input : inputs) {
             registerDependency(input.getClass(), input);
         }
     }
 
+    /**
+     * Register commands.
+     */
     public void registerCommands() {
         registerCommand(new TicketCommand());
         registerCommand(new TicketsCommand());
@@ -198,9 +241,6 @@ public class CommandManager extends PaperCommandManager {
         File[] files = new File(plugin.getDataFolder(), "locales").listFiles();
 
         for (File file : files) {
-            String localeName = file.getName().replace(".yml", "");
-            Locale locale = Locale.forLanguageTag(localeName);
-
             YamlConfiguration yamlConfiguration = new YamlConfiguration();
 
             try {
@@ -232,6 +272,9 @@ public class CommandManager extends PaperCommandManager {
                 }
             }
 
+            String localeName = file.getName().replace(".yml", "");
+            Locale locale = Locale.forLanguageTag(localeName);
+
             addSupportedLanguage(locale);
             locales.loadLanguage(yamlConfiguration, locale);
         }
@@ -241,6 +284,7 @@ public class CommandManager extends PaperCommandManager {
         File localeFolder = new File(plugin.getDataFolder(), "locales");
         URL folder = plugin.getClass().getResource("/locales/");
 
+        //noinspection ResultOfMethodCallIgnored
         localeFolder.mkdirs();
 
         try {
