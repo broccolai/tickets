@@ -34,6 +34,7 @@ public class TicketFunctions {
 
     /**
      * Retrieve a Ticket from the Database.
+     *
      * @param id the tickets id
      * @return the constructed ticket
      */
@@ -52,6 +53,7 @@ public class TicketFunctions {
 
     /**
      * Retrieves tickets with the given optional status.
+     *
      * @param status the optional status to filter with
      * @return a list of the retrieved tickets
      */
@@ -74,7 +76,8 @@ public class TicketFunctions {
 
     /**
      * Retrieves tickets with a given players unique id and an optional status.
-     * @param uuid the players unique id to filter with
+     *
+     * @param uuid   the players unique id to filter with
      * @param status the optional status to filter with
      * @return a list of the retrieved tickets
      */
@@ -100,7 +103,8 @@ public class TicketFunctions {
 
     /**
      * Retrieves ticket ids with a given players unique id and an optional status.
-     * @param uuid the players unique id to filter with
+     *
+     * @param uuid   the players unique id to filter with
      * @param status the optional status to filter with
      * @return a list of the retrieved tickets
      */
@@ -126,7 +130,8 @@ public class TicketFunctions {
 
     /**
      * Retrieve the last ticket with a players unique id and optionally multiple statues.
-     * @param uuid the players unique id to filter with
+     *
+     * @param uuid     the players unique id to filter with
      * @param statuses the optional statuses to filter with
      * @return the most recent ticket or if non are eligible null
      */
@@ -158,6 +163,7 @@ public class TicketFunctions {
 
     /**
      * Retrieves the names of all ticket holders, optionally filtered by a status.
+     *
      * @param status the optional status to filter by
      * @return a list of player names
      */
@@ -186,6 +192,7 @@ public class TicketFunctions {
 
     /**
      * Retrieve a map of ticket stats, optionally filtered by a players unique id.
+     *
      * @param uuid the optional players unique id to filter with
      * @return an enum map of the ticket stats
      */
@@ -195,10 +202,10 @@ public class TicketFunctions {
 
         @Language("SQL")
         String sql = "SELECT "
-                + "SUM(Status LIKE 'OPEN') AS open, "
-                + "SUM(Status LIKE 'PICKED') AS picked, "
-                + "SUM(status LIKE 'CLOSED') AS closed "
-                + "from puretickets_ticket ";
+            + "SUM(Status LIKE 'OPEN') AS open, "
+            + "SUM(Status LIKE 'PICKED') AS picked, "
+            + "SUM(status LIKE 'CLOSED') AS closed "
+            + "from puretickets_ticket ";
 
         try {
             if (uuid == null) {
@@ -221,6 +228,7 @@ public class TicketFunctions {
 
     /**
      * Checks if a ticket exists using a given id.
+     *
      * @param id the tickets id to filter with
      * @return true boolean
      */
@@ -236,7 +244,8 @@ public class TicketFunctions {
 
     /**
      * Count the amount of tickets with a given unique id and status.
-     * @param uuid the players unique id to filter with
+     *
+     * @param uuid   the players unique id to filter with
      * @param status the status to filter with
      * @return the number of tickets
      */
@@ -252,6 +261,7 @@ public class TicketFunctions {
 
     /**
      * Count the amount of tickets with a given optional status.
+     *
      * @param status the optional status to filter with
      * @return the number of tickets
      */
@@ -272,9 +282,10 @@ public class TicketFunctions {
 
     /**
      * Insert a ticket into the Database and retrieve it's ticket id.
-     * @param uuid the players unique id
-     * @param status the tickets status
-     * @param picker the pickers unique id
+     *
+     * @param uuid     the players unique id
+     * @param status   the tickets status
+     * @param picker   the pickers unique id
      * @param location the ticket creation location
      * @return the tickets id
      */
@@ -301,6 +312,7 @@ public class TicketFunctions {
 
     /**
      * Updates a tickets entry in the Database.
+     *
      * @param ticket the ticket to use
      */
     public void update(@NotNull Ticket ticket) {
@@ -319,6 +331,7 @@ public class TicketFunctions {
 
     /**
      * Retrieve the ticket completions grouped by player within an option time span.
+     *
      * @param span the optional span to check within
      * @return a map of players and their ticket completions.
      */
@@ -334,11 +347,11 @@ public class TicketFunctions {
 
         @Language("SQL")
         String sql = "SELECT picker, COUNT(*) AS `num` "
-                + "FROM puretickets_ticket "
-                + "WHERE status = ? "
-                + "AND picker IS NOT NULL "
-                + "and id in (SELECT DISTINCT ticket FROM puretickets_message WHERE date > ?) "
-                + "GROUP BY picker";
+            + "FROM puretickets_ticket "
+            + "WHERE status = ? "
+            + "AND picker IS NOT NULL "
+            + "and id in (SELECT DISTINCT ticket FROM puretickets_message WHERE date > ?) "
+            + "GROUP BY picker";
 
         List<DbRow> results;
 

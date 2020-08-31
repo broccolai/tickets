@@ -118,7 +118,8 @@ public class NotificationManager implements Listener {
         awaiting.get(ci.getUniqueId()).forEach(n -> {
             try {
                 ci.sendInfo(n.getMessageKey(), n.getReplacements());
-            } catch (IllegalArgumentException ignored) { }
+            } catch (IllegalArgumentException ignored) {
+            }
         });
 
         awaiting.removeAll(ci.getUniqueId());
