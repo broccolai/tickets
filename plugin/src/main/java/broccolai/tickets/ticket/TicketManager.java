@@ -1,6 +1,8 @@
 package broccolai.tickets.ticket;
 
 import broccolai.tickets.configuration.Config;
+import broccolai.tickets.events.TicketConstructionEvent;
+import broccolai.tickets.events.TicketCreationEvent;
 import broccolai.tickets.exceptions.TicketClosed;
 import broccolai.tickets.exceptions.TicketOpen;
 import broccolai.tickets.exceptions.TooManyOpenTickets;
@@ -14,14 +16,20 @@ import java.util.Map;
 import java.util.UUID;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
+import org.bukkit.plugin.PluginManager;
 import org.jetbrains.annotations.Nullable;
 
-public class TicketManager {
+public class TicketManager implements Listener {
     private final Config config;
+    private final PluginManager pluginManager;
     private final SQLManager sqlManager;
 
-    public TicketManager(Config config, SQLManager sqlManager) {
+    public TicketManager(Config config, PluginManager pluginManager, SQLManager sqlManager) {
         this.config = config;
+        this.pluginManager = pluginManager;
         this.sqlManager = sqlManager;
     }
 
@@ -67,22 +75,6 @@ public class TicketManager {
 
     public Map<UUID, Integer> highscores(TimeAmount span) {
         return sqlManager.getTicket().highscores(span);
-    }
-
-    public Ticket createTicket(Player player, Message message) throws TooManyOpenTickets {
-        if (count(player.getUniqueId(), TicketStatus.OPEN) >= config.LIMIT__OPEN_TICKETS + 1) {
-            throw new TooManyOpenTickets(config);
-        }
-
-        UUID uuid = player.getUniqueId();
-        Location location = player.getLocation();
-
-        Integer id = sqlManager.getTicket().insert(uuid, TicketStatus.OPEN, null, location);
-        Ticket ticket = new Ticket(id, uuid, Lists.newArrayList(message), location, TicketStatus.OPEN, null);
-
-        sqlManager.getMessage().insert(ticket, message);
-
-        return ticket;
     }
 
     public Ticket update(Ticket ticket, Message message) throws TicketClosed {
@@ -168,5 +160,31 @@ public class TicketManager {
         sqlManager.getTicket().update(ticket);
 
         return ticket;
+    }
+
+    @EventHandler
+    public void onTicketConstructPredicates(TicketConstructionEvent e) {
+        Player player = e.getPlayer();
+
+        if (count(player.getUniqueId(), TicketStatus.OPEN) > config.LIMIT__OPEN_TICKETS + 1) {
+            e.cancel(new TooManyOpenTickets(config));
+        }
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST)
+    public void onTicketConstruct(TicketConstructionEvent e) {
+        Player player = e.getPlayer();
+        Message message = e.getMessage();
+
+        UUID uuid = player.getUniqueId();
+        Location location = player.getLocation();
+
+        Integer id = sqlManager.getTicket().insert(uuid, TicketStatus.OPEN, null, location);
+        Ticket ticket = new Ticket(id, uuid, Lists.newArrayList(message), location, TicketStatus.OPEN, null);
+
+        sqlManager.getMessage().insert(ticket, message);
+
+        TicketCreationEvent creationEvent = new TicketCreationEvent(player, ticket);
+        pluginManager.callEvent(creationEvent);
     }
 }

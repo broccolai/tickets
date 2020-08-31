@@ -1,6 +1,7 @@
 package broccolai.tickets.commands;
 
 import broccolai.corn.core.Lists;
+import broccolai.tickets.events.TicketConstructionEvent;
 import broccolai.tickets.exceptions.PureException;
 import broccolai.tickets.locale.MessageNames;
 import broccolai.tickets.locale.Messages;
@@ -32,11 +33,11 @@ public class TicketCommand extends PureBaseCommand {
     public void onCreate(Player player, Message message) {
         taskManager.use()
             .async(() -> {
-                try {
-                    Ticket ticket = ticketManager.createTicket(player, message);
-                    notificationManager.send(player, null, MessageNames.NEW_TICKET, ticket);
-                } catch (PureException e) {
-                    notificationManager.basic(player, e.getMessageKey(), e.getReplacements());
+                TicketConstructionEvent constructionEvent = new TicketConstructionEvent(player, message);
+                pluginManager.callEvent(constructionEvent);
+
+                if (constructionEvent.hasException()) {
+                    notificationManager.handleException(player, constructionEvent.getException());
                 }
             })
             .execute();

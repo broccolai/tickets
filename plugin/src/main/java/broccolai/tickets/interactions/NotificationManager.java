@@ -2,6 +2,8 @@ package broccolai.tickets.interactions;
 
 import broccolai.tickets.commands.CommandManager;
 import broccolai.tickets.configuration.Config;
+import broccolai.tickets.events.TicketCreationEvent;
+import broccolai.tickets.exceptions.PureException;
 import broccolai.tickets.integrations.DiscordManager;
 import broccolai.tickets.locale.MessageNames;
 import broccolai.tickets.locale.Messages;
@@ -107,8 +109,22 @@ public class NotificationManager implements Listener {
         senderAsIssuer(commandSender).sendInfo(messageKey, replacements);
     }
 
+    public void handleException(CommandSender commandSender, PureException exception) {
+        if (exception.getValue() != null) {
+            commandSender.sendMessage(exception.getValue());
+            return;
+        }
+
+        senderAsIssuer(commandSender).sendInfo(exception.getMessageKey(), exception.getReplacements());
+    }
+
     public void save() {
         sqlManager.getNotification().insertAll(awaiting);
+    }
+
+    @EventHandler
+    public void onTicketCreation(TicketCreationEvent e) {
+        send(e.getPlayer(), null, MessageNames.NEW_TICKET, e.getTicket());
     }
 
     @EventHandler
