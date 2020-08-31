@@ -17,17 +17,17 @@ import co.aikar.commands.annotation.Default;
 import co.aikar.commands.annotation.Dependency;
 import co.aikar.commands.annotation.HelpCommand;
 import org.bukkit.command.CommandSender;
+import org.bukkit.plugin.SimplePluginManager;
 
 public class PureBaseCommand extends BaseCommand {
     @Dependency
     protected Config config;
-
+    @Dependency
+    protected SimplePluginManager pluginManager;
     @Dependency
     protected NotificationManager notificationManager;
-
     @Dependency
     protected TicketManager ticketManager;
-
     @Dependency
     protected TaskManager taskManager;
 

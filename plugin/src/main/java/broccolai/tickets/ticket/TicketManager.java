@@ -9,8 +9,8 @@ import broccolai.tickets.storage.TimeAmount;
 import com.google.common.collect.Lists;
 import java.time.LocalDateTime;
 import java.util.EnumMap;
-import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -65,7 +65,7 @@ public class TicketManager {
         return sqlManager.getTicket().selectNames(status);
     }
 
-    public HashMap<UUID, Integer> highscores(TimeAmount span) {
+    public Map<UUID, Integer> highscores(TimeAmount span) {
         return sqlManager.getTicket().highscores(span);
     }
 
