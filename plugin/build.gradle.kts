@@ -3,6 +3,7 @@ import org.apache.tools.ant.filters.ReplaceTokens
 plugins {
     id("java-library")
     id("com.github.johnrengelman.shadow") version "6.0.0"
+    id("checkstyle")
 }
 
 version = "3.1.1"
@@ -27,6 +28,7 @@ repositories {
 }
 
 dependencies {
+    checkstyle("ca.stellardrift:stylecheck:0.1-SNAPSHOT")
     implementation("org.jetbrains:annotations:19.0.0")
 
     api("co.aikar:taskchain-bukkit:3.7.2")
@@ -78,6 +80,13 @@ tasks {
 
     build {
         dependsOn(shadowJar)
+    }
+
+    checkstyle {
+        val configRoot = File(rootProject.projectDir, ".checkstyle")
+        toolVersion = "8.34"
+        configDirectory.set(configRoot)
+        configProperties["basedir"] = configRoot.absolutePath
     }
 }
 
