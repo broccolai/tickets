@@ -16,9 +16,12 @@ import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import org.bukkit.Location;
 import org.intellij.lang.annotations.Language;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class TicketFunctions {
     private final HelpersSQL helpers;
@@ -29,7 +32,13 @@ public class TicketFunctions {
         this.platform = platform;
     }
 
-    public Ticket select(Integer id) {
+    /**
+     * Retrieve a Ticket from the Database.
+     * @param id the tickets id
+     * @return the constructed ticket
+     */
+    @Nullable
+    public Ticket select(int id) {
         DbRow row;
 
         try {
@@ -41,7 +50,13 @@ public class TicketFunctions {
         return row != null ? helpers.buildTicket(row) : null;
     }
 
-    public List<Ticket> selectAll(TicketStatus status) {
+    /**
+     * Retrieves tickets with the given optional status.
+     * @param status the optional status to filter with
+     * @return a list of the retrieved tickets
+     */
+    @NotNull
+    public List<Ticket> selectAll(@Nullable TicketStatus status) {
         List<DbRow> results;
 
         try {
@@ -57,7 +72,14 @@ public class TicketFunctions {
         return Lists.map(results, helpers::buildTicket);
     }
 
-    public List<Ticket> selectAll(UUID uuid, TicketStatus status) {
+    /**
+     * Retrieves tickets with a given players unique id and an optional status.
+     * @param uuid the players unique id to filter with
+     * @param status the optional status to filter with
+     * @return a list of the retrieved tickets
+     */
+    @NotNull
+    public List<Ticket> selectAll(@NotNull UUID uuid, @Nullable TicketStatus status) {
         List<DbRow> results;
 
         @Language("SQL")
@@ -76,7 +98,14 @@ public class TicketFunctions {
         return Lists.map(results, helpers::buildTicket);
     }
 
-    public List<Integer> selectIds(UUID uuid, TicketStatus status) {
+    /**
+     * Retrieves ticket ids with a given players unique id and an optional status.
+     * @param uuid the players unique id to filter with
+     * @param status the optional status to filter with
+     * @return a list of the retrieved tickets
+     */
+    @NotNull
+    public List<Integer> selectIds(@NotNull UUID uuid, @Nullable TicketStatus status) {
         List<Integer> results;
 
         @Language("SQL")
@@ -95,31 +124,45 @@ public class TicketFunctions {
         return results;
     }
 
+    /**
+     * Retrieve the last ticket with a players unique id and optionally multiple statues.
+     * @param uuid the players unique id to filter with
+     * @param statuses the optional statuses to filter with
+     * @return the most recent ticket or if non are eligible null
+     */
+    @Nullable
     public Ticket selectLastTicket(UUID uuid, TicketStatus... statuses) {
         List<String> replacements = new ArrayList<>();
 
         @Language("SQL")
         String sql = "SELECT max(id) AS 'id', uuid, status, picker, location FROM puretickets_ticket WHERE uuid = ?";
+        StringBuilder sb = new StringBuilder(sql);
 
         for (int i = 0; i < statuses.length; i++) {
             if (i == 0) {
-                sql += " AND status = ?";
+                sb.append(" AND status = ?");
             } else {
-                sql += " OR status = ?";
+                sb.append(" OR status = ?");
             }
 
             replacements.add(statuses[i].name());
         }
 
         try {
-            DbRow row = DB.getFirstRow(sql, ObjectArrays.concat(uuid.toString(), replacements.toArray()));
+            DbRow row = DB.getFirstRow(sb.toString(), ObjectArrays.concat(uuid.toString(), replacements.toArray()));
             return row.get("id") == null ? null : helpers.buildTicket(row);
         } catch (SQLException e) {
             throw new IllegalArgumentException();
         }
     }
 
-    public List<String> selectNames(TicketStatus status) {
+    /**
+     * Retrieves the names of all ticket holders, optionally filtered by a status.
+     * @param status the optional status to filter by
+     * @return a list of player names
+     */
+    @NotNull
+    public List<String> selectNames(@Nullable TicketStatus status) {
         List<String> results;
 
         @Language("SQL")
@@ -141,15 +184,21 @@ public class TicketFunctions {
         });
     }
 
-    public EnumMap<TicketStatus, Integer> selectTicketStats(UUID uuid) {
+    /**
+     * Retrieve a map of ticket stats, optionally filtered by a players unique id.
+     * @param uuid the optional players unique id to filter with
+     * @return an enum map of the ticket stats
+     */
+    @NotNull
+    public EnumMap<TicketStatus, Integer> selectTicketStats(@Nullable UUID uuid) {
         DbRow row;
 
         @Language("SQL")
-        String sql = "SELECT " +
-            "SUM(Status LIKE 'OPEN') AS open, " +
-            "SUM(Status LIKE 'PICKED') AS picked, " +
-            "SUM(status LIKE 'CLOSED') AS closed " +
-            "from puretickets_ticket ";
+        String sql = "SELECT "
+                + "SUM(Status LIKE 'OPEN') AS open, "
+                + "SUM(Status LIKE 'PICKED') AS picked, "
+                + "SUM(status LIKE 'CLOSED') AS closed "
+                + "from puretickets_ticket ";
 
         try {
             if (uuid == null) {
@@ -170,7 +219,12 @@ public class TicketFunctions {
         return results;
     }
 
-    public Boolean exists(Integer id) {
+    /**
+     * Checks if a ticket exists using a given id.
+     * @param id the tickets id to filter with
+     * @return true boolean
+     */
+    public boolean exists(int id) {
         try {
             Integer value = DB.getFirstColumn("SELECT EXISTS(SELECT 1 from puretickets_ticket WHERE id = ?)", id);
 
@@ -180,7 +234,13 @@ public class TicketFunctions {
         }
     }
 
-    public Integer count(UUID uuid, TicketStatus status) {
+    /**
+     * Count the amount of tickets with a given unique id and status.
+     * @param uuid the players unique id to filter with
+     * @param status the status to filter with
+     * @return the number of tickets
+     */
+    public int count(@NotNull UUID uuid, @NotNull TicketStatus status) {
         try {
             return platform.getPureInteger(DB.getFirstColumn("SELECT COUNT(id) FROM puretickets_ticket WHERE uuid = ? AND status = ?",
                 uuid.toString(), status.name()));
@@ -189,7 +249,13 @@ public class TicketFunctions {
         }
     }
 
-    public Integer count(TicketStatus status) {
+
+    /**
+     * Count the amount of tickets with a given optional status.
+     * @param status the optional status to filter with
+     * @return the number of tickets
+     */
+    public int count(@Nullable TicketStatus status) {
         @Language("SQL")
         String sql = "SELECT COUNT(id) FROM puretickets_ticket";
 
@@ -204,7 +270,15 @@ public class TicketFunctions {
         }
     }
 
-    public Integer insert(UUID uuid, TicketStatus status, UUID picker, Location location) {
+    /**
+     * Insert a ticket into the Database and retrieve it's ticket id.
+     * @param uuid the players unique id
+     * @param status the tickets status
+     * @param picker the pickers unique id
+     * @param location the ticket creation location
+     * @return the tickets id
+     */
+    public int insert(@NotNull UUID uuid, @NotNull TicketStatus status, @Nullable UUID picker, @NotNull Location location) {
         Integer index;
 
         try {
@@ -225,7 +299,11 @@ public class TicketFunctions {
         return index;
     }
 
-    public void update(Ticket ticket) {
+    /**
+     * Updates a tickets entry in the Database.
+     * @param ticket the ticket to use
+     */
+    public void update(@NotNull Ticket ticket) {
         UUID pickerUUID = ticket.getPickerUUID();
         String picker;
 
@@ -239,8 +317,13 @@ public class TicketFunctions {
             ticket.getStatus().name(), picker, ticket.getId());
     }
 
-    public HashMap<UUID, Integer> highscores(TimeAmount span) {
-        HashMap<UUID, Integer> data = new HashMap<>();
+    /**
+     * Retrieve the ticket completions grouped by player within an option time span.
+     * @param span the optional span to check within
+     * @return a map of players and their ticket completions.
+     */
+    public Map<UUID, Integer> highscores(@NotNull TimeAmount span) {
+        Map<UUID, Integer> data = new HashMap<>();
         long length;
 
         if (span.getLength() == null) {
@@ -250,12 +333,12 @@ public class TicketFunctions {
         }
 
         @Language("SQL")
-        String sql = "SELECT picker, COUNT(*) AS `num` " +
-            "FROM puretickets_ticket " +
-            "WHERE status = ? " +
-            "AND picker IS NOT NULL " +
-            "and id in (SELECT DISTINCT ticket FROM puretickets_message WHERE date > ?) " +
-            "GROUP BY picker";
+        String sql = "SELECT picker, COUNT(*) AS `num` "
+                + "FROM puretickets_ticket "
+                + "WHERE status = ? "
+                + "AND picker IS NOT NULL "
+                + "and id in (SELECT DISTINCT ticket FROM puretickets_message WHERE date > ?) "
+                + "GROUP BY picker";
 
         List<DbRow> results;
 
