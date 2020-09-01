@@ -10,9 +10,21 @@ import java.util.ArrayList;
 import java.util.List;
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
+/**
+ * Utilities for replacements.
+ */
 public class ReplacementUtilities {
-    public static String[] ticketReplacements(Ticket ticket) {
+    /**
+     * Convert a ticket to an array of replacements.
+     *
+     * @param ticket the ticket instance to use
+     * @return a array of replacements
+     */
+    @NotNull
+    public static String[] ticketReplacements(@Nullable Ticket ticket) {
         List<String> results = new ArrayList<>();
 
         if (ticket == null) {

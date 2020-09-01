@@ -54,8 +54,8 @@ public class CommandManager extends PaperCommandManager {
     /**
      * Initialise the Command Manager.
      *
-     * @param plugin        the plugin to register commands against
-     * @param config        the config instance to use
+     * @param plugin    the plugin to register commands against
+     * @param config    the config instance to use
      * @param ticketSQL the ticketSQL to use
      */
     public CommandManager(@NotNull Plugin plugin, @NotNull Config config, @NotNull TicketSQL ticketSQL) {

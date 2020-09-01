@@ -11,15 +11,30 @@ import com.intellectualsites.http.external.GsonMapper;
 import java.util.Base64;
 import java.util.UUID;
 import java.util.logging.Logger;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
+/**
+ * Manager for Discord interactions.
+ */
 public class DiscordManager {
+    @NotNull
     private final HttpClient client;
 
+    @NotNull
     private final Logger logger;
+    @Nullable
     private final String serverName;
+    @NotNull
     private final Boolean enabled;
 
-    public DiscordManager(Logger logger, Config config) {
+    /**
+     * Initialise the Discord Manager.
+     *
+     * @param logger the logger to log errors to
+     * @param config the config instance to use
+     */
+    public DiscordManager(@NotNull Logger logger, @NotNull Config config) {
         this.client = HttpClient.newBuilder()
             .withBaseURL(config.API__DOMAIN + "/api/v2")
             .withDecorator((req) -> {
@@ -41,7 +56,14 @@ public class DiscordManager {
         }
     }
 
-    public void sendInformation(Ticket ticket, UUID author, String action) {
+    /**
+     * Send information to the discord client.
+     *
+     * @param ticket the ticket instance to send
+     * @param author the authors unique id
+     * @param action the action to send
+     */
+    public void sendInformation(@NotNull Ticket ticket, @Nullable UUID author, @NotNull String action) {
         if (!enabled) {
             return;
         }

@@ -9,10 +9,10 @@ import broccolai.tickets.locale.MessageNames;
 import broccolai.tickets.locale.Messages;
 import broccolai.tickets.locale.TargetType;
 import broccolai.tickets.storage.SQLManager;
+import broccolai.tickets.storage.functions.NotificationSQL;
 import broccolai.tickets.tasks.ReminderTask;
 import broccolai.tickets.tasks.TaskManager;
 import broccolai.tickets.ticket.Ticket;
-import broccolai.tickets.ticket.TicketManager;
 import broccolai.tickets.user.UserManager;
 import broccolai.tickets.utilities.Constants;
 import broccolai.tickets.utilities.generic.ReplacementUtilities;
@@ -30,20 +30,40 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.permissions.ServerOperator;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
+/**
+ * Notification Manager.
+ */
 public class NotificationManager implements Listener {
-    private final SQLManager sqlManager;
+    @NotNull
     private final UserManager userManager;
+    @NotNull
     private final CommandManager commandManager;
+    @NotNull
     private final DiscordManager discordManager;
-
+    @NotNull
+    private final NotificationSQL notificationSQL;
+    @NotNull
     private final Multimap<UUID, PendingNotification> awaiting;
 
-    public NotificationManager(Config config, SQLManager sqlManager, TaskManager taskManager, UserManager userManager, CommandManager commandManager, DiscordManager discordManager) {
-        this.sqlManager = sqlManager;
+    /**
+     * Initialise a Notification Manager.
+     *
+     * @param config         the config instance
+     * @param sqlManager     the sql manager
+     * @param taskManager    the task manager
+     * @param userManager    the user manager
+     * @param commandManager the command manager
+     * @param discordManager the discord manager
+     */
+    public NotificationManager(@NotNull Config config, @NotNull SQLManager sqlManager, @NotNull TaskManager taskManager, @NotNull UserManager userManager, @NotNull CommandManager commandManager,
+                               @NotNull DiscordManager discordManager) {
         this.userManager = userManager;
         this.commandManager = commandManager;
         this.discordManager = discordManager;
+        this.notificationSQL = sqlManager.getNotification();
 
         awaiting = sqlManager.getNotification().selectAllAndClear();
 
@@ -51,10 +71,17 @@ public class NotificationManager implements Listener {
             TimeUtilities.minuteToLong(config.REMINDER__DELAY), TimeUtilities.minuteToLong(config.REMINDER__REPEAT));
     }
 
-    public void send(CommandSender sender, UUID target, MessageNames names, Ticket ticket) {
+    /**
+     * Send a notification to various sources.
+     *
+     * @param sender the notification initiator
+     * @param target the target of the action
+     * @param names  the notification type name
+     * @param ticket the ticket instance
+     */
+    public void send(@NotNull CommandSender sender, @Nullable UUID target, @NotNull MessageNames names, @NotNull Ticket ticket) {
         String[] specificReplacements = {"%user%", sender.getName(), "%target%", UserUtilities.nameFromUUID(target)};
         String[] genericReplacements = ReplacementUtilities.ticketReplacements(ticket);
-
         String[] replacements = ObjectArrays.concat(specificReplacements, genericReplacements, String.class);
 
         for (TargetType targetType : names.getTargets()) {
@@ -66,6 +93,7 @@ public class NotificationManager implements Listener {
                     break;
 
                 case NOTIFICATION:
+                    assert target != null;
                     OfflinePlayer op = Bukkit.getOfflinePlayer(target);
 
                     if (op.isOnline()) {
@@ -97,6 +125,7 @@ public class NotificationManager implements Listener {
                     UUID uuid = sender instanceof Player ? ((Player) sender).getUniqueId() : null;
 
                     discordManager.sendInformation(ticket, uuid, names.name());
+                    break;
 
                 default:
                     throw new UnsupportedOperationException();
@@ -104,10 +133,23 @@ public class NotificationManager implements Listener {
         }
     }
 
-    public void basic(CommandSender commandSender, Messages messageKey, String... replacements) {
-        senderAsIssuer(commandSender).sendInfo(messageKey, replacements);
+    /**
+     * Send a simple localised message to a server user.
+     *
+     * @param serverOperator the recipient
+     * @param messageKey     the locale message key
+     * @param replacements   the replacements to use
+     */
+    public void basic(ServerOperator serverOperator, Messages messageKey, String... replacements) {
+        senderAsIssuer(serverOperator).sendInfo(messageKey, replacements);
     }
 
+    /**
+     * Handle a PureException and send the result to a CommandSender.
+     *
+     * @param commandSender the command sender to message
+     * @param exception     the PureException to handle
+     */
     public void handleException(CommandSender commandSender, PureException exception) {
         if (exception.getValue() != null) {
             commandSender.sendMessage(exception.getValue());
@@ -117,15 +159,24 @@ public class NotificationManager implements Listener {
         senderAsIssuer(commandSender).sendInfo(exception.getMessageKey(), exception.getReplacements());
     }
 
+    /**
+     * Save all awaiting notifications.
+     */
     public void save() {
-        sqlManager.getNotification().insertAll(awaiting);
+        notificationSQL.insertAll(awaiting);
     }
 
+    /**
+     * Event to notify player when a ticket is created.
+     */
     @EventHandler
     public void onTicketCreation(TicketCreationEvent e) {
         send(e.getPlayer(), null, MessageNames.NEW_TICKET, e.getTicket());
     }
 
+    /**
+     * Event to listen for player joins and send them outstanding notifications.
+     */
     @EventHandler
     public void onJoin(PlayerJoinEvent e) {
         CommandIssuer ci = commandManager.getCommandIssuer(e.getPlayer());
@@ -134,12 +185,19 @@ public class NotificationManager implements Listener {
             try {
                 ci.sendInfo(n.getMessageKey(), n.getReplacements());
             } catch (IllegalArgumentException ignored) {
+                Bukkit.getLogger().warning("Could not send notifications to " + ci.getUniqueId());
             }
         });
 
         awaiting.removeAll(ci.getUniqueId());
     }
 
+    /**
+     * Convert a user to a command issuer.
+     *
+     * @param operator the user to convert
+     * @return the converted CommandIssuer
+     */
     private CommandIssuer senderAsIssuer(ServerOperator operator) {
         return commandManager.getCommandIssuer(operator);
     }
