@@ -1,20 +1,32 @@
 package broccolai.tickets.ticket;
 
-import broccolai.tickets.utilities.PureColor;
+import org.bukkit.ChatColor;
 
+/**
+ * enum representing the potential states of a ticket.
+ */
 public enum TicketStatus {
-    OPEN(PureColor.GREEN), PICKED(PureColor.YELLOW), CLOSED(PureColor.RED);
+    OPEN(ChatColor.GREEN), PICKED(ChatColor.YELLOW), CLOSED(ChatColor.RED);
 
-    private final PureColor pureColor;
+    private final ChatColor color;
 
-    TicketStatus(PureColor pureColor) {
-        this.pureColor = pureColor;
+    TicketStatus(ChatColor color) {
+        this.color = color;
     }
 
-    public PureColor getPureColor() {
-        return pureColor;
+    /**
+     * Retrieve the color associated with this status.
+     * @return the ChatColor
+     */
+    public ChatColor getColor() {
+        return color;
     }
 
+    /**
+     * Retrieve a ticket status with a name.
+     * @param input the potential statuses name
+     * @return the constructed status, or if not found null
+     */
     public static TicketStatus from(String input) {
         for (TicketStatus value : values()) {
             if (value.name().equals(input)) {

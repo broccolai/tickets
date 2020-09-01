@@ -34,7 +34,7 @@ public class ReplacementUtilities {
         results.add(TimeUtilities.formatted(message.getDate()));
 
         results.add("%statusColor%");
-        results.add(ticket.getStatus().getPureColor().getColor().toString());
+        results.add(ticket.getStatus().getColor().toString());
 
         results.add("%status%");
         results.add(ticket.getStatus().name());
