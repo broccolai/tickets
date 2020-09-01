@@ -23,11 +23,11 @@ import org.intellij.lang.annotations.Language;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class TicketFunctions {
+public class TicketSQL {
     private final HelpersSQL helpers;
     private final Platform platform;
 
-    public TicketFunctions(HelpersSQL helpers, Platform platform) {
+    public TicketSQL(HelpersSQL helpers, Platform platform) {
         this.helpers = helpers;
         this.platform = platform;
     }

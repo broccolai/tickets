@@ -5,7 +5,7 @@ import broccolai.tickets.storage.functions.HelpersSQL;
 import broccolai.tickets.storage.functions.MessageSQL;
 import broccolai.tickets.storage.functions.NotificationSQL;
 import broccolai.tickets.storage.functions.SettingsSQL;
-import broccolai.tickets.storage.functions.TicketFunctions;
+import broccolai.tickets.storage.functions.TicketSQL;
 import broccolai.tickets.storage.platforms.MySQL;
 import broccolai.tickets.storage.platforms.Platform;
 import broccolai.tickets.storage.platforms.SQLite;
@@ -15,7 +15,7 @@ public class SQLManager {
     HelpersSQL helpers = new HelpersSQL();
 
     Platform platform;
-    TicketFunctions ticket;
+    TicketSQL ticket;
     MessageSQL message;
     NotificationSQL notification;
     SettingsSQL setting;
@@ -27,7 +27,7 @@ public class SQLManager {
             platform = new SQLite();
         }
 
-        ticket = new TicketFunctions(helpers, platform);
+        ticket = new TicketSQL(helpers, platform);
         message = new MessageSQL(helpers);
         notification = new NotificationSQL(helpers);
         setting = new SettingsSQL(platform);
@@ -36,7 +36,7 @@ public class SQLManager {
         platform.setup(plugin, config);
     }
 
-    public TicketFunctions getTicket() {
+    public TicketSQL getTicket() {
         return ticket;
     }
 
