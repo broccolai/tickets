@@ -14,6 +14,7 @@ import org.jetbrains.annotations.NotNull;
 public @interface AutoStatuses {
     /**
      * Get the string value.
+     *
      * @return the ticket statuses, separated by commas
      */
     @NotNull

@@ -51,8 +51,9 @@ public class CommandManager extends PaperCommandManager {
 
     /**
      * Initialise the Command Manager.
-     * @param plugin the plugin to register commands against
-     * @param config the config instance to use
+     *
+     * @param plugin        the plugin to register commands against
+     * @param config        the config instance to use
      * @param ticketManager the ticket manager instance to use
      */
     public CommandManager(@NotNull Plugin plugin, @NotNull Config config, @NotNull TicketManager ticketManager) {
@@ -159,6 +160,7 @@ public class CommandManager extends PaperCommandManager {
 
     /**
      * Register command replacements.
+     *
      * @param config the config instance to use
      */
     private void registerReplacements(@NotNull Config config) {
@@ -220,6 +222,7 @@ public class CommandManager extends PaperCommandManager {
 
     /**
      * Register dependencies to the commands.
+     *
      * @param inputs the dependencies to register
      */
     public void registerInjections(Object... inputs) {

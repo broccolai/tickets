@@ -16,6 +16,7 @@ public enum TicketStatus {
 
     /**
      * Retrieve the color associated with this status.
+     *
      * @return the ChatColor
      */
     public ChatColor getColor() {
@@ -24,6 +25,7 @@ public enum TicketStatus {
 
     /**
      * Retrieve a ticket status with a name.
+     *
      * @param input the potential statuses name
      * @return the constructed status, or if not found null
      */

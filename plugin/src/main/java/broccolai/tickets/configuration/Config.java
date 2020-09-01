@@ -1,7 +1,6 @@
 package broccolai.tickets.configuration;
 
 import broccolai.corn.spigot.locale.LocaleUtils;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -54,6 +53,7 @@ public class Config {
 
     /**
      * Initialise the Configuration wrapper with values.
+     *
      * @param plugin the Plugin instance to use
      */
     public Config(Plugin plugin) {

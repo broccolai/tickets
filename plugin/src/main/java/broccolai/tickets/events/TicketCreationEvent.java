@@ -2,9 +2,6 @@ package broccolai.tickets.events;
 
 import broccolai.tickets.ticket.Ticket;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Event;
-import org.bukkit.event.HandlerList;
-import org.jetbrains.annotations.NotNull;
 
 public class TicketCreationEvent extends BaseEvent {
     private final Player player;

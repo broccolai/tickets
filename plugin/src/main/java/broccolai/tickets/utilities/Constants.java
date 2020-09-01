@@ -1,5 +1,8 @@
 package broccolai.tickets.utilities;
 
+/**
+ * Class to contain Constants.
+ */
 public class Constants {
     private static final String BASE_PERMISSION = "tickets";
 
