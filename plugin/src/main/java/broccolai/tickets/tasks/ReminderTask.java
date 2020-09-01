@@ -2,25 +2,28 @@ package broccolai.tickets.tasks;
 
 import broccolai.tickets.interactions.NotificationManager;
 import broccolai.tickets.locale.Messages;
-import broccolai.tickets.ticket.TicketManager;
+import broccolai.tickets.storage.functions.TicketSQL;
 import broccolai.tickets.ticket.TicketStatus;
 import broccolai.tickets.utilities.Constants;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.jetbrains.annotations.NotNull;
 
 public class ReminderTask extends BukkitRunnable {
-    private final TicketManager ticketManager;
+    @NotNull
     private final NotificationManager notificationManager;
+    @NotNull
+    private final TicketSQL ticketSQL;
 
-    public ReminderTask(TicketManager ticketManager, NotificationManager notificationManager) {
-        this.ticketManager = ticketManager;
+    public ReminderTask(@NotNull NotificationManager notificationManager, @NotNull TicketSQL ticketSQL) {
         this.notificationManager = notificationManager;
+        this.ticketSQL = ticketSQL;
     }
 
     @Override
     public void run() {
-        Integer amount = ticketManager.count(TicketStatus.OPEN);
+        int amount = ticketSQL.count(TicketStatus.OPEN);
 
         if (amount == 0) {
             return;
@@ -28,7 +31,7 @@ public class ReminderTask extends BukkitRunnable {
 
         for (Player player : Bukkit.getOnlinePlayers()) {
             if (player.hasPermission(Constants.STAFF_PERMISSION + ".remind")) {
-                notificationManager.basic(player, Messages.OTHER__REMINDER, "%amount%", amount.toString());
+                notificationManager.basic(player, Messages.OTHER__REMINDER, "%amount%", String.valueOf(amount));
             }
         }
     }

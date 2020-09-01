@@ -7,13 +7,15 @@ import broccolai.tickets.configuration.Config;
 import broccolai.tickets.locale.Messages;
 import broccolai.tickets.locale.TargetType;
 import broccolai.tickets.storage.TimeAmount;
+import broccolai.tickets.storage.functions.TicketSQL;
 import broccolai.tickets.ticket.FutureTicket;
 import broccolai.tickets.ticket.Message;
 import broccolai.tickets.ticket.MessageReason;
 import broccolai.tickets.ticket.Ticket;
-import broccolai.tickets.ticket.TicketManager;
 import broccolai.tickets.ticket.TicketStatus;
+import co.aikar.commands.BukkitCommandCompletionContext;
 import co.aikar.commands.BukkitCommandExecutionContext;
+import co.aikar.commands.CommandCompletions;
 import co.aikar.commands.CommandContexts;
 import co.aikar.commands.CommandReplacements;
 import co.aikar.commands.InvalidCommandArgument;
@@ -47,19 +49,19 @@ import org.jetbrains.annotations.NotNull;
  */
 public class CommandManager extends PaperCommandManager {
     @NotNull
-    private final TicketManager ticketManager;
+    private final TicketSQL ticketSQL;
 
     /**
      * Initialise the Command Manager.
      *
      * @param plugin        the plugin to register commands against
      * @param config        the config instance to use
-     * @param ticketManager the ticket manager instance to use
+     * @param ticketSQL the ticketSQL to use
      */
-    public CommandManager(@NotNull Plugin plugin, @NotNull Config config, @NotNull TicketManager ticketManager) {
+    public CommandManager(@NotNull Plugin plugin, @NotNull Config config, @NotNull TicketSQL ticketSQL) {
         super(plugin);
 
-        this.ticketManager = ticketManager;
+        this.ticketSQL = ticketSQL;
 
         //noinspection deprecation
         enableUnstableAPI("help");
@@ -93,7 +95,7 @@ public class CommandManager extends PaperCommandManager {
 
                     try {
                         int inputId = Integer.parseInt(input);
-                        ticket = ticketManager.get(inputId);
+                        ticket = ticketSQL.select(inputId);
                     } catch (NumberFormatException e) {
                         ticket = null;
                     }
@@ -127,7 +129,7 @@ public class CommandManager extends PaperCommandManager {
                     }
                 }
 
-                Ticket potentialTicket = ticketManager.getLatestTicket(player.getUniqueId(), statuses.toArray(new TicketStatus[0]));
+                Ticket potentialTicket = ticketSQL.selectLastTicket(player.getUniqueId(), statuses.toArray(new TicketStatus[0]));
 
                 if (potentialTicket == null) {
                     future.complete(null);
@@ -186,36 +188,37 @@ public class CommandManager extends PaperCommandManager {
      * Register the commands completions.
      */
     private void registerCompletions() {
-        getCommandCompletions().registerAsyncCompletion("TicketHolders", c ->
-            ticketManager.allNames(TicketStatus.from(c.getConfig("status")))
+        CommandCompletions<BukkitCommandCompletionContext> commandCompletions = getCommandCompletions();
+        commandCompletions.registerAsyncCompletion("TicketHolders", c ->
+            ticketSQL.selectNames(TicketStatus.from(c.getConfig("status")))
         );
 
-        getCommandCompletions().registerAsyncCompletion("TargetIds", c -> {
+        commandCompletions.registerAsyncCompletion("TargetIds", c -> {
             try {
                 OfflinePlayer target = c.getContextValue(OfflinePlayer.class, Numbers.valueOrNull(c.getConfig("parameter"), Integer::parseInt));
                 TicketStatus status = TicketStatus.from(c.getConfig("status"));
 
-                return Lists.map(ticketManager.getIds(target.getUniqueId(), status), Object::toString);
+                return Lists.map(ticketSQL.selectIds(target.getUniqueId(), status), Object::toString);
             } catch (Exception e) {
                 return null;
             }
         });
 
-        getCommandCompletions().registerAsyncCompletion("IssuerIds", c -> {
+        commandCompletions.registerAsyncCompletion("IssuerIds", c -> {
             try {
                 TicketStatus status = TicketStatus.from(c.getConfig("status"));
 
-                return Lists.map(ticketManager.getIds(c.getIssuer().getUniqueId(), status), Object::toString);
+                return Lists.map(ticketSQL.selectIds(c.getIssuer().getUniqueId(), status), Object::toString);
             } catch (Exception e) {
                 return null;
             }
         });
 
-        getCommandCompletions().registerStaticCompletion("TicketStatus", Lists.map(Arrays.asList(TicketStatus.values()), value ->
+        commandCompletions.registerStaticCompletion("TicketStatus", Lists.map(Arrays.asList(TicketStatus.values()), value ->
             value.name().toLowerCase()
         ));
 
-        getCommandCompletions().registerStaticCompletion("TimeAmounts", Lists.map(Arrays.asList(TimeAmount.values()), value ->
+        commandCompletions.registerStaticCompletion("TimeAmounts", Lists.map(Arrays.asList(TimeAmount.values()), value ->
             value.name().toLowerCase()
         ));
     }

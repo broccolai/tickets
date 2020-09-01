@@ -196,7 +196,7 @@ public class TicketsCommand extends PureBaseCommand {
         taskManager.use()
             .async(() -> {
                 if (offlinePlayer != null) {
-                    List<Ticket> tickets = ticketManager.getAll(offlinePlayer.getUniqueId(), status);
+                    List<Ticket> tickets = ticketSQL.selectAll(offlinePlayer.getUniqueId(), status);
 
                     notificationManager.basic(sender, Messages.TITLES__SPECIFIC_TICKETS, "%player%", offlinePlayer.getName());
 
@@ -207,7 +207,7 @@ public class TicketsCommand extends PureBaseCommand {
                 } else {
                     notificationManager.basic(sender, Messages.TITLES__ALL_TICKETS);
 
-                    Lists.group(ticketManager.all(status), Ticket::getPlayerUUID).forEach((uuid, tickets) -> {
+                    Lists.group(ticketSQL.selectAll(status), Ticket::getPlayerUUID).forEach((uuid, tickets) -> {
                         notificationManager.basic(sender, Messages.GENERAL__LIST_HEADER_FORMAT,
                             "%name%", UserUtilities.nameFromUUID(uuid));
 
@@ -235,7 +235,7 @@ public class TicketsCommand extends PureBaseCommand {
                     notificationManager.basic(sender, Messages.TITLES__TICKET_STATUS);
                 }
 
-                EnumMap<TicketStatus, Integer> data = ticketManager.stats(offlinePlayer != null ? offlinePlayer.getUniqueId() : null);
+                EnumMap<TicketStatus, Integer> data = ticketSQL.selectTicketStats(offlinePlayer != null ? offlinePlayer.getUniqueId() : null);
 
                 data.forEach((status, amount) -> {
                     if (amount != 0) {
@@ -253,7 +253,7 @@ public class TicketsCommand extends PureBaseCommand {
     public void onHighscore(CommandSender sender, TimeAmount amount) {
         taskManager.use()
             .async(() -> {
-                Map<UUID, Integer> highscores = ticketManager.highscores(amount);
+                Map<UUID, Integer> highscores = ticketSQL.highscores(amount);
                 notificationManager.basic(sender, Messages.TITLES__HIGHSCORES);
 
                 highscores.forEach((uuid, number) ->

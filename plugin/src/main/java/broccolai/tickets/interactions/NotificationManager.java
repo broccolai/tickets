@@ -39,8 +39,7 @@ public class NotificationManager implements Listener {
 
     private final Multimap<UUID, PendingNotification> awaiting;
 
-    public NotificationManager(Config config, SQLManager sqlManager, TaskManager taskManager, UserManager userManager, CommandManager commandManager, DiscordManager discordManager,
-                               TicketManager ticketManager) {
+    public NotificationManager(Config config, SQLManager sqlManager, TaskManager taskManager, UserManager userManager, CommandManager commandManager, DiscordManager discordManager) {
         this.sqlManager = sqlManager;
         this.userManager = userManager;
         this.commandManager = commandManager;
@@ -48,7 +47,7 @@ public class NotificationManager implements Listener {
 
         awaiting = sqlManager.getNotification().selectAllAndClear();
 
-        taskManager.addRepeatingTask(new ReminderTask(ticketManager, this),
+        taskManager.addRepeatingTask(new ReminderTask(this, sqlManager.getTicket()),
             TimeUtilities.minuteToLong(config.REMINDER__DELAY), TimeUtilities.minuteToLong(config.REMINDER__REPEAT));
     }
 

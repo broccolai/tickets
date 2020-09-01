@@ -3,6 +3,8 @@ package broccolai.tickets.commands;
 import broccolai.tickets.configuration.Config;
 import broccolai.tickets.interactions.NotificationManager;
 import broccolai.tickets.locale.Messages;
+import broccolai.tickets.storage.functions.MessageSQL;
+import broccolai.tickets.storage.functions.TicketSQL;
 import broccolai.tickets.tasks.TaskManager;
 import broccolai.tickets.ticket.FutureTicket;
 import broccolai.tickets.ticket.TicketManager;
@@ -30,6 +32,10 @@ public class PureBaseCommand extends BaseCommand {
     protected TicketManager ticketManager;
     @Dependency
     protected TaskManager taskManager;
+    @Dependency
+    protected TicketSQL ticketSQL;
+    @Dependency
+    protected MessageSQL messageSQL;
 
     @Default
     @HelpCommand

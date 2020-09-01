@@ -26,10 +26,10 @@ public class PureTickets extends JavaPlugin {
 
         UserManager userManager = new UserManager(sqlManager);
         TicketManager ticketManager = new TicketManager(config, pluginManager, sqlManager);
-        CommandManager commandManager = new CommandManager(this, config, ticketManager);
+        CommandManager commandManager = new CommandManager(this, config, sqlManager.getTicket());
 
         taskManager = new TaskManager(this);
-        notificationManager = new NotificationManager(config, sqlManager, taskManager, userManager, commandManager, discordManager, ticketManager);
+        notificationManager = new NotificationManager(config, sqlManager, taskManager, userManager, commandManager, discordManager);
 
         commandManager.registerInjections(config, userManager, ticketManager, notificationManager, taskManager, pluginManager);
         commandManager.registerCommands();
