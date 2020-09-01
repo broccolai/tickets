@@ -1,6 +1,8 @@
 package broccolai.tickets.commands;
 
 import broccolai.corn.core.Lists;
+import broccolai.corn.core.Numbers;
+import broccolai.corn.spigot.locale.LocaleUtils;
 import broccolai.tickets.configuration.Config;
 import broccolai.tickets.locale.Messages;
 import broccolai.tickets.locale.TargetType;
@@ -303,7 +305,7 @@ public class CommandManager extends PaperCommandManager {
                             Bukkit.getLogger().warning("Could not save locale file");
                         }
                     } else {
-                        FileUtilities.mergeYaml(stream, target);
+                        LocaleUtils.mergeYaml(stream, target);
                     }
                 });
 

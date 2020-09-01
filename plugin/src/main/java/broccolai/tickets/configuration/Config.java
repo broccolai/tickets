@@ -1,6 +1,7 @@
 package broccolai.tickets.configuration;
 
-import broccolai.tickets.utilities.generic.FileUtilities;
+import broccolai.corn.spigot.locale.LocaleUtils;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -11,6 +12,9 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.Plugin;
 
+/**
+ * Wrapper for the Plugins Configuration.
+ */
 public class Config {
     public String LOCALE;
     public Integer REMINDER__DELAY;
@@ -48,10 +52,14 @@ public class Config {
 
     public String API__DOMAIN;
 
+    /**
+     * Initialise the Configuration wrapper with values.
+     * @param plugin the Plugin instance to use
+     */
     public Config(Plugin plugin) {
         plugin.saveDefaultConfig();
         InputStream stream = plugin.getClass().getResourceAsStream("/config.yml");
-        FileUtilities.mergeYaml(stream, new File(plugin.getDataFolder(), "config.yml"));
+        LocaleUtils.mergeYaml(stream, new File(plugin.getDataFolder(), "config.yml"));
 
         stream = plugin.getClass().getResourceAsStream("/config.yml");
         FileConfiguration config = plugin.getConfig();
