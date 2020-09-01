@@ -9,6 +9,7 @@ import com.google.common.collect.Iterators;
 import java.util.ArrayList;
 import java.util.List;
 import org.bukkit.Location;
+import org.bukkit.World;
 
 public class ReplacementUtilities {
     public static String[] ticketReplacements(Ticket ticket) {
@@ -68,9 +69,11 @@ public class ReplacementUtilities {
         results.add(noteMessage != null ? noteMessage.getData() : "");
 
         Location location = ticket.getLocation();
+        World world = location.getWorld();
+        String worldName = world != null ? world.getName() : "world";
 
         results.add("%world%");
-        results.add(location.getWorld().getName());
+        results.add(worldName);
 
         results.add("%x%");
         results.add(String.valueOf(location.getBlockX()));
