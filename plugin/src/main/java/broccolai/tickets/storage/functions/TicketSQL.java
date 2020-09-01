@@ -23,11 +23,22 @@ import org.intellij.lang.annotations.Language;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+/**
+ * Ticket SQL.
+ */
 public class TicketSQL {
+    @NotNull
     private final HelpersSQL helpers;
+    @NotNull
     private final Platform platform;
 
-    public TicketSQL(HelpersSQL helpers, Platform platform) {
+    /**
+     * Initialise TicketSQL.
+     *
+     * @param helpers  the helpers sql instance
+     * @param platform the platform instance
+     */
+    public TicketSQL(@NotNull HelpersSQL helpers, @NotNull Platform platform) {
         this.helpers = helpers;
         this.platform = platform;
     }

@@ -9,14 +9,29 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.UUID;
 import org.bukkit.Bukkit;
+import org.jetbrains.annotations.NotNull;
 
+/**
+ * Notification SQL.
+ */
 public class NotificationSQL {
+    @NotNull
     private final HelpersSQL helpers;
 
-    public NotificationSQL(HelpersSQL helpers) {
+    /**
+     * Initialise Notification SQL.
+     *
+     * @param helpers the helper SQL
+     */
+    public NotificationSQL(@NotNull HelpersSQL helpers) {
         this.helpers = helpers;
     }
 
+    /**
+     * Select all notifications from the Database and clear it.
+     *
+     * @return a multimap with uuids to notifications
+     */
     public Multimap<UUID, PendingNotification> selectAllAndClear() {
         Multimap<UUID, PendingNotification> output = ArrayListMultimap.create();
         List<DbRow> results;
@@ -38,6 +53,11 @@ public class NotificationSQL {
         return output;
     }
 
+    /**
+     * Insert all pending notifications back into the Database.
+     *
+     * @param notifications the multimap to save
+     */
     public void insertAll(Multimap<UUID, PendingNotification> notifications) {
         notifications.forEach(((uuid, notification) -> {
             String message = notification.getMessageKey().name();

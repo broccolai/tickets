@@ -9,15 +9,31 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import org.bukkit.Bukkit;
+import org.jetbrains.annotations.NotNull;
 
+/**
+ * Message SQL.
+ */
 public class MessageSQL {
+    @NotNull
     HelpersSQL helpers;
 
-    public MessageSQL(HelpersSQL helpers) {
+    /**
+     * Initialise MessageSQL.
+     *
+     * @param helpers the helper sql instance
+     */
+    public MessageSQL(@NotNull HelpersSQL helpers) {
         this.helpers = helpers;
     }
 
-    public List<Message> selectAll(Integer id) {
+    /**
+     * Get all messages with an id.
+     *
+     * @param id the tickets id
+     * @return a list of messages
+     */
+    public List<Message> selectAll(int id) {
         List<DbRow> results;
 
         try {
@@ -35,9 +51,15 @@ public class MessageSQL {
         return output;
     }
 
+    /**
+     * Insert a message.
+     *
+     * @param ticket  the ticket instance to use
+     * @param message the message to insert
+     */
     public void insert(Ticket ticket, Message message) {
         UUID sender = message.getSender();
-        Long date = helpers.serializeLocalDateTime(message.getDate());
+        long date = helpers.serializeLocalDateTime(message.getDate());
         String senderName;
 
         if (sender == null) {
