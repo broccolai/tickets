@@ -13,8 +13,6 @@ import broccolai.tickets.ticket.MessageReason;
 import broccolai.tickets.ticket.Ticket;
 import broccolai.tickets.ticket.TicketManager;
 import broccolai.tickets.ticket.TicketStatus;
-import broccolai.tickets.utilities.generic.FileUtilities;
-import broccolai.tickets.utilities.generic.NumberUtilities;
 import co.aikar.commands.BukkitCommandExecutionContext;
 import co.aikar.commands.CommandContexts;
 import co.aikar.commands.CommandReplacements;
@@ -192,7 +190,7 @@ public class CommandManager extends PaperCommandManager {
 
         getCommandCompletions().registerAsyncCompletion("TargetIds", c -> {
             try {
-                OfflinePlayer target = c.getContextValue(OfflinePlayer.class, NumberUtilities.valueOfOrNull(c.getConfig("parameter")));
+                OfflinePlayer target = c.getContextValue(OfflinePlayer.class, Numbers.valueOrNull(c.getConfig("parameter"), Integer::parseInt));
                 TicketStatus status = TicketStatus.from(c.getConfig("status"));
 
                 return Lists.map(ticketManager.getIds(target.getUniqueId(), status), Object::toString);
