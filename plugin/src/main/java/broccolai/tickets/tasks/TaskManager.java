@@ -20,6 +20,7 @@ public class TaskManager {
 
     /**
      * Initialise a new Task Manager.
+     *
      * @param plugin the plugin instance to register against.
      */
     public TaskManager(Plugin plugin) {
@@ -29,6 +30,7 @@ public class TaskManager {
 
     /**
      * Create a new TaskChain instance and return it.
+     *
      * @param <T> chain type
      * @return a new task chain instance
      */
@@ -38,9 +40,10 @@ public class TaskManager {
 
     /**
      * Add a new repeating task to the manager.
+     *
      * @param runnable the runnable to repeat
-     * @param delay the time before the first task run
-     * @param repeat the time in between each task run
+     * @param delay    the time before the first task run
+     * @param repeat   the time in between each task run
      */
     public void addRepeatingTask(BukkitRunnable runnable, long delay, long repeat) {
         BukkitTask task = runnable.runTaskTimerAsynchronously(plugin, delay, repeat);

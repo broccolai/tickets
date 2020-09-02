@@ -38,7 +38,7 @@ public class PureTickets extends JavaPlugin {
 
         commandManager.registerInjections(config, userManager, ticketManager, notificationManager, taskManager, pluginManager, sqlManager.getTicket());
         commandManager.registerCommands();
-        
+
         registerEvents(notificationManager, ticketManager);
     }
 

@@ -28,7 +28,8 @@ public class HelpersSQL {
 
     /**
      * Setup the helper SQL.
-     * @param platform the platform instance
+     *
+     * @param platform   the platform instance
      * @param messageSQL the message SQL
      */
     public void setup(@NotNull Platform platform, @NotNull MessageSQL messageSQL) {
@@ -38,7 +39,8 @@ public class HelpersSQL {
 
     /**
      * Retrieve a UUID from a column.
-     * @param row the database row
+     *
+     * @param row    the database row
      * @param column the column to look in
      * @return the constructed uuid
      */
@@ -55,7 +57,8 @@ public class HelpersSQL {
 
     /**
      * Retrieve a Location from a column.
-     * @param row the database row
+     *
+     * @param row    the database row
      * @param column the column to look in
      * @return the constructed location
      */
@@ -71,6 +74,7 @@ public class HelpersSQL {
 
     /**
      * Serialise a location into a string.
+     *
      * @param location a location instance
      * @return a string representation
      */
@@ -82,7 +86,8 @@ public class HelpersSQL {
 
     /**
      * Retrieve a date from a column.
-     * @param row the database row
+     *
+     * @param row    the database row
      * @param column the column to look in
      * @return the constructed LocalDateTime
      */
@@ -95,6 +100,7 @@ public class HelpersSQL {
 
     /**
      * Serialise a LocalDateTime to a long.
+     *
      * @param time the LocalDateTime instance
      * @return a long representation
      */
@@ -105,14 +111,14 @@ public class HelpersSQL {
 
     /**
      * Retrieve an enum value from a row.
-     * @param row the database row
-     * @param clazz the enum class
+     *
+     * @param row    the database row
+     * @param clazz  the enum class
      * @param column the column to lookup
-     * @param <T> the class type
+     * @param <T>    the class type
      * @return an enum
      */
-    @NotNull
-    <T extends Enum<T>> T getEnumValue(@NotNull DbRow row, @NotNull Class<T> clazz, @NotNull String column) {
+    @NotNull <T extends Enum<T>> T getEnumValue(@NotNull DbRow row, @NotNull Class<T> clazz, @NotNull String column) {
         T[] enumConstants = clazz.getEnumConstants();
         String raw = row.getString(column);
 
@@ -127,6 +133,7 @@ public class HelpersSQL {
 
     /**
      * Build a ticket from a row.
+     *
      * @param row the database row to use
      * @return the constructed ticket
      */
@@ -138,11 +145,13 @@ public class HelpersSQL {
         Location location = getLocation(row, "location");
         UUID picker = getUUID(row, "picker");
 
+        assert player != null;
         return new Ticket(id, player, messages, location, status, picker);
     }
 
     /**
      * Build a ticket from a row.
+     *
      * @param row the database row to use
      * @return the constructed message
      */
@@ -158,6 +167,7 @@ public class HelpersSQL {
 
     /**
      * Build a notification from a row.
+     *
      * @param row the database row to use
      * @return the constructed notification
      */

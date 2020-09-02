@@ -22,6 +22,7 @@ public enum MessageNames {
 
     /**
      * Initialise a message name with target types.
+     *
      * @param targets the corresponding target types
      */
     MessageNames(TargetType... targets) {
@@ -30,6 +31,7 @@ public enum MessageNames {
 
     /**
      * Retrieve the targets.
+     *
      * @return array of target types
      */
     @NotNull

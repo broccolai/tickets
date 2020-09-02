@@ -14,6 +14,7 @@ public enum TargetType {
 
     /**
      * Checks if the target type should use a prefix.
+     *
      * @return boolean
      */
     public boolean getHasPrefix() {

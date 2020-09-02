@@ -15,7 +15,8 @@ public class TicketConstructionEvent extends ThrowableEvent {
 
     /**
      * Initialise the construction event.
-     * @param player the ticket creator
+     *
+     * @param player  the ticket creator
      * @param message the tickets initial message
      */
     public TicketConstructionEvent(@NotNull Player player, @NotNull Message message) {

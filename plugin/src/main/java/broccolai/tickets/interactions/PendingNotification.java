@@ -14,7 +14,8 @@ public class PendingNotification {
 
     /**
      * Initialise a pending notification.
-     * @param messageKey the localised message key
+     *
+     * @param messageKey   the localised message key
      * @param replacements the replacements to use
      */
     public PendingNotification(@NotNull Messages messageKey, @NotNull String[] replacements) {

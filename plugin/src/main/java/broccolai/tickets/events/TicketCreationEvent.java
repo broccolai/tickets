@@ -15,6 +15,7 @@ public class TicketCreationEvent extends BaseEvent {
 
     /**
      * Initialise the creation event.
+     *
      * @param player the ticket creator
      * @param ticket the constructed ticket
      */

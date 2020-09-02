@@ -21,8 +21,9 @@ public class ReminderTask extends BukkitRunnable {
 
     /**
      * Initialise a new Reminder Task.
+     *
      * @param notificationManager the notification manager instance
-     * @param ticketSQL the ticket sql
+     * @param ticketSQL           the ticket sql
      */
     public ReminderTask(@NotNull NotificationManager notificationManager, @NotNull TicketSQL ticketSQL) {
         this.notificationManager = notificationManager;

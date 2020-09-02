@@ -28,11 +28,12 @@ public class Ticket {
 
     /**
      * Construct a new Ticket using all values.
-     * @param id the tickets id
+     *
+     * @param id         the tickets id
      * @param playerUUID the players unique id
-     * @param messages the list of messages
-     * @param location the tickets creation location
-     * @param status the tickets current status
+     * @param messages   the list of messages
+     * @param location   the tickets creation location
+     * @param status     the tickets current status
      * @param pickerUUID the potentially unset pickers unique id
      */
     public Ticket(int id, @NotNull UUID playerUUID, @NotNull List<Message> messages, @NotNull Location location, @NotNull TicketStatus status, @Nullable UUID pickerUUID) {
@@ -46,6 +47,7 @@ public class Ticket {
 
     /**
      * Get the most recent message reason by the player.
+     *
      * @return the message instance
      */
     @NotNull
@@ -55,6 +57,7 @@ public class Ticket {
 
     /**
      * Retrieve a LocalDateTime of when the ticket was first opened.
+     *
      * @return a local date time
      */
     @NotNull
@@ -64,6 +67,7 @@ public class Ticket {
 
     /**
      * Retrieve the tickets id.
+     *
      * @return a primitive integer
      */
     public int getId() {
@@ -72,6 +76,7 @@ public class Ticket {
 
     /**
      * Retrieve the players unique id.
+     *
      * @return the unique id
      */
     @NotNull
@@ -81,6 +86,7 @@ public class Ticket {
 
     /**
      * Retrieve the messages associated with the ticket.
+     *
      * @return a list of messages
      */
     @NotNull
@@ -90,6 +96,7 @@ public class Ticket {
 
     /**
      * Retrieve the tickets creation location.
+     *
      * @return a location instance
      */
     @NotNull
@@ -99,6 +106,7 @@ public class Ticket {
 
     /**
      * Retrieve the tickets current status.
+     *
      * @return the tickets status
      */
     @NotNull
@@ -108,6 +116,7 @@ public class Ticket {
 
     /**
      * Set the tickets current status to a new value.
+     *
      * @param status the status to assign
      */
     public void setStatus(@NotNull TicketStatus status) {
@@ -116,6 +125,7 @@ public class Ticket {
 
     /**
      * Retrieve the pickers unique id.
+     *
      * @return a potentially null unique id
      */
     @Nullable
@@ -125,6 +135,7 @@ public class Ticket {
 
     /**
      * Set the pickers unique id.
+     *
      * @param pickerUUID the pickers unique id, or null if it's by the console
      */
     public void setPickerUUID(@Nullable UUID pickerUUID) {
@@ -133,6 +144,7 @@ public class Ticket {
 
     /**
      * Convert the ticket instance into a json object with all data.
+     *
      * @return a json object
      */
     public JsonObject toJson() {

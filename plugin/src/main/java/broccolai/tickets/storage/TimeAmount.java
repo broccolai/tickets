@@ -17,6 +17,7 @@ public enum TimeAmount {
 
     /**
      * Get the time representation.
+     *
      * @return a long
      */
     @Nullable

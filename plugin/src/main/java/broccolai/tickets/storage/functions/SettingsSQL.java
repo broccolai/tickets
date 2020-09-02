@@ -18,6 +18,7 @@ public class SettingsSQL {
 
     /**
      * Initialise Settings SQL.
+     *
      * @param platform the platform to use
      */
     public SettingsSQL(@NotNull Platform platform) {
@@ -26,6 +27,7 @@ public class SettingsSQL {
 
     /**
      * Select UserSettings using a players unique id.
+     *
      * @param uuid the players unique id
      * @return the constructed UserSettings
      */
@@ -47,6 +49,7 @@ public class SettingsSQL {
 
     /**
      * Checks if a has user settings already.
+     *
      * @param uuid the players unique id
      * @return a boolean
      */
@@ -61,7 +64,8 @@ public class SettingsSQL {
 
     /**
      * Inserts a user setting instance into the database.
-     * @param uuid the players unique id
+     *
+     * @param uuid     the players unique id
      * @param settings the users settings
      */
     public void insert(@NotNull UUID uuid, @NotNull UserSettings settings) {
@@ -75,7 +79,8 @@ public class SettingsSQL {
 
     /**
      * Updates a users settings to a new instance.
-     * @param uuid the players unique id
+     *
+     * @param uuid     the players unique id
      * @param settings the users settings
      */
     public void update(@NotNull UUID uuid, @NotNull UserSettings settings) {

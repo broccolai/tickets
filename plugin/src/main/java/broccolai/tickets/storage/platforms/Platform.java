@@ -10,6 +10,7 @@ import org.bukkit.plugin.Plugin;
 public interface Platform {
     /**
      * Setup the platform.
+     *
      * @param plugin the plugin instance to register
      * @param config the configuration instance to use
      */
@@ -17,7 +18,8 @@ public interface Platform {
 
     /**
      * Retrieve a long from a column.
-     * @param row the database row to use
+     *
+     * @param row    the database row to use
      * @param column the column to lookup
      * @return a long
      */
@@ -25,6 +27,7 @@ public interface Platform {
 
     /**
      * Retrieve an integer from a object.
+     *
      * @param value the object to transform
      * @return the integer value
      */

@@ -10,6 +10,7 @@ import org.jetbrains.annotations.NotNull;
 public class TimeUtilities {
     /**
      * Convert a time into a standardised string representation.
+     *
      * @param time the time to format
      * @return a formatted time string
      */
@@ -20,6 +21,7 @@ public class TimeUtilities {
 
     /**
      * Convert a minute to a tick.
+     *
      * @param minute time value to transition
      * @return long value
      */

@@ -8,6 +8,7 @@ public class UserSettings {
 
     /**
      * Initialise a User Setting instance with all values.
+     *
      * @param announcements true for wanting announcements
      */
     public UserSettings(boolean announcements) {
@@ -16,6 +17,7 @@ public class UserSettings {
 
     /**
      * Get the users announcement choice.
+     *
      * @return boolean representation of choice
      */
     public boolean getAnnouncements() {
@@ -24,6 +26,7 @@ public class UserSettings {
 
     /**
      * Set the users announcement choice to a new value.
+     *
      * @param announcements the boolean value
      */
     public void setAnnouncements(boolean announcements) {

@@ -32,6 +32,7 @@ class ThrowableEvent extends BaseEvent implements Cancellable {
 
     /**
      * Cancel the event with a PureException.
+     *
      * @param exception the PureException to use.
      */
     public void cancel(@NotNull PureException exception) {

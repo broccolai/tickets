@@ -23,6 +23,7 @@ public class UserManager {
 
     /**
      * Retrieve a UserSettings instance.
+     *
      * @param uuid the unique id
      * @return a constructed UserSettings instance
      */
@@ -47,7 +48,8 @@ public class UserManager {
 
     /**
      * Update a UserSettings instance and save it.
-     * @param uuid the unique id
+     *
+     * @param uuid   the unique id
      * @param action the function to apply to the Users Settings
      */
     public void update(@NotNull UUID uuid, @NotNull Function<UserSettings, UserSettings> action) {

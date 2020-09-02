@@ -27,6 +27,7 @@ public class SQLManager {
 
     /**
      * Initialise the SQL Manager.
+     *
      * @param plugin the plugin instance
      * @param config the configuration instance
      */
@@ -45,6 +46,7 @@ public class SQLManager {
 
     /**
      * Retrieve the ticket sql.
+     *
      * @return TicketSQL
      */
     @NotNull
@@ -54,6 +56,7 @@ public class SQLManager {
 
     /**
      * Retrieve the message sql.
+     *
      * @return MessageSQL
      */
     @NotNull
@@ -63,6 +66,7 @@ public class SQLManager {
 
     /**
      * Retrieve the notification sql.
+     *
      * @return NotificationSQL
      */
     @NotNull
@@ -72,6 +76,7 @@ public class SQLManager {
 
     /**
      * Retrieve the settings sql.
+     *
      * @return SettingsSQL
      */
     @NotNull

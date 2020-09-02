@@ -42,7 +42,8 @@ public enum Messages implements MessageKeyProvider {
 
     /**
      * Retrieve a Message using a target type and a message name.
-     * @param targetType the target type
+     *
+     * @param targetType   the target type
      * @param messageNames the message name
      * @return a message
      */
