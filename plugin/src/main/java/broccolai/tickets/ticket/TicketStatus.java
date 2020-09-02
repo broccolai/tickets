@@ -1,6 +1,7 @@
 package broccolai.tickets.ticket;
 
 import org.bukkit.ChatColor;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * enum representing the potential states of a ticket.
@@ -29,7 +30,7 @@ public enum TicketStatus {
      * @param input the potential statuses name
      * @return the constructed status, or if not found null
      */
-    public static TicketStatus from(String input) {
+    public static TicketStatus from(@NotNull String input) {
         for (TicketStatus value : values()) {
             if (value.name().equals(input)) {
                 return value;

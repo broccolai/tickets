@@ -98,7 +98,7 @@ public class TicketManager implements Listener {
             throw new TicketOpen();
         }
 
-        Message message = new Message(MessageReason.REOPENED, LocalDateTime.now(), uuid);
+        Message message = new Message(MessageReason.YIELDED, LocalDateTime.now(), uuid);
 
         ticket.setStatus(TicketStatus.OPEN);
         ticket.setPickerUUID(uuid);
