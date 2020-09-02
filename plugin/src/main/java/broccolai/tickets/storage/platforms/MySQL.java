@@ -14,6 +14,9 @@ import java.util.logging.Level;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 
+/**
+ * MySQL implementation of Platform.
+ */
 public class MySQL implements Platform {
     @Override
     public void setup(Plugin plugin, Config config) {

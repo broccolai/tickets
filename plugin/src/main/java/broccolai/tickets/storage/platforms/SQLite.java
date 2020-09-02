@@ -19,6 +19,7 @@ public class SQLite implements Platform {
         File file = new File(plugin.getDataFolder(), "tickets.db");
 
         try {
+            //noinspection ResultOfMethodCallIgnored
             file.createNewFile();
         } catch (IOException e) {
             e.printStackTrace();
@@ -49,6 +50,7 @@ public class SQLite implements Platform {
                 version++;
             }
         } catch (SQLException ignored) {
+            Bukkit.getLogger().warning("Could not update location column");
         }
 
         try {
@@ -59,6 +61,7 @@ public class SQLite implements Platform {
                 version++;
             }
         } catch (SQLException ignored) {
+            Bukkit.getLogger().warning("Could not remove location column");
         }
 
         try {
@@ -71,6 +74,7 @@ public class SQLite implements Platform {
                 version++;
             }
         } catch (SQLException ignored) {
+            Bukkit.getLogger().warning("Could not prefix column");
         }
 
         try {

@@ -32,7 +32,7 @@ public class ReplacementUtilities {
         }
 
         results.add("%id%");
-        results.add(ticket.getId().toString());
+        results.add(String.valueOf(ticket.getId()));
 
         Message message = ticket.currentMessage();
 

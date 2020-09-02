@@ -10,22 +10,29 @@ import broccolai.tickets.storage.platforms.MySQL;
 import broccolai.tickets.storage.platforms.Platform;
 import broccolai.tickets.storage.platforms.SQLite;
 import org.bukkit.plugin.Plugin;
+import org.jetbrains.annotations.NotNull;
 
+/**
+ * SQL Manager.
+ */
 public class SQLManager {
-    HelpersSQL helpers = new HelpersSQL();
+    @NotNull
+    private final TicketSQL ticket;
+    @NotNull
+    private final MessageSQL message;
+    @NotNull
+    private final NotificationSQL notification;
+    @NotNull
+    private final SettingsSQL setting;
 
-    Platform platform;
-    TicketSQL ticket;
-    MessageSQL message;
-    NotificationSQL notification;
-    SettingsSQL setting;
-
+    /**
+     * Initialise the SQL Manager.
+     * @param plugin the plugin instance
+     * @param config the configuration instance
+     */
     public SQLManager(Plugin plugin, Config config) {
-        if (config.STORAGE__MYSQL) {
-            platform = new MySQL();
-        } else {
-            platform = new SQLite();
-        }
+        Platform platform = config.STORAGE__MYSQL ? new MySQL() : new SQLite();
+        HelpersSQL helpers = new HelpersSQL();
 
         ticket = new TicketSQL(helpers, platform);
         message = new MessageSQL(helpers);
@@ -36,18 +43,38 @@ public class SQLManager {
         platform.setup(plugin, config);
     }
 
+    /**
+     * Retrieve the ticket sql.
+     * @return TicketSQL
+     */
+    @NotNull
     public TicketSQL getTicket() {
         return ticket;
     }
 
+    /**
+     * Retrieve the message sql.
+     * @return MessageSQL
+     */
+    @NotNull
     public MessageSQL getMessage() {
         return message;
     }
 
+    /**
+     * Retrieve the notification sql.
+     * @return NotificationSQL
+     */
+    @NotNull
     public NotificationSQL getNotification() {
         return notification;
     }
 
+    /**
+     * Retrieve the settings sql.
+     * @return SettingsSQL
+     */
+    @NotNull
     public SettingsSQL getSetting() {
         return setting;
     }

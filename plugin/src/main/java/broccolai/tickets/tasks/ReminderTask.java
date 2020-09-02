@@ -10,12 +10,20 @@ import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 
+/**
+ * Task for displaying reminders.
+ */
 public class ReminderTask extends BukkitRunnable {
     @NotNull
     private final NotificationManager notificationManager;
     @NotNull
     private final TicketSQL ticketSQL;
 
+    /**
+     * Initialise a new Reminder Task.
+     * @param notificationManager the notification manager instance
+     * @param ticketSQL the ticket sql
+     */
     public ReminderTask(@NotNull NotificationManager notificationManager, @NotNull TicketSQL ticketSQL) {
         this.notificationManager = notificationManager;
         this.ticketSQL = ticketSQL;
