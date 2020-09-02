@@ -26,10 +26,15 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-@SuppressWarnings("unused")
+/**
+ * Command used for staff to interact with other players tickets.
+ */
 @CommandAlias("tickets|tis")
 @CommandPermission(Constants.STAFF_PERMISSION)
 public class TicketsCommand extends PureBaseCommand {
+    /**
+     * Shows a players ticket.
+     */
     @Subcommand("%show")
     @CommandCompletion("@TicketHolders @TargetIds")
     @CommandPermission(Constants.STAFF_PERMISSION + ".show")
@@ -39,6 +44,9 @@ public class TicketsCommand extends PureBaseCommand {
         processShowCommand(getCurrentCommandIssuer(), future);
     }
 
+    /**
+     * Assigns a players ticket to the sender.
+     */
     @Subcommand("%pick")
     @CommandCompletion("@TicketHolders:status=OPEN @TargetIds:status=OPEN")
     @CommandPermission(Constants.STAFF_PERMISSION + ".pick")
@@ -52,7 +60,7 @@ public class TicketsCommand extends PureBaseCommand {
                 try {
                     Ticket edited = ticketManager.pick(UserUtilities.uuidFromSender(sender), ticket);
 
-                    notificationManager.send(sender, offlinePlayer.getUniqueId(), MessageNames.PICK_TICKET, ticket);
+                    notificationManager.send(sender, offlinePlayer.getUniqueId(), MessageNames.PICK_TICKET, edited);
                 } catch (PureException e) {
                     notificationManager.basic(sender, e.getMessageKey(), e.getReplacements());
                 }
@@ -60,6 +68,9 @@ public class TicketsCommand extends PureBaseCommand {
             .execute();
     }
 
+    /**
+     * Assigns a ticket to the supplied target staff.
+     */
     @Subcommand("%assign")
     @CommandCompletion("@Players @TicketHolders:status=OPEN @TargetIds:parameter=2,status=OPEN")
     @CommandPermission(Constants.STAFF_PERMISSION + ".assign")
@@ -73,7 +84,7 @@ public class TicketsCommand extends PureBaseCommand {
                 try {
                     Ticket edited = ticketManager.pick(target.getUniqueId(), ticket);
 
-                    notificationManager.send(sender, target.getUniqueId(), MessageNames.ASSIGN_TICKET, ticket);
+                    notificationManager.send(sender, target.getUniqueId(), MessageNames.ASSIGN_TICKET, edited);
                 } catch (PureException e) {
                     notificationManager.basic(sender, e.getMessageKey(), e.getReplacements());
                 }
@@ -81,6 +92,9 @@ public class TicketsCommand extends PureBaseCommand {
             .execute();
     }
 
+    /**
+     * Done-marks a players ticket.
+     */
     @Subcommand("%done")
     @CommandCompletion("@TicketHolders:status=PICK @TargetIds:status=PICK")
     @CommandPermission(Constants.STAFF_PERMISSION + ".done")
@@ -94,7 +108,7 @@ public class TicketsCommand extends PureBaseCommand {
                 try {
                     Ticket edited = ticketManager.done(UserUtilities.uuidFromSender(sender), ticket);
 
-                    notificationManager.send(sender, offlinePlayer.getUniqueId(), MessageNames.DONE_TICKET, ticket);
+                    notificationManager.send(sender, offlinePlayer.getUniqueId(), MessageNames.DONE_TICKET, edited);
                 } catch (PureException e) {
                     notificationManager.basic(sender, e.getMessageKey(), e.getReplacements());
                 }
@@ -102,6 +116,9 @@ public class TicketsCommand extends PureBaseCommand {
             .execute();
     }
 
+    /**
+     * Yields a players ticket.
+     */
     @Subcommand("%yield")
     @CommandCompletion("@TicketHolders:status=PICK @TargetIds:status=PICK")
     @CommandPermission(Constants.STAFF_PERMISSION + ".yield")
@@ -115,7 +132,7 @@ public class TicketsCommand extends PureBaseCommand {
                 try {
                     Ticket edited = ticketManager.yield(UserUtilities.uuidFromSender(sender), ticket);
 
-                    notificationManager.send(sender, offlinePlayer.getUniqueId(), MessageNames.YIELD_TICKET, ticket);
+                    notificationManager.send(sender, offlinePlayer.getUniqueId(), MessageNames.YIELD_TICKET, edited);
                 } catch (PureException e) {
                     notificationManager.basic(sender, e.getMessageKey(), e.getReplacements());
                 }
@@ -123,6 +140,9 @@ public class TicketsCommand extends PureBaseCommand {
             .execute();
     }
 
+    /**
+     * Adds a note to a players ticket with the supplied message.
+     */
     @Subcommand("%note")
     @CommandCompletion("@TicketHolders @TargetIds")
     @CommandPermission(Constants.STAFF_PERMISSION + ".note")
@@ -135,11 +155,14 @@ public class TicketsCommand extends PureBaseCommand {
             .asyncLast((ticket) -> {
                 Ticket edited = ticketManager.note(UserUtilities.uuidFromSender(sender), ticket, message);
 
-                notificationManager.send(sender, offlinePlayer.getUniqueId(), MessageNames.NOTE_TICKET, ticket);
+                notificationManager.send(sender, offlinePlayer.getUniqueId(), MessageNames.NOTE_TICKET, edited);
             })
             .execute();
     }
 
+    /**
+     * Reopens a players ticket.
+     */
     @Subcommand("%reopen")
     @CommandCompletion("@TicketHolders:status=CLOSED @TargetIds:status=CLOSED")
     @CommandPermission(Constants.STAFF_PERMISSION + ".reopen")
@@ -153,7 +176,7 @@ public class TicketsCommand extends PureBaseCommand {
                 try {
                     Ticket edited = ticketManager.reopen(UserUtilities.uuidFromSender(sender), ticket);
 
-                    notificationManager.send(sender, offlinePlayer.getUniqueId(), MessageNames.REOPEN_TICKET, ticket);
+                    notificationManager.send(sender, offlinePlayer.getUniqueId(), MessageNames.REOPEN_TICKET, edited);
                 } catch (PureException e) {
                     notificationManager.basic(sender, e.getMessageKey(), e.getReplacements());
                 }
@@ -161,6 +184,9 @@ public class TicketsCommand extends PureBaseCommand {
             .execute();
     }
 
+    /**
+     * Teleports to a players ticket.
+     */
     @Subcommand("%teleport")
     @CommandCompletion("@TicketHolders @TargetIds:parameter=1")
     @CommandPermission(Constants.STAFF_PERMISSION + ".teleport")
@@ -178,6 +204,9 @@ public class TicketsCommand extends PureBaseCommand {
             .execute();
     }
 
+    /**
+     * Displays log information about a players ticket.
+     */
     @Subcommand("%log")
     @CommandCompletion("@TicketHolders @TargetIds")
     @CommandPermission(Constants.STAFF_PERMISSION + ".log")
@@ -187,6 +216,9 @@ public class TicketsCommand extends PureBaseCommand {
         processLogCommand(getCurrentCommandIssuer(), future);
     }
 
+    /**
+     * List all current open tickets, or by the optional ticket status.
+     */
     @Subcommand("%list")
     @CommandCompletion("@TicketHolders @TicketStatus")
     @CommandPermission(Constants.STAFF_PERMISSION + ".list")
@@ -221,6 +253,9 @@ public class TicketsCommand extends PureBaseCommand {
             .execute();
     }
 
+    /**
+     * Display information about the current outstanding tickets.
+     */
     @Subcommand("%status")
     @CommandCompletion("@TicketHolders")
     @CommandPermission(Constants.STAFF_PERMISSION + ".status")
@@ -246,6 +281,9 @@ public class TicketsCommand extends PureBaseCommand {
             .execute();
     }
 
+    /**
+     * List a count of per-staff ticket completions.
+     */
     @Subcommand("%highscore")
     @CommandCompletion("@TimeAmounts")
     @CommandPermission(Constants.STAFF_PERMISSION + ".highscore")

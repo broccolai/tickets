@@ -3,7 +3,6 @@ package broccolai.tickets.commands;
 import broccolai.tickets.configuration.Config;
 import broccolai.tickets.interactions.NotificationManager;
 import broccolai.tickets.locale.Messages;
-import broccolai.tickets.storage.functions.MessageSQL;
 import broccolai.tickets.storage.functions.TicketSQL;
 import broccolai.tickets.tasks.TaskManager;
 import broccolai.tickets.ticket.FutureTicket;
@@ -21,6 +20,9 @@ import co.aikar.commands.annotation.HelpCommand;
 import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.SimplePluginManager;
 
+/**
+ * Base commands for ticket commands inherit from.
+ */
 public class PureBaseCommand extends BaseCommand {
     @Dependency
     protected Config config;
@@ -34,8 +36,6 @@ public class PureBaseCommand extends BaseCommand {
     protected TaskManager taskManager;
     @Dependency
     protected TicketSQL ticketSQL;
-    @Dependency
-    protected MessageSQL messageSQL;
 
     @Default
     @HelpCommand

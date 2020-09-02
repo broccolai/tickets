@@ -228,7 +228,7 @@ public class CommandManager extends PaperCommandManager {
      *
      * @param inputs the dependencies to register
      */
-    public void registerInjections(Object... inputs) {
+    public void registerInjections(@NotNull Object... inputs) {
         for (Object input : inputs) {
             registerDependency(input.getClass(), input);
         }

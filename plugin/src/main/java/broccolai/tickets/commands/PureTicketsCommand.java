@@ -17,7 +17,9 @@ import co.aikar.commands.annotation.Optional;
 import co.aikar.commands.annotation.Subcommand;
 import org.bukkit.entity.Player;
 
-@SuppressWarnings("unused")
+/**
+ * Command used for information and per-user configuration.
+ */
 @CommandAlias("puretickets")
 public class PureTicketsCommand extends BaseCommand {
     @Dependency
@@ -27,17 +29,24 @@ public class PureTicketsCommand extends BaseCommand {
     @Dependency
     private NotificationManager notificationManager;
 
+    /**
+     * Retrieve information about the plugin.
+     */
     @Default
     @Subcommand("info")
     public void onInfo(CommandIssuer issuer) {
         issuer.sendMessage(plugin.getName() + " " + plugin.getDescription().getVersion());
     }
 
+    /**
+     * Allows a player to change a particular per-user config.
+     */
     @Subcommand("settings")
     @CommandPermission(Constants.USER_PERMISSION + ".settings")
     @CommandCompletion("announcements true|false")
     public void onSettings(Player player, String setting, @Optional Boolean value) {
         userManager.update(player.getUniqueId(), settings -> {
+            //noinspection SwitchStatementWithTooFewBranches
             switch (setting.toLowerCase()) {
                 case "announcements":
                     settings.setAnnouncements(value);
@@ -53,6 +62,9 @@ public class PureTicketsCommand extends BaseCommand {
         notificationManager.basic(player, Messages.OTHER__SETTING_UPDATE, "%setting%", setting, "%status%", status);
     }
 
+    /**
+     * Allows an operator to reload the plugins configurations.
+     */
     @Subcommand("reload")
     @CommandPermission(Constants.STAFF_PERMISSION + ".reload")
     public void onReload(CommandIssuer issuer) {

@@ -22,10 +22,15 @@ import co.aikar.commands.annotation.Syntax;
 import java.util.List;
 import org.bukkit.entity.Player;
 
-@SuppressWarnings("unused")
+/**
+ * Command used for players to interact with their own tickets.
+ */
 @CommandAlias("ticket|ti")
 @CommandPermission(Constants.USER_PERMISSION)
 public class TicketCommand extends PureBaseCommand {
+    /**
+     * Creates a ticket with the players message.
+     */
     @Subcommand("%create")
     @CommandPermission(Constants.USER_PERMISSION + ".create")
     @Description("Create a ticket")
@@ -43,6 +48,9 @@ public class TicketCommand extends PureBaseCommand {
             .execute();
     }
 
+    /**
+     * Update a ticket with the player supplied message.
+     */
     @Subcommand("%update")
     @CommandCompletion("@IssuerIds")
     @CommandPermission(Constants.USER_PERMISSION + ".update")
@@ -63,6 +71,9 @@ public class TicketCommand extends PureBaseCommand {
             .execute();
     }
 
+    /**
+     * Close a players own ticket.
+     */
     @Subcommand("%close")
     @CommandCompletion("@IssuerIds")
     @CommandPermission(Constants.USER_PERMISSION + ".close")
@@ -83,6 +94,9 @@ public class TicketCommand extends PureBaseCommand {
             .execute();
     }
 
+    /**
+     * Displays information about a users own ticket.
+     */
     @Subcommand("%show")
     @CommandCompletion("@IssuerIds")
     @CommandPermission(Constants.USER_PERMISSION + ".show")
@@ -92,6 +106,9 @@ public class TicketCommand extends PureBaseCommand {
         processShowCommand(getCurrentCommandIssuer(), future);
     }
 
+    /**
+     * Lists the players current open tickets.
+     */
     @Subcommand("%list")
     @CommandCompletion("@TicketStatus")
     @CommandPermission(Constants.USER_PERMISSION + ".list")
@@ -116,6 +133,9 @@ public class TicketCommand extends PureBaseCommand {
             .execute();
     }
 
+    /**
+     * Displays a players ticket.
+     */
     @Subcommand("%log")
     @CommandCompletion("@IssuerIds")
     @CommandPermission(Constants.USER_PERMISSION + ".log")
