@@ -117,11 +117,7 @@ public class TicketCommand extends PureBaseCommand {
     public void onList(Player player, @Optional TicketStatus status) {
         taskManager.use()
             .async(() -> {
-                List<Ticket> tickets = ticketSQL.selectAll(player.getUniqueId(), null);
-
-                tickets = Lists.filter(tickets, ticket ->
-                    status == null ? ticket.getStatus() != TicketStatus.CLOSED : ticket.getStatus() == status
-                );
+                List<Ticket> tickets = ticketSQL.selectAll(player.getUniqueId(), status);
 
                 notificationManager.basic(player, Messages.TITLES__YOUR_TICKETS);
 

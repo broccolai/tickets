@@ -32,7 +32,7 @@ public enum TicketStatus {
      */
     public static TicketStatus from(@NotNull String input) {
         for (TicketStatus value : values()) {
-            if (value.name().equals(input)) {
+            if (value.name().equalsIgnoreCase(input)) {
                 return value;
             }
         }
