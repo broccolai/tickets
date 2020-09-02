@@ -43,8 +43,9 @@ class ThrowableEvent extends BaseEvent implements Cancellable {
         return exception != null;
     }
 
-    @Nullable
+    @NotNull
     public PureException getException() {
+        assert exception != null;
         return exception;
     }
 }
