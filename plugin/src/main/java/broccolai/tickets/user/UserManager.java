@@ -1,42 +1,60 @@
 package broccolai.tickets.user;
 
 import broccolai.tickets.storage.SQLManager;
+import broccolai.tickets.storage.functions.SettingsSQL;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 import java.util.function.Function;
 import org.jetbrains.annotations.NotNull;
 
+/**
+ * The manager for users.
+ */
 public class UserManager {
-    private final HashMap<UUID, UserSettings> users = new HashMap<>();
-    private final SQLManager sqlManager;
+    @NotNull
+    private final Map<UUID, UserSettings> users = new HashMap<>();
+    @NotNull
+    private final SettingsSQL settingsSQL;
 
-    public UserManager(SQLManager sqlManager) {
-        this.sqlManager = sqlManager;
+    public UserManager(@NotNull SQLManager sqlManager) {
+        this.settingsSQL = sqlManager.getSetting();
     }
 
-    public @NotNull UserSettings get(UUID uuid) {
+    /**
+     * Retrieve a UserSettings instance.
+     * @param uuid the unique id
+     * @return a constructed UserSettings instance
+     */
+    @NotNull
+    public UserSettings get(@NotNull UUID uuid) {
         UserSettings settings = users.get(uuid);
 
         if (settings != null) {
             return settings;
         }
 
-        if (sqlManager.getSetting().exists(uuid)) {
-            settings = sqlManager.getSetting().select(uuid);
+        if (settingsSQL.exists(uuid)) {
+            settings = settingsSQL.select(uuid);
         } else {
             settings = new UserSettings(true);
-            sqlManager.getSetting().insert(uuid, settings);
+            settingsSQL.insert(uuid, settings);
         }
 
         users.put(uuid, settings);
         return settings;
     }
 
-    public void update(UUID uuid, Function<UserSettings, UserSettings> action) {
+    /**
+     * Update a UserSettings instance and save it.
+     * @param uuid the unique id
+     * @param action the function to apply to the Users Settings
+     */
+    public void update(@NotNull UUID uuid, @NotNull Function<UserSettings, UserSettings> action) {
         UserSettings settings = get(uuid);
         settings = action.apply(settings);
 
         users.put(uuid, settings);
-        sqlManager.getSetting().update(uuid, settings);
+        settingsSQL.update(uuid, settings);
     }
 }
