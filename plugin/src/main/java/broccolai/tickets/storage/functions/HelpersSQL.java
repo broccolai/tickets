@@ -77,7 +77,7 @@ public class HelpersSQL {
     @NotNull
     String serializeLocation(@NotNull Location location) {
         World world = location.getWorld();
-        return world != null ? world.getName() : "null" + "|" + location.getBlockX() + "|" + location.getBlockY() + "|" + location.getBlockZ();
+        return (world != null ? world.getName() : "null") + "|" + location.getBlockX() + "|" + location.getBlockY() + "|" + location.getBlockZ();
     }
 
     /**
