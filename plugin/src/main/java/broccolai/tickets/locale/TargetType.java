@@ -1,15 +1,22 @@
 package broccolai.tickets.locale;
 
+/**
+ * Enum representing target types.
+ */
 public enum TargetType {
     SENDER(true), NOTIFICATION(true), ANNOUNCEMENT(true), DISCORD(false);
 
-    private final Boolean hasPrefix;
+    private final boolean hasPrefix;
 
-    TargetType(Boolean hasPrefix) {
+    TargetType(boolean hasPrefix) {
         this.hasPrefix = hasPrefix;
     }
 
-    public Boolean getHasPrefix() {
+    /**
+     * Checks if the target type should use a prefix.
+     * @return boolean
+     */
+    public boolean getHasPrefix() {
         return hasPrefix;
     }
 }

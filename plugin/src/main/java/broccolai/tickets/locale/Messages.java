@@ -2,7 +2,11 @@ package broccolai.tickets.locale;
 
 import co.aikar.locales.MessageKey;
 import co.aikar.locales.MessageKeyProvider;
+import org.jetbrains.annotations.NotNull;
 
+/**
+ * Enum representing locale messages.
+ */
 @SuppressWarnings("unused")
 public enum Messages implements MessageKeyProvider {
     // GENERAL
@@ -36,6 +40,13 @@ public enum Messages implements MessageKeyProvider {
         return MessageKey.of(name().toLowerCase().replace("__", "."));
     }
 
+    /**
+     * Retrieve a Message using a target type and a message name.
+     * @param targetType the target type
+     * @param messageNames the message name
+     * @return a message
+     */
+    @NotNull
     public static Messages retrieve(TargetType targetType, MessageNames messageNames) {
         return valueOf(targetType.name() + "__" + messageNames.name());
     }
