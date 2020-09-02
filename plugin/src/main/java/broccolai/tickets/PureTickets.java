@@ -9,16 +9,21 @@ import broccolai.tickets.tasks.TaskManager;
 import broccolai.tickets.ticket.TicketManager;
 import broccolai.tickets.user.UserManager;
 import co.aikar.idb.DB;
+import org.bukkit.event.Listener;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
+/**
+ * The main class.
+ */
 public class PureTickets extends JavaPlugin {
     private TaskManager taskManager;
     private NotificationManager notificationManager;
+    private PluginManager pluginManager;
 
     @Override
     public void onEnable() {
-        PluginManager pluginManager = getServer().getPluginManager();
+        pluginManager = getServer().getPluginManager();
 
         Config config = new Config(this);
         DiscordManager discordManager = new DiscordManager(this.getLogger(), config);
@@ -31,10 +36,10 @@ public class PureTickets extends JavaPlugin {
         taskManager = new TaskManager(this);
         notificationManager = new NotificationManager(config, sqlManager, taskManager, userManager, commandManager, discordManager);
 
-        commandManager.registerInjections(config, userManager, ticketManager, notificationManager, taskManager, pluginManager);
+        commandManager.registerInjections(config, userManager, ticketManager, notificationManager, taskManager, pluginManager, sqlManager.getTicket());
         commandManager.registerCommands();
-
-        pluginManager.registerEvents(notificationManager, this);
+        
+        registerEvents(notificationManager, ticketManager);
     }
 
     @Override
@@ -48,5 +53,14 @@ public class PureTickets extends JavaPlugin {
         }
 
         DB.close();
+    }
+
+    /**
+     * Register multiple events.
+     */
+    private void registerEvents(Listener... listeners) {
+        for (Listener listener : listeners) {
+            pluginManager.registerEvents(listener, this);
+        }
     }
 }
