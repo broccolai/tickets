@@ -40,7 +40,6 @@ public class PureBaseCommand extends BaseCommand {
     @Default
     @HelpCommand
     public void onHelp(CommandSender sender, CommandHelp help) {
-        help.getHelpEntries().remove(0);
         help.showHelp();
     }
 
