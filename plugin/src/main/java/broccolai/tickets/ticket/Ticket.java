@@ -1,10 +1,10 @@
 package broccolai.tickets.ticket;
 
 import broccolai.corn.core.Lists;
-import com.google.common.collect.Iterables;
 import com.google.gson.JsonObject;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -52,7 +52,12 @@ public class Ticket {
      */
     @NotNull
     public Message currentMessage() {
-        return Iterables.getLast(Lists.filter(messages, message -> message.getReason() == MessageReason.MESSAGE));
+        return Objects.requireNonNull(Lists.last(messages, m -> m.getReason() == MessageReason.MESSAGE));
+    }
+
+    @Nullable
+    public Message lastNote() {
+        return Lists.last(messages, m -> m.getReason() == MessageReason.NOTE);
     }
 
     /**
@@ -165,6 +170,15 @@ public class Ticket {
         json.add("location", locationJson);
 
         json.addProperty("status", status.name());
+
+        String data = null;
+        Message lastNote = lastNote();
+
+        if (lastNote != null) {
+            data = lastNote.getData();
+        }
+
+        json.addProperty("note", data);
         json.addProperty("message", currentMessage().getData());
 
         return json;
