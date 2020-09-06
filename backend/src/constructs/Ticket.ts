@@ -6,6 +6,7 @@ type Ticket = {
   player: Player;
   location: Location;
   status: string;
+  note?: string;
   message: string;
 };
 
@@ -15,6 +16,7 @@ export const ticketFromRow = async (row: never): Promise<Ticket> => {
     player: await deserialisePlayer(row['player']),
     location: deserialiseLocation(row['location']),
     status: row['status'],
+    note: row['note'],
     message: row['message'],
   };
 };

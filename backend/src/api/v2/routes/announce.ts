@@ -19,7 +19,7 @@ router.post('/', async (req, res) => {
   const authReq = req as IBasicAuthedRequest;
   const { output } = servers.get(authReq.auth.user);
   const { server, ticket, author, action } = req.body as MessageData;
-  const { id, player, location, status, message } = ticket;
+  const { id, player, location, status, note, message } = ticket;
   const channel = (await client.channels.fetch(output)) as TextChannel;
 
   const serverText = server != null ? 'Server: ' + server : '';
@@ -34,7 +34,13 @@ ${serverText}
 UUID: ${player.uuid}
 World: ${location.world}
 Location: X: ${location.x}, Y: ${location.y}, Z: ${location.z}\`\`\``,
-    )
+    );
+
+  if (note != null) {
+    embed.addField('LAST NOTE', note);
+  }
+
+  embed
     .addField('MESSAGE', wrap(message, 65))
     .setTimestamp(Date.now())
     .setFooter(Action[action].author + author.name, 'https://crafatar.com/avatars/' + author.uuid);
@@ -44,8 +50,8 @@ Location: X: ${location.x}, Y: ${location.y}, Z: ${location.z}\`\`\``,
   db.run('INSERT INTO player(uuid, name) values(?, ?) ON CONFLICT(uuid) DO UPDATE set name = ?', [player.uuid, player.name, player.name]);
 
   db.run(
-    'INSERT INTO ticket(guild, id, player, location, status, message) values(?, ?, ?, ?, ?, ?) ON CONFLICT(guild, id) DO UPDATE set status = ?, message = ?',
-    [authReq.auth.user, id, player.uuid, serialiseLocation(location), status, message, status, message],
+    'INSERT INTO ticket(guild, id, player, location, status, note, message) values(?, ?, ?, ?, ?, ?, ?) ON CONFLICT(guild, id) DO UPDATE set status = ?, note = ?, message = ?',
+    [authReq.auth.user, id, player.uuid, serialiseLocation(location), status, note, message, status, note, message],
   );
 });
 
