@@ -10,6 +10,7 @@ version = "3.1.1"
 group = "broccolai.tickets"
 
 repositories {
+    mavenLocal()
     mavenCentral()
 
     maven("https://hub.spigotmc.org/nexus/content/repositories/snapshots/")
@@ -36,8 +37,8 @@ dependencies {
     api("co.aikar:idb-core:1.0.0-SNAPSHOT")
     api("org.slf4j:slf4j-simple:1.7.13")
     api("com.zaxxer:HikariCP:2.7.9")
-    api("broccolai:corn-core:1.0.0")
-    api("broccolai:corn-spigot:1.0.0")
+    api("broccolai:corn-core:1.0.1")
+    api("broccolai:corn-spigot:1.0.1")
     api("com.intellectualsites.http:HTTP4J:1.3-SNAPSHOT")
 
     compileOnly("org.spigotmc:spigot-api:1.16.1-R0.1-SNAPSHOT")
