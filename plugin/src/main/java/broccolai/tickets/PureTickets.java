@@ -9,6 +9,7 @@ import broccolai.tickets.tasks.TaskManager;
 import broccolai.tickets.ticket.TicketManager;
 import broccolai.tickets.user.UserManager;
 import co.aikar.idb.DB;
+import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -53,6 +54,7 @@ public class PureTickets extends JavaPlugin {
         }
 
         DB.close();
+        HandlerList.unregisterAll(this);
     }
 
     /**
