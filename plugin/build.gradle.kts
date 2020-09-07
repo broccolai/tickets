@@ -6,11 +6,10 @@ plugins {
     id("checkstyle")
 }
 
-version = "3.1.1"
+version = "3.1.2"
 group = "broccolai.tickets"
 
 repositories {
-    mavenLocal()
     mavenCentral()
 
     maven("https://hub.spigotmc.org/nexus/content/repositories/snapshots/")
@@ -59,6 +58,7 @@ tasks {
         relocate("co.aikar.idb", base + "idb")
 
         relocate("broccolai.corn.core", base + "corn.core")
+        relocate("broccolai.corn.spigot", base + "corn.spigot")
 
         relocate("com.zaxxer.hikari", base + "hikari")
         relocate("net.jodah.expiringmap", base + "expiringmap")
