@@ -156,12 +156,16 @@ public class TicketSQL {
 
         for (int i = 0; i < statuses.length; i++) {
             if (i == 0) {
-                sb.append(" AND status = ?");
+                sb.append(" AND (status = ?");
             } else {
                 sb.append(" OR status = ?");
             }
 
             replacements.add(statuses[i].name());
+        }
+
+        if (statuses.length > 0) {
+            sb.append(")");
         }
 
         try {
