@@ -18,9 +18,12 @@ import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Optional;
 import co.aikar.commands.annotation.Subcommand;
 import co.aikar.commands.annotation.Syntax;
+import com.google.common.collect.ImmutableMap;
+import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
@@ -239,7 +242,15 @@ public class TicketsCommand extends PureBaseCommand {
                 } else {
                     notificationManager.basic(sender, Messages.TITLES__ALL_TICKETS);
 
-                    Lists.group(ticketSQL.selectAll(status), Ticket::getPlayerUUID).forEach((uuid, tickets) -> {
+                    // todo: ugly
+                    Set<Map.Entry<UUID, List<Ticket>>> unsortedTickets = Lists.group(ticketSQL.selectAll(status), Ticket::getPlayerUUID).entrySet();
+                    List<Map.Entry<UUID, List<Ticket>>> sortedTickets = new ArrayList<>(unsortedTickets);
+                    sortedTickets.sort((t1, t2) -> {
+                        Integer boxed = t1.getValue().get(0).getId();
+                        return boxed.compareTo(t2.getValue().get(0).getId());
+                    });
+
+                    ImmutableMap.copyOf(sortedTickets).forEach((uuid, tickets) -> {
                         notificationManager.basic(sender, Messages.GENERAL__LIST_HEADER_FORMAT,
                             "%name%", UserUtilities.nameFromUUID(uuid));
 
