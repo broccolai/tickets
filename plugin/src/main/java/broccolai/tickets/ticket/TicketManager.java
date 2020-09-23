@@ -6,7 +6,6 @@ import broccolai.tickets.events.TicketCreationEvent;
 import broccolai.tickets.exceptions.TicketClosed;
 import broccolai.tickets.exceptions.TicketOpen;
 import broccolai.tickets.exceptions.TooManyOpenTickets;
-import broccolai.tickets.storage.SQLManager;
 import broccolai.tickets.storage.functions.MessageSQL;
 import broccolai.tickets.storage.functions.TicketSQL;
 import com.google.common.collect.Lists;
@@ -29,23 +28,16 @@ public class TicketManager implements Listener {
     private final Config config;
     @NotNull
     private final PluginManager pluginManager;
-    @NotNull
-    private final TicketSQL ticketSQL;
-    @NotNull
-    private final MessageSQL messageSQL;
 
     /**
      * Initialise a new Ticket Manager.
      *
      * @param config        the config instance to use
      * @param pluginManager the pluginManager to call events with
-     * @param sqlManager    the sql manager to use
      */
-    public TicketManager(@NotNull Config config, @NotNull PluginManager pluginManager, @NotNull SQLManager sqlManager) {
+    public TicketManager(@NotNull Config config, @NotNull PluginManager pluginManager) {
         this.config = config;
         this.pluginManager = pluginManager;
-        this.ticketSQL = sqlManager.getTicket();
-        this.messageSQL = sqlManager.getMessage();
     }
 
     /**
@@ -190,8 +182,8 @@ public class TicketManager implements Listener {
     private Ticket addMessageAndUpdate(@NotNull Ticket ticket, @NotNull Message message) {
         ticket.getMessages().add(message);
 
-        messageSQL.insert(ticket, message);
-        ticketSQL.update(ticket);
+        MessageSQL.insert(ticket, message);
+        TicketSQL.update(ticket);
 
         return ticket;
     }
@@ -203,7 +195,7 @@ public class TicketManager implements Listener {
     public void onTicketConstructPredicates(TicketConstructionEvent e) {
         Player player = e.getPlayer();
 
-        if (ticketSQL.count(player.getUniqueId(), TicketStatus.OPEN) > config.LIMIT__OPEN_TICKETS + 1) {
+        if (TicketSQL.count(player.getUniqueId(), TicketStatus.OPEN) > config.LIMIT__OPEN_TICKETS + 1) {
             e.cancel(new TooManyOpenTickets(config));
         }
     }
@@ -219,10 +211,10 @@ public class TicketManager implements Listener {
         UUID uuid = player.getUniqueId();
         Location location = player.getLocation();
 
-        int id = ticketSQL.insert(uuid, TicketStatus.OPEN, null, location);
+        int id = TicketSQL.insert(uuid, TicketStatus.OPEN, null, location);
         Ticket ticket = new Ticket(id, uuid, Lists.newArrayList(message), location, TicketStatus.OPEN, null);
 
-        messageSQL.insert(ticket, message);
+        MessageSQL.insert(ticket, message);
 
         TicketCreationEvent creationEvent = new TicketCreationEvent(player, ticket);
         pluginManager.callEvent(creationEvent);

@@ -27,20 +27,15 @@ import org.jetbrains.annotations.Nullable;
  * Ticket SQL.
  */
 public class TicketSQL {
-    @NotNull
-    private final HelpersSQL helpers;
-    @NotNull
-    private final Platform platform;
+    private static Platform platform;
 
     /**
      * Initialise TicketSQL.
      *
-     * @param helpers  the helpers sql instance
-     * @param platform the platform instance
+     * @param platformInstance the platform instance
      */
-    public TicketSQL(@NotNull HelpersSQL helpers, @NotNull Platform platform) {
-        this.helpers = helpers;
-        this.platform = platform;
+    public static void setup(@NotNull Platform platformInstance) {
+        platform = platformInstance;
     }
 
     /**
@@ -50,7 +45,7 @@ public class TicketSQL {
      * @return the constructed ticket
      */
     @Nullable
-    public Ticket select(int id) {
+    public static Ticket select(int id) {
         DbRow row;
 
         try {
@@ -59,7 +54,7 @@ public class TicketSQL {
             throw new IllegalArgumentException();
         }
 
-        return row != null ? helpers.buildTicket(row) : null;
+        return row != null ? HelpersSQL.buildTicket(row) : null;
     }
 
     /**
@@ -69,7 +64,7 @@ public class TicketSQL {
      * @return a list of the retrieved tickets
      */
     @NotNull
-    public List<Ticket> selectAll(@Nullable TicketStatus status) {
+    public static List<Ticket> selectAll(@Nullable TicketStatus status) {
         List<DbRow> results;
 
         try {
@@ -82,7 +77,7 @@ public class TicketSQL {
             throw new IllegalArgumentException();
         }
 
-        return Lists.map(results, helpers::buildTicket);
+        return Lists.map(results, HelpersSQL::buildTicket);
     }
 
     /**
@@ -93,7 +88,7 @@ public class TicketSQL {
      * @return a list of the retrieved tickets
      */
     @NotNull
-    public List<Ticket> selectAll(@NotNull UUID uuid, @Nullable TicketStatus status) {
+    public static List<Ticket> selectAll(@NotNull UUID uuid, @Nullable TicketStatus status) {
         List<DbRow> results;
 
         @Language("SQL")
@@ -109,7 +104,7 @@ public class TicketSQL {
             throw new IllegalArgumentException();
         }
 
-        return Lists.map(results, helpers::buildTicket);
+        return Lists.map(results, HelpersSQL::buildTicket);
     }
 
     /**
@@ -120,7 +115,7 @@ public class TicketSQL {
      * @return a list of the retrieved tickets
      */
     @NotNull
-    public List<Integer> selectIds(@NotNull UUID uuid, @Nullable TicketStatus status) {
+    public static List<Integer> selectIds(@NotNull UUID uuid, @Nullable TicketStatus status) {
         List<Integer> results;
 
         @Language("SQL")
@@ -147,7 +142,7 @@ public class TicketSQL {
      * @return the most recent ticket or if non are eligible null
      */
     @Nullable
-    public Ticket selectLastTicket(UUID uuid, TicketStatus... statuses) {
+    public static Ticket selectLastTicket(UUID uuid, TicketStatus... statuses) {
         List<String> replacements = new ArrayList<>();
 
         @Language("SQL")
@@ -170,7 +165,7 @@ public class TicketSQL {
 
         try {
             DbRow row = DB.getFirstRow(sb.toString(), ObjectArrays.concat(uuid.toString(), replacements.toArray()));
-            return row.get("id") == null ? null : helpers.buildTicket(row);
+            return row.get("id") == null ? null : HelpersSQL.buildTicket(row);
         } catch (SQLException e) {
             throw new IllegalArgumentException();
         }
@@ -183,7 +178,7 @@ public class TicketSQL {
      * @return a list of player names
      */
     @NotNull
-    public List<String> selectNames(@Nullable TicketStatus status) {
+    public static List<String> selectNames(@Nullable TicketStatus status) {
         List<String> results;
 
         @Language("SQL")
@@ -212,7 +207,7 @@ public class TicketSQL {
      * @return an enum map of the ticket stats
      */
     @NotNull
-    public EnumMap<TicketStatus, Integer> selectTicketStats(@Nullable UUID uuid) {
+    public static EnumMap<TicketStatus, Integer> selectTicketStats(@Nullable UUID uuid) {
         DbRow row;
 
         @Language("SQL")
@@ -247,7 +242,7 @@ public class TicketSQL {
      * @param id the tickets id to filter with
      * @return true boolean
      */
-    public boolean exists(int id) {
+    public static boolean exists(int id) {
         try {
             Integer value = DB.getFirstColumn("SELECT EXISTS(SELECT 1 from puretickets_ticket WHERE id = ?)", id);
 
@@ -264,7 +259,7 @@ public class TicketSQL {
      * @param status the status to filter with
      * @return the number of tickets
      */
-    public int count(@NotNull UUID uuid, @NotNull TicketStatus status) {
+    public static int count(@NotNull UUID uuid, @NotNull TicketStatus status) {
         try {
             return platform.getPureInteger(DB.getFirstColumn("SELECT COUNT(id) FROM puretickets_ticket WHERE uuid = ? AND status = ?",
                 uuid.toString(), status.name()));
@@ -280,7 +275,7 @@ public class TicketSQL {
      * @param status the optional status to filter with
      * @return the number of tickets
      */
-    public int count(@Nullable TicketStatus status) {
+    public static int count(@Nullable TicketStatus status) {
         @Language("SQL")
         String sql = "SELECT COUNT(id) FROM puretickets_ticket";
 
@@ -304,7 +299,7 @@ public class TicketSQL {
      * @param location the ticket creation location
      * @return the tickets id
      */
-    public int insert(@NotNull UUID uuid, @NotNull TicketStatus status, @Nullable UUID picker, @NotNull Location location) {
+    public static int insert(@NotNull UUID uuid, @NotNull TicketStatus status, @Nullable UUID picker, @NotNull Location location) {
         Integer index;
 
         try {
@@ -317,7 +312,7 @@ public class TicketSQL {
             }
 
             DB.executeInsert("INSERT INTO puretickets_ticket(id, uuid, status, picker, location) VALUES(?, ?, ?, ?, ?)",
-                index, uuid.toString(), status.name(), picker, helpers.serializeLocation(location));
+                index, uuid.toString(), status.name(), picker, HelpersSQL.serializeLocation(location));
         } catch (SQLException e) {
             throw new IllegalArgumentException();
         }
@@ -330,7 +325,7 @@ public class TicketSQL {
      *
      * @param ticket the ticket to use
      */
-    public void update(@NotNull Ticket ticket) {
+    public static void update(@NotNull Ticket ticket) {
         UUID pickerUUID = ticket.getPickerUUID();
         String picker;
 
@@ -350,7 +345,7 @@ public class TicketSQL {
      * @param span the optional span to check within
      * @return a map of players and their ticket completions.
      */
-    public Map<UUID, Integer> highscores(@NotNull TimeAmount span) {
+    public static Map<UUID, Integer> highscores(@NotNull TimeAmount span) {
         Map<UUID, Integer> data = new HashMap<>();
         long length;
 
@@ -376,7 +371,7 @@ public class TicketSQL {
             throw new IllegalArgumentException();
         }
 
-        results.forEach(result -> data.put(helpers.getUUID(result, "picker"), result.getInt("num")));
+        results.forEach(result -> data.put(HelpersSQL.getUUID(result, "picker"), result.getInt("num")));
 
         return data;
     }

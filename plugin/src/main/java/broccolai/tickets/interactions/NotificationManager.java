@@ -8,7 +8,6 @@ import broccolai.tickets.integrations.DiscordManager;
 import broccolai.tickets.locale.MessageNames;
 import broccolai.tickets.locale.Messages;
 import broccolai.tickets.locale.TargetType;
-import broccolai.tickets.storage.SQLManager;
 import broccolai.tickets.storage.functions.NotificationSQL;
 import broccolai.tickets.tasks.ReminderTask;
 import broccolai.tickets.tasks.TaskManager;
@@ -44,30 +43,26 @@ public class NotificationManager implements Listener {
     @NotNull
     private final DiscordManager discordManager;
     @NotNull
-    private final NotificationSQL notificationSQL;
-    @NotNull
     private final Multimap<UUID, PendingNotification> awaiting;
 
     /**
      * Initialise a Notification Manager.
      *
      * @param config         the config instance
-     * @param sqlManager     the sql manager
      * @param taskManager    the task manager
      * @param userManager    the user manager
      * @param commandManager the command manager
      * @param discordManager the discord manager
      */
-    public NotificationManager(@NotNull Config config, @NotNull SQLManager sqlManager, @NotNull TaskManager taskManager, @NotNull UserManager userManager, @NotNull CommandManager commandManager,
+    public NotificationManager(@NotNull Config config, @NotNull TaskManager taskManager, @NotNull UserManager userManager, @NotNull CommandManager commandManager,
                                @NotNull DiscordManager discordManager) {
         this.userManager = userManager;
         this.commandManager = commandManager;
         this.discordManager = discordManager;
-        this.notificationSQL = sqlManager.getNotification();
 
-        awaiting = sqlManager.getNotification().selectAllAndClear();
+        awaiting = NotificationSQL.selectAllAndClear();
 
-        taskManager.addRepeatingTask(new ReminderTask(this, sqlManager.getTicket()),
+        taskManager.addRepeatingTask(new ReminderTask(this),
             TimeUtilities.minuteToLong(config.REMINDER__DELAY), TimeUtilities.minuteToLong(config.REMINDER__REPEAT));
     }
 
@@ -163,7 +158,7 @@ public class NotificationManager implements Listener {
      * Save all awaiting notifications.
      */
     public void save() {
-        notificationSQL.insertAll(awaiting);
+        NotificationSQL.insertAll(awaiting);
     }
 
     /**

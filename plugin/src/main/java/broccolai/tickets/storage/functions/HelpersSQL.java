@@ -23,18 +23,15 @@ import org.jetbrains.annotations.Nullable;
  * Helper class for general sql functions.
  */
 public class HelpersSQL {
-    private Platform platform;
-    private MessageSQL messageSQL;
+    private static Platform platform;
 
     /**
      * Setup the helper SQL.
      *
-     * @param platform   the platform instance
-     * @param messageSQL the message SQL
+     * @param platformInstance   the platform instance
      */
-    public void setup(@NotNull Platform platform, @NotNull MessageSQL messageSQL) {
-        this.platform = platform;
-        this.messageSQL = messageSQL;
+    public static void setup(@NotNull Platform platformInstance) {
+        platform = platformInstance;
     }
 
     /**
@@ -45,7 +42,7 @@ public class HelpersSQL {
      * @return the constructed uuid
      */
     @Nullable
-    UUID getUUID(@NotNull DbRow row, @NotNull String column) {
+    static UUID getUUID(@NotNull DbRow row, @NotNull String column) {
         String raw = row.getString(column);
 
         if (raw == null || raw.equals("null")) {
@@ -63,7 +60,7 @@ public class HelpersSQL {
      * @return the constructed location
      */
     @NotNull
-    Location getLocation(@NotNull DbRow row, @NotNull String column) {
+    static Location getLocation(@NotNull DbRow row, @NotNull String column) {
         String raw = row.getString(column);
         String[] split = raw.split("\\|");
         String rawWorld = split[0];
@@ -79,7 +76,7 @@ public class HelpersSQL {
      * @return a string representation
      */
     @NotNull
-    String serializeLocation(@NotNull Location location) {
+    static String serializeLocation(@NotNull Location location) {
         World world = location.getWorld();
         return (world != null ? world.getName() : "null") + "|" + location.getBlockX() + "|" + location.getBlockY() + "|" + location.getBlockZ();
     }
@@ -92,7 +89,7 @@ public class HelpersSQL {
      * @return the constructed LocalDateTime
      */
     @NotNull
-    LocalDateTime getDate(@NotNull DbRow row, @NotNull String column) {
+    static LocalDateTime getDate(@NotNull DbRow row, @NotNull String column) {
         Instant instant = Instant.ofEpochSecond(platform.getPureLong(row, column));
 
         return LocalDateTime.ofInstant(instant, ZoneId.systemDefault());
@@ -105,7 +102,7 @@ public class HelpersSQL {
      * @return a long representation
      */
     @NotNull
-    Long serializeLocalDateTime(@NotNull LocalDateTime time) {
+    static Long serializeLocalDateTime(@NotNull LocalDateTime time) {
         return time.atZone(ZoneId.systemDefault()).toEpochSecond();
     }
 
@@ -118,7 +115,8 @@ public class HelpersSQL {
      * @param <T>    the class type
      * @return an enum
      */
-    @NotNull <T extends Enum<T>> T getEnumValue(@NotNull DbRow row, @NotNull Class<T> clazz, @NotNull String column) {
+    @NotNull
+    static <T extends Enum<T>> T getEnumValue(@NotNull DbRow row, @NotNull Class<T> clazz, @NotNull String column) {
         T[] enumConstants = clazz.getEnumConstants();
         String raw = row.getString(column);
 
@@ -137,10 +135,10 @@ public class HelpersSQL {
      * @param row the database row to use
      * @return the constructed ticket
      */
-    Ticket buildTicket(DbRow row) {
+    static Ticket buildTicket(DbRow row) {
         Integer id = row.getInt("id");
         UUID player = getUUID(row, "uuid");
-        List<Message> messages = messageSQL.selectAll(row.getInt("id"));
+        List<Message> messages = MessageSQL.selectAll(row.getInt("id"));
         TicketStatus status = getEnumValue(row, TicketStatus.class, "status");
         Location location = getLocation(row, "location");
         UUID picker = getUUID(row, "picker");
@@ -155,7 +153,7 @@ public class HelpersSQL {
      * @param row the database row to use
      * @return the constructed message
      */
-    Message buildMessage(DbRow row) {
+    static Message buildMessage(DbRow row) {
         MessageReason reason = getEnumValue(row, MessageReason.class, "reason");
         LocalDateTime date = getDate(row, "date");
 
@@ -171,7 +169,7 @@ public class HelpersSQL {
      * @param row the database row to use
      * @return the constructed notification
      */
-    PendingNotification buildNotification(DbRow row) {
+    static PendingNotification buildNotification(DbRow row) {
         Messages message = getEnumValue(row, Messages.class, "message");
         String[] replacements = row.getString("replacements").split("\\|");
 

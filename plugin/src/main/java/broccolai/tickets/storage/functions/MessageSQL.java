@@ -15,25 +15,13 @@ import org.jetbrains.annotations.NotNull;
  * Message SQL.
  */
 public class MessageSQL {
-    @NotNull
-    HelpersSQL helpers;
-
-    /**
-     * Initialise MessageSQL.
-     *
-     * @param helpers the helper sql instance
-     */
-    public MessageSQL(@NotNull HelpersSQL helpers) {
-        this.helpers = helpers;
-    }
-
     /**
      * Get all messages with an id.
      *
      * @param id the tickets id
      * @return a list of messages
      */
-    public List<Message> selectAll(int id) {
+    public static List<Message> selectAll(int id) {
         List<DbRow> results;
 
         try {
@@ -45,7 +33,7 @@ public class MessageSQL {
         List<Message> output = new ArrayList<>();
 
         for (DbRow result : results) {
-            output.add(helpers.buildMessage(result));
+            output.add(HelpersSQL.buildMessage(result));
         }
 
         return output;
@@ -57,9 +45,9 @@ public class MessageSQL {
      * @param ticket  the ticket instance to use
      * @param message the message to insert
      */
-    public void insert(Ticket ticket, Message message) {
+    public static void insert(Ticket ticket, Message message) {
         UUID sender = message.getSender();
-        long date = helpers.serializeLocalDateTime(message.getDate());
+        long date = HelpersSQL.serializeLocalDateTime(message.getDate());
         String senderName;
 
         if (sender == null) {

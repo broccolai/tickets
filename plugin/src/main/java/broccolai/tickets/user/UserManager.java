@@ -1,6 +1,5 @@
 package broccolai.tickets.user;
 
-import broccolai.tickets.storage.SQLManager;
 import broccolai.tickets.storage.functions.SettingsSQL;
 import java.util.HashMap;
 import java.util.Map;
@@ -14,12 +13,6 @@ import org.jetbrains.annotations.NotNull;
 public class UserManager {
     @NotNull
     private final Map<UUID, UserSettings> users = new HashMap<>();
-    @NotNull
-    private final SettingsSQL settingsSQL;
-
-    public UserManager(@NotNull SQLManager sqlManager) {
-        this.settingsSQL = sqlManager.getSetting();
-    }
 
     /**
      * Retrieve a UserSettings instance.
@@ -35,11 +28,11 @@ public class UserManager {
             return settings;
         }
 
-        if (settingsSQL.exists(uuid)) {
-            settings = settingsSQL.select(uuid);
+        if (SettingsSQL.exists(uuid)) {
+            settings = SettingsSQL.select(uuid);
         } else {
             settings = new UserSettings(true);
-            settingsSQL.insert(uuid, settings);
+            SettingsSQL.insert(uuid, settings);
         }
 
         users.put(uuid, settings);
@@ -57,6 +50,6 @@ public class UserManager {
         settings = action.apply(settings);
 
         users.put(uuid, settings);
-        settingsSQL.update(uuid, settings);
+        SettingsSQL.update(uuid, settings);
     }
 }

@@ -16,23 +16,19 @@ import org.jetbrains.annotations.NotNull;
 public class ReminderTask extends BukkitRunnable {
     @NotNull
     private final NotificationManager notificationManager;
-    @NotNull
-    private final TicketSQL ticketSQL;
 
     /**
      * Initialise a new Reminder Task.
      *
      * @param notificationManager the notification manager instance
-     * @param ticketSQL           the ticket sql
      */
-    public ReminderTask(@NotNull NotificationManager notificationManager, @NotNull TicketSQL ticketSQL) {
+    public ReminderTask(@NotNull NotificationManager notificationManager) {
         this.notificationManager = notificationManager;
-        this.ticketSQL = ticketSQL;
     }
 
     @Override
     public void run() {
-        int amount = ticketSQL.count(TicketStatus.OPEN);
+        int amount = TicketSQL.count(TicketStatus.OPEN);
 
         if (amount == 0) {
             return;

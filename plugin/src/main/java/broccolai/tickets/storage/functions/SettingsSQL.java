@@ -13,16 +13,15 @@ import org.jetbrains.annotations.NotNull;
  * Setting SQL.
  */
 public class SettingsSQL {
-    @NotNull
-    private final Platform platform;
+    private static Platform platform;
 
     /**
      * Initialise Settings SQL.
      *
-     * @param platform the platform to use
+     * @param platformInstance the platform to use
      */
-    public SettingsSQL(@NotNull Platform platform) {
-        this.platform = platform;
+    public static void setup(@NotNull Platform platformInstance) {
+        platform = platformInstance;
     }
 
     /**
@@ -32,7 +31,7 @@ public class SettingsSQL {
      * @return the constructed UserSettings
      */
     @NotNull
-    public UserSettings select(@NotNull UUID uuid) {
+    public static UserSettings select(@NotNull UUID uuid) {
         DbRow result;
 
         try {
@@ -53,7 +52,7 @@ public class SettingsSQL {
      * @param uuid the players unique id
      * @return a boolean
      */
-    public boolean exists(@NotNull UUID uuid) {
+    public static boolean exists(@NotNull UUID uuid) {
         try {
             return platform.getPureInteger(DB.getFirstColumn("SELECT EXISTS(SELECT 1 from puretickets_settings WHERE uuid = ?)",
                 uuid.toString())) == 1;
@@ -68,7 +67,7 @@ public class SettingsSQL {
      * @param uuid     the players unique id
      * @param settings the users settings
      */
-    public void insert(@NotNull UUID uuid, @NotNull UserSettings settings) {
+    public static void insert(@NotNull UUID uuid, @NotNull UserSettings settings) {
         try {
             DB.executeInsert("INSERT INTO puretickets_settings(uuid, announcements) VALUES(?, ?)",
                 uuid.toString(), settings.getAnnouncements());
@@ -83,7 +82,7 @@ public class SettingsSQL {
      * @param uuid     the players unique id
      * @param settings the users settings
      */
-    public void update(@NotNull UUID uuid, @NotNull UserSettings settings) {
+    public static void update(@NotNull UUID uuid, @NotNull UserSettings settings) {
         try {
             DB.executeUpdate("UPDATE puretickets_settings SET announcements = ? WHERE uuid = ?",
                 settings.getAnnouncements(), uuid.toString());

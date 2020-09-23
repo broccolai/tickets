@@ -48,20 +48,14 @@ import org.jetbrains.annotations.NotNull;
  * The Command Manager.
  */
 public class CommandManager extends PaperCommandManager {
-    @NotNull
-    private final TicketSQL ticketSQL;
-
     /**
      * Initialise the Command Manager.
      *
      * @param plugin    the plugin to register commands against
      * @param config    the config instance to use
-     * @param ticketSQL the ticketSQL to use
      */
-    public CommandManager(@NotNull Plugin plugin, @NotNull Config config, @NotNull TicketSQL ticketSQL) {
+    public CommandManager(@NotNull Plugin plugin, @NotNull Config config) {
         super(plugin);
-
-        this.ticketSQL = ticketSQL;
 
         //noinspection deprecation
         enableUnstableAPI("help");
@@ -95,7 +89,7 @@ public class CommandManager extends PaperCommandManager {
 
                     try {
                         int inputId = Integer.parseInt(input);
-                        ticket = ticketSQL.select(inputId);
+                        ticket = TicketSQL.select(inputId);
                     } catch (NumberFormatException e) {
                         ticket = null;
                     }
@@ -129,7 +123,7 @@ public class CommandManager extends PaperCommandManager {
                     }
                 }
 
-                Ticket potentialTicket = ticketSQL.selectLastTicket(player.getUniqueId(), statuses.toArray(new TicketStatus[0]));
+                Ticket potentialTicket = TicketSQL.selectLastTicket(player.getUniqueId(), statuses.toArray(new TicketStatus[0]));
 
                 if (potentialTicket == null) {
                     future.complete(null);
@@ -190,7 +184,7 @@ public class CommandManager extends PaperCommandManager {
     private void registerCompletions() {
         CommandCompletions<BukkitCommandCompletionContext> commandCompletions = getCommandCompletions();
         commandCompletions.registerAsyncCompletion("TicketHolders", c ->
-            ticketSQL.selectNames(TicketStatus.from(c.getConfig("status")))
+                TicketSQL.selectNames(TicketStatus.from(c.getConfig("status")))
         );
 
         commandCompletions.registerAsyncCompletion("TargetIds", c -> {
@@ -198,7 +192,7 @@ public class CommandManager extends PaperCommandManager {
                 OfflinePlayer target = c.getContextValue(OfflinePlayer.class, Numbers.valueOrNull(c.getConfig("parameter"), Integer::parseInt));
                 TicketStatus status = TicketStatus.from(c.getConfig("status"));
 
-                return Lists.map(ticketSQL.selectIds(target.getUniqueId(), status), Object::toString);
+                return Lists.map(TicketSQL.selectIds(target.getUniqueId(), status), Object::toString);
             } catch (Exception e) {
                 return null;
             }
@@ -208,7 +202,7 @@ public class CommandManager extends PaperCommandManager {
             try {
                 TicketStatus status = TicketStatus.from(c.getConfig("status"));
 
-                return Lists.map(ticketSQL.selectIds(c.getIssuer().getUniqueId(), status), Object::toString);
+                return Lists.map(TicketSQL.selectIds(c.getIssuer().getUniqueId(), status), Object::toString);
             } catch (Exception e) {
                 return null;
             }

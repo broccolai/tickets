@@ -1,10 +1,10 @@
 package broccolai.tickets.commands;
 
-import broccolai.corn.core.Lists;
 import broccolai.tickets.events.TicketConstructionEvent;
 import broccolai.tickets.exceptions.PureException;
 import broccolai.tickets.locale.MessageNames;
 import broccolai.tickets.locale.Messages;
+import broccolai.tickets.storage.functions.TicketSQL;
 import broccolai.tickets.ticket.FutureTicket;
 import broccolai.tickets.ticket.Message;
 import broccolai.tickets.ticket.Ticket;
@@ -117,7 +117,7 @@ public class TicketCommand extends PureBaseCommand {
     public void onList(Player player, @Optional TicketStatus status) {
         taskManager.use()
             .async(() -> {
-                List<Ticket> tickets = ticketSQL.selectAll(player.getUniqueId(), status);
+                List<Ticket> tickets = TicketSQL.selectAll(player.getUniqueId(), status);
 
                 notificationManager.basic(player, Messages.TITLES__YOUR_TICKETS);
 
