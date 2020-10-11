@@ -80,10 +80,9 @@ public class CommandManager extends PaperCommandManager {
         CommandContexts<BukkitCommandExecutionContext> commandContexts = getCommandContexts();
         commandContexts.registerOptionalContext(FutureTicket.class, c -> {
             FutureTicket future = new FutureTicket();
+            String input = c.popFirstArg();
 
             Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
-                String input = c.popFirstArg();
-
                 if (input != null) {
                     Ticket ticket;
 
