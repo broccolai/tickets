@@ -1,11 +1,13 @@
 package broccolai.tickets.configuration;
 
 import broccolai.corn.spigot.locale.LocaleUtils;
+import cloud.commandframework.types.tuples.Pair;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.lang.reflect.Field;
+import java.util.Arrays;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -33,21 +35,21 @@ public class Config {
     public String DISCORD__TOKEN;
     public String DISCORD__NAME;
 
-    public String ALIAS__CREATE;
-    public String ALIAS__UPDATE;
-    public String ALIAS__CLOSE;
-    public String ALIAS__SHOW;
-    public String ALIAS__PICK;
-    public String ALIAS__ASSIGN;
-    public String ALIAS__DONE;
-    public String ALIAS__YIELD;
-    public String ALIAS__NOTE;
-    public String ALIAS__REOPEN;
-    public String ALIAS__TELEPORT;
-    public String ALIAS__LOG;
-    public String ALIAS__LIST;
-    public String ALIAS__STATUS;
-    public String ALIAS__HIGHSCORE;
+    public Pair<String, String[]> ALIAS__CREATE;
+    public Pair<String, String[]> ALIAS__UPDATE;
+    public Pair<String, String[]> ALIAS__CLOSE;
+    public Pair<String, String[]> ALIAS__SHOW;
+    public Pair<String, String[]> ALIAS__PICK;
+    public Pair<String, String[]> ALIAS__ASSIGN;
+    public Pair<String, String[]> ALIAS__DONE;
+    public Pair<String, String[]> ALIAS__YIELD;
+    public Pair<String, String[]> ALIAS__NOTE;
+    public Pair<String, String[]> ALIAS__REOPEN;
+    public Pair<String, String[]> ALIAS__TELEPORT;
+    public Pair<String, String[]> ALIAS__LOG;
+    public Pair<String, String[]> ALIAS__LIST;
+    public Pair<String, String[]> ALIAS__STATUS;
+    public Pair<String, String[]> ALIAS__HIGHSCORE;
 
     public String API__DOMAIN;
 
@@ -57,6 +59,9 @@ public class Config {
      * @param plugin the Plugin instance to use
      */
     public Config(Plugin plugin) {
+        //noinspection rawtypes
+        Class<Pair> pairClass = Pair.class;
+
         plugin.saveDefaultConfig();
         InputStream stream = plugin.getClass().getResourceAsStream("/config.yml");
         LocaleUtils.mergeYaml(stream, new File(plugin.getDataFolder(), "config.yml"));
@@ -77,6 +82,12 @@ public class Config {
             }
 
             try {
+                if (field.getType().isAssignableFrom(pairClass)) {
+                    String unsplit = (String) targetValue;
+                    String[] split = unsplit.split("\\|");
+                    targetValue = Pair.of(split[0], Arrays.copyOfRange(split, 1, split.length));
+                }
+
                 field.set(this, targetValue);
             } catch (IllegalAccessException ignored) {
                 Bukkit.getLogger().warning("PureTickets failed to set the " + fieldName + " configuration value");
