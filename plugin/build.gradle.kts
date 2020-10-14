@@ -6,10 +6,11 @@ plugins {
     id("checkstyle")
 }
 
-version = "3.1.2"
+version = "3.2.0"
 group = "broccolai.tickets"
 
 repositories {
+    mavenLocal()
     mavenCentral()
 
     maven("https://hub.spigotmc.org/nexus/content/repositories/snapshots/")
@@ -17,6 +18,10 @@ repositories {
     maven("https://repo.aikar.co/content/groups/aikar/")
     maven("https://mvnrepository.com/artifact/org.jetbrains/annotations")
     maven("https://mvn.intellectualsites.com/content/repositories/snapshots")
+    maven {
+        name = "papermc"
+        url = uri("https://papermc.io/repo/repository/maven-public/")
+    }
     maven {
         name = "GitHubPackages"
         url = uri("https://maven.pkg.github.com/broccolai/corn")
@@ -31,14 +36,14 @@ dependencies {
     checkstyle("ca.stellardrift:stylecheck:0.1-SNAPSHOT")
     implementation("org.jetbrains:annotations:19.0.0")
 
-    api("co.aikar:taskchain-bukkit:3.7.2")
-    api("co.aikar:acf-paper:0.5.0-SNAPSHOT")
     api("co.aikar:idb-core:1.0.0-SNAPSHOT")
     api("org.slf4j:slf4j-simple:1.7.13")
     api("com.zaxxer:HikariCP:2.7.9")
-    api("broccolai:corn-core:1.0.1")
-    api("broccolai:corn-spigot:1.0.1")
+    api("broccolai:corn-core:1.0.2")
+    api("broccolai:corn-spigot:1.0.2")
     api("com.intellectualsites.http:HTTP4J:1.3-SNAPSHOT")
+    api("cloud.commandframework:cloud-paper:1.0.0-SNAPSHOT")
+    api("io.papermc:paperlib:1.0.5")
 
     compileOnly("org.spigotmc:spigot-api:1.16.1-R0.1-SNAPSHOT")
 }
@@ -52,9 +57,6 @@ tasks {
     shadowJar {
         val base = project.group.toString() + ".lib."
 
-        relocate("co.aikar.taskchain", base + "taskchain")
-        relocate("co.aikar.commands", base + "commands")
-        relocate("co.aikar.locales", base + "locales")
         relocate("co.aikar.idb", base + "idb")
 
         relocate("broccolai.corn.core", base + "corn.core")
