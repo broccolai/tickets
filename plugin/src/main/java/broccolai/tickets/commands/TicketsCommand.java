@@ -1,315 +1,301 @@
 package broccolai.tickets.commands;
 
 import broccolai.corn.core.Lists;
+import broccolai.tickets.commands.arguments.TicketArgument;
+import broccolai.tickets.configuration.Config;
 import broccolai.tickets.exceptions.PureException;
+import broccolai.tickets.interactions.NotificationManager;
 import broccolai.tickets.locale.MessageNames;
 import broccolai.tickets.locale.Messages;
 import broccolai.tickets.storage.TimeAmount;
-import broccolai.tickets.ticket.FutureTicket;
+import broccolai.tickets.storage.functions.TicketSQL;
 import broccolai.tickets.ticket.Ticket;
+import broccolai.tickets.ticket.TicketManager;
 import broccolai.tickets.ticket.TicketStatus;
+import broccolai.tickets.user.PlayerSoul;
+import broccolai.tickets.user.Soul;
+import broccolai.tickets.user.UserManager;
 import broccolai.tickets.utilities.Constants;
 import broccolai.tickets.utilities.generic.ReplacementUtilities;
 import broccolai.tickets.utilities.generic.UserUtilities;
-import co.aikar.commands.annotation.CommandAlias;
-import co.aikar.commands.annotation.CommandCompletion;
-import co.aikar.commands.annotation.CommandPermission;
-import co.aikar.commands.annotation.Description;
-import co.aikar.commands.annotation.Optional;
-import co.aikar.commands.annotation.Subcommand;
-import co.aikar.commands.annotation.Syntax;
+import cloud.commandframework.Command;
+import cloud.commandframework.Description;
+import cloud.commandframework.arguments.CommandArgument;
+import cloud.commandframework.arguments.standard.BooleanArgument;
+import cloud.commandframework.arguments.standard.EnumArgument;
+import cloud.commandframework.arguments.standard.StringArgument;
+import cloud.commandframework.bukkit.parsers.OfflinePlayerArgument;
+import cloud.commandframework.context.CommandContext;
 import com.google.common.collect.ImmutableMap;
+import io.papermc.lib.PaperLib;
 import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Command used for staff to interact with other players tickets.
  */
-@CommandAlias("tickets|tis")
-@CommandPermission(Constants.STAFF_PERMISSION)
-public class TicketsCommand extends PureBaseCommand {
+public final class TicketsCommand extends BaseCommand {
+    @NotNull
+    private final TicketManager ticketManager;
+    @NotNull
+    private final NotificationManager notificationManager;
+
     /**
-     * Shows a players ticket.
+     * Create a new Tickets Command.
+     *
+     * @param manager             Command Manager
+     * @param config              Config Instance
+     * @param userManager         User Manager
+     * @param ticketManager       Ticket Manager
+     * @param notificationManager Notification Manager
      */
-    @Subcommand("%show")
-    @CommandCompletion("@TicketHolders @TargetIds")
-    @CommandPermission(Constants.STAFF_PERMISSION + ".show")
-    @Description("Show a ticket")
-    @Syntax("<Player> [Index]")
-    public void onShow(CommandSender sender, OfflinePlayer offlinePlayer, @Optional FutureTicket future) {
-        processShowCommand(getCurrentCommandIssuer(), future);
+    public TicketsCommand(@NotNull final CommandManager manager, @NotNull final Config config, @NotNull final UserManager userManager,
+                          @NotNull final TicketManager ticketManager, @NotNull final NotificationManager notificationManager) {
+        this.ticketManager = ticketManager;
+        this.notificationManager = notificationManager;
+
+        final Command.Builder<Soul> builder = manager.commandBuilder("tickets", "tis");
+        final CommandArgument<Soul, OfflinePlayer> targetArgument = manager.argumentBuilder(OfflinePlayer.class, "target")
+            .withSuggestionsProvider((context, input) -> userManager.getNames())
+            .build();
+
+        manager.command(builder.literal(config.ALIAS__SHOW.getFirst(), Description.of("Show a ticket"), config.ALIAS__SHOW.getSecond())
+            .permission(Constants.STAFF_PERMISSION + ".show")
+            .argument(targetArgument.copy())
+            .argument(TicketArgument.of(false, false))
+            .handler(c -> processShow(c.getSender(), c.get("ticket"))));
+
+        manager.command(builder.literal(config.ALIAS__PICK.getFirst(), Description.of("Pick a ticket"), config.ALIAS__PICK.getSecond())
+            .permission(Constants.STAFF_PERMISSION + ".pick")
+            .argument(targetArgument.copy())
+            .argument(TicketArgument.of(false, false, TicketStatus.OPEN))
+            .handler(this::processPick)
+            .build());
+
+        manager.command(builder.literal(config.ALIAS__ASSIGN.getFirst(), Description.of("Assign a ticket"), config.ALIAS__ASSIGN.getSecond())
+            .permission(Constants.STAFF_PERMISSION + ".assign")
+            .argument(OfflinePlayerArgument.of("staff"))
+            .argument(targetArgument.copy())
+            .argument(TicketArgument.of(false, false, TicketStatus.OPEN))
+            .handler(this::processAssign)
+            .build());
+
+        manager.command(builder.literal(config.ALIAS__DONE.getFirst(), Description.of("Done-mark a ticket"), config.ALIAS__DONE.getSecond())
+            .permission(Constants.STAFF_PERMISSION + ".done")
+            .argument(targetArgument.copy())
+            .argument(TicketArgument.of(false, false, TicketStatus.OPEN, TicketStatus.PICKED))
+            .handler(this::processDone)
+            .build());
+
+        manager.command(builder.literal(config.ALIAS__YIELD.getFirst(), Description.of("Yield a ticket"), config.ALIAS__YIELD.getSecond())
+            .permission(Constants.STAFF_PERMISSION + ".yield")
+            .argument(targetArgument.copy())
+            .argument(TicketArgument.of(false, false, TicketStatus.PICKED))
+            .handler(this::processYield)
+            .build());
+
+        manager.command(builder.literal(config.ALIAS__NOTE.getFirst(), Description.of("Add a note to a ticket"), config.ALIAS__NOTE.getSecond())
+            .permission(Constants.STAFF_PERMISSION + ".note")
+            .argument(targetArgument.copy())
+            .argument(TicketArgument.of(true, false))
+            .argument(StringArgument.of("message"))
+            .handler(this::processNote)
+            .build());
+
+        manager.command(builder.literal(config.ALIAS__REOPEN.getFirst(), Description.of("Reopen a ticket"), config.ALIAS__REOPEN.getSecond())
+            .permission(Constants.STAFF_PERMISSION + ".reopen")
+            .argument(targetArgument.copy())
+            .argument(TicketArgument.of(false, false, TicketStatus.CLOSED))
+            .handler(this::processReopen)
+            .build());
+
+        manager.command(builder.literal(config.ALIAS__TELEPORT.getFirst(), Description.of("Teleport to a tickets creation location"), config.ALIAS__TELEPORT.getSecond())
+            .senderType(PlayerSoul.class)
+            .permission(Constants.STAFF_PERMISSION + ".teleport")
+            .argument(targetArgument.copy())
+            .argument(TicketArgument.of(false, false, TicketStatus.OPEN, TicketStatus.PICKED, TicketStatus.CLOSED))
+            .handler(this::processTeleport)
+            .build());
+
+        manager.command(builder.literal(config.ALIAS__LOG.getFirst(), Description.of("View a tickets log"), config.ALIAS__LOG.getSecond())
+            .permission(Constants.STAFF_PERMISSION + ".log")
+            .argument(targetArgument.copy())
+            .argument(TicketArgument.of(false, false, TicketStatus.OPEN, TicketStatus.PICKED, TicketStatus.CLOSED))
+            .handler(c -> processLog(c.getSender(), c.get("ticket")))
+            .build());
+
+        manager.command(builder.literal(config.ALIAS__LIST.getFirst(), Description.of("List tickets"), config.ALIAS__LIST.getSecond())
+            .permission(Constants.STAFF_PERMISSION + ".list")
+            .flag(manager.flagBuilder("status")
+                .withArgument(EnumArgument.of(TicketStatus.class, "status")))
+            .flag(manager.flagBuilder("player")
+                .withArgument(OfflinePlayerArgument.of("player")))
+            .flag(manager.flagBuilder("onlineOnly")
+                .withArgument(BooleanArgument.of("onlineOnly")))
+            .handler(this::processList));
+
+        manager.command(builder.literal(config.ALIAS__STATUS.getFirst(), Description.of("View amount of tickets in"), config.ALIAS__STATUS.getSecond())
+            .permission(Constants.STAFF_PERMISSION + ".status")
+            .argument(targetArgument.copy())
+            .handler(this::processStatus)
+            .build());
+
+        manager.command(builder.literal(config.ALIAS__HIGHSCORE.getFirst(), Description.of("View highscores of ticket completions"), config.ALIAS__HIGHSCORE.getSecond())
+            .permission(Constants.STAFF_PERMISSION + ".highscore")
+            .argument(EnumArgument.optional(TimeAmount.class, "amount"))
+            .handler(this::processHighscore)
+            .build());
     }
 
-    /**
-     * Assigns a players ticket to the sender.
-     */
-    @Subcommand("%pick")
-    @CommandCompletion("@TicketHolders:status=OPEN @TargetIds:status=OPEN")
-    @CommandPermission(Constants.STAFF_PERMISSION + ".pick")
-    @Description("Pick a ticket")
-    @Syntax("<Player> [Index]")
-    public void onPick(CommandSender sender, OfflinePlayer offlinePlayer, @Optional @AutoStatuses("OPEN") FutureTicket future) {
-        taskManager.use()
-            .future(future)
-            .abortIfNull()
-            .asyncLast((ticket) -> {
-                try {
-                    Ticket edited = ticketManager.pick(UserUtilities.uuidFromSender(sender), ticket);
+    private void processPick(@NotNull final CommandContext<Soul> c) {
+        Soul soul = c.getSender();
+        Ticket modified = ticketManager.pick(soul.getUniqueId(), c.get("ticket"));
 
-                    notificationManager.send(sender, offlinePlayer.getUniqueId(), MessageNames.PICK_TICKET, edited);
-                } catch (PureException e) {
-                    notificationManager.basic(sender, e.getMessageKey(), e.getReplacements());
-                }
-            })
-            .execute();
+        notificationManager.send(soul, modified.getPlayerUUID(), MessageNames.PICK_TICKET, modified);
     }
 
-    /**
-     * Assigns a ticket to the supplied target staff.
-     */
-    @Subcommand("%assign")
-    @CommandCompletion("@Players @TicketHolders:status=OPEN @TargetIds:parameter=2,status=OPEN")
-    @CommandPermission(Constants.STAFF_PERMISSION + ".assign")
-    @Description("Assign a ticket to a staff member")
-    @Syntax("<TargetPlayer> <Player> [Index]")
-    public void onAssign(CommandSender sender, OfflinePlayer target, OfflinePlayer offlinePlayer, @Optional @AutoStatuses("OPEN") FutureTicket future) {
-        taskManager.use()
-            .future(future)
-            .abortIfNull()
-            .asyncLast((ticket) -> {
-                try {
-                    Ticket edited = ticketManager.pick(target.getUniqueId(), ticket);
+    private void processAssign(@NotNull final CommandContext<Soul> c) {
+        Soul soul = c.getSender();
+        OfflinePlayer staff = c.get("staff");
 
-                    notificationManager.send(sender, target.getUniqueId(), MessageNames.ASSIGN_TICKET, edited);
-                } catch (PureException e) {
-                    notificationManager.basic(sender, e.getMessageKey(), e.getReplacements());
-                }
-            })
-            .execute();
+        try {
+            Ticket modified = ticketManager.pick(staff.getUniqueId(), c.get("ticket"));
+
+            notificationManager.send(soul, staff.getUniqueId(), MessageNames.ASSIGN_TICKET, modified);
+        } catch (PureException e) {
+            notificationManager.handleException(soul, e);
+        }
     }
 
-    /**
-     * Done-marks a players ticket.
-     */
-    @Subcommand("%done")
-    @CommandCompletion("@TicketHolders:status=PICK @TargetIds:status=PICK")
-    @CommandPermission(Constants.STAFF_PERMISSION + ".done")
-    @Description("Done-mark a ticket")
-    @Syntax("<Player> [Index]")
-    public void onDone(CommandSender sender, OfflinePlayer offlinePlayer, @Optional @AutoStatuses("PICKED") FutureTicket future) {
-        taskManager.use()
-            .future(future)
-            .abortIfNull()
-            .asyncLast((ticket) -> {
-                try {
-                    Ticket edited = ticketManager.done(UserUtilities.uuidFromSender(sender), ticket);
+    private void processDone(@NotNull final CommandContext<Soul> c) {
+        Soul soul = c.getSender();
 
-                    notificationManager.send(sender, offlinePlayer.getUniqueId(), MessageNames.DONE_TICKET, edited);
-                } catch (PureException e) {
-                    notificationManager.basic(sender, e.getMessageKey(), e.getReplacements());
-                }
-            })
-            .execute();
+        try {
+            Ticket modified = ticketManager.done(soul.getUniqueId(), c.get("ticket"));
+
+            notificationManager.send(soul, modified.getPlayerUUID(), MessageNames.DONE_TICKET, modified);
+        } catch (PureException e) {
+            notificationManager.handleException(soul, e);
+        }
     }
 
-    /**
-     * Yields a players ticket.
-     */
-    @Subcommand("%yield")
-    @CommandCompletion("@TicketHolders:status=PICK @TargetIds:status=PICK")
-    @CommandPermission(Constants.STAFF_PERMISSION + ".yield")
-    @Description("Yield a ticket")
-    @Syntax("<Player> [Index]")
-    public void onYield(CommandSender sender, OfflinePlayer offlinePlayer, @Optional @AutoStatuses("PICKED") FutureTicket future) {
-        taskManager.use()
-            .future(future)
-            .abortIfNull()
-            .asyncLast((ticket) -> {
-                try {
-                    Ticket edited = ticketManager.yield(UserUtilities.uuidFromSender(sender), ticket);
+    private void processYield(@NotNull final CommandContext<Soul> c) {
+        Soul soul = c.getSender();
 
-                    notificationManager.send(sender, offlinePlayer.getUniqueId(), MessageNames.YIELD_TICKET, edited);
-                } catch (PureException e) {
-                    notificationManager.basic(sender, e.getMessageKey(), e.getReplacements());
-                }
-            })
-            .execute();
+        try {
+            Ticket modified = ticketManager.yield(soul.getUniqueId(), c.get("ticket"));
+
+            notificationManager.send(soul, modified.getPlayerUUID(), MessageNames.YIELD_TICKET, modified);
+        } catch (PureException e) {
+            notificationManager.handleException(soul, e);
+        }
     }
 
-    /**
-     * Adds a note to a players ticket with the supplied message.
-     */
-    @Subcommand("%note")
-    @CommandCompletion("@TicketHolders @TargetIds")
-    @CommandPermission(Constants.STAFF_PERMISSION + ".note")
-    @Description("Make a note on a ticket")
-    @Syntax("<Player> <Index> <Message>")
-    public void onNote(CommandSender sender, OfflinePlayer offlinePlayer, FutureTicket future, String message) {
-        taskManager.use()
-            .future(future)
-            .abortIfNull()
-            .asyncLast((ticket) -> {
-                Ticket edited = ticketManager.note(UserUtilities.uuidFromSender(sender), ticket, message);
+    private void processNote(@NotNull final CommandContext<Soul> c) {
+        Soul soul = c.getSender();
+        Ticket modified = ticketManager.note(soul.getUniqueId(), c.get("ticket"), c.get("message"));
 
-                notificationManager.send(sender, offlinePlayer.getUniqueId(), MessageNames.NOTE_TICKET, edited);
-            })
-            .execute();
+        notificationManager.send(soul, modified.getPlayerUUID(), MessageNames.NOTE_TICKET, modified);
     }
 
-    /**
-     * Reopens a players ticket.
-     */
-    @Subcommand("%reopen")
-    @CommandCompletion("@TicketHolders:status=CLOSED @TargetIds:status=CLOSED")
-    @CommandPermission(Constants.STAFF_PERMISSION + ".reopen")
-    @Description("Reopen a ticket")
-    @Syntax("<Player> [Index]")
-    public void onReopen(CommandSender sender, OfflinePlayer offlinePlayer, @Optional @AutoStatuses("CLOSED") FutureTicket future) {
-        taskManager.use()
-            .future(future)
-            .abortIfNull()
-            .asyncLast((ticket) -> {
-                try {
-                    Ticket edited = ticketManager.reopen(UserUtilities.uuidFromSender(sender), ticket);
+    private void processReopen(@NotNull final CommandContext<Soul> c) {
+        Soul soul = c.getSender();
 
-                    notificationManager.send(sender, offlinePlayer.getUniqueId(), MessageNames.REOPEN_TICKET, edited);
-                } catch (PureException e) {
-                    notificationManager.basic(sender, e.getMessageKey(), e.getReplacements());
-                }
-            })
-            .execute();
+        try {
+            Ticket modified = ticketManager.reopen(soul.getUniqueId(), c.get("ticket"));
+
+            notificationManager.send(soul, modified.getPlayerUUID(), MessageNames.REOPEN_TICKET, modified);
+        } catch (PureException e) {
+            notificationManager.handleException(soul, e);
+        }
     }
 
-    /**
-     * Teleports to a players ticket.
-     */
-    @Subcommand("%teleport")
-    @CommandCompletion("@TicketHolders @TargetIds:parameter=1")
-    @CommandPermission(Constants.STAFF_PERMISSION + ".teleport")
-    @Description("Teleport to a ticket creation location")
-    @Syntax("<Player> [Index]")
-    public void onTeleport(Player sender, OfflinePlayer offlinePlayer, @Optional FutureTicket future) {
-        taskManager.use()
-            .future(future)
-            .abortIfNull()
-            .asyncLast((ticket) ->
-                notificationManager.send(sender, offlinePlayer.getUniqueId(), MessageNames.TELEPORT_TICKET, ticket)
-            )
-            .future(future)
-            .sync((ticket) -> sender.teleport(ticket.getLocation()))
-            .execute();
+    private void processTeleport(@NotNull final CommandContext<Soul> c) {
+        PlayerSoul soul = (PlayerSoul) c.getSender();
+        Ticket ticket = c.get("ticket");
+
+        notificationManager.send(soul, ticket.getPlayerUUID(), MessageNames.TELEPORT_TICKET, ticket);
+        PaperLib.teleportAsync(soul.asPlayer(), ticket.getLocation());
     }
 
-    /**
-     * Displays log information about a players ticket.
-     */
-    @Subcommand("%log")
-    @CommandCompletion("@TicketHolders @TargetIds")
-    @CommandPermission(Constants.STAFF_PERMISSION + ".log")
-    @Description("Log tickets messages")
-    @Syntax("<Player> [Index]")
-    public void onLog(CommandSender sender, OfflinePlayer offlinePlayer, @Optional FutureTicket future) {
-        processLogCommand(getCurrentCommandIssuer(), future);
+    private void processList(@NotNull final CommandContext<Soul> c) {
+        final Soul soul = c.getSender();
+        final OfflinePlayer player = c.flags().getValue("player", null);
+        final TicketStatus status = c.flags().getValue("status", null);
+        final Boolean onlineOnly = c.flags().getValue("onlineOnly", false);
+
+        if (player != null) {
+            soul.message(Messages.TITLES__SPECIFIC_TICKETS, "player", player.getName());
+
+            TicketSQL.selectAll(player.getUniqueId(), status).forEach((ticket -> {
+                String[] replacements = ReplacementUtilities.ticketReplacements(ticket);
+                soul.message(Messages.GENERAL__LIST_FORMAT, replacements);
+            }));
+            return;
+        }
+
+        soul.message(Messages.TITLES__ALL_TICKETS);
+
+        // todo: ugly
+        Set<Map.Entry<UUID, List<Ticket>>> unsortedTickets = Lists.group(TicketSQL.selectAll(status), Ticket::getPlayerUUID).entrySet();
+        List<Map.Entry<UUID, List<Ticket>>> sortedTickets = new ArrayList<>(unsortedTickets);
+        sortedTickets.sort((t1, t2) -> {
+            Integer boxed = t1.getValue().get(0).getId();
+            return boxed.compareTo(t2.getValue().get(0).getId());
+        });
+
+        ImmutableMap.copyOf(sortedTickets).forEach((uuid, tickets) -> {
+            OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(uuid);
+
+            //noinspection ConstantConditions
+            if (onlineOnly && !offlinePlayer.isOnline()) {
+                return;
+            }
+
+            soul.message(Messages.GENERAL__LIST_HEADER_FORMAT, "name", UserUtilities.nameFromUUID(uuid));
+
+            tickets.forEach(ticket -> {
+                String[] replacements = ReplacementUtilities.ticketReplacements(ticket);
+                soul.message(Messages.GENERAL__LIST_FORMAT, replacements);
+            });
+        });
     }
 
-    /**
-     * List all current open tickets, or by the optional ticket status.
-     */
-    @Subcommand("%list")
-    @CommandCompletion("@TicketHolders @TicketStatus")
-    @CommandPermission(Constants.STAFF_PERMISSION + ".list")
-    @Description("List all tickets")
-    @Syntax("[Player]")
-    public void onList(CommandSender sender, @Optional OfflinePlayer offlinePlayer, @Optional TicketStatus status) {
-        taskManager.use()
-            .async(() -> {
-                if (offlinePlayer != null) {
-                    List<Ticket> tickets = ticketSQL.selectAll(offlinePlayer.getUniqueId(), status);
+    private void processStatus(@NotNull final CommandContext<Soul> c) {
+        Soul soul = c.getSender();
+        OfflinePlayer target = c.getOrDefault("target", null);
 
-                    notificationManager.basic(sender, Messages.TITLES__SPECIFIC_TICKETS, "%player%", offlinePlayer.getName());
+        if (target != null) {
+            soul.message(Messages.TITLES__SPECIFIC_TICKETS, "player", target.getName());
+        } else {
+            soul.message(Messages.TITLES__TICKET_STATUS);
+        }
 
-                    tickets.forEach((ticket -> {
-                        String[] replacements = ReplacementUtilities.ticketReplacements(ticket);
-                        notificationManager.basic(sender, Messages.GENERAL__LIST_FORMAT, replacements);
-                    }));
-                } else {
-                    notificationManager.basic(sender, Messages.TITLES__ALL_TICKETS);
+        EnumMap<TicketStatus, Integer> data = TicketSQL.selectTicketStats(target != null ? target.getUniqueId() : null);
 
-                    // todo: ugly
-                    Set<Map.Entry<UUID, List<Ticket>>> unsortedTickets = Lists.group(ticketSQL.selectAll(status), Ticket::getPlayerUUID).entrySet();
-                    List<Map.Entry<UUID, List<Ticket>>> sortedTickets = new ArrayList<>(unsortedTickets);
-                    sortedTickets.sort((t1, t2) -> {
-                        Integer boxed = t1.getValue().get(0).getId();
-                        return boxed.compareTo(t2.getValue().get(0).getId());
-                    });
-
-                    ImmutableMap.copyOf(sortedTickets).forEach((uuid, tickets) -> {
-                        notificationManager.basic(sender, Messages.GENERAL__LIST_HEADER_FORMAT,
-                            "%name%", UserUtilities.nameFromUUID(uuid));
-
-                        tickets.forEach(ticket -> {
-                            String[] replacements = ReplacementUtilities.ticketReplacements(ticket);
-                            notificationManager.basic(sender, Messages.GENERAL__LIST_FORMAT, replacements);
-                        });
-                    });
-                }
-            })
-            .execute();
+        data.forEach((status, amount) -> {
+            if (amount != 0) {
+                soul.message(amount.toString() + " " + status.name().toLowerCase());
+            }
+        });
     }
 
-    /**
-     * Display information about the current outstanding tickets.
-     */
-    @Subcommand("%status")
-    @CommandCompletion("@TicketHolders")
-    @CommandPermission(Constants.STAFF_PERMISSION + ".status")
-    @Description("View amount of tickets in")
-    @Syntax("[Player]")
-    public void onStatus(CommandSender sender, @Optional OfflinePlayer offlinePlayer) {
-        taskManager.use()
-            .async(() -> {
-                if (offlinePlayer != null) {
-                    notificationManager.basic(sender, Messages.TITLES__SPECIFIC_STATUS, "%player%", offlinePlayer.getName());
-                } else {
-                    notificationManager.basic(sender, Messages.TITLES__TICKET_STATUS);
-                }
+    private void processHighscore(@NotNull final CommandContext<Soul> c) {
+        Soul soul = c.getSender();
+        TimeAmount amount = c.get("amount");
 
-                EnumMap<TicketStatus, Integer> data = ticketSQL.selectTicketStats(offlinePlayer != null ? offlinePlayer.getUniqueId() : null);
+        Map<UUID, Integer> highscores = TicketSQL.highscores(amount);
+        soul.message(Messages.TITLES__HIGHSCORES);
 
-                data.forEach((status, amount) -> {
-                    if (amount != 0) {
-                        sender.sendMessage(amount.toString() + " " + status.name().toLowerCase());
-                    }
-                });
-            })
-            .execute();
-    }
-
-    /**
-     * List a count of per-staff ticket completions.
-     */
-    @Subcommand("%highscore")
-    @CommandCompletion("@TimeAmounts")
-    @CommandPermission(Constants.STAFF_PERMISSION + ".highscore")
-    @Description("View highscores of ticket completions")
-    public void onHighscore(CommandSender sender, TimeAmount amount) {
-        taskManager.use()
-            .async(() -> {
-                Map<UUID, Integer> highscores = ticketSQL.highscores(amount);
-                notificationManager.basic(sender, Messages.TITLES__HIGHSCORES);
-
-                highscores.forEach((uuid, number) ->
-                    notificationManager.basic(sender, Messages.GENERAL__HS_FORMAT,
-                        "%target%", UserUtilities.nameFromUUID(uuid), "%amount%", number.toString())
-                );
-            })
-            .execute();
+        highscores.forEach((uuid, number) ->
+            soul.message(Messages.GENERAL__HS_FORMAT, "target", UserUtilities.nameFromUUID(uuid), "amount", number.toString())
+        );
     }
 }

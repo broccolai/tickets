@@ -1,143 +1,127 @@
 package broccolai.tickets.commands;
 
+import broccolai.tickets.commands.arguments.MessageArgument;
+import broccolai.tickets.commands.arguments.TicketArgument;
+import broccolai.tickets.configuration.Config;
 import broccolai.tickets.events.TicketConstructionEvent;
 import broccolai.tickets.exceptions.PureException;
+import broccolai.tickets.interactions.NotificationManager;
 import broccolai.tickets.locale.MessageNames;
 import broccolai.tickets.locale.Messages;
 import broccolai.tickets.storage.functions.TicketSQL;
-import broccolai.tickets.ticket.FutureTicket;
-import broccolai.tickets.ticket.Message;
 import broccolai.tickets.ticket.Ticket;
+import broccolai.tickets.ticket.TicketManager;
 import broccolai.tickets.ticket.TicketStatus;
+import broccolai.tickets.user.PlayerSoul;
+import broccolai.tickets.user.Soul;
 import broccolai.tickets.utilities.Constants;
 import broccolai.tickets.utilities.generic.ReplacementUtilities;
-import co.aikar.commands.annotation.CommandAlias;
-import co.aikar.commands.annotation.CommandCompletion;
-import co.aikar.commands.annotation.CommandPermission;
-import co.aikar.commands.annotation.Description;
-import co.aikar.commands.annotation.Flags;
-import co.aikar.commands.annotation.Optional;
-import co.aikar.commands.annotation.Subcommand;
-import co.aikar.commands.annotation.Syntax;
+import cloud.commandframework.Command;
+import cloud.commandframework.Description;
+import cloud.commandframework.arguments.standard.EnumArgument;
+import cloud.commandframework.context.CommandContext;
 import java.util.List;
-import org.bukkit.entity.Player;
+import org.bukkit.plugin.PluginManager;
+import org.jetbrains.annotations.NotNull;
 
-/**
- * Command used for players to interact with their own tickets.
- */
-@CommandAlias("ticket|ti")
-@CommandPermission(Constants.USER_PERMISSION)
-public class TicketCommand extends PureBaseCommand {
+public final class TicketCommand extends BaseCommand {
+    @NotNull
+    private final PluginManager pluginManager;
+    @NotNull
+    private final TicketManager ticketManager;
+    @NotNull
+    private final NotificationManager notificationManager;
+
     /**
-     * Creates a ticket with the players message.
+     * Create a new Ticket Command.
+     *
+     * @param pluginManager       Plugin Manager
+     * @param config              Config instance
+     * @param manager             Command Manager
+     * @param ticketManager       Ticket Manager
+     * @param notificationManager Notification Manager
      */
-    @Subcommand("%create")
-    @CommandPermission(Constants.USER_PERMISSION + ".create")
-    @Description("Create a ticket")
-    @Syntax("<Message>")
-    public void onCreate(Player player, Message message) {
-        taskManager.use()
-            .async(() -> {
-                TicketConstructionEvent constructionEvent = new TicketConstructionEvent(player, message);
-                pluginManager.callEvent(constructionEvent);
+    public TicketCommand(@NotNull final PluginManager pluginManager, @NotNull final Config config, @NotNull final CommandManager manager,
+                         @NotNull final TicketManager ticketManager, @NotNull final NotificationManager notificationManager) {
+        this.pluginManager = pluginManager;
+        this.ticketManager = ticketManager;
+        this.notificationManager = notificationManager;
 
-                if (constructionEvent.hasException()) {
-                    notificationManager.handleException(player, constructionEvent.getException());
-                }
-            })
-            .execute();
+        final Command.Builder<Soul> builder = manager.commandBuilder("ticket", "ti")
+            .senderType(PlayerSoul.class);
+
+        manager.command(builder.literal(config.ALIAS__CREATE.getFirst(), Description.of("Create a ticket"), config.ALIAS__CREATE.getSecond())
+            .permission(Constants.USER_PERMISSION + ".create")
+            .argument(new MessageArgument<>(true, "message"))
+            .handler(this::processCreate));
+
+        manager.command(builder.literal(config.ALIAS__UPDATE.getFirst(), Description.of("Update a ticket"), config.ALIAS__UPDATE.getSecond())
+            .permission(Constants.USER_PERMISSION + ".update")
+            .argument(TicketArgument.of(true, true, TicketStatus.OPEN, TicketStatus.PICKED))
+            .argument(new MessageArgument<>(true, "message"))
+            .handler(this::processUpdate));
+
+        manager.command(builder.literal(config.ALIAS__CLOSE.getFirst(), Description.of("Close a ticket"), config.ALIAS__CLOSE.getSecond())
+            .permission(Constants.USER_PERMISSION + ".close")
+            .argument(TicketArgument.of(false, true, TicketStatus.OPEN, TicketStatus.PICKED))
+            .handler(this::processClose));
+
+        manager.command(builder.literal(config.ALIAS__LIST.getFirst(), Description.of("List tickets"), config.ALIAS__LIST.getSecond())
+            .permission(Constants.USER_PERMISSION + ".list")
+            .flag(manager.flagBuilder("status")
+                .withArgument(EnumArgument.of(TicketStatus.class, "status")))
+            .handler(this::processList));
+
+        manager.command(builder.literal(config.ALIAS__SHOW.getFirst(), Description.of("Show a ticket"), config.ALIAS__SHOW.getSecond())
+            .permission(Constants.USER_PERMISSION + ".show")
+            .argument(TicketArgument.of(false, true))
+            .handler(c -> processShow(c.getSender(), c.get("ticket"))));
+
+        manager.command(builder.literal(config.ALIAS__LOG.getFirst(), Description.of("View a tickets log"), config.ALIAS__LOG.getSecond())
+            .permission(Constants.USER_PERMISSION + ".log")
+            .argument(TicketArgument.of(false, true))
+            .handler(c -> processLog(c.getSender(), c.get("ticket"))));
     }
 
-    /**
-     * Update a ticket with the player supplied message.
-     */
-    @Subcommand("%update")
-    @CommandCompletion("@IssuerIds")
-    @CommandPermission(Constants.USER_PERMISSION + ".update")
-    @Description("Update a ticket")
-    @Syntax("<Index> <Message>")
-    public void onUpdate(Player player, @Flags("issuer") FutureTicket future, Message message) {
-        taskManager.use()
-            .future(future)
-            .abortIfNull()
-            .asyncLast((ticket) -> {
-                try {
-                    Ticket edited = ticketManager.update(ticket, message);
-                    notificationManager.send(player, null, MessageNames.UPDATE_TICKET, edited);
-                } catch (PureException e) {
-                    notificationManager.basic(player, e.getMessageKey(), e.getReplacements());
-                }
-            })
-            .execute();
+    private void processCreate(@NotNull final CommandContext<Soul> c) {
+        PlayerSoul soul = (PlayerSoul) c.getSender();
+        TicketConstructionEvent constructionEvent = new TicketConstructionEvent(soul, c.get("message"));
+        pluginManager.callEvent(constructionEvent);
+
+        if (constructionEvent.hasException()) {
+            notificationManager.handleException(soul, constructionEvent.getException());
+        }
     }
 
-    /**
-     * Close a players own ticket.
-     */
-    @Subcommand("%close")
-    @CommandCompletion("@IssuerIds")
-    @CommandPermission(Constants.USER_PERMISSION + ".close")
-    @Description("Close a ticket")
-    @Syntax("[Index]")
-    public void onClose(Player player, @Optional @AutoStatuses("OPEN,PICKED") @Flags("issuer") FutureTicket future) {
-        taskManager.use()
-            .future(future)
-            .abortIfNull()
-            .asyncLast((ticket) -> {
-                try {
-                    Ticket edited = ticketManager.close(player.getUniqueId(), ticket);
-                    notificationManager.send(player, null, MessageNames.CLOSE_TICKET, edited);
-                } catch (PureException e) {
-                    notificationManager.basic(player, e.getMessageKey(), e.getReplacements());
-                }
-            })
-            .execute();
+    private void processUpdate(@NotNull final CommandContext<Soul> c) {
+        try {
+            Ticket edited = ticketManager.update(c.get("ticket"), c.get("message"));
+            notificationManager.send(c.getSender(), null, MessageNames.UPDATE_TICKET, edited);
+        } catch (PureException e) {
+            notificationManager.handleException(c.getSender(), e);
+        }
     }
 
-    /**
-     * Displays information about a users own ticket.
-     */
-    @Subcommand("%show")
-    @CommandCompletion("@IssuerIds")
-    @CommandPermission(Constants.USER_PERMISSION + ".show")
-    @Description("Show a ticket")
-    @Syntax("[Index]")
-    public void onShow(Player player, @Optional @Flags("issuer") FutureTicket future) {
-        processShowCommand(getCurrentCommandIssuer(), future);
+    private void processClose(@NotNull final CommandContext<Soul> c) {
+        Soul soul = c.getSender();
+
+        try {
+            Ticket edited = ticketManager.close(soul.getUniqueId(), c.get("ticket"));
+            notificationManager.send(soul, null, MessageNames.CLOSE_TICKET, edited);
+        } catch (PureException e) {
+            notificationManager.handleException(soul, e);
+        }
     }
 
-    /**
-     * Lists the players current open tickets.
-     */
-    @Subcommand("%list")
-    @CommandCompletion("@TicketStatus")
-    @CommandPermission(Constants.USER_PERMISSION + ".list")
-    @Description("List all tickets")
-    @Syntax("[Status]")
-    public void onList(Player player, @Optional TicketStatus status) {
-        taskManager.use()
-            .async(() -> {
-                List<Ticket> tickets = TicketSQL.selectAll(player.getUniqueId(), status);
+    private void processList(@NotNull final CommandContext<Soul> c) {
+        Soul soul = c.getSender();
+        List<Ticket> tickets = TicketSQL.selectAll(soul.getUniqueId(), c.flags().getValue("status", null));
 
-                notificationManager.basic(player, Messages.TITLES__YOUR_TICKETS);
+        soul.message(Messages.TITLES__YOUR_TICKETS);
 
-                tickets.forEach(ticket -> {
-                    String[] replacements = ReplacementUtilities.ticketReplacements(ticket);
-                    notificationManager.basic(player, Messages.GENERAL__LIST_FORMAT, replacements);
-                });
-            })
-            .execute();
-    }
-
-    /**
-     * Displays a players ticket.
-     */
-    @Subcommand("%log")
-    @CommandCompletion("@IssuerIds")
-    @CommandPermission(Constants.USER_PERMISSION + ".log")
-    @Description("Log tickets messages")
-    @Syntax("[Index]")
-    public void onLog(Player player, @Optional @Flags("issuer") FutureTicket future) {
-        processLogCommand(getCurrentCommandIssuer(), future);
+        tickets.forEach(ticket -> {
+            String[] replacements = ReplacementUtilities.ticketReplacements(ticket);
+            soul.message(Messages.GENERAL__LIST_FORMAT, replacements);
+        });
     }
 }

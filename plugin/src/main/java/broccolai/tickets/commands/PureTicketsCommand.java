@@ -1,75 +1,66 @@
 package broccolai.tickets.commands;
 
-import broccolai.tickets.PureTickets;
-import broccolai.tickets.exceptions.InvalidSettingType;
-import broccolai.tickets.interactions.NotificationManager;
 import broccolai.tickets.locale.Messages;
-import broccolai.tickets.user.UserManager;
+import broccolai.tickets.user.PlayerSoul;
+import broccolai.tickets.user.Soul;
+import broccolai.tickets.user.UserSettings;
 import broccolai.tickets.utilities.Constants;
-import co.aikar.commands.BaseCommand;
-import co.aikar.commands.CommandIssuer;
-import co.aikar.commands.annotation.CommandAlias;
-import co.aikar.commands.annotation.CommandCompletion;
-import co.aikar.commands.annotation.CommandPermission;
-import co.aikar.commands.annotation.Default;
-import co.aikar.commands.annotation.Dependency;
-import co.aikar.commands.annotation.Optional;
-import co.aikar.commands.annotation.Subcommand;
-import org.bukkit.entity.Player;
+import cloud.commandframework.Command;
+import cloud.commandframework.arguments.standard.BooleanArgument;
+import cloud.commandframework.arguments.standard.EnumArgument;
+import cloud.commandframework.context.CommandContext;
+import org.bukkit.plugin.Plugin;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Command used for information and per-user configuration.
  */
-@CommandAlias("puretickets")
-public class PureTicketsCommand extends BaseCommand {
-    @Dependency
-    private PureTickets plugin;
-    @Dependency
-    private UserManager userManager;
-    @Dependency
-    private NotificationManager notificationManager;
+public class PureTicketsCommand {
+    @NotNull
+    private final Plugin plugin;
 
     /**
-     * Retrieve information about the plugin.
+     * Create a Pure Tickets Command.
+     *
+     * @param plugin  Plugin instance
+     * @param manager Command Manager
      */
-    @Default
-    @Subcommand("info")
-    public void onInfo(CommandIssuer issuer) {
-        issuer.sendMessage(plugin.getName() + " " + plugin.getDescription().getVersion());
+    public PureTicketsCommand(@NotNull final Plugin plugin, @NotNull final CommandManager manager) {
+        this.plugin = plugin;
+
+        final Command.Builder<Soul> builder = manager.commandBuilder("puretickets", "pt");
+
+        manager.command(builder.literal("info")
+            .handler(this::processInfo));
+
+        manager.command(builder.literal("settings")
+            .permission(Constants.USER_PERMISSION + ".settings")
+            .argument(EnumArgument.of(UserSettings.Options.class, "setting"))
+            .argument(BooleanArgument.of("value"))
+            .handler(this::processSettings));
+
+        manager.command(builder.literal("reload")
+            .permission(Constants.STAFF_PERMISSION + ".reload")
+            .handler(this::processReload));
     }
 
-    /**
-     * Allows a player to change a particular per-user config.
-     */
-    @Subcommand("settings")
-    @CommandPermission(Constants.USER_PERMISSION + ".settings")
-    @CommandCompletion("announcements true|false")
-    public void onSettings(Player player, String setting, @Optional Boolean value) {
-        userManager.update(player.getUniqueId(), settings -> {
-            //noinspection SwitchStatementWithTooFewBranches
-            switch (setting.toLowerCase()) {
-                case "announcements":
-                    settings.setAnnouncements(value);
-                    return settings;
+    private void processInfo(@NotNull final CommandContext<Soul> c) {
+        c.getSender().message(plugin.getName() + " " + plugin.getDescription().getVersion());
+    }
 
-                default:
-                    throw new InvalidSettingType();
-            }
-        });
-
+    private void processSettings(@NotNull final CommandContext<Soul> c) {
+        PlayerSoul soul = (PlayerSoul) c.getSender();
+        UserSettings.Options setting = c.get("setting");
+        Boolean value = c.get("value");
         String status = value ? "enabled" : "disabled";
 
-        notificationManager.basic(player, Messages.OTHER__SETTING_UPDATE, "%setting%", setting, "%status%", status);
+        soul.modifyPreferences(settings -> settings.set(c.get("setting"), c.get("value")));
+        soul.message(Messages.OTHER__SETTING_UPDATE, "setting", setting.name().toLowerCase(), "status", status);
     }
 
-    /**
-     * Allows an operator to reload the plugins configurations.
-     */
-    @Subcommand("reload")
-    @CommandPermission(Constants.STAFF_PERMISSION + ".reload")
-    public void onReload(CommandIssuer issuer) {
+    private void processReload(@NotNull final CommandContext<Soul> c) {
         plugin.onDisable();
         plugin.onEnable();
-        issuer.sendMessage("PureTickets reloaded");
+        c.getSender().message("PureTickets reloaded");
     }
 }
