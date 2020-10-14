@@ -34,7 +34,7 @@ repositories {
 
 dependencies {
     checkstyle("ca.stellardrift:stylecheck:0.1-SNAPSHOT")
-    implementation("org.jetbrains:annotations:19.0.0")
+    compileOnly("org.jetbrains:annotations:19.0.0")
 
     api("co.aikar:idb-core:1.0.0-SNAPSHOT")
     api("org.slf4j:slf4j-simple:1.7.13")
@@ -57,13 +57,17 @@ tasks {
     shadowJar {
         val base = project.group.toString() + ".lib."
 
+        relocate("cloud.commandframework", base + "cloud")
+        relocate("com.intellectualsites.http", base + "http")
+        relocate("io.leangen.geantyref", base + "geantyref")
+
+        relocate("io.papermc.lib", base + "paperlib")
         relocate("co.aikar.idb", base + "idb")
 
         relocate("broccolai.corn.core", base + "corn.core")
         relocate("broccolai.corn.spigot", base + "corn.spigot")
 
         relocate("com.zaxxer.hikari", base + "hikari")
-        relocate("net.jodah.expiringmap", base + "expiringmap")
 
         archiveFileName.set(project.name + ".jar")
         mergeServiceFiles()
