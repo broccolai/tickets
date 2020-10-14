@@ -8,11 +8,11 @@ import broccolai.tickets.exceptions.TicketOpen;
 import broccolai.tickets.exceptions.TooManyOpenTickets;
 import broccolai.tickets.storage.functions.MessageSQL;
 import broccolai.tickets.storage.functions.TicketSQL;
+import broccolai.tickets.user.PlayerSoul;
 import com.google.common.collect.Lists;
 import java.time.LocalDateTime;
 import java.util.UUID;
 import org.bukkit.Location;
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -193,9 +193,9 @@ public class TicketManager implements Listener {
      */
     @EventHandler
     public void onTicketConstructPredicates(TicketConstructionEvent e) {
-        Player player = e.getPlayer();
+        PlayerSoul soul = e.getSoul();
 
-        if (TicketSQL.count(player.getUniqueId(), TicketStatus.OPEN) > config.LIMIT__OPEN_TICKETS + 1) {
+        if (TicketSQL.count(soul.getUniqueId(), TicketStatus.OPEN) > config.LIMIT__OPEN_TICKETS + 1) {
             e.cancel(new TooManyOpenTickets(config));
         }
     }
@@ -205,18 +205,18 @@ public class TicketManager implements Listener {
      */
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onTicketConstruct(TicketConstructionEvent e) {
-        Player player = e.getPlayer();
+        PlayerSoul soul = e.getSoul();
         Message message = e.getMessage();
 
-        UUID uuid = player.getUniqueId();
-        Location location = player.getLocation();
+        UUID uuid = soul.getUniqueId();
+        Location location = soul.asPlayer().getLocation();
 
         int id = TicketSQL.insert(uuid, TicketStatus.OPEN, null, location);
         Ticket ticket = new Ticket(id, uuid, Lists.newArrayList(message), location, TicketStatus.OPEN, null);
 
         MessageSQL.insert(ticket, message);
 
-        TicketCreationEvent creationEvent = new TicketCreationEvent(player, ticket);
+        TicketCreationEvent creationEvent = new TicketCreationEvent(soul, ticket);
         pluginManager.callEvent(creationEvent);
     }
 }

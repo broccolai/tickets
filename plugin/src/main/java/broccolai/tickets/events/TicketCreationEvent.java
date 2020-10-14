@@ -1,33 +1,33 @@
 package broccolai.tickets.events;
 
 import broccolai.tickets.ticket.Ticket;
-import org.bukkit.entity.Player;
+import broccolai.tickets.user.PlayerSoul;
 import org.jetbrains.annotations.NotNull;
 
 /**
  * Event representing the creation of a ticket.
  */
-public class TicketCreationEvent extends BaseEvent {
+public final class TicketCreationEvent extends BaseEvent {
     @NotNull
-    private final Player player;
+    private final PlayerSoul soul;
     @NotNull
     private final Ticket ticket;
 
     /**
      * Initialise the creation event.
      *
-     * @param player the ticket creator
+     * @param soul   the ticket creator
      * @param ticket the constructed ticket
      */
-    public TicketCreationEvent(@NotNull Player player, @NotNull Ticket ticket) {
+    public TicketCreationEvent(@NotNull PlayerSoul soul, @NotNull Ticket ticket) {
         super(true);
-        this.player = player;
+        this.soul = soul;
         this.ticket = ticket;
     }
 
     @NotNull
-    public Player getPlayer() {
-        return player;
+    public PlayerSoul getSoul() {
+        return soul;
     }
 
     @NotNull

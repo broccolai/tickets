@@ -1,33 +1,33 @@
 package broccolai.tickets.events;
 
 import broccolai.tickets.ticket.Message;
-import org.bukkit.entity.Player;
+import broccolai.tickets.user.PlayerSoul;
 import org.jetbrains.annotations.NotNull;
 
 /**
  * Event representing a ticket during it's construction faze.
  */
-public class TicketConstructionEvent extends ThrowableEvent {
+public final class TicketConstructionEvent extends ThrowableEvent {
     @NotNull
-    private final Player player;
+    private final PlayerSoul soul;
     @NotNull
     private final Message message;
 
     /**
      * Initialise the construction event.
      *
-     * @param player  the ticket creator
+     * @param soul    the ticket creator
      * @param message the tickets initial message
      */
-    public TicketConstructionEvent(@NotNull Player player, @NotNull Message message) {
+    public TicketConstructionEvent(@NotNull PlayerSoul soul, @NotNull Message message) {
         super(true);
-        this.player = player;
+        this.soul = soul;
         this.message = message;
     }
 
     @NotNull
-    public Player getPlayer() {
-        return player;
+    public PlayerSoul getSoul() {
+        return soul;
     }
 
     @NotNull
