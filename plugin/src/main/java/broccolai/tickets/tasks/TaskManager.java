@@ -1,21 +1,19 @@
 package broccolai.tickets.tasks;
 
-import co.aikar.taskchain.BukkitTaskChainFactory;
-import co.aikar.taskchain.TaskChain;
-import co.aikar.taskchain.TaskChainFactory;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Manager for creating a clearing tasks.
  */
 public class TaskManager {
     private final Plugin plugin;
-    private final TaskChainFactory taskChainFactory;
     private final List<BukkitTask> tasks = new ArrayList<>();
 
     /**
@@ -25,17 +23,10 @@ public class TaskManager {
      */
     public TaskManager(Plugin plugin) {
         this.plugin = plugin;
-        taskChainFactory = BukkitTaskChainFactory.create(plugin);
     }
 
-    /**
-     * Create a new TaskChain instance and return it.
-     *
-     * @param <T> chain type
-     * @return a new task chain instance
-     */
-    public <T> TaskChain<T> use() {
-        return taskChainFactory.newChain();
+    public void async(@NotNull final Runnable runnable) {
+        Bukkit.getScheduler().runTask(plugin, runnable);
     }
 
     /**
