@@ -1,5 +1,6 @@
 package broccolai.tickets.exceptions;
 
+import broccolai.corn.spigot.locale.LocaleKeys;
 import broccolai.tickets.locale.Messages;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -7,9 +8,9 @@ import org.jetbrains.annotations.Nullable;
 /**
  * an base exception class for other PureExceptions to inherit.
  */
-public class PureException extends Exception {
+public class PureException extends RuntimeException {
     @Nullable
-    private final Messages message;
+    private final LocaleKeys message;
     @Nullable
     private final String[] replacements;
     @Nullable
@@ -53,7 +54,7 @@ public class PureException extends Exception {
      * @return the Messages entry
      */
     @Nullable
-    public Messages getMessageKey() {
+    public LocaleKeys getMessageKey() {
         return message;
     }
 
