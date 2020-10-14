@@ -1,7 +1,5 @@
 package broccolai.tickets.storage.functions;
 
-import broccolai.tickets.interactions.PendingNotification;
-import broccolai.tickets.locale.Messages;
 import broccolai.tickets.storage.platforms.Platform;
 import broccolai.tickets.ticket.Message;
 import broccolai.tickets.ticket.MessageReason;
@@ -28,7 +26,7 @@ public class HelpersSQL {
     /**
      * Setup the helper SQL.
      *
-     * @param platformInstance   the platform instance
+     * @param platformInstance the platform instance
      */
     public static void setup(@NotNull Platform platformInstance) {
         platform = platformInstance;
@@ -163,16 +161,4 @@ public class HelpersSQL {
         return new Message(reason, date, data, sender);
     }
 
-    /**
-     * Build a notification from a row.
-     *
-     * @param row the database row to use
-     * @return the constructed notification
-     */
-    static PendingNotification buildNotification(DbRow row) {
-        Messages message = getEnumValue(row, Messages.class, "message");
-        String[] replacements = row.getString("replacements").split("\\|");
-
-        return new PendingNotification(message, replacements);
-    }
 }

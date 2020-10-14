@@ -6,18 +6,20 @@ import broccolai.tickets.storage.platforms.Platform;
 import broccolai.tickets.ticket.Ticket;
 import broccolai.tickets.ticket.TicketStatus;
 import broccolai.tickets.utilities.generic.UserUtilities;
+import cloud.commandframework.types.tuples.Pair;
 import co.aikar.idb.DB;
 import co.aikar.idb.DbRow;
 import com.google.common.collect.ObjectArrays;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 import org.bukkit.Location;
 import org.intellij.lang.annotations.Language;
 import org.jetbrains.annotations.NotNull;
@@ -50,6 +52,25 @@ public class TicketSQL {
 
         try {
             row = DB.getFirstRow("SELECT id, uuid, status, picker, location from puretickets_ticket WHERE id = ?", id);
+        } catch (SQLException e) {
+            throw new IllegalArgumentException();
+        }
+
+        return row != null ? HelpersSQL.buildTicket(row) : null;
+    }
+
+    /**
+     * Retrieve a Ticket from the Database.
+     *
+     * @param id the tickets id
+     * @return the constructed ticket
+     */
+    @Nullable
+    public static Ticket select(int id, @NotNull UUID uuid) {
+        DbRow row;
+
+        try {
+            row = DB.getFirstRow("SELECT id, uuid, status, picker, location from puretickets_ticket WHERE id = ? AND uuid = ?", id, uuid);
         } catch (SQLException e) {
             throw new IllegalArgumentException();
         }
@@ -110,28 +131,22 @@ public class TicketSQL {
     /**
      * Retrieves ticket ids with a given players unique id and an optional status.
      *
-     * @param uuid   the players unique id to filter with
-     * @param status the optional status to filter with
+     * @param uuid     the players unique id to filter with
+     * @param statuses the optional status to filter with
      * @return a list of the retrieved tickets
      */
     @NotNull
-    public static List<Integer> selectIds(@NotNull UUID uuid, @Nullable TicketStatus status) {
-        List<Integer> results;
-
+    public static List<Integer> selectIds(@NotNull UUID uuid, TicketStatus... statuses) {
         @Language("SQL")
         String sql = "SELECT id from puretickets_ticket WHERE uuid = ?";
+        Pair<String, Object[]> extensions = buildWhereExtension(true, statuses);
+        Object[] replacements = ObjectArrays.concat(uuid.toString(), extensions.getSecond());
 
         try {
-            if (status == null) {
-                results = DB.getFirstColumnResults(sql, uuid.toString());
-            } else {
-                results = DB.getFirstColumnResults(sql + " AND status = ?", uuid.toString(), status.name());
-            }
+            return DB.getFirstColumnResults(sql + extensions.getFirst(), replacements);
         } catch (SQLException e) {
             throw new IllegalArgumentException();
         }
-
-        return results;
     }
 
     /**
@@ -143,28 +158,13 @@ public class TicketSQL {
      */
     @Nullable
     public static Ticket selectLastTicket(UUID uuid, TicketStatus... statuses) {
-        List<String> replacements = new ArrayList<>();
-
         @Language("SQL")
         String sql = "SELECT max(id) AS 'id', uuid, status, picker, location FROM puretickets_ticket WHERE uuid = ?";
-        StringBuilder sb = new StringBuilder(sql);
-
-        for (int i = 0; i < statuses.length; i++) {
-            if (i == 0) {
-                sb.append(" AND (status = ?");
-            } else {
-                sb.append(" OR status = ?");
-            }
-
-            replacements.add(statuses[i].name());
-        }
-
-        if (statuses.length > 0) {
-            sb.append(")");
-        }
+        Pair<String, Object[]> extensions = buildWhereExtension(true, statuses);
+        Object[] replacements = ObjectArrays.concat(uuid.toString(), extensions.getSecond());
 
         try {
-            DbRow row = DB.getFirstRow(sb.toString(), ObjectArrays.concat(uuid.toString(), replacements.toArray()));
+            DbRow row = DB.getFirstRow(sql + extensions.getFirst(), replacements);
             return row.get("id") == null ? null : HelpersSQL.buildTicket(row);
         } catch (SQLException e) {
             throw new IllegalArgumentException();
@@ -174,30 +174,26 @@ public class TicketSQL {
     /**
      * Retrieves the names of all ticket holders, optionally filtered by a status.
      *
-     * @param status the optional status to filter by
+     * @param statuses the optional statuses to filter by
      * @return a list of player names
      */
     @NotNull
-    public static List<String> selectNames(@Nullable TicketStatus status) {
+    public static Set<String> selectNames(TicketStatus... statuses) {
         List<String> results;
 
         @Language("SQL")
         String sql = "SELECT uuid from puretickets_ticket";
+        Pair<String, Object[]> extensions = buildWhereExtension(false, statuses);
 
         try {
-            if (status == null) {
-                results = DB.getFirstColumnResults(sql);
-            } else {
-                results = DB.getFirstColumnResults(sql + " WHERE status = ?", status.name());
-            }
-        } catch (SQLException e) {
+            results = DB.getFirstColumnResults(sql + extensions.getFirst(), extensions.getSecond());
+        } catch (final SQLException e) {
             throw new IllegalArgumentException();
         }
 
-        return Lists.map(results, result -> {
-            UUID uuid = UUID.fromString(result);
-            return UserUtilities.nameFromUUID(uuid);
-        });
+        return results.stream()
+            .map(result -> UserUtilities.nameFromUUID(UUID.fromString(result)))
+            .collect(Collectors.toSet());
     }
 
     /**
@@ -374,5 +370,27 @@ public class TicketSQL {
         results.forEach(result -> data.put(HelpersSQL.getUUID(result, "picker"), result.getInt("num")));
 
         return data;
+    }
+
+    @NotNull
+    private static Pair<String, Object[]> buildWhereExtension(final boolean hasWhere, final TicketStatus... statuses) {
+        final Object[] replacements = new String[statuses.length];
+        final StringBuilder sb = new StringBuilder();
+
+        for (int i = 0; i < statuses.length; i++) {
+            if (i == 0) {
+                sb.append(hasWhere ? " AND (status = ?" : " WHERE status = ?");
+            } else {
+                sb.append(" OR status = ?");
+            }
+
+            replacements[i] = statuses[i].name();
+        }
+
+        if (hasWhere && statuses.length > 0) {
+            sb.append(")");
+        }
+
+        return Pair.of(sb.toString(), replacements);
     }
 }

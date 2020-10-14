@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import org.bukkit.Bukkit;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * Message SQL.
