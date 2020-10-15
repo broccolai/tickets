@@ -12,8 +12,8 @@ import cloud.commandframework.arguments.parser.ArgumentParser;
 import cloud.commandframework.arguments.standard.IntegerArgument;
 import cloud.commandframework.context.CommandContext;
 import org.bukkit.OfflinePlayer;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,11 +52,11 @@ public final class TicketArgument extends CommandArgument<Soul, Ticket> {
             this.statuses = statuses;
         }
 
-        @NotNull
+        @NonNull
         @Override
         public ArgumentParseResult<Ticket> parse(
-                @NotNull final CommandContext<Soul> commandContext,
-                @NotNull final Queue<String> inputQueue
+                @NonNull final CommandContext<Soul> commandContext,
+                @NonNull final Queue<String> inputQueue
         ) {
             UUID target;
 
@@ -93,9 +93,9 @@ public final class TicketArgument extends CommandArgument<Soul, Ticket> {
             return ArgumentParseResult.success(ticket);
         }
 
-        @NotNull
+        @NonNull
         @Override
-        public List<String> suggestions(@NotNull final CommandContext<Soul> commandContext, @NotNull final String input) {
+        public List<String> suggestions(@NonNull final CommandContext<Soul> commandContext, @NonNull final String input) {
             List<Integer> ids;
 
             try {

@@ -2,7 +2,7 @@ package broccolai.tickets.storage.functions;
 
 import co.aikar.idb.DB;
 import org.bukkit.Bukkit;
-import org.jetbrains.annotations.NotNull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -23,8 +23,8 @@ public final class NotificationSQL {
      * @param uniqueId Users unique id
      * @return List of notifications
      */
-    @NotNull
-    public static List<String> retrieve(@NotNull final UUID uniqueId) {
+    @NonNull
+    public static List<String> retrieve(@NonNull final UUID uniqueId) {
         List<String> results;
 
         try {
@@ -47,7 +47,7 @@ public final class NotificationSQL {
      * @param uniqueId Users unique id
      * @param message  String message to add
      */
-    public static void add(@NotNull final UUID uniqueId, @NotNull final String message) {
+    public static void add(@NonNull final UUID uniqueId, @NonNull final String message) {
         try {
             DB.executeInsert("INSERT INTO puretickets_notification(uuid, message) VALUES(?, ?)",
                     uniqueId.toString(), message

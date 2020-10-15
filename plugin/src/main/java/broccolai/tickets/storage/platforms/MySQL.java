@@ -9,7 +9,7 @@ import co.aikar.idb.HikariPooledDatabase;
 import co.aikar.idb.PooledDatabaseOptions;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
-import org.jetbrains.annotations.NotNull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.sql.SQLException;
 import java.util.HashMap;
@@ -22,7 +22,7 @@ import java.util.logging.Level;
 public final class MySQL implements Platform {
 
     @Override
-    public void setup(@NotNull final Plugin plugin, @NotNull final Config config) {
+    public void setup(@NonNull final Plugin plugin, @NonNull final Config config) {
         Integer version = null;
         DatabaseOptions options = DatabaseOptions.builder().mysql(
                 config.getStoragePassword(),
@@ -88,12 +88,12 @@ public final class MySQL implements Platform {
     }
 
     @Override
-    public Long getPureLong(@NotNull final DbRow row, @NotNull final String column) {
+    public Long getPureLong(@NonNull final DbRow row, @NonNull final String column) {
         return Long.valueOf(row.getString(column));
     }
 
     @Override
-    public Integer getPureInteger(@NotNull final Object value) {
+    public Integer getPureInteger(@NonNull final Object value) {
         return ((Long) value).intValue();
     }
 

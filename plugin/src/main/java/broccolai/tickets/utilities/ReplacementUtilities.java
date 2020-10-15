@@ -8,8 +8,8 @@ import broccolai.tickets.ticket.TicketStatus;
 import com.google.common.collect.Iterators;
 import org.bukkit.Location;
 import org.bukkit.World;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,7 +28,7 @@ public final class ReplacementUtilities {
      * @param ticket the ticket instance to use
      * @return a array of replacements
      */
-    @NotNull
+    @NonNull
     public static String[] ticketReplacements(@Nullable final Ticket ticket) {
         List<String> results = new ArrayList<>();
 

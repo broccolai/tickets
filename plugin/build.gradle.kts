@@ -34,7 +34,7 @@ repositories {
 
 dependencies {
     checkstyle("ca.stellardrift:stylecheck:0.1-SNAPSHOT")
-    compileOnly("org.jetbrains:annotations:19.0.0")
+    compileOnly("org.checkerframework:checker-qual:3.5.0")
 
     api("co.aikar:idb-core:1.0.0-SNAPSHOT")
     api("org.slf4j:slf4j-simple:1.7.13")

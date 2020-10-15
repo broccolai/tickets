@@ -1,6 +1,6 @@
 package broccolai.tickets.locale;
 
-import org.jetbrains.annotations.NotNull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  * Enum representing potential message names
@@ -17,7 +17,7 @@ public enum MessageNames {
     NOTE_TICKET(TargetType.SENDER, TargetType.NOTIFICATION, TargetType.ANNOUNCEMENT, TargetType.DISCORD),
     TELEPORT_TICKET(TargetType.SENDER);
 
-    @NotNull
+    @NonNull
     private final TargetType[] targets;
 
     /**
@@ -25,7 +25,7 @@ public enum MessageNames {
      *
      * @param targets the corresponding target types
      */
-    MessageNames(@NotNull final TargetType... targets) {
+    MessageNames(@NonNull final TargetType... targets) {
         this.targets = targets;
     }
 
@@ -34,7 +34,7 @@ public enum MessageNames {
      *
      * @return array of target types
      */
-    @NotNull
+    @NonNull
     public TargetType[] getTargets() {
         return targets;
     }

@@ -5,7 +5,7 @@ import broccolai.tickets.ticket.Ticket;
 import co.aikar.idb.DB;
 import co.aikar.idb.DbRow;
 import org.bukkit.Bukkit;
-import org.jetbrains.annotations.NotNull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -50,7 +50,7 @@ public final class MessageSQL {
      * @param ticket  the ticket instance to use
      * @param message the message to insert
      */
-    public static void insert(@NotNull final Ticket ticket, @NotNull final Message message) {
+    public static void insert(@NonNull final Ticket ticket, @NonNull final Message message) {
         UUID sender = message.getSender();
         long date = HelpersSQL.serializeLocalDateTime(message.getDate());
         String senderName;

@@ -3,7 +3,7 @@ package broccolai.tickets.storage.platforms;
 import broccolai.tickets.configuration.Config;
 import co.aikar.idb.DbRow;
 import org.bukkit.plugin.Plugin;
-import org.jetbrains.annotations.NotNull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  * Representation of functions that are specific to an sql implementation
@@ -16,7 +16,7 @@ public interface Platform {
      * @param plugin Plugin instance
      * @param config Configuration instance
      */
-    void setup(@NotNull Plugin plugin, @NotNull Config config);
+    void setup(@NonNull Plugin plugin, @NonNull Config config);
 
     /**
      * Retrieve a long from a column
@@ -25,7 +25,7 @@ public interface Platform {
      * @param column Database column
      * @return Long
      */
-    Long getPureLong(@NotNull DbRow row, @NotNull String column);
+    Long getPureLong(@NonNull DbRow row, @NonNull String column);
 
     /**
      * Retrieve an integer from a object
@@ -33,6 +33,6 @@ public interface Platform {
      * @param value Object
      * @return Integer value
      */
-    Integer getPureInteger(@NotNull Object value);
+    Integer getPureInteger(@NonNull Object value);
 
 }

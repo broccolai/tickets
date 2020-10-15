@@ -2,8 +2,8 @@ package broccolai.tickets.user;
 
 import broccolai.corn.spigot.CornUser;
 import org.bukkit.command.CommandSender;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.util.UUID;
 
@@ -14,7 +14,7 @@ public interface Soul extends CornUser {
      *
      * @return Name
      */
-    @NotNull
+    @NonNull
     String getName();
 
     /**
@@ -22,7 +22,7 @@ public interface Soul extends CornUser {
      *
      * @return Unique id
      */
-    @NotNull
+    @NonNull
     UUID getUniqueId();
 
     /**

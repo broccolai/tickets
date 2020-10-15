@@ -2,7 +2,7 @@ package broccolai.tickets.events;
 
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
-import org.jetbrains.annotations.NotNull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  * Base event for other events to extend.
@@ -20,7 +20,7 @@ class BaseEvent extends Event {
         super(isAsync);
     }
 
-    @NotNull
+    @NonNull
     public HandlerList getHandlers() {
         return HANDLERS;
     }

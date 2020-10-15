@@ -3,8 +3,8 @@ package broccolai.tickets.utilities;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.util.UUID;
 
@@ -22,7 +22,7 @@ public final class UserUtilities {
      * @param uuid the users unique id
      * @return the users name
      */
-    @NotNull
+    @NonNull
     public static String nameFromUUID(@Nullable final UUID uuid) {
         if (uuid == null) {
             return Bukkit.getConsoleSender().getName();
@@ -39,7 +39,7 @@ public final class UserUtilities {
      * @return an unique id representing them
      */
     @Nullable
-    public static UUID uuidFromSender(@NotNull final CommandSender sender) {
+    public static UUID uuidFromSender(@NonNull final CommandSender sender) {
         if (sender instanceof Player) {
             return ((Player) sender).getUniqueId();
         } else {

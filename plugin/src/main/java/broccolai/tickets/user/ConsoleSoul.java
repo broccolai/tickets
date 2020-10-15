@@ -2,7 +2,7 @@ package broccolai.tickets.user;
 
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
-import org.jetbrains.annotations.NotNull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.util.UUID;
 
@@ -12,25 +12,25 @@ public final class ConsoleSoul implements Soul {
     public static final CommandSender CONSOLE_SENDER = Bukkit.getConsoleSender();
 
     @Override
-    @NotNull
+    @NonNull
     public String getName() {
         return "CONSOLE";
     }
 
     @Override
-    @NotNull
+    @NonNull
     public UUID getUniqueId() {
         return CONSOLE_UUID;
     }
 
     @Override
-    @NotNull
+    @NonNull
     public CommandSender asSender() {
         return CONSOLE_SENDER;
     }
 
     @Override
-    public void message(@NotNull final String message) {
+    public void message(@NonNull final String message) {
         CONSOLE_SENDER.sendMessage(message);
     }
 

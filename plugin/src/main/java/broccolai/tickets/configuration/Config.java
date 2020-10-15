@@ -6,7 +6,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.Plugin;
-import org.jetbrains.annotations.NotNull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.io.File;
 import java.io.IOException;
@@ -61,7 +61,7 @@ public final class Config {
      *
      * @param plugin the Plugin instance to use
      */
-    public Config(@NotNull final Plugin plugin) {
+    public Config(@NonNull final Plugin plugin) {
         //noinspection rawtypes
         Class<Pair> pairClass = Pair.class;
 

@@ -4,7 +4,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
-import org.jetbrains.annotations.NotNull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -23,7 +23,7 @@ public class TaskManager {
      *
      * @param plugin Plugin instance
      */
-    public TaskManager(@NotNull final Plugin plugin) {
+    public TaskManager(@NonNull final Plugin plugin) {
         this.plugin = plugin;
     }
 
@@ -32,7 +32,7 @@ public class TaskManager {
      *
      * @param runnable Runnable
      */
-    public void async(@NotNull final Runnable runnable) {
+    public void async(@NonNull final Runnable runnable) {
         Bukkit.getScheduler().runTaskAsynchronously(plugin, runnable);
     }
 
@@ -43,7 +43,7 @@ public class TaskManager {
      * @param delay    Delay long
      * @param repeat   Repeat long
      */
-    public void addRepeatingTask(@NotNull final BukkitRunnable runnable, final long delay, final long repeat) {
+    public void addRepeatingTask(@NonNull final BukkitRunnable runnable, final long delay, final long repeat) {
         BukkitTask task = runnable.runTaskTimerAsynchronously(plugin, delay, repeat);
         tasks.add(task);
     }

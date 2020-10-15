@@ -1,8 +1,8 @@
 package broccolai.tickets.commands;
 
 import cloud.commandframework.types.tuples.Tuple;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 public final class Single<T> implements Tuple {
 
@@ -20,7 +20,7 @@ public final class Single<T> implements Tuple {
      * @param <T>   Value type
      * @return Created pair
      */
-    @NotNull
+    @NonNull
     public static <T> Single<T> of(@Nullable final T value) {
         return new Single<>(value);
     }
@@ -41,7 +41,7 @@ public final class Single<T> implements Tuple {
     }
 
     @Override
-    public @NotNull Object @NotNull [] toArray() {
+    public @NonNull Object @NonNull [] toArray() {
         final Object[] array = new Object[1];
         array[0] = this.value;
         return array;

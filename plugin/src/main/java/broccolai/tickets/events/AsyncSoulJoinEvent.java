@@ -1,11 +1,11 @@
 package broccolai.tickets.events;
 
 import broccolai.tickets.user.PlayerSoul;
-import org.jetbrains.annotations.NotNull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 public final class AsyncSoulJoinEvent extends BaseEvent {
 
-    @NotNull
+    @NonNull
     private final PlayerSoul soul;
 
     /**
@@ -13,7 +13,7 @@ public final class AsyncSoulJoinEvent extends BaseEvent {
      *
      * @param soul Players soul
      */
-    public AsyncSoulJoinEvent(@NotNull final PlayerSoul soul) {
+    public AsyncSoulJoinEvent(@NonNull final PlayerSoul soul) {
         super(true);
         this.soul = soul;
     }
@@ -23,7 +23,7 @@ public final class AsyncSoulJoinEvent extends BaseEvent {
      *
      * @return Players soul
      */
-    @NotNull
+    @NonNull
     public PlayerSoul getSoul() {
         return soul;
     }

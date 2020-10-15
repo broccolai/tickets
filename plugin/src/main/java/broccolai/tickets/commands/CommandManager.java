@@ -9,7 +9,7 @@ import cloud.commandframework.execution.AsynchronousCommandExecutionCoordinator;
 import cloud.commandframework.paper.PaperCommandManager;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
-import org.jetbrains.annotations.NotNull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  * The Command Manager.
@@ -27,12 +27,12 @@ public final class CommandManager extends PaperCommandManager<Soul> {
      * @param pluginManager       Plugin manager
      */
     public CommandManager(
-            @NotNull final Plugin plugin,
-            @NotNull final Config config,
-            @NotNull final TicketManager ticketManager,
-            @NotNull final UserManager userManager,
-            @NotNull final NotificationManager notificationManager,
-            @NotNull final PluginManager pluginManager
+            @NonNull final Plugin plugin,
+            @NonNull final Config config,
+            @NonNull final TicketManager ticketManager,
+            @NonNull final UserManager userManager,
+            @NonNull final NotificationManager notificationManager,
+            @NonNull final PluginManager pluginManager
     ) throws Exception {
         super(
                 plugin,

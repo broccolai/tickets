@@ -1,6 +1,6 @@
 package broccolai.tickets.utilities;
 
-import org.jetbrains.annotations.NotNull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -19,8 +19,8 @@ public final class TimeUtilities {
      * @param time the time to format
      * @return a formatted time string
      */
-    @NotNull
-    public static String formatted(@NotNull final LocalDateTime time) {
+    @NonNull
+    public static String formatted(@NonNull final LocalDateTime time) {
         return time.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
     }
 

@@ -21,17 +21,17 @@ import cloud.commandframework.Description;
 import cloud.commandframework.arguments.standard.EnumArgument;
 import cloud.commandframework.context.CommandContext;
 import org.bukkit.plugin.PluginManager;
-import org.jetbrains.annotations.NotNull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.util.List;
 
 public final class TicketCommand extends BaseCommand {
 
-    @NotNull
+    @NonNull
     private final PluginManager pluginManager;
-    @NotNull
+    @NonNull
     private final TicketManager ticketManager;
-    @NotNull
+    @NonNull
     private final NotificationManager notificationManager;
 
     /**
@@ -44,8 +44,8 @@ public final class TicketCommand extends BaseCommand {
      * @param notificationManager Notification Manager
      */
     public TicketCommand(
-            @NotNull final PluginManager pluginManager, @NotNull final Config config, @NotNull final CommandManager manager,
-            @NotNull final TicketManager ticketManager, @NotNull final NotificationManager notificationManager
+            @NonNull final PluginManager pluginManager, @NonNull final Config config, @NonNull final CommandManager manager,
+            @NonNull final TicketManager ticketManager, @NonNull final NotificationManager notificationManager
     ) {
         this.pluginManager = pluginManager;
         this.ticketManager = ticketManager;
@@ -111,7 +111,7 @@ public final class TicketCommand extends BaseCommand {
                 .handler(c -> processLog(c.getSender(), c.get("ticket"))));
     }
 
-    private void processCreate(@NotNull final CommandContext<Soul> c) {
+    private void processCreate(@NonNull final CommandContext<Soul> c) {
         PlayerSoul soul = (PlayerSoul) c.getSender();
         TicketConstructionEvent constructionEvent = new TicketConstructionEvent(soul, c.get("message"));
         pluginManager.callEvent(constructionEvent);
@@ -121,7 +121,7 @@ public final class TicketCommand extends BaseCommand {
         }
     }
 
-    private void processUpdate(@NotNull final CommandContext<Soul> c) {
+    private void processUpdate(@NonNull final CommandContext<Soul> c) {
         try {
             Ticket edited = ticketManager.update(c.get("ticket"), c.get("message"));
             notificationManager.send(c.getSender(), null, MessageNames.UPDATE_TICKET, edited);
@@ -130,7 +130,7 @@ public final class TicketCommand extends BaseCommand {
         }
     }
 
-    private void processClose(@NotNull final CommandContext<Soul> c) {
+    private void processClose(@NonNull final CommandContext<Soul> c) {
         Soul soul = c.getSender();
 
         try {
@@ -141,7 +141,7 @@ public final class TicketCommand extends BaseCommand {
         }
     }
 
-    private void processList(@NotNull final CommandContext<Soul> c) {
+    private void processList(@NonNull final CommandContext<Soul> c) {
         Soul soul = c.getSender();
         List<Ticket> tickets = TicketSQL.selectAll(soul.getUniqueId(), c.flags().getValue("status", null));
 

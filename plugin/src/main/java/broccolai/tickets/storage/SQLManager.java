@@ -8,7 +8,7 @@ import broccolai.tickets.storage.platforms.MySQL;
 import broccolai.tickets.storage.platforms.Platform;
 import broccolai.tickets.storage.platforms.SQLite;
 import org.bukkit.plugin.Plugin;
-import org.jetbrains.annotations.NotNull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  * SQL Manager
@@ -24,7 +24,7 @@ public final class SQLManager {
      * @param plugin the plugin instance
      * @param config the configuration instance
      */
-    public static void setup(@NotNull final Plugin plugin, @NotNull final Config config) {
+    public static void setup(@NonNull final Plugin plugin, @NonNull final Config config) {
         Platform platform = config.getStorageMySQL() ? new MySQL() : new SQLite();
         HelpersSQL.setup(platform);
         SettingsSQL.setup(platform);

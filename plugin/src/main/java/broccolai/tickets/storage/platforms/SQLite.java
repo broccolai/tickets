@@ -8,7 +8,7 @@ import co.aikar.idb.HikariPooledDatabase;
 import co.aikar.idb.PooledDatabaseOptions;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
-import org.jetbrains.annotations.NotNull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.io.File;
 import java.io.IOException;
@@ -17,7 +17,7 @@ import java.sql.SQLException;
 public final class SQLite implements Platform {
 
     @Override
-    public void setup(@NotNull final Plugin plugin, @NotNull final Config config) {
+    public void setup(@NonNull final Plugin plugin, @NonNull final Config config) {
         int version = 0;
         File file = new File(plugin.getDataFolder(), "tickets.db");
 
@@ -90,12 +90,12 @@ public final class SQLite implements Platform {
     }
 
     @Override
-    public Long getPureLong(@NotNull final DbRow row, @NotNull final String column) {
+    public Long getPureLong(@NonNull final DbRow row, @NonNull final String column) {
         return Long.valueOf(row.getString(column));
     }
 
     @Override
-    public Integer getPureInteger(@NotNull final Object value) {
+    public Integer getPureInteger(@NonNull final Object value) {
         return (Integer) value;
     }
 

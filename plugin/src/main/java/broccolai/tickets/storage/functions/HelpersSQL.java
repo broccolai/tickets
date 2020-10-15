@@ -9,8 +9,8 @@ import co.aikar.idb.DbRow;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -33,7 +33,7 @@ public final class HelpersSQL {
      *
      * @param platformInstance the platform instance
      */
-    public static void setup(@NotNull final Platform platformInstance) {
+    public static void setup(@NonNull final Platform platformInstance) {
         platform = platformInstance;
     }
 
@@ -45,7 +45,7 @@ public final class HelpersSQL {
      * @return the constructed uuid
      */
     @Nullable
-    static UUID getUUID(@NotNull final DbRow row, @NotNull final String column) {
+    static UUID getUUID(@NonNull final DbRow row, @NonNull final String column) {
         String raw = row.getString(column);
 
         if (raw == null || raw.equals("null")) {
@@ -62,8 +62,8 @@ public final class HelpersSQL {
      * @param column the column to look in
      * @return the constructed location
      */
-    @NotNull
-    static Location getLocation(@NotNull final DbRow row, @NotNull final String column) {
+    @NonNull
+    static Location getLocation(@NonNull final DbRow row, @NonNull final String column) {
         String raw = row.getString(column);
         String[] split = raw.split("\\|");
         String rawWorld = split[0];
@@ -78,8 +78,8 @@ public final class HelpersSQL {
      * @param location a location instance
      * @return a string representation
      */
-    @NotNull
-    static String serializeLocation(@NotNull final Location location) {
+    @NonNull
+    static String serializeLocation(@NonNull final Location location) {
         World world = location.getWorld();
         return (world != null
                 ? world.getName()
@@ -93,8 +93,8 @@ public final class HelpersSQL {
      * @param column the column to look in
      * @return the constructed LocalDateTime
      */
-    @NotNull
-    static LocalDateTime getDate(@NotNull final DbRow row, @NotNull final String column) {
+    @NonNull
+    static LocalDateTime getDate(@NonNull final DbRow row, @NonNull final String column) {
         Instant instant = Instant.ofEpochSecond(platform.getPureLong(row, column));
 
         return LocalDateTime.ofInstant(instant, ZoneId.systemDefault());
@@ -106,8 +106,8 @@ public final class HelpersSQL {
      * @param time the LocalDateTime instance
      * @return a long representation
      */
-    @NotNull
-    static Long serializeLocalDateTime(@NotNull final LocalDateTime time) {
+    @NonNull
+    static Long serializeLocalDateTime(@NonNull final LocalDateTime time) {
         return time.atZone(ZoneId.systemDefault()).toEpochSecond();
     }
 
@@ -120,11 +120,11 @@ public final class HelpersSQL {
      * @param <T>    the class type
      * @return an enum
      */
-    @NotNull
+    @NonNull
     static <T extends Enum<T>> T getEnumValue(
-            @NotNull final DbRow row,
-            @NotNull final Class<T> clazz,
-            @NotNull final String column
+            @NonNull final DbRow row,
+            @NonNull final Class<T> clazz,
+            @NonNull final String column
     ) {
         T[] enumConstants = clazz.getEnumConstants();
         String raw = row.getString(column);
@@ -144,7 +144,7 @@ public final class HelpersSQL {
      * @param row the database row to use
      * @return the constructed ticket
      */
-    static Ticket buildTicket(@NotNull final DbRow row) {
+    static Ticket buildTicket(@NonNull final DbRow row) {
         Integer id = row.getInt("id");
         UUID player = getUUID(row, "uuid");
         List<Message> messages = MessageSQL.selectAll(row.getInt("id"));
@@ -162,7 +162,7 @@ public final class HelpersSQL {
      * @param row the database row to use
      * @return the constructed message
      */
-    static Message buildMessage(@NotNull final DbRow row) {
+    static Message buildMessage(@NonNull final DbRow row) {
         MessageReason reason = getEnumValue(row, MessageReason.class, "reason");
         LocalDateTime date = getDate(row, "date");
 

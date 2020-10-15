@@ -2,16 +2,16 @@ package broccolai.tickets.events;
 
 import broccolai.tickets.ticket.Message;
 import broccolai.tickets.user.PlayerSoul;
-import org.jetbrains.annotations.NotNull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  * Event representing a ticket during it's construction phase
  */
 public final class TicketConstructionEvent extends ThrowableEvent {
 
-    @NotNull
+    @NonNull
     private final PlayerSoul soul;
-    @NotNull
+    @NonNull
     private final Message message;
 
     /**
@@ -20,7 +20,7 @@ public final class TicketConstructionEvent extends ThrowableEvent {
      * @param soul    the ticket creator
      * @param message the tickets initial message
      */
-    public TicketConstructionEvent(@NotNull final PlayerSoul soul, @NotNull final Message message) {
+    public TicketConstructionEvent(@NonNull final PlayerSoul soul, @NonNull final Message message) {
         super(true);
         this.soul = soul;
         this.message = message;
@@ -31,7 +31,7 @@ public final class TicketConstructionEvent extends ThrowableEvent {
      *
      * @return Players soul
      */
-    @NotNull
+    @NonNull
     public PlayerSoul getSoul() {
         return soul;
     }
@@ -41,7 +41,7 @@ public final class TicketConstructionEvent extends ThrowableEvent {
      *
      * @return Message object
      */
-    @NotNull
+    @NonNull
     public Message getMessage() {
         return message;
     }

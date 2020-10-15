@@ -7,7 +7,7 @@ import cloud.commandframework.arguments.CommandArgument;
 import cloud.commandframework.arguments.parser.ArgumentParseResult;
 import cloud.commandframework.arguments.parser.ArgumentParser;
 import cloud.commandframework.context.CommandContext;
-import org.jetbrains.annotations.NotNull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.time.LocalDateTime;
 import java.util.Queue;
@@ -15,7 +15,7 @@ import java.util.StringJoiner;
 
 public final class MessageArgument extends CommandArgument<Soul, Message> {
 
-    private MessageArgument(final boolean required, @NotNull final String name) {
+    private MessageArgument(final boolean required, @NonNull final String name) {
         super(required, name, new MessageParser(), Message.class);
     }
 
@@ -25,8 +25,8 @@ public final class MessageArgument extends CommandArgument<Soul, Message> {
      * @param name Argument name
      * @return Created argument
      */
-    @NotNull
-    public static MessageArgument of(@NotNull final String name) {
+    @NonNull
+    public static MessageArgument of(@NonNull final String name) {
         return new MessageArgument(true, name);
     }
 
@@ -34,10 +34,10 @@ public final class MessageArgument extends CommandArgument<Soul, Message> {
     private static final class MessageParser implements ArgumentParser<Soul, Message> {
 
         @Override
-        @NotNull
+        @NonNull
         public ArgumentParseResult<Message> parse(
-                @NotNull final CommandContext<Soul> commandContext,
-                @NotNull final Queue<String> inputQueue
+                @NonNull final CommandContext<Soul> commandContext,
+                @NonNull final Queue<String> inputQueue
         ) {
             String input = inputQueue.peek();
             if (input == null) {

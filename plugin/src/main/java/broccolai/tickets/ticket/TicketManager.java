@@ -15,8 +15,8 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.PluginManager;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -26,9 +26,9 @@ import java.util.UUID;
  */
 public class TicketManager implements Listener {
 
-    @NotNull
+    @NonNull
     private final Config config;
-    @NotNull
+    @NonNull
     private final PluginManager pluginManager;
 
     /**
@@ -37,7 +37,7 @@ public class TicketManager implements Listener {
      * @param config        the config instance to use
      * @param pluginManager the pluginManager to call events with
      */
-    public TicketManager(@NotNull final Config config, @NotNull final PluginManager pluginManager) {
+    public TicketManager(@NonNull final Config config, @NonNull final PluginManager pluginManager) {
         this.config = config;
         this.pluginManager = pluginManager;
     }
@@ -50,7 +50,7 @@ public class TicketManager implements Listener {
      * @return the modified ticket
      * @throws TicketClosed if the ticket is closed
      */
-    public Ticket update(@NotNull final Ticket ticket, @NotNull final Message message) throws TicketClosed {
+    public Ticket update(@NonNull final Ticket ticket, @NonNull final Message message) throws TicketClosed {
         if (ticket.getStatus() == TicketStatus.CLOSED) {
             throw new TicketClosed();
         }
@@ -66,7 +66,7 @@ public class TicketManager implements Listener {
      * @return the modified ticket
      * @throws TicketClosed if the ticket is closed
      */
-    public Ticket pick(@Nullable final UUID uuid, @NotNull final Ticket ticket) throws TicketClosed {
+    public Ticket pick(@Nullable final UUID uuid, @NonNull final Ticket ticket) throws TicketClosed {
         if (ticket.getStatus() == TicketStatus.CLOSED) {
             throw new TicketClosed();
         }
@@ -87,7 +87,7 @@ public class TicketManager implements Listener {
      * @return the modified ticket
      * @throws TicketOpen if the ticket is open
      */
-    public Ticket yield(@Nullable final UUID uuid, @NotNull final Ticket ticket) throws TicketOpen {
+    public Ticket yield(@Nullable final UUID uuid, @NonNull final Ticket ticket) throws TicketOpen {
         if (ticket.getStatus() == TicketStatus.OPEN) {
             throw new TicketOpen();
         }
@@ -108,7 +108,7 @@ public class TicketManager implements Listener {
      * @return the modified ticket
      * @throws TicketClosed if the ticket is already closed
      */
-    public Ticket close(@Nullable final UUID uuid, @NotNull final Ticket ticket) throws TicketClosed {
+    public Ticket close(@Nullable final UUID uuid, @NonNull final Ticket ticket) throws TicketClosed {
         if (ticket.getStatus() == TicketStatus.CLOSED) {
             throw new TicketClosed();
         }
@@ -128,7 +128,7 @@ public class TicketManager implements Listener {
      * @return the modified ticket
      * @throws TicketClosed if the ticket is already closed
      */
-    public Ticket done(@Nullable final UUID uuid, @NotNull final Ticket ticket) throws TicketClosed {
+    public Ticket done(@Nullable final UUID uuid, @NonNull final Ticket ticket) throws TicketClosed {
         if (ticket.getStatus() == TicketStatus.CLOSED) {
             throw new TicketClosed();
         }
@@ -148,7 +148,7 @@ public class TicketManager implements Listener {
      * @return the modified ticket
      * @throws TicketOpen if the ticket is already open
      */
-    public Ticket reopen(@Nullable final UUID uuid, @NotNull final Ticket ticket) throws TicketOpen {
+    public Ticket reopen(@Nullable final UUID uuid, @NonNull final Ticket ticket) throws TicketOpen {
         if (ticket.getStatus() == TicketStatus.OPEN) {
             throw new TicketOpen();
         }
@@ -168,7 +168,7 @@ public class TicketManager implements Listener {
      * @param input  the note message
      * @return the modified ticket
      */
-    public Ticket note(@Nullable final UUID uuid, @NotNull final Ticket ticket, @NotNull final String input) {
+    public Ticket note(@Nullable final UUID uuid, @NonNull final Ticket ticket, @NonNull final String input) {
         Message message = new Message(MessageReason.NOTE, LocalDateTime.now(), input, uuid);
 
         return addMessageAndUpdate(ticket, message);
@@ -181,7 +181,7 @@ public class TicketManager implements Listener {
      * @param message the message to add
      * @return the modified ticket
      */
-    private Ticket addMessageAndUpdate(@NotNull final Ticket ticket, @NotNull final Message message) {
+    private Ticket addMessageAndUpdate(@NonNull final Ticket ticket, @NonNull final Message message) {
         ticket.getMessages().add(message);
 
         MessageSQL.insert(ticket, message);
@@ -196,7 +196,7 @@ public class TicketManager implements Listener {
      * @param e Event
      */
     @EventHandler
-    public void onTicketConstructPredicates(@NotNull final TicketConstructionEvent e) {
+    public void onTicketConstructPredicates(@NonNull final TicketConstructionEvent e) {
         PlayerSoul soul = e.getSoul();
 
         if (TicketSQL.count(soul.getUniqueId(), TicketStatus.OPEN) > config.getTicketLimitOpen() + 1) {
@@ -210,7 +210,7 @@ public class TicketManager implements Listener {
      * @param e Event
      */
     @EventHandler(priority = EventPriority.HIGHEST)
-    public void onTicketConstruct(@NotNull final TicketConstructionEvent e) {
+    public void onTicketConstruct(@NonNull final TicketConstructionEvent e) {
         PlayerSoul soul = e.getSoul();
         Message message = e.getMessage();
 

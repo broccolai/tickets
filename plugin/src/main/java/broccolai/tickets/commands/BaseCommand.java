@@ -7,14 +7,14 @@ import broccolai.tickets.user.Soul;
 import broccolai.tickets.utilities.ReplacementUtilities;
 import broccolai.tickets.utilities.TimeUtilities;
 import broccolai.tickets.utilities.UserUtilities;
-import org.jetbrains.annotations.NotNull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  * Base commands for ticket commands inherit from.
  */
 public class BaseCommand {
 
-    protected final void processShow(@NotNull final Soul soul, @NotNull final Ticket ticket) {
+    protected final void processShow(@NonNull final Soul soul, @NonNull final Ticket ticket) {
         String[] replacements = ReplacementUtilities.ticketReplacements(ticket);
 
         soul.message(Messages.TITLES__SHOW_TICKET, replacements);
@@ -29,7 +29,7 @@ public class BaseCommand {
         }
     }
 
-    protected final void processLog(@NotNull final Soul soul, @NotNull final Ticket ticket) {
+    protected final void processLog(@NonNull final Soul soul, @NonNull final Ticket ticket) {
         String[] replacements = ReplacementUtilities.ticketReplacements(ticket);
 
         soul.message(Messages.TITLES__TICKET_LOG, replacements);

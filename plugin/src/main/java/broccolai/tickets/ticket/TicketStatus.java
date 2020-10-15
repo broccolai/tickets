@@ -1,8 +1,8 @@
 package broccolai.tickets.ticket;
 
 import org.bukkit.ChatColor;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * enum representing the potential states of a ticket
@@ -12,10 +12,10 @@ public enum TicketStatus {
     PICKED(ChatColor.YELLOW),
     CLOSED(ChatColor.RED);
 
-    @NotNull
+    @NonNull
     private final ChatColor color;
 
-    TicketStatus(@NotNull final ChatColor color) {
+    TicketStatus(@NonNull final ChatColor color) {
         this.color = color;
     }
 
@@ -24,7 +24,7 @@ public enum TicketStatus {
      *
      * @return the ChatColor
      */
-    @NotNull
+    @NonNull
     public ChatColor getColor() {
         return color;
     }
@@ -36,7 +36,7 @@ public enum TicketStatus {
      * @return the constructed status, or if not found null
      */
     @Nullable
-    public static TicketStatus from(@NotNull final String input) {
+    public static TicketStatus from(@NonNull final String input) {
         for (TicketStatus value : values()) {
             if (value.name().equalsIgnoreCase(input)) {
                 return value;

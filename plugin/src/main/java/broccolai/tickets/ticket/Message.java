@@ -1,7 +1,7 @@
 package broccolai.tickets.ticket;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -11,9 +11,9 @@ import java.util.UUID;
  */
 public class Message {
 
-    @NotNull
+    @NonNull
     private final MessageReason reason;
-    @NotNull
+    @NonNull
     private final LocalDateTime date;
 
     @Nullable
@@ -29,8 +29,8 @@ public class Message {
      * @param data   String data
      */
     public Message(
-            @NotNull final MessageReason reason,
-            @NotNull final LocalDateTime date,
+            @NonNull final MessageReason reason,
+            @NonNull final LocalDateTime date,
             @Nullable final String data
     ) {
         this.reason = reason;
@@ -45,7 +45,7 @@ public class Message {
      * @param date   Date of the message
      * @param sender Unique id of the message creator
      */
-    public Message(@NotNull final MessageReason reason, @NotNull final LocalDateTime date, @Nullable final UUID sender) {
+    public Message(@NonNull final MessageReason reason, @NonNull final LocalDateTime date, @Nullable final UUID sender) {
         this.reason = reason;
         this.date = date;
         this.sender = sender;
@@ -60,8 +60,8 @@ public class Message {
      * @param sender the unique id of the message creator
      */
     public Message(
-            @NotNull final MessageReason reason,
-            @NotNull final LocalDateTime date,
+            @NonNull final MessageReason reason,
+            @NonNull final LocalDateTime date,
             @Nullable final String data,
             @Nullable final UUID sender
     ) {
@@ -76,7 +76,7 @@ public class Message {
      *
      * @return the MessageReason
      */
-    @NotNull
+    @NonNull
     public MessageReason getReason() {
         return reason;
     }
@@ -86,7 +86,7 @@ public class Message {
      *
      * @return the LocalDateTime
      */
-    @NotNull
+    @NonNull
     public LocalDateTime getDate() {
         return date;
     }

@@ -5,7 +5,7 @@ import broccolai.corn.spigot.locale.LocaleKeys;
 import broccolai.corn.spigot.locale.LocaleUtils;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.Plugin;
-import org.jetbrains.annotations.NotNull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.io.File;
 import java.util.Locale;
@@ -13,7 +13,7 @@ import java.util.Map;
 
 public final class LocaleManager extends CornLocaleManager {
 
-    private LocaleManager(@NotNull final FileConfiguration defaultSource, @NotNull final LocaleKeys prefix) {
+    private LocaleManager(@NonNull final FileConfiguration defaultSource, @NonNull final LocaleKeys prefix) {
         super(defaultSource, prefix);
     }
 
@@ -23,8 +23,8 @@ public final class LocaleManager extends CornLocaleManager {
      * @param plugin Plugin instance
      * @return the created locale manager
      */
-    @NotNull
-    public static LocaleManager create(@NotNull final Plugin plugin) {
+    @NonNull
+    public static LocaleManager create(@NonNull final Plugin plugin) {
         Map<Locale, FileConfiguration> locales = LocaleUtils.saveLocales(plugin,
                 new File(plugin.getDataFolder(), "locales"), "/locales"
         );

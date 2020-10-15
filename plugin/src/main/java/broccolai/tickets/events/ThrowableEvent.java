@@ -2,8 +2,8 @@ package broccolai.tickets.events;
 
 import broccolai.tickets.exceptions.PureException;
 import org.bukkit.event.Cancellable;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * Event that can be thrown (cancelled) with a message
@@ -38,7 +38,7 @@ class ThrowableEvent extends BaseEvent implements Cancellable {
      *
      * @param exception the PureException to use
      */
-    public void cancel(@NotNull final PureException exception) {
+    public void cancel(@NonNull final PureException exception) {
         this.exception = exception;
         isCancelled = true;
     }
@@ -47,7 +47,7 @@ class ThrowableEvent extends BaseEvent implements Cancellable {
         return exception != null;
     }
 
-    @NotNull
+    @NonNull
     public PureException getException() {
         assert exception != null;
         return exception;

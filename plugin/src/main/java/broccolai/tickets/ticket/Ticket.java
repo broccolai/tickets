@@ -5,8 +5,8 @@ import com.google.gson.JsonObject;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -16,13 +16,13 @@ import java.util.UUID;
 public final class Ticket {
 
     private final int id;
-    @NotNull
+    @NonNull
     private final UUID playerUUID;
-    @NotNull
+    @NonNull
     private final List<Message> messages;
-    @NotNull
+    @NonNull
     private final Location location;
-    @NotNull
+    @NonNull
     private TicketStatus status;
 
     @Nullable
@@ -40,10 +40,10 @@ public final class Ticket {
      */
     public Ticket(
             final int id,
-            @NotNull final UUID playerUUID,
-            @NotNull final List<Message> messages,
-            @NotNull final Location location,
-            @NotNull final TicketStatus status,
+            @NonNull final UUID playerUUID,
+            @NonNull final List<Message> messages,
+            @NonNull final Location location,
+            @NonNull final TicketStatus status,
             @Nullable final UUID pickerUUID
     ) {
         this.id = id;
@@ -59,7 +59,7 @@ public final class Ticket {
      *
      * @return the message instance
      */
-    @NotNull
+    @NonNull
     public Message currentMessage() {
         return Objects.requireNonNull(Lists.last(messages, m -> m.getReason() == MessageReason.MESSAGE));
     }
@@ -79,7 +79,7 @@ public final class Ticket {
      *
      * @return a local date time
      */
-    @NotNull
+    @NonNull
     public LocalDateTime dateOpened() {
         return messages.get(0).getDate();
     }
@@ -98,7 +98,7 @@ public final class Ticket {
      *
      * @return the unique id
      */
-    @NotNull
+    @NonNull
     public UUID getPlayerUUID() {
         return playerUUID;
     }
@@ -108,7 +108,7 @@ public final class Ticket {
      *
      * @return a list of messages
      */
-    @NotNull
+    @NonNull
     public List<Message> getMessages() {
         return messages;
     }
@@ -118,7 +118,7 @@ public final class Ticket {
      *
      * @return a location instance
      */
-    @NotNull
+    @NonNull
     public Location getLocation() {
         return location;
     }
@@ -128,7 +128,7 @@ public final class Ticket {
      *
      * @return the tickets status
      */
-    @NotNull
+    @NonNull
     public TicketStatus getStatus() {
         return status;
     }
@@ -138,7 +138,7 @@ public final class Ticket {
      *
      * @param status the status to assign
      */
-    public void setStatus(@NotNull final TicketStatus status) {
+    public void setStatus(@NonNull final TicketStatus status) {
         this.status = status;
     }
 

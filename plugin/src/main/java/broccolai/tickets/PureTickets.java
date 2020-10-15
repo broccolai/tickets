@@ -14,7 +14,7 @@ import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.jetbrains.annotations.NotNull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  * Main class
@@ -68,7 +68,7 @@ public final class PureTickets extends JavaPlugin {
      *
      * @param listeners Listeners to register
      */
-    private void registerEvents(@NotNull final Listener... listeners) {
+    private void registerEvents(@NonNull final Listener... listeners) {
         for (Listener listener : listeners) {
             pluginManager.registerEvents(listener, this);
         }

@@ -1,6 +1,6 @@
 package broccolai.tickets.storage;
 
-import org.jetbrains.annotations.Nullable;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * Enum of time amounts

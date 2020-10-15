@@ -8,14 +8,14 @@ import broccolai.tickets.utilities.Constants;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.jetbrains.annotations.NotNull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  * Task for displaying reminders.
  */
 public final class ReminderTask extends BukkitRunnable {
 
-    @NotNull
+    @NonNull
     private final UserManager userManager;
 
     /**
@@ -23,7 +23,7 @@ public final class ReminderTask extends BukkitRunnable {
      *
      * @param userManager the user manager instance
      */
-    public ReminderTask(@NotNull final UserManager userManager) {
+    public ReminderTask(@NonNull final UserManager userManager) {
         this.userManager = userManager;
     }
 

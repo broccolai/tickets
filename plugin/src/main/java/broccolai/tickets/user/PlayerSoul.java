@@ -3,8 +3,8 @@ package broccolai.tickets.user;
 import broccolai.tickets.storage.functions.SettingsSQL;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.util.Objects;
 import java.util.UUID;
@@ -12,9 +12,9 @@ import java.util.function.Consumer;
 
 public final class PlayerSoul implements Soul {
 
-    @NotNull
+    @NonNull
     private final Player player;
-    @NotNull
+    @NonNull
     private final UUID uniqueId;
     @Nullable
     private UserSettings settings = null;
@@ -24,31 +24,31 @@ public final class PlayerSoul implements Soul {
      *
      * @param player Player instance
      */
-    public PlayerSoul(@NotNull final Player player) {
+    public PlayerSoul(@NonNull final Player player) {
         this.player = player;
         this.uniqueId = player.getUniqueId();
     }
 
     @Override
-    @NotNull
+    @NonNull
     public String getName() {
         return Objects.requireNonNull(player.getName());
     }
 
     @Override
-    @NotNull
+    @NonNull
     public UUID getUniqueId() {
         return uniqueId;
     }
 
     @Override
-    @NotNull
+    @NonNull
     public CommandSender asSender() {
         return asPlayer();
     }
 
     @Override
-    public void message(@NotNull final String message) {
+    public void message(@NonNull final String message) {
         asPlayer().sendMessage(message);
     }
 
@@ -57,7 +57,7 @@ public final class PlayerSoul implements Soul {
      *
      * @return Player object
      */
-    @NotNull
+    @NonNull
     public Player asPlayer() {
         return player;
     }
@@ -67,7 +67,7 @@ public final class PlayerSoul implements Soul {
      *
      * @return a constructed UserSettings instance
      */
-    @NotNull
+    @NonNull
     public UserSettings preferences() {
         if (settings != null) {
             return settings;
@@ -88,7 +88,7 @@ public final class PlayerSoul implements Soul {
      *
      * @param action the function to apply to the Users Settings
      */
-    public void modifyPreferences(@NotNull final Consumer<UserSettings> action) {
+    public void modifyPreferences(@NonNull final Consumer<UserSettings> action) {
         UserSettings settings = preferences();
         action.accept(settings);
 

@@ -2,8 +2,8 @@ package broccolai.tickets.exceptions;
 
 import broccolai.corn.spigot.locale.LocaleKeys;
 import broccolai.tickets.locale.Messages;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * an base exception class for other PureExceptions to inherit
@@ -43,7 +43,7 @@ public class PureException extends RuntimeException {
      * @param message      the locale message key
      * @param replacements the replacements to use
      */
-    public PureException(@Nullable final Messages message, @NotNull final String... replacements) {
+    public PureException(@Nullable final Messages message, @NonNull final String... replacements) {
         this.message = message;
         this.replacements = replacements;
         this.value = null;

@@ -8,8 +8,8 @@ import com.google.gson.JsonObject;
 import com.intellectualsites.http.EntityMapper;
 import com.intellectualsites.http.HttpClient;
 import com.intellectualsites.http.external.GsonMapper;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.util.Base64;
 import java.util.UUID;
@@ -20,14 +20,14 @@ import java.util.logging.Logger;
  */
 public class DiscordManager {
 
-    @NotNull
+    @NonNull
     private final HttpClient client;
 
-    @NotNull
+    @NonNull
     private final Logger logger;
     @Nullable
     private final String serverName;
-    @NotNull
+    @NonNull
     private final Boolean enabled;
 
     /**
@@ -36,7 +36,7 @@ public class DiscordManager {
      * @param logger the logger to log errors to
      * @param config the config instance to use
      */
-    public DiscordManager(@NotNull final Logger logger, @NotNull final Config config) {
+    public DiscordManager(@NonNull final Logger logger, @NonNull final Config config) {
         this.client = HttpClient.newBuilder()
                 .withBaseURL(config.getApiDomain() + "/api/v2")
                 .withDecorator((req) -> {
@@ -65,7 +65,7 @@ public class DiscordManager {
      * @param author the authors unique id
      * @param action the action to send
      */
-    public void sendInformation(@NotNull final Ticket ticket, @Nullable final UUID author, @NotNull final String action) {
+    public void sendInformation(@NonNull final Ticket ticket, @Nullable final UUID author, @NonNull final String action) {
         if (!enabled) {
             return;
         }

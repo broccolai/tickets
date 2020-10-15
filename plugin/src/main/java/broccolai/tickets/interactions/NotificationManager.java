@@ -26,8 +26,8 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.util.UUID;
 
@@ -36,11 +36,11 @@ import java.util.UUID;
  */
 public final class NotificationManager implements Listener {
 
-    @NotNull
+    @NonNull
     private final LocaleManager localeManager;
-    @NotNull
+    @NonNull
     private final UserManager userManager;
-    @NotNull
+    @NonNull
     private final DiscordManager discordManager;
 
     /**
@@ -53,11 +53,11 @@ public final class NotificationManager implements Listener {
      * @param localeManager  the locale manager
      */
     public NotificationManager(
-            @NotNull final Config config,
-            @NotNull final TaskManager taskManager,
-            @NotNull final LocaleManager localeManager,
-            @NotNull final UserManager userManager,
-            @NotNull final DiscordManager discordManager
+            @NonNull final Config config,
+            @NonNull final TaskManager taskManager,
+            @NonNull final LocaleManager localeManager,
+            @NonNull final UserManager userManager,
+            @NonNull final DiscordManager discordManager
     ) {
         this.localeManager = localeManager;
         this.userManager = userManager;
@@ -77,10 +77,10 @@ public final class NotificationManager implements Listener {
      * @param ticket the ticket instance
      */
     public void send(
-            @NotNull final Soul soul,
+            @NonNull final Soul soul,
             @Nullable final UUID target,
-            @NotNull final MessageNames names,
-            @NotNull final Ticket ticket
+            @NonNull final MessageNames names,
+            @NonNull final Ticket ticket
     ) {
         String[] specificReplacements = {"user", soul.getName(), "target", UserUtilities.nameFromUUID(target)};
         String[] genericReplacements = ReplacementUtilities.ticketReplacements(ticket);
@@ -142,7 +142,7 @@ public final class NotificationManager implements Listener {
      * @param soul      the command sender to message
      * @param exception the PureException to handle
      */
-    public void handleException(@NotNull final Soul soul, @NotNull final PureException exception) {
+    public void handleException(@NonNull final Soul soul, @NonNull final PureException exception) {
         if (exception.getValue() != null) {
             soul.message(exception.getValue());
             return;
@@ -158,7 +158,7 @@ public final class NotificationManager implements Listener {
      * @param e Event
      */
     @EventHandler
-    public void onTicketCreation(@NotNull final TicketCreationEvent e) {
+    public void onTicketCreation(@NonNull final TicketCreationEvent e) {
         send(e.getSoul(), null, MessageNames.NEW_TICKET, e.getTicket());
     }
 
@@ -168,7 +168,7 @@ public final class NotificationManager implements Listener {
      * @param e Event
      */
     @EventHandler
-    public void onAsyncSoulJoin(@NotNull final AsyncSoulJoinEvent e) {
+    public void onAsyncSoulJoin(@NonNull final AsyncSoulJoinEvent e) {
         final Soul soul = e.getSoul();
 
         NotificationSQL.retrieve(soul.getUniqueId())

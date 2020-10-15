@@ -11,7 +11,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.plugin.PluginManager;
-import org.jetbrains.annotations.NotNull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -25,13 +25,13 @@ import java.util.UUID;
  */
 public final class UserManager implements Listener {
 
-    @NotNull
+    @NonNull
     private final PluginManager pluginManager;
-    @NotNull
+    @NonNull
     private final TaskManager taskManager;
-    @NotNull
+    @NonNull
     private final Map<UUID, PlayerSoul> souls = new HashMap<>();
-    @NotNull
+    @NonNull
     private final Set<String> names = TicketSQL.selectNames();
 
     /**
@@ -40,7 +40,7 @@ public final class UserManager implements Listener {
      * @param pluginManager Plugin manager
      * @param taskManager   Task manager
      */
-    public UserManager(@NotNull final PluginManager pluginManager, @NotNull final TaskManager taskManager) {
+    public UserManager(@NonNull final PluginManager pluginManager, @NonNull final TaskManager taskManager) {
         this.pluginManager = pluginManager;
         this.taskManager = taskManager;
     }
@@ -51,8 +51,8 @@ public final class UserManager implements Listener {
      * @param sender Command Sender
      * @return Soul
      */
-    @NotNull
-    public Soul fromSender(@NotNull final CommandSender sender) {
+    @NonNull
+    public Soul fromSender(@NonNull final CommandSender sender) {
         if (sender instanceof ConsoleCommandSender) {
             return new ConsoleSoul();
         }
@@ -72,8 +72,8 @@ public final class UserManager implements Listener {
      * @param player Player instance
      * @return Player soul
      */
-    @NotNull
-    public PlayerSoul fromPlayer(@NotNull final Player player) {
+    @NonNull
+    public PlayerSoul fromPlayer(@NonNull final Player player) {
         return (PlayerSoul) fromSender(player);
     }
 
@@ -82,13 +82,13 @@ public final class UserManager implements Listener {
      *
      * @return List of names
      */
-    @NotNull
+    @NonNull
     public List<String> getNames() {
         return new ArrayList<>(names);
     }
 
-    @NotNull
-    private PlayerSoul makeAndPut(@NotNull final Player player) {
+    @NonNull
+    private PlayerSoul makeAndPut(@NonNull final Player player) {
         PlayerSoul soul = new PlayerSoul(player);
 
         souls.put(player.getUniqueId(), soul);
@@ -101,7 +101,7 @@ public final class UserManager implements Listener {
      * @param e Event
      */
     @EventHandler
-    public void onTicketCreation(@NotNull final TicketCreationEvent e) {
+    public void onTicketCreation(@NonNull final TicketCreationEvent e) {
         names.add(e.getSoul().getName());
     }
 
@@ -111,7 +111,7 @@ public final class UserManager implements Listener {
      * @param e Event
      */
     @EventHandler
-    public void onJoin(@NotNull final PlayerJoinEvent e) {
+    public void onJoin(@NonNull final PlayerJoinEvent e) {
         taskManager.async(() -> {
             PlayerSoul soul = fromPlayer(e.getPlayer());
             AsyncSoulJoinEvent event = new AsyncSoulJoinEvent(soul);

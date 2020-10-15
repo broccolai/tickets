@@ -1,6 +1,6 @@
 package broccolai.tickets.user;
 
-import org.jetbrains.annotations.NotNull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  * class representing a users setting choices
@@ -24,7 +24,7 @@ public final class UserSettings {
      * @param option Option
      * @param value  Value to use
      */
-    public void set(@NotNull final Options option, final boolean value) {
+    public void set(@NonNull final Options option, final boolean value) {
         if (option == Options.ANNOUNCEMENTS) {
             announcements = value;
         }

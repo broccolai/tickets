@@ -1,7 +1,7 @@
 package broccolai.tickets.locale;
 
 import broccolai.corn.spigot.locale.LocaleKeys;
-import org.jetbrains.annotations.NotNull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  * Enum representing locale messages.
@@ -75,7 +75,7 @@ public enum Messages implements LocaleKeys {
     }
 
     @Override
-    public @NotNull String getName() {
+    public @NonNull String getName() {
         return name().toLowerCase().replace("__", ".");
     }
 
@@ -92,8 +92,8 @@ public enum Messages implements LocaleKeys {
      * @param messageNames the message name
      * @return a message
      */
-    @NotNull
-    public static Messages retrieve(@NotNull final TargetType targetType, @NotNull final MessageNames messageNames) {
+    @NonNull
+    public static Messages retrieve(@NonNull final TargetType targetType, @NonNull final MessageNames messageNames) {
         return valueOf(targetType.name() + "__" + messageNames.name());
     }
 }

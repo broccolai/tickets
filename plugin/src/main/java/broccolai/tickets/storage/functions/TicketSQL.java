@@ -11,9 +11,8 @@ import co.aikar.idb.DB;
 import co.aikar.idb.DbRow;
 import com.google.common.collect.ObjectArrays;
 import org.bukkit.Location;
-import org.intellij.lang.annotations.Language;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.sql.SQLException;
 import java.time.LocalDateTime;
@@ -41,7 +40,7 @@ public final class TicketSQL {
      *
      * @param platformInstance the platform instance
      */
-    public static void setup(@NotNull final Platform platformInstance) {
+    public static void setup(@NonNull final Platform platformInstance) {
         platform = platformInstance;
     }
 
@@ -72,7 +71,7 @@ public final class TicketSQL {
      * @return Constructed ticket
      */
     @Nullable
-    public static Ticket select(final int id, @NotNull final UUID uuid) {
+    public static Ticket select(final int id, @NonNull final UUID uuid) {
         DbRow row;
 
         try {
@@ -94,7 +93,7 @@ public final class TicketSQL {
      * @param status the optional status to filter with
      * @return a list of the retrieved tickets
      */
-    @NotNull
+    @NonNull
     public static List<Ticket> selectAll(@Nullable final TicketStatus status) {
         List<DbRow> results;
 
@@ -124,11 +123,10 @@ public final class TicketSQL {
      * @param status the optional status to filter with
      * @return a list of the retrieved tickets
      */
-    @NotNull
-    public static List<Ticket> selectAll(@NotNull final UUID uuid, @Nullable final TicketStatus status) {
+    @NonNull
+    public static List<Ticket> selectAll(@NonNull final UUID uuid, @Nullable final TicketStatus status) {
         List<DbRow> results;
 
-        @Language("SQL")
         String sql = "SELECT id, uuid, status, picker, location from puretickets_ticket WHERE uuid = ?";
 
         try {
@@ -151,9 +149,8 @@ public final class TicketSQL {
      * @param statuses the optional status to filter with
      * @return a list of the retrieved tickets
      */
-    @NotNull
-    public static List<Integer> selectIds(@NotNull final UUID uuid, @Nullable final TicketStatus... statuses) {
-        @Language("SQL")
+    @NonNull
+    public static List<Integer> selectIds(@NonNull final UUID uuid, @Nullable final TicketStatus... statuses) {
         String sql = "SELECT id from puretickets_ticket WHERE uuid = ?";
         Pair<String, Object[]> extensions = buildWhereExtension(true, statuses);
         Object[] replacements = ObjectArrays.concat(uuid.toString(), extensions.getSecond());
@@ -173,8 +170,7 @@ public final class TicketSQL {
      * @return the most recent ticket or if non are eligible null
      */
     @Nullable
-    public static Ticket selectLastTicket(@NotNull final UUID uuid, @Nullable final TicketStatus... statuses) {
-        @Language("SQL")
+    public static Ticket selectLastTicket(@NonNull final UUID uuid, @Nullable final TicketStatus... statuses) {
         String sql = "SELECT max(id) AS 'id', uuid, status, picker, location FROM puretickets_ticket WHERE uuid = ?";
         Pair<String, Object[]> extensions = buildWhereExtension(true, statuses);
         Object[] replacements = ObjectArrays.concat(uuid.toString(), extensions.getSecond());
@@ -193,11 +189,10 @@ public final class TicketSQL {
      * @param statuses the optional statuses to filter by
      * @return a list of player names
      */
-    @NotNull
+    @NonNull
     public static Set<String> selectNames(@Nullable final TicketStatus... statuses) {
         List<String> results;
 
-        @Language("SQL")
         String sql = "SELECT uuid from puretickets_ticket";
         Pair<String, Object[]> extensions = buildWhereExtension(false, statuses);
 
@@ -218,11 +213,10 @@ public final class TicketSQL {
      * @param uuid the optional players unique id to filter with
      * @return an enum map of the ticket stats
      */
-    @NotNull
+    @NonNull
     public static EnumMap<TicketStatus, Integer> selectTicketStats(@Nullable final UUID uuid) {
         DbRow row;
 
-        @Language("SQL")
         String sql = "SELECT "
                 + "SUM(Status LIKE 'OPEN') AS open, "
                 + "SUM(Status LIKE 'PICKED') AS picked, "
@@ -271,7 +265,7 @@ public final class TicketSQL {
      * @param status the status to filter with
      * @return the number of tickets
      */
-    public static int count(@NotNull final UUID uuid, @NotNull final TicketStatus status) {
+    public static int count(@NonNull final UUID uuid, @NonNull final TicketStatus status) {
         try {
             return platform.getPureInteger(DB.getFirstColumn(
                     "SELECT COUNT(id) FROM puretickets_ticket WHERE uuid = ? AND status = ?",
@@ -291,7 +285,6 @@ public final class TicketSQL {
      * @return the number of tickets
      */
     public static int count(@Nullable final TicketStatus status) {
-        @Language("SQL")
         String sql = "SELECT COUNT(id) FROM puretickets_ticket";
 
         try {
@@ -315,10 +308,10 @@ public final class TicketSQL {
      * @return the tickets id
      */
     public static int insert(
-            @NotNull final UUID uuid,
-            @NotNull final TicketStatus status,
+            @NonNull final UUID uuid,
+            @NonNull final TicketStatus status,
             @Nullable final UUID picker,
-            @NotNull final Location location
+            @NonNull final Location location
     ) {
         Integer index;
 
@@ -346,7 +339,7 @@ public final class TicketSQL {
      *
      * @param ticket the ticket to use
      */
-    public static void update(@NotNull final Ticket ticket) {
+    public static void update(@NonNull final Ticket ticket) {
         UUID pickerUUID = ticket.getPickerUUID();
         String picker;
 
@@ -367,7 +360,7 @@ public final class TicketSQL {
      * @param span the optional span to check within
      * @return a map of players and their ticket completions.
      */
-    public static Map<UUID, Integer> highscores(@NotNull final TimeAmount span) {
+    public static Map<UUID, Integer> highscores(@NonNull final TimeAmount span) {
         Map<UUID, Integer> data = new HashMap<>();
         long length;
 
@@ -377,7 +370,6 @@ public final class TicketSQL {
             length = LocalDateTime.now().atZone(ZoneId.systemDefault()).toEpochSecond() - span.getLength();
         }
 
-        @Language("SQL")
         String sql = "SELECT picker, COUNT(*) AS `num` "
                 + "FROM puretickets_ticket "
                 + "WHERE status = ? "
@@ -398,7 +390,7 @@ public final class TicketSQL {
         return data;
     }
 
-    @NotNull
+    @NonNull
     private static Pair<String, Object[]> buildWhereExtension(final boolean hasWhere, final TicketStatus... statuses) {
         final Object[] replacements = new String[statuses.length];
         final StringBuilder sb = new StringBuilder();

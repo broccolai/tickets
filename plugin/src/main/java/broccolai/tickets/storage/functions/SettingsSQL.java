@@ -5,7 +5,7 @@ import broccolai.tickets.user.UserSettings;
 import co.aikar.idb.DB;
 import co.aikar.idb.DbRow;
 import org.bukkit.Bukkit;
-import org.jetbrains.annotations.NotNull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.sql.SQLException;
 import java.util.UUID;
@@ -25,7 +25,7 @@ public final class SettingsSQL {
      *
      * @param platformInstance the platform to use
      */
-    public static void setup(@NotNull final Platform platformInstance) {
+    public static void setup(@NonNull final Platform platformInstance) {
         platform = platformInstance;
     }
 
@@ -35,8 +35,8 @@ public final class SettingsSQL {
      * @param uuid the players unique id
      * @return the constructed UserSettings
      */
-    @NotNull
-    public static UserSettings select(@NotNull final UUID uuid) {
+    @NonNull
+    public static UserSettings select(@NonNull final UUID uuid) {
         DbRow result;
 
         try {
@@ -59,7 +59,7 @@ public final class SettingsSQL {
      * @param uuid the players unique id
      * @return a boolean
      */
-    public static boolean exists(@NotNull final UUID uuid) {
+    public static boolean exists(@NonNull final UUID uuid) {
         try {
             return platform.getPureInteger(DB.getFirstColumn(
                     "SELECT EXISTS(SELECT 1 from puretickets_settings WHERE uuid = ?)",
@@ -76,7 +76,7 @@ public final class SettingsSQL {
      * @param uuid     the players unique id
      * @param settings the users settings
      */
-    public static void insert(@NotNull final UUID uuid, @NotNull final UserSettings settings) {
+    public static void insert(@NonNull final UUID uuid, @NonNull final UserSettings settings) {
         try {
             DB.executeInsert("INSERT INTO puretickets_settings(uuid, announcements) VALUES(?, ?)",
                     uuid.toString(), settings.getAnnouncements()
@@ -92,7 +92,7 @@ public final class SettingsSQL {
      * @param uuid     the players unique id
      * @param settings the users settings
      */
-    public static void update(@NotNull final UUID uuid, @NotNull final UserSettings settings) {
+    public static void update(@NonNull final UUID uuid, @NonNull final UserSettings settings) {
         try {
             DB.executeUpdate("UPDATE puretickets_settings SET announcements = ? WHERE uuid = ?",
                     settings.getAnnouncements(), uuid.toString()
