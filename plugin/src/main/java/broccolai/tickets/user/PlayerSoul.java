@@ -1,23 +1,30 @@
 package broccolai.tickets.user;
 
 import broccolai.tickets.storage.functions.SettingsSQL;
-import java.util.Objects;
-import java.util.UUID;
-import java.util.function.Consumer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class PlayerSoul implements Soul {
+import java.util.Objects;
+import java.util.UUID;
+import java.util.function.Consumer;
+
+public final class PlayerSoul implements Soul {
+
     @NotNull
-    protected final Player player;
+    private final Player player;
     @NotNull
-    protected final UUID uniqueId;
+    private final UUID uniqueId;
     @Nullable
     private UserSettings settings = null;
 
-    public PlayerSoul(@NotNull Player player) {
+    /**
+     * Construct a PlayerSoul with a Player instance
+     *
+     * @param player Player instance
+     */
+    public PlayerSoul(@NotNull final Player player) {
         this.player = player;
         this.uniqueId = player.getUniqueId();
     }
@@ -35,16 +42,21 @@ public class PlayerSoul implements Soul {
     }
 
     @Override
-    @Nullable
+    @NotNull
     public CommandSender asSender() {
         return asPlayer();
     }
 
     @Override
-    public void message(@NotNull String message) {
+    public void message(@NotNull final String message) {
         asPlayer().sendMessage(message);
     }
 
+    /**
+     * Get the Player associated with this soul
+     *
+     * @return Player object
+     */
     @NotNull
     public Player asPlayer() {
         return player;
@@ -76,10 +88,11 @@ public class PlayerSoul implements Soul {
      *
      * @param action the function to apply to the Users Settings
      */
-    public void modifyPreferences(@NotNull Consumer<UserSettings> action) {
+    public void modifyPreferences(@NotNull final Consumer<UserSettings> action) {
         UserSettings settings = preferences();
         action.accept(settings);
 
         SettingsSQL.update(uniqueId, settings);
     }
+
 }

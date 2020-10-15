@@ -4,12 +4,6 @@ import broccolai.tickets.events.AsyncSoulJoinEvent;
 import broccolai.tickets.events.TicketCreationEvent;
 import broccolai.tickets.storage.functions.TicketSQL;
 import broccolai.tickets.tasks.TaskManager;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
@@ -19,10 +13,18 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.plugin.PluginManager;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
+
 /**
- * The manager for users.
+ * The manager for users
  */
 public final class UserManager implements Listener {
+
     @NotNull
     private final PluginManager pluginManager;
     @NotNull
@@ -32,13 +34,19 @@ public final class UserManager implements Listener {
     @NotNull
     private final Set<String> names = TicketSQL.selectNames();
 
+    /**
+     * Construct a user manager
+     *
+     * @param pluginManager Plugin manager
+     * @param taskManager   Task manager
+     */
     public UserManager(@NotNull final PluginManager pluginManager, @NotNull final TaskManager taskManager) {
         this.pluginManager = pluginManager;
         this.taskManager = taskManager;
     }
 
     /**
-     * Create a Soul from the Command Sender and register it.
+     * Create a Soul from the Command Sender and register it
      *
      * @param sender Command Sender
      * @return Soul
@@ -58,11 +66,22 @@ public final class UserManager implements Listener {
         return makeAndPut(player);
     }
 
+    /**
+     * Create a soul from a player
+     *
+     * @param player Player instance
+     * @return Player soul
+     */
     @NotNull
     public PlayerSoul fromPlayer(@NotNull final Player player) {
         return (PlayerSoul) fromSender(player);
     }
 
+    /**
+     * Get all cached names
+     *
+     * @return List of names
+     */
     @NotNull
     public List<String> getNames() {
         return new ArrayList<>(names);
@@ -77,22 +96,27 @@ public final class UserManager implements Listener {
     }
 
     /**
-     * Listener for Ticket Creation.
+     * Listener for Ticket Creation
+     *
+     * @param e Event
      */
     @EventHandler
-    public final void onTicketCreation(@NotNull final TicketCreationEvent e) {
+    public void onTicketCreation(@NotNull final TicketCreationEvent e) {
         names.add(e.getSoul().getName());
     }
 
     /**
-     * Listener for Player Joins.
+     * Listener for Player Joins
+     *
+     * @param e Event
      */
     @EventHandler
-    public final void onJoin(@NotNull final PlayerJoinEvent e) {
+    public void onJoin(@NotNull final PlayerJoinEvent e) {
         taskManager.async(() -> {
             PlayerSoul soul = fromPlayer(e.getPlayer());
             AsyncSoulJoinEvent event = new AsyncSoulJoinEvent(soul);
             pluginManager.callEvent(event);
         });
     }
+
 }

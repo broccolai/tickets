@@ -5,11 +5,16 @@ import broccolai.tickets.storage.TimeAmount;
 import broccolai.tickets.storage.platforms.Platform;
 import broccolai.tickets.ticket.Ticket;
 import broccolai.tickets.ticket.TicketStatus;
-import broccolai.tickets.utilities.generic.UserUtilities;
+import broccolai.tickets.utilities.UserUtilities;
 import cloud.commandframework.types.tuples.Pair;
 import co.aikar.idb.DB;
 import co.aikar.idb.DbRow;
 import com.google.common.collect.ObjectArrays;
+import org.bukkit.Location;
+import org.intellij.lang.annotations.Language;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -20,34 +25,34 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
-import org.bukkit.Location;
-import org.intellij.lang.annotations.Language;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 /**
- * Ticket SQL.
+ * Ticket SQL
  */
-public class TicketSQL {
+public final class TicketSQL {
+
     private static Platform platform;
 
+    private TicketSQL() {
+    }
+
     /**
-     * Initialise TicketSQL.
+     * Initialise TicketSQL
      *
      * @param platformInstance the platform instance
      */
-    public static void setup(@NotNull Platform platformInstance) {
+    public static void setup(@NotNull final Platform platformInstance) {
         platform = platformInstance;
     }
 
     /**
-     * Retrieve a Ticket from the Database.
+     * Retrieve a Ticket from the Database
      *
      * @param id the tickets id
      * @return the constructed ticket
      */
     @Nullable
-    public static Ticket select(int id) {
+    public static Ticket select(final int id) {
         DbRow row;
 
         try {
@@ -60,17 +65,22 @@ public class TicketSQL {
     }
 
     /**
-     * Retrieve a Ticket from the Database.
+     * Retrieve a Ticket from the Database
      *
-     * @param id the tickets id
-     * @return the constructed ticket
+     * @param id   Ticket id
+     * @param uuid User unique id
+     * @return Constructed ticket
      */
     @Nullable
-    public static Ticket select(int id, @NotNull UUID uuid) {
+    public static Ticket select(final int id, @NotNull final UUID uuid) {
         DbRow row;
 
         try {
-            row = DB.getFirstRow("SELECT id, uuid, status, picker, location from puretickets_ticket WHERE id = ? AND uuid = ?", id, uuid);
+            row = DB.getFirstRow(
+                    "SELECT id, uuid, status, picker, location from puretickets_ticket WHERE id = ? AND uuid = ?",
+                    id,
+                    uuid
+            );
         } catch (SQLException e) {
             throw new IllegalArgumentException();
         }
@@ -79,20 +89,26 @@ public class TicketSQL {
     }
 
     /**
-     * Retrieves tickets with the given optional status.
+     * Retrieves tickets with the given optional status
      *
      * @param status the optional status to filter with
      * @return a list of the retrieved tickets
      */
     @NotNull
-    public static List<Ticket> selectAll(@Nullable TicketStatus status) {
+    public static List<Ticket> selectAll(@Nullable final TicketStatus status) {
         List<DbRow> results;
 
         try {
             if (status == null) {
-                results = DB.getResults("SELECT id, uuid, status, picker, location FROM puretickets_ticket WHERE status <> ?", TicketStatus.CLOSED.name());
+                results = DB.getResults(
+                        "SELECT id, uuid, status, picker, location FROM puretickets_ticket WHERE status <> ?",
+                        TicketStatus.CLOSED.name()
+                );
             } else {
-                results = DB.getResults("SELECT id, uuid, status, picker, location FROM puretickets_ticket WHERE status = ?", status.name());
+                results = DB.getResults(
+                        "SELECT id, uuid, status, picker, location FROM puretickets_ticket WHERE status = ?",
+                        status.name()
+                );
             }
         } catch (SQLException e) {
             throw new IllegalArgumentException();
@@ -102,14 +118,14 @@ public class TicketSQL {
     }
 
     /**
-     * Retrieves tickets with a given players unique id and an optional status.
+     * Retrieves tickets with a given players unique id and an optional status
      *
      * @param uuid   the players unique id to filter with
      * @param status the optional status to filter with
      * @return a list of the retrieved tickets
      */
     @NotNull
-    public static List<Ticket> selectAll(@NotNull UUID uuid, @Nullable TicketStatus status) {
+    public static List<Ticket> selectAll(@NotNull final UUID uuid, @Nullable final TicketStatus status) {
         List<DbRow> results;
 
         @Language("SQL")
@@ -129,14 +145,14 @@ public class TicketSQL {
     }
 
     /**
-     * Retrieves ticket ids with a given players unique id and an optional status.
+     * Retrieves ticket ids with a given players unique id and an optional status
      *
      * @param uuid     the players unique id to filter with
      * @param statuses the optional status to filter with
      * @return a list of the retrieved tickets
      */
     @NotNull
-    public static List<Integer> selectIds(@NotNull UUID uuid, TicketStatus... statuses) {
+    public static List<Integer> selectIds(@NotNull final UUID uuid, @Nullable final TicketStatus... statuses) {
         @Language("SQL")
         String sql = "SELECT id from puretickets_ticket WHERE uuid = ?";
         Pair<String, Object[]> extensions = buildWhereExtension(true, statuses);
@@ -150,14 +166,14 @@ public class TicketSQL {
     }
 
     /**
-     * Retrieve the last ticket with a players unique id and optionally multiple statues.
+     * Retrieve the last ticket with a players unique id and optionally multiple statues
      *
      * @param uuid     the players unique id to filter with
      * @param statuses the optional statuses to filter with
      * @return the most recent ticket or if non are eligible null
      */
     @Nullable
-    public static Ticket selectLastTicket(UUID uuid, TicketStatus... statuses) {
+    public static Ticket selectLastTicket(@NotNull final UUID uuid, @Nullable final TicketStatus... statuses) {
         @Language("SQL")
         String sql = "SELECT max(id) AS 'id', uuid, status, picker, location FROM puretickets_ticket WHERE uuid = ?";
         Pair<String, Object[]> extensions = buildWhereExtension(true, statuses);
@@ -172,13 +188,13 @@ public class TicketSQL {
     }
 
     /**
-     * Retrieves the names of all ticket holders, optionally filtered by a status.
+     * Retrieves the names of all ticket holders, optionally filtered by a status
      *
      * @param statuses the optional statuses to filter by
      * @return a list of player names
      */
     @NotNull
-    public static Set<String> selectNames(TicketStatus... statuses) {
+    public static Set<String> selectNames(@Nullable final TicketStatus... statuses) {
         List<String> results;
 
         @Language("SQL")
@@ -192,26 +208,26 @@ public class TicketSQL {
         }
 
         return results.stream()
-            .map(result -> UserUtilities.nameFromUUID(UUID.fromString(result)))
-            .collect(Collectors.toSet());
+                .map(result -> UserUtilities.nameFromUUID(UUID.fromString(result)))
+                .collect(Collectors.toSet());
     }
 
     /**
-     * Retrieve a map of ticket stats, optionally filtered by a players unique id.
+     * Retrieve a map of ticket stats, optionally filtered by a players unique id
      *
      * @param uuid the optional players unique id to filter with
      * @return an enum map of the ticket stats
      */
     @NotNull
-    public static EnumMap<TicketStatus, Integer> selectTicketStats(@Nullable UUID uuid) {
+    public static EnumMap<TicketStatus, Integer> selectTicketStats(@Nullable final UUID uuid) {
         DbRow row;
 
         @Language("SQL")
         String sql = "SELECT "
-            + "SUM(Status LIKE 'OPEN') AS open, "
-            + "SUM(Status LIKE 'PICKED') AS picked, "
-            + "SUM(status LIKE 'CLOSED') AS closed "
-            + "from puretickets_ticket ";
+                + "SUM(Status LIKE 'OPEN') AS open, "
+                + "SUM(Status LIKE 'PICKED') AS picked, "
+                + "SUM(status LIKE 'CLOSED') AS closed "
+                + "from puretickets_ticket ";
 
         try {
             if (uuid == null) {
@@ -233,12 +249,12 @@ public class TicketSQL {
     }
 
     /**
-     * Checks if a ticket exists using a given id.
+     * Checks if a ticket exists using a given id
      *
      * @param id the tickets id to filter with
      * @return true boolean
      */
-    public static boolean exists(int id) {
+    public static boolean exists(final int id) {
         try {
             Integer value = DB.getFirstColumn("SELECT EXISTS(SELECT 1 from puretickets_ticket WHERE id = ?)", id);
 
@@ -255,10 +271,13 @@ public class TicketSQL {
      * @param status the status to filter with
      * @return the number of tickets
      */
-    public static int count(@NotNull UUID uuid, @NotNull TicketStatus status) {
+    public static int count(@NotNull final UUID uuid, @NotNull final TicketStatus status) {
         try {
-            return platform.getPureInteger(DB.getFirstColumn("SELECT COUNT(id) FROM puretickets_ticket WHERE uuid = ? AND status = ?",
-                uuid.toString(), status.name()));
+            return platform.getPureInteger(DB.getFirstColumn(
+                    "SELECT COUNT(id) FROM puretickets_ticket WHERE uuid = ? AND status = ?",
+                    uuid.toString(),
+                    status.name()
+            ));
         } catch (SQLException e) {
             throw new IllegalArgumentException();
         }
@@ -266,12 +285,12 @@ public class TicketSQL {
 
 
     /**
-     * Count the amount of tickets with a given optional status.
+     * Count the amount of tickets with a given optional status
      *
      * @param status the optional status to filter with
      * @return the number of tickets
      */
-    public static int count(@Nullable TicketStatus status) {
+    public static int count(@Nullable final TicketStatus status) {
         @Language("SQL")
         String sql = "SELECT COUNT(id) FROM puretickets_ticket";
 
@@ -287,7 +306,7 @@ public class TicketSQL {
     }
 
     /**
-     * Insert a ticket into the Database and retrieve it's ticket id.
+     * Insert a ticket into the Database and retrieve it's ticket id
      *
      * @param uuid     the players unique id
      * @param status   the tickets status
@@ -295,7 +314,12 @@ public class TicketSQL {
      * @param location the ticket creation location
      * @return the tickets id
      */
-    public static int insert(@NotNull UUID uuid, @NotNull TicketStatus status, @Nullable UUID picker, @NotNull Location location) {
+    public static int insert(
+            @NotNull final UUID uuid,
+            @NotNull final TicketStatus status,
+            @Nullable final UUID picker,
+            @NotNull final Location location
+    ) {
         Integer index;
 
         try {
@@ -308,7 +332,8 @@ public class TicketSQL {
             }
 
             DB.executeInsert("INSERT INTO puretickets_ticket(id, uuid, status, picker, location) VALUES(?, ?, ?, ?, ?)",
-                index, uuid.toString(), status.name(), picker, HelpersSQL.serializeLocation(location));
+                    index, uuid.toString(), status.name(), picker, HelpersSQL.serializeLocation(location)
+            );
         } catch (SQLException e) {
             throw new IllegalArgumentException();
         }
@@ -317,11 +342,11 @@ public class TicketSQL {
     }
 
     /**
-     * Updates a tickets entry in the Database.
+     * Updates a tickets entry in the Database
      *
      * @param ticket the ticket to use
      */
-    public static void update(@NotNull Ticket ticket) {
+    public static void update(@NotNull final Ticket ticket) {
         UUID pickerUUID = ticket.getPickerUUID();
         String picker;
 
@@ -332,16 +357,17 @@ public class TicketSQL {
         }
 
         DB.executeUpdateAsync("UPDATE puretickets_ticket SET status = ?, picker = ? WHERE id = ?",
-            ticket.getStatus().name(), picker, ticket.getId());
+                ticket.getStatus().name(), picker, ticket.getId()
+        );
     }
 
     /**
-     * Retrieve the ticket completions grouped by player within an option time span.
+     * Retrieve the ticket completions grouped by player within an option time span
      *
      * @param span the optional span to check within
      * @return a map of players and their ticket completions.
      */
-    public static Map<UUID, Integer> highscores(@NotNull TimeAmount span) {
+    public static Map<UUID, Integer> highscores(@NotNull final TimeAmount span) {
         Map<UUID, Integer> data = new HashMap<>();
         long length;
 
@@ -353,11 +379,11 @@ public class TicketSQL {
 
         @Language("SQL")
         String sql = "SELECT picker, COUNT(*) AS `num` "
-            + "FROM puretickets_ticket "
-            + "WHERE status = ? "
-            + "AND picker IS NOT NULL "
-            + "and id in (SELECT DISTINCT ticket FROM puretickets_message WHERE date > ?) "
-            + "GROUP BY picker";
+                + "FROM puretickets_ticket "
+                + "WHERE status = ? "
+                + "AND picker IS NOT NULL "
+                + "and id in (SELECT DISTINCT ticket FROM puretickets_message WHERE date > ?) "
+                + "GROUP BY picker";
 
         List<DbRow> results;
 
@@ -393,4 +419,5 @@ public class TicketSQL {
 
         return Pair.of(sb.toString(), replacements);
     }
+
 }

@@ -2,63 +2,66 @@ package broccolai.tickets.configuration;
 
 import broccolai.corn.spigot.locale.LocaleUtils;
 import cloud.commandframework.types.tuples.Pair;
+import org.bukkit.Bukkit;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.plugin.Plugin;
+import org.jetbrains.annotations.NotNull;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.lang.reflect.Field;
 import java.util.Arrays;
-import org.bukkit.Bukkit;
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.plugin.Plugin;
 
 /**
- * Wrapper for the Plugins Configuration.
+ * Wrapper for the Plugins Configuration
  */
-public class Config {
-    public String LOCALE;
-    public Integer REMINDER__DELAY;
-    public Integer REMINDER__REPEAT;
+public final class Config {
 
-    public Integer LIMIT__OPEN_TICKETS;
+    private String LOCALE;
+    private Integer REMINDER__DELAY;
+    private Integer REMINDER__REPEAT;
 
-    public Boolean STORAGE__MYSQL;
-    public String STORAGE__USER;
-    public String STORAGE__PASSWORD;
-    public String STORAGE__NAME;
-    public String STORAGE__HOST;
-    public Boolean STORAGE__SSL;
+    private Integer LIMIT__OPEN_TICKETS;
 
-    public Boolean DISCORD__ENABLED;
-    public String DISCORD__GUILD;
-    public String DISCORD__TOKEN;
-    public String DISCORD__NAME;
+    private Boolean STORAGE__MYSQL;
+    private String STORAGE__USER;
+    private String STORAGE__PASSWORD;
+    private String STORAGE__NAME;
+    private String STORAGE__HOST;
+    private Boolean STORAGE__SSL;
 
-    public Pair<String, String[]> ALIAS__CREATE;
-    public Pair<String, String[]> ALIAS__UPDATE;
-    public Pair<String, String[]> ALIAS__CLOSE;
-    public Pair<String, String[]> ALIAS__SHOW;
-    public Pair<String, String[]> ALIAS__PICK;
-    public Pair<String, String[]> ALIAS__ASSIGN;
-    public Pair<String, String[]> ALIAS__DONE;
-    public Pair<String, String[]> ALIAS__YIELD;
-    public Pair<String, String[]> ALIAS__NOTE;
-    public Pair<String, String[]> ALIAS__REOPEN;
-    public Pair<String, String[]> ALIAS__TELEPORT;
-    public Pair<String, String[]> ALIAS__LOG;
-    public Pair<String, String[]> ALIAS__LIST;
-    public Pair<String, String[]> ALIAS__STATUS;
-    public Pair<String, String[]> ALIAS__HIGHSCORE;
+    private Boolean DISCORD__ENABLED;
+    private String DISCORD__GUILD;
+    private String DISCORD__TOKEN;
+    private String DISCORD__NAME;
 
-    public String API__DOMAIN;
+    private Pair<String, String[]> ALIAS__CREATE;
+    private Pair<String, String[]> ALIAS__UPDATE;
+    private Pair<String, String[]> ALIAS__CLOSE;
+    private Pair<String, String[]> ALIAS__SHOW;
+    private Pair<String, String[]> ALIAS__PICK;
+    private Pair<String, String[]> ALIAS__ASSIGN;
+    private Pair<String, String[]> ALIAS__DONE;
+    private Pair<String, String[]> ALIAS__YIELD;
+    private Pair<String, String[]> ALIAS__NOTE;
+    private Pair<String, String[]> ALIAS__REOPEN;
+    private Pair<String, String[]> ALIAS__TELEPORT;
+    private Pair<String, String[]> ALIAS__LOG;
+    private Pair<String, String[]> ALIAS__LIST;
+    private Pair<String, String[]> ALIAS__STATUS;
+    private Pair<String, String[]> ALIAS__HIGHSCORE;
+
+    private String API__DOMAIN;
 
     /**
      * Initialise the Configuration wrapper with values.
      *
      * @param plugin the Plugin instance to use
      */
-    public Config(Plugin plugin) {
+    public Config(@NotNull final Plugin plugin) {
         //noinspection rawtypes
         Class<Pair> pairClass = Pair.class;
 
@@ -102,4 +105,215 @@ public class Config {
             Bukkit.getLogger().warning("PureTickets could not close stream");
         }
     }
+
+    /**
+     * @return Locale
+     */
+    public String getLocale() {
+        return LOCALE;
+    }
+
+    /**
+     * @return Reminder delay
+     */
+    public Integer getReminderDelay() {
+        return REMINDER__DELAY;
+    }
+
+    /**
+     * @return Reminder repeat
+     */
+    public Integer getReminderRepeat() {
+        return REMINDER__REPEAT;
+    }
+
+    /**
+     * @return Ticket limit
+     */
+    public Integer getTicketLimitOpen() {
+        return LIMIT__OPEN_TICKETS;
+    }
+
+    /**
+     * @return Storage SQL
+     */
+    public Boolean getStorageMySQL() {
+        return STORAGE__MYSQL;
+    }
+
+    /**
+     * @return Storage user
+     */
+    public String getStorageUser() {
+        return STORAGE__USER;
+    }
+
+    /**
+     * @return Storage password
+     */
+    public String getStoragePassword() {
+        return STORAGE__PASSWORD;
+    }
+
+    /**
+     * @return Storage name
+     */
+    public String getStorageName() {
+        return STORAGE__NAME;
+    }
+
+    /**
+     * @return Storage host
+     */
+    public String getStorageHost() {
+        return STORAGE__HOST;
+    }
+
+    /**
+     * @return Storage ssl
+     */
+    public Boolean getStorageSSL() {
+        return STORAGE__SSL;
+    }
+
+    /**
+     * @return Discord enabled
+     */
+    public Boolean getDiscordEnabled() {
+        return DISCORD__ENABLED;
+    }
+
+    /**
+     * @return Discord guild
+     */
+    public String getDiscordGuild() {
+        return DISCORD__GUILD;
+    }
+
+    /**
+     * @return Discord token
+     */
+    public String getDiscordToken() {
+        return DISCORD__TOKEN;
+    }
+
+    /**
+     * @return Discord name
+     */
+    public String getDiscordName() {
+        return DISCORD__NAME;
+    }
+
+    /**
+     * @return Alias create
+     */
+    public Pair<String, String[]> getAliasCreate() {
+        return ALIAS__CREATE;
+    }
+
+    /**
+     * @return Alias update
+     */
+    public Pair<String, String[]> getAliasUpdate() {
+        return ALIAS__UPDATE;
+    }
+
+    /**
+     * @return Alias close
+     */
+    public Pair<String, String[]> getAliasClose() {
+        return ALIAS__CLOSE;
+    }
+
+    /**
+     * @return Alias show
+     */
+    public Pair<String, String[]> getAliasShow() {
+        return ALIAS__SHOW;
+    }
+
+    /**
+     * @return Alias pick
+     */
+    public Pair<String, String[]> getAliasPick() {
+        return ALIAS__PICK;
+    }
+
+    /**
+     * @return Alias assign
+     */
+    public Pair<String, String[]> getAliasAssign() {
+        return ALIAS__ASSIGN;
+    }
+
+    /**
+     * @return Alias done
+     */
+    public Pair<String, String[]> getAliasDone() {
+        return ALIAS__DONE;
+    }
+
+    /**
+     * @return Alias yield
+     */
+    public Pair<String, String[]> getAliasYield() {
+        return ALIAS__YIELD;
+    }
+
+    /**
+     * @return Alias note
+     */
+    public Pair<String, String[]> getAliasNote() {
+        return ALIAS__NOTE;
+    }
+
+    /**
+     * @return Alias reopen
+     */
+    public Pair<String, String[]> getAliasReopen() {
+        return ALIAS__REOPEN;
+    }
+
+    /**
+     * @return Alias teleport
+     */
+    public Pair<String, String[]> getAliasTeleport() {
+        return ALIAS__TELEPORT;
+    }
+
+    /**
+     * @return Alias log
+     */
+    public Pair<String, String[]> getAliasLog() {
+        return ALIAS__LOG;
+    }
+
+    /**
+     * @return Alias list
+     */
+    public Pair<String, String[]> getAliasList() {
+        return ALIAS__LIST;
+    }
+
+    /**
+     * @return Alias status
+     */
+    public Pair<String, String[]> getAliasStatus() {
+        return ALIAS__STATUS;
+    }
+
+    /**
+     * @return Alias highscore
+     */
+    public Pair<String, String[]> getAliasHighscore() {
+        return ALIAS__HIGHSCORE;
+    }
+
+    /**
+     * @return Api domain
+     */
+    public String getApiDomain() {
+        return API__DOMAIN;
+    }
+
 }

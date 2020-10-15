@@ -7,26 +7,34 @@ import co.aikar.idb.DatabaseOptions;
 import co.aikar.idb.DbRow;
 import co.aikar.idb.HikariPooledDatabase;
 import co.aikar.idb.PooledDatabaseOptions;
+import org.bukkit.Bukkit;
+import org.bukkit.plugin.Plugin;
+import org.jetbrains.annotations.NotNull;
+
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
-import org.bukkit.Bukkit;
-import org.bukkit.plugin.Plugin;
 
 /**
- * MySQL implementation of Platform.
+ * MySQL implementation of Platform
  */
-public class MySQL implements Platform {
+public final class MySQL implements Platform {
+
     @Override
-    public void setup(Plugin plugin, Config config) {
+    public void setup(@NotNull final Plugin plugin, @NotNull final Config config) {
         Integer version = null;
-        DatabaseOptions options = DatabaseOptions.builder().mysql(config.STORAGE__USER, config.STORAGE__PASSWORD, config.STORAGE__NAME, config.STORAGE__HOST).build();
+        DatabaseOptions options = DatabaseOptions.builder().mysql(
+                config.getStoragePassword(),
+                config.getStoragePassword(),
+                config.getStorageName(),
+                config.getStorageHost()
+        ).build();
         PooledDatabaseOptions pooledOptions = PooledDatabaseOptions.builder().options(options).build();
 
         Map<String, Object> properties = new HashMap<>();
 
-        properties.put("useSSL", config.STORAGE__SSL);
+        properties.put("useSSL", config.getStorageSSL());
 
         pooledOptions.setDataSourceProperties(properties);
 
@@ -36,7 +44,8 @@ public class MySQL implements Platform {
 
         try {
             DB.executeUpdate("CREATE TABLE IF NOT EXISTS puretickets_ticket(id INTEGER, uuid TEXT, status TEXT, picker TEXT)");
-            DB.executeUpdate("CREATE TABLE IF NOT EXISTS puretickets_message(ticket INTEGER, reason TEXT, data TEXT, sender TEXT, date TEXT)");
+            DB.executeUpdate(
+                    "CREATE TABLE IF NOT EXISTS puretickets_message(ticket INTEGER, reason TEXT, data TEXT, sender TEXT, date TEXT)");
             DB.executeUpdate("CREATE TABLE IF NOT EXISTS puretickets_notification(uuid TEXT, message TEXT, replacements TEXT)");
             DB.executeUpdate("CREATE TABLE IF NOT EXISTS puretickets_settings(uuid TEXT, announcements TEXT)");
             DB.executeUpdate("CREATE TABLE IF NOT EXISTS puretickets_sql(version INTEGER)");
@@ -59,7 +68,10 @@ public class MySQL implements Platform {
             }
 
             if (version <= 1) {
-                plugin.getLogger().log(Level.INFO, "Updated PureTickets database to remove tickets with empty locations and remove all pending notifications");
+                plugin.getLogger().log(
+                        Level.INFO,
+                        "Updated PureTickets database to remove tickets with empty locations and remove all pending notifications"
+                );
                 DB.executeUpdate("DELETE from puretickets_ticket WHERE location IS NULL OR trim(location) = ?", "");
                 DB.executeUpdate("DELETE from puretickets_notification");
                 version++;
@@ -76,12 +88,13 @@ public class MySQL implements Platform {
     }
 
     @Override
-    public Long getPureLong(DbRow row, String column) {
+    public Long getPureLong(@NotNull final DbRow row, @NotNull final String column) {
         return Long.valueOf(row.getString(column));
     }
 
     @Override
-    public Integer getPureInteger(Object value) {
+    public Integer getPureInteger(@NotNull final Object value) {
         return ((Long) value).intValue();
     }
+
 }

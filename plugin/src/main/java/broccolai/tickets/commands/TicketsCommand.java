@@ -16,8 +16,8 @@ import broccolai.tickets.user.PlayerSoul;
 import broccolai.tickets.user.Soul;
 import broccolai.tickets.user.UserManager;
 import broccolai.tickets.utilities.Constants;
-import broccolai.tickets.utilities.generic.ReplacementUtilities;
-import broccolai.tickets.utilities.generic.UserUtilities;
+import broccolai.tickets.utilities.ReplacementUtilities;
+import broccolai.tickets.utilities.UserUtilities;
 import cloud.commandframework.Command;
 import cloud.commandframework.Description;
 import cloud.commandframework.arguments.CommandArgument;
@@ -28,20 +28,22 @@ import cloud.commandframework.bukkit.parsers.OfflinePlayerArgument;
 import cloud.commandframework.context.CommandContext;
 import com.google.common.collect.ImmutableMap;
 import io.papermc.lib.PaperLib;
+import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
-import org.bukkit.Bukkit;
-import org.bukkit.OfflinePlayer;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * Command used for staff to interact with other players tickets.
  */
 public final class TicketsCommand extends BaseCommand {
+
     @NotNull
     private final TicketManager ticketManager;
     @NotNull
@@ -56,102 +58,152 @@ public final class TicketsCommand extends BaseCommand {
      * @param ticketManager       Ticket Manager
      * @param notificationManager Notification Manager
      */
-    public TicketsCommand(@NotNull final CommandManager manager, @NotNull final Config config, @NotNull final UserManager userManager,
-                          @NotNull final TicketManager ticketManager, @NotNull final NotificationManager notificationManager) {
+    public TicketsCommand(
+            @NotNull final CommandManager manager, @NotNull final Config config, @NotNull final UserManager userManager,
+            @NotNull final TicketManager ticketManager, @NotNull final NotificationManager notificationManager
+    ) {
         this.ticketManager = ticketManager;
         this.notificationManager = notificationManager;
 
         final Command.Builder<Soul> builder = manager.commandBuilder("tickets", "tis");
         final CommandArgument<Soul, OfflinePlayer> targetArgument = manager.argumentBuilder(OfflinePlayer.class, "target")
-            .withSuggestionsProvider((context, input) -> userManager.getNames())
-            .build();
+                .withSuggestionsProvider((context, input) -> userManager.getNames())
+                .build();
 
-        manager.command(builder.literal(config.ALIAS__SHOW.getFirst(), Description.of("Show a ticket"), config.ALIAS__SHOW.getSecond())
-            .permission(Constants.STAFF_PERMISSION + ".show")
-            .argument(targetArgument.copy())
-            .argument(TicketArgument.of(false, false))
-            .handler(c -> processShow(c.getSender(), c.get("ticket"))));
+        manager.command(builder.literal(
+                config.getAliasShow().getFirst(),
+                Description.of("Show a ticket"),
+                config.getAliasShow().getSecond()
+        )
+                .permission(Constants.STAFF_PERMISSION + ".show")
+                .argument(targetArgument.copy())
+                .argument(TicketArgument.of(false, false))
+                .handler(c -> processShow(c.getSender(), c.get("ticket"))));
 
-        manager.command(builder.literal(config.ALIAS__PICK.getFirst(), Description.of("Pick a ticket"), config.ALIAS__PICK.getSecond())
-            .permission(Constants.STAFF_PERMISSION + ".pick")
-            .argument(targetArgument.copy())
-            .argument(TicketArgument.of(false, false, TicketStatus.OPEN))
-            .handler(this::processPick)
-            .build());
+        manager.command(builder.literal(
+                config.getAliasPick().getFirst(),
+                Description.of("Pick a ticket"),
+                config.getAliasPick().getSecond()
+        )
+                .permission(Constants.STAFF_PERMISSION + ".pick")
+                .argument(targetArgument.copy())
+                .argument(TicketArgument.of(false, false, TicketStatus.OPEN))
+                .handler(this::processPick)
+                .build());
 
-        manager.command(builder.literal(config.ALIAS__ASSIGN.getFirst(), Description.of("Assign a ticket"), config.ALIAS__ASSIGN.getSecond())
-            .permission(Constants.STAFF_PERMISSION + ".assign")
-            .argument(OfflinePlayerArgument.of("staff"))
-            .argument(targetArgument.copy())
-            .argument(TicketArgument.of(false, false, TicketStatus.OPEN))
-            .handler(this::processAssign)
-            .build());
+        manager.command(builder.literal(
+                config.getAliasAssign().getFirst(),
+                Description.of("Assign a ticket"),
+                config.getAliasAssign().getSecond()
+        )
+                .permission(Constants.STAFF_PERMISSION + ".assign")
+                .argument(OfflinePlayerArgument.of("staff"))
+                .argument(targetArgument.copy())
+                .argument(TicketArgument.of(false, false, TicketStatus.OPEN))
+                .handler(this::processAssign)
+                .build());
 
-        manager.command(builder.literal(config.ALIAS__DONE.getFirst(), Description.of("Done-mark a ticket"), config.ALIAS__DONE.getSecond())
-            .permission(Constants.STAFF_PERMISSION + ".done")
-            .argument(targetArgument.copy())
-            .argument(TicketArgument.of(false, false, TicketStatus.OPEN, TicketStatus.PICKED))
-            .handler(this::processDone)
-            .build());
+        manager.command(builder.literal(
+                config.getAliasDone().getFirst(),
+                Description.of("Done-mark a ticket"),
+                config.getAliasDone().getSecond()
+        )
+                .permission(Constants.STAFF_PERMISSION + ".done")
+                .argument(targetArgument.copy())
+                .argument(TicketArgument.of(false, false, TicketStatus.OPEN, TicketStatus.PICKED))
+                .handler(this::processDone)
+                .build());
 
-        manager.command(builder.literal(config.ALIAS__YIELD.getFirst(), Description.of("Yield a ticket"), config.ALIAS__YIELD.getSecond())
-            .permission(Constants.STAFF_PERMISSION + ".yield")
-            .argument(targetArgument.copy())
-            .argument(TicketArgument.of(false, false, TicketStatus.PICKED))
-            .handler(this::processYield)
-            .build());
+        manager.command(builder.literal(
+                config.getAliasYield().getFirst(),
+                Description.of("Yield a ticket"),
+                config.getAliasYield().getSecond()
+        )
+                .permission(Constants.STAFF_PERMISSION + ".yield")
+                .argument(targetArgument.copy())
+                .argument(TicketArgument.of(false, false, TicketStatus.PICKED))
+                .handler(this::processYield)
+                .build());
 
-        manager.command(builder.literal(config.ALIAS__NOTE.getFirst(), Description.of("Add a note to a ticket"), config.ALIAS__NOTE.getSecond())
-            .permission(Constants.STAFF_PERMISSION + ".note")
-            .argument(targetArgument.copy())
-            .argument(TicketArgument.of(true, false))
-            .argument(StringArgument.of("message"))
-            .handler(this::processNote)
-            .build());
+        manager.command(builder.literal(
+                config.getAliasNote().getFirst(),
+                Description.of("Add a note to a ticket"),
+                config.getAliasNote().getSecond()
+        )
+                .permission(Constants.STAFF_PERMISSION + ".note")
+                .argument(targetArgument.copy())
+                .argument(TicketArgument.of(true, false))
+                .argument(StringArgument.of("message"))
+                .handler(this::processNote)
+                .build());
 
-        manager.command(builder.literal(config.ALIAS__REOPEN.getFirst(), Description.of("Reopen a ticket"), config.ALIAS__REOPEN.getSecond())
-            .permission(Constants.STAFF_PERMISSION + ".reopen")
-            .argument(targetArgument.copy())
-            .argument(TicketArgument.of(false, false, TicketStatus.CLOSED))
-            .handler(this::processReopen)
-            .build());
+        manager.command(builder.literal(
+                config.getAliasReopen().getFirst(),
+                Description.of("Reopen a ticket"),
+                config.getAliasReopen().getSecond()
+        )
+                .permission(Constants.STAFF_PERMISSION + ".reopen")
+                .argument(targetArgument.copy())
+                .argument(TicketArgument.of(false, false, TicketStatus.CLOSED))
+                .handler(this::processReopen)
+                .build());
 
-        manager.command(builder.literal(config.ALIAS__TELEPORT.getFirst(), Description.of("Teleport to a tickets creation location"), config.ALIAS__TELEPORT.getSecond())
-            .senderType(PlayerSoul.class)
-            .permission(Constants.STAFF_PERMISSION + ".teleport")
-            .argument(targetArgument.copy())
-            .argument(TicketArgument.of(false, false, TicketStatus.OPEN, TicketStatus.PICKED, TicketStatus.CLOSED))
-            .handler(this::processTeleport)
-            .build());
+        manager.command(builder.literal(
+                config.getAliasTeleport().getFirst(),
+                Description.of("Teleport to a tickets creation location"),
+                config.getAliasTeleport().getSecond()
+        )
+                .senderType(PlayerSoul.class)
+                .permission(Constants.STAFF_PERMISSION + ".teleport")
+                .argument(targetArgument.copy())
+                .argument(TicketArgument.of(false, false, TicketStatus.OPEN, TicketStatus.PICKED, TicketStatus.CLOSED))
+                .handler(this::processTeleport)
+                .build());
 
-        manager.command(builder.literal(config.ALIAS__LOG.getFirst(), Description.of("View a tickets log"), config.ALIAS__LOG.getSecond())
-            .permission(Constants.STAFF_PERMISSION + ".log")
-            .argument(targetArgument.copy())
-            .argument(TicketArgument.of(false, false, TicketStatus.OPEN, TicketStatus.PICKED, TicketStatus.CLOSED))
-            .handler(c -> processLog(c.getSender(), c.get("ticket")))
-            .build());
+        manager.command(builder.literal(
+                config.getAliasLog().getFirst(),
+                Description.of("View a tickets log"),
+                config.getAliasLog().getSecond()
+        )
+                .permission(Constants.STAFF_PERMISSION + ".log")
+                .argument(targetArgument.copy())
+                .argument(TicketArgument.of(false, false, TicketStatus.OPEN, TicketStatus.PICKED, TicketStatus.CLOSED))
+                .handler(c -> processLog(c.getSender(), c.get("ticket")))
+                .build());
 
-        manager.command(builder.literal(config.ALIAS__LIST.getFirst(), Description.of("List tickets"), config.ALIAS__LIST.getSecond())
-            .permission(Constants.STAFF_PERMISSION + ".list")
-            .flag(manager.flagBuilder("status")
-                .withArgument(EnumArgument.of(TicketStatus.class, "status")))
-            .flag(manager.flagBuilder("player")
-                .withArgument(OfflinePlayerArgument.of("player")))
-            .flag(manager.flagBuilder("onlineOnly")
-                .withArgument(BooleanArgument.of("onlineOnly")))
-            .handler(this::processList));
+        manager.command(builder.literal(
+                config.getAliasList().getFirst(),
+                Description.of("List tickets"),
+                config.getAliasList().getSecond()
+        )
+                .permission(Constants.STAFF_PERMISSION + ".list")
+                .flag(manager.flagBuilder("status")
+                        .withArgument(EnumArgument.of(TicketStatus.class, "status")))
+                .flag(manager.flagBuilder("player")
+                        .withArgument(OfflinePlayerArgument.of("player")))
+                .flag(manager.flagBuilder("onlineOnly")
+                        .withArgument(BooleanArgument.of("onlineOnly")))
+                .handler(this::processList));
 
-        manager.command(builder.literal(config.ALIAS__STATUS.getFirst(), Description.of("View amount of tickets in"), config.ALIAS__STATUS.getSecond())
-            .permission(Constants.STAFF_PERMISSION + ".status")
-            .argument(targetArgument.copy())
-            .handler(this::processStatus)
-            .build());
+        manager.command(builder.literal(
+                config.getAliasStatus().getFirst(),
+                Description.of("View amount of tickets in"),
+                config.getAliasStatus().getSecond()
+        )
+                .permission(Constants.STAFF_PERMISSION + ".status")
+                .argument(targetArgument.copy())
+                .handler(this::processStatus)
+                .build());
 
-        manager.command(builder.literal(config.ALIAS__HIGHSCORE.getFirst(), Description.of("View highscores of ticket completions"), config.ALIAS__HIGHSCORE.getSecond())
-            .permission(Constants.STAFF_PERMISSION + ".highscore")
-            .argument(EnumArgument.optional(TimeAmount.class, "amount"))
-            .handler(this::processHighscore)
-            .build());
+        manager.command(builder.literal(
+                config.getAliasHighscore().getFirst(),
+                Description.of("View highscores of ticket completions"),
+                config.getAliasHighscore().getSecond()
+        )
+                .permission(Constants.STAFF_PERMISSION + ".highscore")
+                .argument(EnumArgument.optional(TimeAmount.class, "amount"))
+                .handler(this::processHighscore)
+                .build());
     }
 
     private void processPick(@NotNull final CommandContext<Soul> c) {
@@ -244,7 +296,9 @@ public final class TicketsCommand extends BaseCommand {
         soul.message(Messages.TITLES__ALL_TICKETS);
 
         // todo: ugly
-        Set<Map.Entry<UUID, List<Ticket>>> unsortedTickets = Lists.group(TicketSQL.selectAll(status), Ticket::getPlayerUUID).entrySet();
+        Set<Map.Entry<UUID, List<Ticket>>> unsortedTickets = Lists
+                .group(TicketSQL.selectAll(status), Ticket::getPlayerUUID)
+                .entrySet();
         List<Map.Entry<UUID, List<Ticket>>> sortedTickets = new ArrayList<>(unsortedTickets);
         sortedTickets.sort((t1, t2) -> {
             Integer boxed = t1.getValue().get(0).getId();
@@ -295,7 +349,8 @@ public final class TicketsCommand extends BaseCommand {
         soul.message(Messages.TITLES__HIGHSCORES);
 
         highscores.forEach((uuid, number) ->
-            soul.message(Messages.GENERAL__HS_FORMAT, "target", UserUtilities.nameFromUUID(uuid), "amount", number.toString())
+                soul.message(Messages.GENERAL__HS_FORMAT, "target", UserUtilities.nameFromUUID(uuid), "amount", number.toString())
         );
     }
+
 }

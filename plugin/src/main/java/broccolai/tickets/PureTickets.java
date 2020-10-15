@@ -14,11 +14,13 @@ import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.jetbrains.annotations.NotNull;
 
 /**
- * The main class.
+ * Main class
  */
-public class PureTickets extends JavaPlugin {
+public final class PureTickets extends JavaPlugin {
+
     private TaskManager taskManager;
     private PluginManager pluginManager;
 
@@ -34,7 +36,13 @@ public class PureTickets extends JavaPlugin {
         UserManager userManager = new UserManager(pluginManager, taskManager);
         TicketManager ticketManager = new TicketManager(config, pluginManager);
         taskManager = new TaskManager(this);
-        NotificationManager notificationManager = new NotificationManager(config, taskManager, localeManager, userManager, discordManager);
+        NotificationManager notificationManager = new NotificationManager(
+                config,
+                taskManager,
+                localeManager,
+                userManager,
+                discordManager
+        );
 
         try {
             new CommandManager(this, config, ticketManager, userManager, notificationManager, pluginManager);
@@ -42,7 +50,7 @@ public class PureTickets extends JavaPlugin {
             return;
         }
 
-        registerEvents(notificationManager, ticketManager);
+        registerEvents(userManager, notificationManager, ticketManager);
     }
 
     @Override
@@ -56,11 +64,14 @@ public class PureTickets extends JavaPlugin {
     }
 
     /**
-     * Register multiple events.
+     * Register multiple events
+     *
+     * @param listeners Listeners to register
      */
-    private void registerEvents(Listener... listeners) {
+    private void registerEvents(@NotNull final Listener... listeners) {
         for (Listener listener : listeners) {
             pluginManager.registerEvents(listener, this);
         }
     }
+
 }

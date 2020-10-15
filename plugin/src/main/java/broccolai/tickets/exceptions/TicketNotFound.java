@@ -1,5 +1,5 @@
 package broccolai.tickets.exceptions;
 
-public class TicketNotFound extends IllegalArgumentException {
+public final class TicketNotFound extends IllegalArgumentException {
 
 }

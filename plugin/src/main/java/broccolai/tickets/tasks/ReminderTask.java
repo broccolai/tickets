@@ -13,7 +13,8 @@ import org.jetbrains.annotations.NotNull;
 /**
  * Task for displaying reminders.
  */
-public class ReminderTask extends BukkitRunnable {
+public final class ReminderTask extends BukkitRunnable {
+
     @NotNull
     private final UserManager userManager;
 
@@ -22,7 +23,7 @@ public class ReminderTask extends BukkitRunnable {
      *
      * @param userManager the user manager instance
      */
-    public ReminderTask(@NotNull UserManager userManager) {
+    public ReminderTask(@NotNull final UserManager userManager) {
         this.userManager = userManager;
     }
 
@@ -40,4 +41,5 @@ public class ReminderTask extends BukkitRunnable {
             }
         }
     }
+
 }

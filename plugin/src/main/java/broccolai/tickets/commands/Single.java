@@ -4,18 +4,32 @@ import cloud.commandframework.types.tuples.Tuple;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class Single<T> implements Tuple {
-    @Nullable
-    final T value;
+public final class Single<T> implements Tuple {
 
-    Single(@Nullable final T value) {
+    @Nullable
+    private final T value;
+
+    private Single(@Nullable final T value) {
         this.value = value;
     }
 
-    public static <T> Single<T> of(T value) {
+    /**
+     * Create a new 1-tuple
+     *
+     * @param value Value
+     * @param <T>   Value type
+     * @return Created pair
+     */
+    @NotNull
+    public static <T> Single<T> of(@Nullable final T value) {
         return new Single<>(value);
     }
 
+    /**
+     * Get the value
+     *
+     * @return Value
+     */
     @Nullable
     public T get() {
         return value;
@@ -32,4 +46,5 @@ public class Single<T> implements Tuple {
         array[0] = this.value;
         return array;
     }
+
 }

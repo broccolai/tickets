@@ -6,15 +6,18 @@ import co.aikar.idb.DatabaseOptions;
 import co.aikar.idb.DbRow;
 import co.aikar.idb.HikariPooledDatabase;
 import co.aikar.idb.PooledDatabaseOptions;
+import org.bukkit.Bukkit;
+import org.bukkit.plugin.Plugin;
+import org.jetbrains.annotations.NotNull;
+
 import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
-import org.bukkit.Bukkit;
-import org.bukkit.plugin.Plugin;
 
-public class SQLite implements Platform {
+public final class SQLite implements Platform {
+
     @Override
-    public void setup(Plugin plugin, Config config) {
+    public void setup(@NotNull final Plugin plugin, @NotNull final Config config) {
         int version = 0;
         File file = new File(plugin.getDataFolder(), "tickets.db");
 
@@ -55,7 +58,8 @@ public class SQLite implements Platform {
 
         try {
             if (version <= 1) {
-                plugin.getLogger().info("Updated PureTickets database to remove tickets with empty locations and remove all pending notifications");
+                plugin.getLogger().info(
+                        "Updated PureTickets database to remove tickets with empty locations and remove all pending notifications");
                 DB.executeUpdate("DELETE FROM ticket WHERE location IS NULL OR trim(location) = ?", "");
                 DB.executeUpdate("DELETE FROM notification");
                 version++;
@@ -86,12 +90,13 @@ public class SQLite implements Platform {
     }
 
     @Override
-    public Long getPureLong(DbRow row, String column) {
+    public Long getPureLong(@NotNull final DbRow row, @NotNull final String column) {
         return Long.valueOf(row.getString(column));
     }
 
     @Override
-    public Integer getPureInteger(Object value) {
+    public Integer getPureInteger(@NotNull final Object value) {
         return (Integer) value;
     }
+
 }

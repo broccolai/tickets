@@ -8,12 +8,15 @@ import org.jetbrains.annotations.NotNull;
  * Base event for other events to extend.
  */
 class BaseEvent extends Event {
+
     private static final HandlerList HANDLERS = new HandlerList();
 
     /**
      * Initialise BaseEvent with isAsync.
+     *
+     * @param isAsync whether the event is ran async
      */
-    public BaseEvent(boolean isAsync) {
+    BaseEvent(final boolean isAsync) {
         super(isAsync);
     }
 
@@ -25,4 +28,5 @@ class BaseEvent extends Event {
     public static HandlerList getHandlerList() {
         return HANDLERS;
     }
+
 }

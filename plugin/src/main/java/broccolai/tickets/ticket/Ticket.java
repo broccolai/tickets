@@ -2,17 +2,19 @@ package broccolai.tickets.ticket;
 
 import broccolai.corn.core.Lists;
 import com.google.gson.JsonObject;
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class Ticket {
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Objects;
+import java.util.UUID;
+
+public final class Ticket {
+
     private final int id;
     @NotNull
     private final UUID playerUUID;
@@ -27,16 +29,23 @@ public class Ticket {
     private UUID pickerUUID;
 
     /**
-     * Construct a new Ticket using all values.
+     * Construct a new Ticket using all values
      *
-     * @param id         the tickets id
-     * @param playerUUID the players unique id
-     * @param messages   the list of messages
-     * @param location   the tickets creation location
-     * @param status     the tickets current status
-     * @param pickerUUID the potentially unset pickers unique id
+     * @param id         Tickets id
+     * @param playerUUID Players unique id
+     * @param messages   List of messages
+     * @param location   Tickets creation location
+     * @param status     Tickets current status
+     * @param pickerUUID Potentially unset pickers unique id
      */
-    public Ticket(int id, @NotNull UUID playerUUID, @NotNull List<Message> messages, @NotNull Location location, @NotNull TicketStatus status, @Nullable UUID pickerUUID) {
+    public Ticket(
+            final int id,
+            @NotNull final UUID playerUUID,
+            @NotNull final List<Message> messages,
+            @NotNull final Location location,
+            @NotNull final TicketStatus status,
+            @Nullable final UUID pickerUUID
+    ) {
         this.id = id;
         this.playerUUID = playerUUID;
         this.messages = messages;
@@ -55,6 +64,11 @@ public class Ticket {
         return Objects.requireNonNull(Lists.last(messages, m -> m.getReason() == MessageReason.MESSAGE));
     }
 
+    /**
+     * Get the most recent note, or null
+     *
+     * @return Last note
+     */
     @Nullable
     public Message lastNote() {
         return Lists.last(messages, m -> m.getReason() == MessageReason.NOTE);
@@ -124,7 +138,7 @@ public class Ticket {
      *
      * @param status the status to assign
      */
-    public void setStatus(@NotNull TicketStatus status) {
+    public void setStatus(@NotNull final TicketStatus status) {
         this.status = status;
     }
 
@@ -143,7 +157,7 @@ public class Ticket {
      *
      * @param pickerUUID the pickers unique id, or null if it's by the console
      */
-    public void setPickerUUID(@Nullable UUID pickerUUID) {
+    public void setPickerUUID(@Nullable final UUID pickerUUID) {
         this.pickerUUID = pickerUUID;
     }
 
@@ -183,4 +197,5 @@ public class Ticket {
 
         return json;
     }
+
 }

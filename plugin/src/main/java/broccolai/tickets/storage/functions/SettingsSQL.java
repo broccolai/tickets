@@ -4,15 +4,20 @@ import broccolai.tickets.storage.platforms.Platform;
 import broccolai.tickets.user.UserSettings;
 import co.aikar.idb.DB;
 import co.aikar.idb.DbRow;
-import java.sql.SQLException;
-import java.util.UUID;
 import org.bukkit.Bukkit;
 import org.jetbrains.annotations.NotNull;
+
+import java.sql.SQLException;
+import java.util.UUID;
 
 /**
  * Setting SQL.
  */
-public class SettingsSQL {
+public final class SettingsSQL {
+
+    private SettingsSQL() {
+    }
+
     private static Platform platform;
 
     /**
@@ -20,7 +25,7 @@ public class SettingsSQL {
      *
      * @param platformInstance the platform to use
      */
-    public static void setup(@NotNull Platform platformInstance) {
+    public static void setup(@NotNull final Platform platformInstance) {
         platform = platformInstance;
     }
 
@@ -31,12 +36,14 @@ public class SettingsSQL {
      * @return the constructed UserSettings
      */
     @NotNull
-    public static UserSettings select(@NotNull UUID uuid) {
+    public static UserSettings select(@NotNull final UUID uuid) {
         DbRow result;
 
         try {
-            result = DB.getFirstRow("SELECT announcements from puretickets_settings WHERE uuid = ?",
-                uuid.toString());
+            result = DB.getFirstRow(
+                    "SELECT announcements from puretickets_settings WHERE uuid = ?",
+                    uuid.toString()
+            );
         } catch (SQLException e) {
             throw new IllegalArgumentException();
         }
@@ -52,10 +59,12 @@ public class SettingsSQL {
      * @param uuid the players unique id
      * @return a boolean
      */
-    public static boolean exists(@NotNull UUID uuid) {
+    public static boolean exists(@NotNull final UUID uuid) {
         try {
-            return platform.getPureInteger(DB.getFirstColumn("SELECT EXISTS(SELECT 1 from puretickets_settings WHERE uuid = ?)",
-                uuid.toString())) == 1;
+            return platform.getPureInteger(DB.getFirstColumn(
+                    "SELECT EXISTS(SELECT 1 from puretickets_settings WHERE uuid = ?)",
+                    uuid.toString()
+            )) == 1;
         } catch (SQLException e) {
             return false;
         }
@@ -67,10 +76,11 @@ public class SettingsSQL {
      * @param uuid     the players unique id
      * @param settings the users settings
      */
-    public static void insert(@NotNull UUID uuid, @NotNull UserSettings settings) {
+    public static void insert(@NotNull final UUID uuid, @NotNull final UserSettings settings) {
         try {
             DB.executeInsert("INSERT INTO puretickets_settings(uuid, announcements) VALUES(?, ?)",
-                uuid.toString(), settings.getAnnouncements());
+                    uuid.toString(), settings.getAnnouncements()
+            );
         } catch (SQLException e) {
             Bukkit.getLogger().warning("Failed to insert user settings " + uuid.toString());
         }
@@ -82,13 +92,15 @@ public class SettingsSQL {
      * @param uuid     the players unique id
      * @param settings the users settings
      */
-    public static void update(@NotNull UUID uuid, @NotNull UserSettings settings) {
+    public static void update(@NotNull final UUID uuid, @NotNull final UserSettings settings) {
         try {
             DB.executeUpdate("UPDATE puretickets_settings SET announcements = ? WHERE uuid = ?",
-                settings.getAnnouncements(), uuid.toString());
+                    settings.getAnnouncements(), uuid.toString()
+            );
         } catch (SQLException e) {
             Bukkit.getLogger().warning("Failed to update user settings " + uuid.toString());
         }
     }
+
 }
 

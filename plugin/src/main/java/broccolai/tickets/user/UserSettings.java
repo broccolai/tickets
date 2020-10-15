@@ -1,34 +1,37 @@
 package broccolai.tickets.user;
 
+import org.jetbrains.annotations.NotNull;
+
 /**
- * class representing a users setting choices.
+ * class representing a users setting choices
  */
-public class UserSettings {
+public final class UserSettings {
+
     private boolean announcements;
 
     /**
-     * Initialise a User Setting instance with all values.
+     * Initialise a User Setting instance with all values
      *
      * @param announcements true for wanting announcements
      */
-    public UserSettings(boolean announcements) {
+    public UserSettings(final boolean announcements) {
         this.announcements = announcements;
     }
 
     /**
-     * Set an option to a corresponding value.
+     * Set an option to a corresponding value
      *
      * @param option Option
      * @param value  Value to use
      */
-    public void set(Options option, boolean value) {
+    public void set(@NotNull final Options option, final boolean value) {
         if (option == Options.ANNOUNCEMENTS) {
             announcements = value;
         }
     }
 
     /**
-     * Get the users announcement choice.
+     * Get the users announcement choice
      *
      * @return boolean representation of choice
      */
@@ -39,4 +42,5 @@ public class UserSettings {
     public enum Options {
         ANNOUNCEMENTS
     }
+
 }

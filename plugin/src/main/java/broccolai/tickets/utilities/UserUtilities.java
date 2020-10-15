@@ -1,16 +1,21 @@
-package broccolai.tickets.utilities.generic;
+package broccolai.tickets.utilities;
 
-import java.util.UUID;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.UUID;
+
 /**
- * Utilities for Users.
+ * Utilities for Users
  */
-public class UserUtilities {
+public final class UserUtilities {
+
+    private UserUtilities() {
+    }
+
     /**
      * Convert a unique id to a readable username.
      *
@@ -18,7 +23,7 @@ public class UserUtilities {
      * @return the users name
      */
     @NotNull
-    public static String nameFromUUID(@Nullable UUID uuid) {
+    public static String nameFromUUID(@Nullable final UUID uuid) {
         if (uuid == null) {
             return Bukkit.getConsoleSender().getName();
         } else {
@@ -34,11 +39,12 @@ public class UserUtilities {
      * @return an unique id representing them
      */
     @Nullable
-    public static UUID uuidFromSender(@NotNull CommandSender sender) {
+    public static UUID uuidFromSender(@NotNull final CommandSender sender) {
         if (sender instanceof Player) {
             return ((Player) sender).getUniqueId();
         } else {
             return null;
         }
     }
+
 }

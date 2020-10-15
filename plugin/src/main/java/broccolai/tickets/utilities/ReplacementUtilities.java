@@ -1,4 +1,4 @@
-package broccolai.tickets.utilities.generic;
+package broccolai.tickets.utilities;
 
 import broccolai.corn.core.Lists;
 import broccolai.tickets.ticket.Message;
@@ -6,25 +6,30 @@ import broccolai.tickets.ticket.MessageReason;
 import broccolai.tickets.ticket.Ticket;
 import broccolai.tickets.ticket.TicketStatus;
 import com.google.common.collect.Iterators;
-import java.util.ArrayList;
-import java.util.List;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
- * Utilities for replacements.
+ * Utilities for replacements
  */
-public class ReplacementUtilities {
+public final class ReplacementUtilities {
+
+    private ReplacementUtilities() {
+    }
+
     /**
-     * Convert a ticket to an array of replacements.
+     * Convert a ticket to an array of replacements
      *
      * @param ticket the ticket instance to use
      * @return a array of replacements
      */
     @NotNull
-    public static String[] ticketReplacements(@Nullable Ticket ticket) {
+    public static String[] ticketReplacements(@Nullable final Ticket ticket) {
         List<String> results = new ArrayList<>();
 
         if (ticket == null) {
@@ -98,4 +103,5 @@ public class ReplacementUtilities {
 
         return results.toArray(new String[0]);
     }
+
 }

@@ -8,22 +8,28 @@ import broccolai.tickets.storage.platforms.MySQL;
 import broccolai.tickets.storage.platforms.Platform;
 import broccolai.tickets.storage.platforms.SQLite;
 import org.bukkit.plugin.Plugin;
+import org.jetbrains.annotations.NotNull;
 
 /**
- * SQL Manager.
+ * SQL Manager
  */
-public class SQLManager {
+public final class SQLManager {
+
+    private SQLManager() {
+    }
+
     /**
      * Setup the SQL Manager.
      *
      * @param plugin the plugin instance
      * @param config the configuration instance
      */
-    public static void setup(Plugin plugin, Config config) {
-        Platform platform = config.STORAGE__MYSQL ? new MySQL() : new SQLite();
+    public static void setup(@NotNull final Plugin plugin, @NotNull final Config config) {
+        Platform platform = config.getStorageMySQL() ? new MySQL() : new SQLite();
         HelpersSQL.setup(platform);
         SettingsSQL.setup(platform);
         TicketSQL.setup(platform);
         platform.setup(plugin, config);
     }
+
 }

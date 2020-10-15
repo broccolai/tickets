@@ -1,5 +1,5 @@
 package broccolai.tickets.exceptions;
 
-public class PlayerNotFound extends Exception {
+public final class PlayerNotFound extends Exception {
 
 }

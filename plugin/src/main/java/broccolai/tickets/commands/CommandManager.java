@@ -14,29 +14,32 @@ import org.jetbrains.annotations.NotNull;
 /**
  * The Command Manager.
  */
-public class CommandManager extends PaperCommandManager<Soul> {
-    @NotNull
-    final PluginManager pluginManager;
-    @NotNull
-    final TicketManager ticketManager;
-    @NotNull
-    final UserManager userManager;
-    @NotNull
-    final NotificationManager notificationManager;
+public final class CommandManager extends PaperCommandManager<Soul> {
 
     /**
      * Initialise the Command Manager.
      *
-     * @param plugin the plugin to register commands against
-     * @param config the config instance to use
+     * @param plugin              Plugin instance
+     * @param config              Configuration instance
+     * @param ticketManager       Ticket manager
+     * @param userManager         User manager
+     * @param notificationManager Notification manager
+     * @param pluginManager       Plugin manager
      */
-    public CommandManager(@NotNull Plugin plugin, @NotNull Config config, @NotNull TicketManager ticketManager, @NotNull UserManager userManager,
-                          @NotNull NotificationManager notificationManager, @NotNull PluginManager pluginManager) throws Exception {
-        super(plugin, AsynchronousCommandExecutionCoordinator.<Soul>newBuilder().build(), userManager::fromSender, Soul::asSender);
-        this.pluginManager = pluginManager;
-        this.ticketManager = ticketManager;
-        this.userManager = userManager;
-        this.notificationManager = notificationManager;
+    public CommandManager(
+            @NotNull final Plugin plugin,
+            @NotNull final Config config,
+            @NotNull final TicketManager ticketManager,
+            @NotNull final UserManager userManager,
+            @NotNull final NotificationManager notificationManager,
+            @NotNull final PluginManager pluginManager
+    ) throws Exception {
+        super(
+                plugin,
+                AsynchronousCommandExecutionCoordinator.<Soul>newBuilder().build(),
+                userManager::fromSender,
+                Soul::asSender
+        );
         registerBrigadier();
         registerAsynchronousCompletions();
 
@@ -44,4 +47,5 @@ public class CommandManager extends PaperCommandManager<Soul> {
         new TicketCommand(pluginManager, config, this, ticketManager, notificationManager);
         new TicketsCommand(this, config, userManager, ticketManager, notificationManager);
     }
+
 }

@@ -1,12 +1,13 @@
 package broccolai.tickets.user;
 
-import java.util.UUID;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
-public class ConsoleSoul implements Soul {
+import java.util.UUID;
+
+public final class ConsoleSoul implements Soul {
+
     public static final UUID CONSOLE_UUID = new UUID(0L, 0L);
     public static final CommandSender CONSOLE_SENDER = Bukkit.getConsoleSender();
 
@@ -23,13 +24,14 @@ public class ConsoleSoul implements Soul {
     }
 
     @Override
-    @Nullable
+    @NotNull
     public CommandSender asSender() {
         return CONSOLE_SENDER;
     }
 
     @Override
-    public void message(@NotNull String message) {
+    public void message(@NotNull final String message) {
         CONSOLE_SENDER.sendMessage(message);
     }
+
 }

@@ -6,17 +6,20 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
- * Event that can be thrown (cancelled) with a message.
+ * Event that can be thrown (cancelled) with a message
  */
 class ThrowableEvent extends BaseEvent implements Cancellable {
+
     @Nullable
-    private PureException exception;
-    private boolean isCancelled;
+    private PureException exception = null;
+    private boolean isCancelled = false;
 
     /**
-     * Initialise Throwable Event.
+     * Initialise Throwable Event
+     *
+     * @param isAsync whether the event is ran async
      */
-    public ThrowableEvent(boolean isAsync) {
+    ThrowableEvent(final boolean isAsync) {
         super(isAsync);
     }
 
@@ -26,16 +29,16 @@ class ThrowableEvent extends BaseEvent implements Cancellable {
     }
 
     @Override
-    public void setCancelled(boolean cancel) {
+    public void setCancelled(final boolean cancel) {
         isCancelled = cancel;
     }
 
     /**
-     * Cancel the event with a PureException.
+     * Cancel the event with a PureException
      *
-     * @param exception the PureException to use.
+     * @param exception the PureException to use
      */
-    public void cancel(@NotNull PureException exception) {
+    public void cancel(@NotNull final PureException exception) {
         this.exception = exception;
         isCancelled = true;
     }
@@ -49,4 +52,5 @@ class ThrowableEvent extends BaseEvent implements Cancellable {
         assert exception != null;
         return exception;
     }
+
 }

@@ -1,4 +1,5 @@
 package broccolai.tickets.exceptions;
 
-public class TicketDoesNotBelong extends Exception {
+public final class TicketDoesNotBelong extends Exception {
+
 }

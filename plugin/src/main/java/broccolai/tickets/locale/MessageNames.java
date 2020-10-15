@@ -3,7 +3,7 @@ package broccolai.tickets.locale;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Enum representing potential message names.
+ * Enum representing potential message names
  */
 public enum MessageNames {
     NEW_TICKET(TargetType.SENDER, TargetType.ANNOUNCEMENT, TargetType.DISCORD),
@@ -25,7 +25,7 @@ public enum MessageNames {
      *
      * @param targets the corresponding target types
      */
-    MessageNames(TargetType... targets) {
+    MessageNames(@NotNull final TargetType... targets) {
         this.targets = targets;
     }
 

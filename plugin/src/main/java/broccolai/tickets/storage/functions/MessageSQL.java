@@ -4,23 +4,29 @@ import broccolai.tickets.ticket.Message;
 import broccolai.tickets.ticket.Ticket;
 import co.aikar.idb.DB;
 import co.aikar.idb.DbRow;
+import org.bukkit.Bukkit;
+import org.jetbrains.annotations.NotNull;
+
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-import org.bukkit.Bukkit;
 
 /**
- * Message SQL.
+ * Message SQL
  */
-public class MessageSQL {
+public final class MessageSQL {
+
+    private MessageSQL() {
+    }
+
     /**
-     * Get all messages with an id.
+     * Get all messages with an id
      *
      * @param id the tickets id
      * @return a list of messages
      */
-    public static List<Message> selectAll(int id) {
+    public static List<Message> selectAll(final int id) {
         List<DbRow> results;
 
         try {
@@ -39,12 +45,12 @@ public class MessageSQL {
     }
 
     /**
-     * Insert a message.
+     * Insert a message
      *
      * @param ticket  the ticket instance to use
      * @param message the message to insert
      */
-    public static void insert(Ticket ticket, Message message) {
+    public static void insert(@NotNull final Ticket ticket, @NotNull final Message message) {
         UUID sender = message.getSender();
         long date = HelpersSQL.serializeLocalDateTime(message.getDate());
         String senderName;
@@ -57,10 +63,12 @@ public class MessageSQL {
 
         try {
             DB.executeInsert("INSERT INTO puretickets_message(ticket, reason, data, sender, date) VALUES(?, ?, ?, ?, ?)",
-                ticket.getId(), message.getReason().name(), message.getData(), senderName, date);
+                    ticket.getId(), message.getReason().name(), message.getData(), senderName, date
+            );
         } catch (SQLException e) {
             Bukkit.getLogger().warning("Failed to insert message, ticket id #" + ticket.getId());
         }
     }
+
 }
 

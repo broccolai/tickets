@@ -6,9 +6,10 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
- * an base exception class for other PureExceptions to inherit.
+ * an base exception class for other PureExceptions to inherit
  */
 public class PureException extends RuntimeException {
+
     @Nullable
     private final LocaleKeys message;
     @Nullable
@@ -17,7 +18,7 @@ public class PureException extends RuntimeException {
     private final String value;
 
     /**
-     * Initialise a blank PureException.
+     * Initialise a blank PureException
      */
     public PureException() {
         this.message = null;
@@ -26,30 +27,30 @@ public class PureException extends RuntimeException {
     }
 
     /**
-     * Initialise a plain PureException.
+     * Initialise a plain PureException
      *
      * @param value the message to give
      */
-    public PureException(@Nullable String value) {
+    public PureException(@Nullable final String value) {
         this.message = null;
         this.replacements = null;
         this.value = value;
     }
 
     /**
-     * Initialise a localised PureException.
+     * Initialise a localised PureException
      *
      * @param message      the locale message key
      * @param replacements the replacements to use
      */
-    public PureException(@Nullable Messages message, @NotNull String... replacements) {
+    public PureException(@Nullable final Messages message, @NotNull final String... replacements) {
         this.message = message;
         this.replacements = replacements;
         this.value = null;
     }
 
     /**
-     * Get the locale message key.
+     * Get the locale message key
      *
      * @return the Messages entry
      */
@@ -59,7 +60,7 @@ public class PureException extends RuntimeException {
     }
 
     /**
-     * Get the locale replacements.
+     * Get the locale replacements
      *
      * @return an array of replacements
      */
@@ -69,7 +70,7 @@ public class PureException extends RuntimeException {
     }
 
     /**
-     * Get the plain message.
+     * Get the plain message
      *
      * @return the message
      */
@@ -77,4 +78,5 @@ public class PureException extends RuntimeException {
     public String getValue() {
         return value;
     }
+
 }

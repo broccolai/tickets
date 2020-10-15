@@ -3,33 +3,36 @@ package broccolai.tickets.storage.platforms;
 import broccolai.tickets.configuration.Config;
 import co.aikar.idb.DbRow;
 import org.bukkit.plugin.Plugin;
+import org.jetbrains.annotations.NotNull;
 
 /**
- * Representation of functions that are specific to an sql implementation.
+ * Representation of functions that are specific to an sql implementation
  */
 public interface Platform {
-    /**
-     * Setup the platform.
-     *
-     * @param plugin the plugin instance to register
-     * @param config the configuration instance to use
-     */
-    void setup(Plugin plugin, Config config);
 
     /**
-     * Retrieve a long from a column.
+     * Setup the platform
      *
-     * @param row    the database row to use
-     * @param column the column to lookup
-     * @return a long
+     * @param plugin Plugin instance
+     * @param config Configuration instance
      */
-    Long getPureLong(DbRow row, String column);
+    void setup(@NotNull Plugin plugin, @NotNull Config config);
 
     /**
-     * Retrieve an integer from a object.
+     * Retrieve a long from a column
      *
-     * @param value the object to transform
-     * @return the integer value
+     * @param row    Database row
+     * @param column Database column
+     * @return Long
      */
-    Integer getPureInteger(Object value);
+    Long getPureLong(@NotNull DbRow row, @NotNull String column);
+
+    /**
+     * Retrieve an integer from a object
+     *
+     * @param value Object
+     * @return Integer value
+     */
+    Integer getPureInteger(@NotNull Object value);
+
 }

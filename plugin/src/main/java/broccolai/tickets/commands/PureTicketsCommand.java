@@ -15,7 +15,8 @@ import org.jetbrains.annotations.NotNull;
 /**
  * Command used for information and per-user configuration.
  */
-public class PureTicketsCommand {
+public final class PureTicketsCommand {
+
     @NotNull
     private final Plugin plugin;
 
@@ -31,17 +32,17 @@ public class PureTicketsCommand {
         final Command.Builder<Soul> builder = manager.commandBuilder("puretickets", "pt");
 
         manager.command(builder.literal("info")
-            .handler(this::processInfo));
+                .handler(this::processInfo));
 
         manager.command(builder.literal("settings")
-            .permission(Constants.USER_PERMISSION + ".settings")
-            .argument(EnumArgument.of(UserSettings.Options.class, "setting"))
-            .argument(BooleanArgument.of("value"))
-            .handler(this::processSettings));
+                .permission(Constants.USER_PERMISSION + ".settings")
+                .argument(EnumArgument.of(UserSettings.Options.class, "setting"))
+                .argument(BooleanArgument.of("value"))
+                .handler(this::processSettings));
 
         manager.command(builder.literal("reload")
-            .permission(Constants.STAFF_PERMISSION + ".reload")
-            .handler(this::processReload));
+                .permission(Constants.STAFF_PERMISSION + ".reload")
+                .handler(this::processReload));
     }
 
     private void processInfo(@NotNull final CommandContext<Soul> c) {
@@ -63,4 +64,5 @@ public class PureTicketsCommand {
         plugin.onEnable();
         c.getSender().message("PureTickets reloaded");
     }
+
 }

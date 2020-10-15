@@ -4,16 +4,17 @@ import broccolai.tickets.locale.Messages;
 import broccolai.tickets.ticket.Ticket;
 import broccolai.tickets.ticket.TicketStatus;
 import broccolai.tickets.user.Soul;
-import broccolai.tickets.utilities.generic.ReplacementUtilities;
-import broccolai.tickets.utilities.generic.TimeUtilities;
-import broccolai.tickets.utilities.generic.UserUtilities;
+import broccolai.tickets.utilities.ReplacementUtilities;
+import broccolai.tickets.utilities.TimeUtilities;
+import broccolai.tickets.utilities.UserUtilities;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Base commands for ticket commands inherit from.
  */
 public class BaseCommand {
 
-    protected void processShow(Soul soul, Ticket ticket) {
+    protected final void processShow(@NotNull final Soul soul, @NotNull final Ticket ticket) {
         String[] replacements = ReplacementUtilities.ticketReplacements(ticket);
 
         soul.message(Messages.TITLES__SHOW_TICKET, replacements);
@@ -28,7 +29,7 @@ public class BaseCommand {
         }
     }
 
-    protected void processLog(Soul soul, Ticket ticket) {
+    protected final void processLog(@NotNull final Soul soul, @NotNull final Ticket ticket) {
         String[] replacements = ReplacementUtilities.ticketReplacements(ticket);
 
         soul.message(Messages.TITLES__TICKET_LOG, replacements);
@@ -37,7 +38,9 @@ public class BaseCommand {
             String suffix = message.getData() != null ? message.getData() : UserUtilities.nameFromUUID(message.getSender());
 
             soul.message(Messages.GENERAL__LOG_FORMAT, "reason", message.getReason().name(),
-                "date", TimeUtilities.formatted(message.getDate()), "suffix", suffix);
+                    "date", TimeUtilities.formatted(message.getDate()), "suffix", suffix
+            );
         });
     }
+
 }

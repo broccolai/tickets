@@ -17,11 +17,10 @@ import broccolai.tickets.user.PlayerSoul;
 import broccolai.tickets.user.Soul;
 import broccolai.tickets.user.UserManager;
 import broccolai.tickets.utilities.Constants;
-import broccolai.tickets.utilities.generic.ReplacementUtilities;
-import broccolai.tickets.utilities.generic.TimeUtilities;
-import broccolai.tickets.utilities.generic.UserUtilities;
+import broccolai.tickets.utilities.ReplacementUtilities;
+import broccolai.tickets.utilities.TimeUtilities;
+import broccolai.tickets.utilities.UserUtilities;
 import com.google.common.collect.ObjectArrays;
-import java.util.UUID;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
@@ -30,10 +29,13 @@ import org.bukkit.event.Listener;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.UUID;
+
 /**
- * Notification Manager.
+ * Notification Manager
  */
-public class NotificationManager implements Listener {
+public final class NotificationManager implements Listener {
+
     @NotNull
     private final LocaleManager localeManager;
     @NotNull
@@ -42,7 +44,7 @@ public class NotificationManager implements Listener {
     private final DiscordManager discordManager;
 
     /**
-     * Initialise a Notification Manager.
+     * Initialise a Notification Manager
      *
      * @param config         the config instance
      * @param taskManager    the task manager
@@ -50,25 +52,36 @@ public class NotificationManager implements Listener {
      * @param discordManager the discord manager
      * @param localeManager  the locale manager
      */
-    public NotificationManager(@NotNull Config config, @NotNull TaskManager taskManager, @NotNull LocaleManager localeManager,
-                               @NotNull UserManager userManager, @NotNull DiscordManager discordManager) {
+    public NotificationManager(
+            @NotNull final Config config,
+            @NotNull final TaskManager taskManager,
+            @NotNull final LocaleManager localeManager,
+            @NotNull final UserManager userManager,
+            @NotNull final DiscordManager discordManager
+    ) {
         this.localeManager = localeManager;
         this.userManager = userManager;
         this.discordManager = discordManager;
 
         taskManager.addRepeatingTask(new ReminderTask(userManager),
-            TimeUtilities.minuteToLong(config.REMINDER__DELAY), TimeUtilities.minuteToLong(config.REMINDER__REPEAT));
+                TimeUtilities.minuteToLong(config.getReminderDelay()), TimeUtilities.minuteToLong(config.getReminderRepeat())
+        );
     }
 
     /**
-     * Send a notification to various sources.
+     * Send a notification to various sources
      *
      * @param soul   the notification initiator
      * @param target the target of the action
      * @param names  the notification type name
      * @param ticket the ticket instance
      */
-    public void send(@NotNull Soul soul, @Nullable UUID target, @NotNull MessageNames names, @NotNull Ticket ticket) {
+    public void send(
+            @NotNull final Soul soul,
+            @Nullable final UUID target,
+            @NotNull final MessageNames names,
+            @NotNull final Ticket ticket
+    ) {
         String[] specificReplacements = {"user", soul.getName(), "target", UserUtilities.nameFromUUID(target)};
         String[] genericReplacements = ReplacementUtilities.ticketReplacements(ticket);
         String[] replacements = ObjectArrays.concat(specificReplacements, genericReplacements, String.class);
@@ -124,12 +137,12 @@ public class NotificationManager implements Listener {
     }
 
     /**
-     * Handle a PureException and send the result to a CommandSender.
+     * Handle a PureException and send the result to a CommandSender
      *
      * @param soul      the command sender to message
      * @param exception the PureException to handle
      */
-    public void handleException(Soul soul, PureException exception) {
+    public void handleException(@NotNull final Soul soul, @NotNull final PureException exception) {
         if (exception.getValue() != null) {
             soul.message(exception.getValue());
             return;
@@ -140,21 +153,26 @@ public class NotificationManager implements Listener {
     }
 
     /**
-     * Event to notify player when a ticket is created.
+     * Event to notify player when a ticket is created
+     *
+     * @param e Event
      */
     @EventHandler
-    public void onTicketCreation(TicketCreationEvent e) {
+    public void onTicketCreation(@NotNull final TicketCreationEvent e) {
         send(e.getSoul(), null, MessageNames.NEW_TICKET, e.getTicket());
     }
 
     /**
-     * Event to listen for player joins and send them outstanding notifications.
+     * Event to listen for player joins and send them outstanding notifications
+     *
+     * @param e Event
      */
     @EventHandler
     public void onAsyncSoulJoin(@NotNull final AsyncSoulJoinEvent e) {
         final Soul soul = e.getSoul();
 
         NotificationSQL.retrieve(soul.getUniqueId())
-            .forEach(soul::message);
+                .forEach(soul::message);
     }
+
 }

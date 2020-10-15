@@ -1,31 +1,37 @@
-package broccolai.tickets.utilities.generic;
+package broccolai.tickets.utilities;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import org.jetbrains.annotations.NotNull;
 
 /**
- * Utilities for Time.
+ * Utilities for time
  */
-public class TimeUtilities {
+public final class TimeUtilities {
+
+    private TimeUtilities() {
+    }
+
     /**
-     * Convert a time into a standardised string representation.
+     * Convert a time into a standardised string representation
      *
      * @param time the time to format
      * @return a formatted time string
      */
     @NotNull
-    public static String formatted(@NotNull LocalDateTime time) {
+    public static String formatted(@NotNull final LocalDateTime time) {
         return time.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
     }
 
     /**
-     * Convert a minute to a tick.
+     * Convert a minute to a tick
      *
      * @param minute time value to transition
      * @return long value
      */
-    public static long minuteToLong(int minute) {
+    public static long minuteToLong(final int minute) {
         return minute * 60 * 20;
     }
+
 }
