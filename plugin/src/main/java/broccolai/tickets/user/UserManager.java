@@ -2,6 +2,7 @@ package broccolai.tickets.user;
 
 import broccolai.tickets.events.AsyncSoulJoinEvent;
 import broccolai.tickets.events.TicketCreationEvent;
+import broccolai.tickets.locale.LocaleManager;
 import broccolai.tickets.storage.functions.TicketSQL;
 import broccolai.tickets.tasks.TaskManager;
 import org.bukkit.command.CommandSender;
@@ -30,6 +31,8 @@ public final class UserManager implements Listener {
     @NonNull
     private final TaskManager taskManager;
     @NonNull
+    private final LocaleManager localeManager;
+    @NonNull
     private final Map<UUID, PlayerSoul> souls = new HashMap<>();
     @NonNull
     private final Set<String> names = TicketSQL.selectNames();
@@ -39,10 +42,16 @@ public final class UserManager implements Listener {
      *
      * @param pluginManager Plugin manager
      * @param taskManager   Task manager
+     * @param localeManager Locale manager
      */
-    public UserManager(@NonNull final PluginManager pluginManager, @NonNull final TaskManager taskManager) {
+    public UserManager(
+            @NonNull final PluginManager pluginManager,
+            @NonNull final TaskManager taskManager,
+            @NonNull final LocaleManager localeManager
+    ) {
         this.pluginManager = pluginManager;
         this.taskManager = taskManager;
+        this.localeManager = localeManager;
     }
 
     /**
@@ -53,17 +62,20 @@ public final class UserManager implements Listener {
      */
     @NonNull
     public Soul fromSender(@NonNull final CommandSender sender) {
+        UUID uuid;
+
         if (sender instanceof ConsoleCommandSender) {
-            return new ConsoleSoul();
+            uuid = ConsoleSoul.CONSOLE_UUID;
+        } else {
+            Player player = (Player) sender;
+            uuid = player.getUniqueId();
         }
 
-        Player player = (Player) sender;
-
-        if (souls.containsKey(player.getUniqueId())) {
-            return souls.get(player.getUniqueId());
+        if (souls.containsKey(uuid)) {
+            return souls.get(uuid);
         }
 
-        return makeAndPut(player);
+        return makeAndPut((Player) sender);
     }
 
     /**
@@ -89,7 +101,7 @@ public final class UserManager implements Listener {
 
     @NonNull
     private PlayerSoul makeAndPut(@NonNull final Player player) {
-        PlayerSoul soul = new PlayerSoul(player);
+        PlayerSoul soul = new PlayerSoul(localeManager, player);
 
         souls.put(player.getUniqueId(), soul);
         return soul;

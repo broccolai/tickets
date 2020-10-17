@@ -1,13 +1,32 @@
 package broccolai.tickets.user;
 
-import broccolai.corn.spigot.CornUser;
+import broccolai.corn.spigot.Recipient;
+import broccolai.tickets.locale.LocaleManager;
 import org.bukkit.command.CommandSender;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.util.UUID;
 
-public interface Soul extends CornUser {
+public abstract class Soul implements Recipient {
+
+    @NonNull
+    private final LocaleManager localeManager;
+
+    /**
+     * Construct a new Soul
+     *
+     * @param localeManager Locale Manager instance
+     */
+    public Soul(@NonNull final LocaleManager localeManager) {
+        this.localeManager = localeManager;
+    }
+
+    @Override
+    @NonNull
+    public final LocaleManager getLocaleManager() {
+        return localeManager;
+    }
 
     /**
      * Get the souls name
@@ -15,7 +34,7 @@ public interface Soul extends CornUser {
      * @return Name
      */
     @NonNull
-    String getName();
+    public abstract String getName();
 
     /**
      * Get the souls unique id
@@ -23,7 +42,7 @@ public interface Soul extends CornUser {
      * @return Unique id
      */
     @NonNull
-    UUID getUniqueId();
+    public abstract UUID getUniqueId();
 
     /**
      * Get the Command Sender associated with the soul
@@ -31,6 +50,6 @@ public interface Soul extends CornUser {
      * @return Command Sender
      */
     @Nullable
-    CommandSender asSender();
+    public abstract CommandSender asSender();
 
 }

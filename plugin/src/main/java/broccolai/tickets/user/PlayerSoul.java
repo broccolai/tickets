@@ -1,5 +1,6 @@
 package broccolai.tickets.user;
 
+import broccolai.tickets.locale.LocaleManager;
 import broccolai.tickets.storage.functions.SettingsSQL;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -10,7 +11,7 @@ import java.util.Objects;
 import java.util.UUID;
 import java.util.function.Consumer;
 
-public final class PlayerSoul implements Soul {
+public final class PlayerSoul extends Soul {
 
     @NonNull
     private final Player player;
@@ -22,9 +23,11 @@ public final class PlayerSoul implements Soul {
     /**
      * Construct a PlayerSoul with a Player instance
      *
-     * @param player Player instance
+     * @param localeManager Locale manager instance
+     * @param player        Player instance
      */
-    public PlayerSoul(@NonNull final Player player) {
+    public PlayerSoul(@NonNull final LocaleManager localeManager, @NonNull final Player player) {
+        super(localeManager);
         this.player = player;
         this.uniqueId = player.getUniqueId();
     }

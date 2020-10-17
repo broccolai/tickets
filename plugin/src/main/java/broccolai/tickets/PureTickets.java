@@ -16,9 +16,6 @@ import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-/**
- * Main class
- */
 public final class PureTickets extends JavaPlugin {
 
     private TaskManager taskManager;
@@ -33,7 +30,7 @@ public final class PureTickets extends JavaPlugin {
         SQLManager.setup(this, config);
 
         DiscordManager discordManager = new DiscordManager(this.getLogger(), config);
-        UserManager userManager = new UserManager(pluginManager, taskManager);
+        UserManager userManager = new UserManager(pluginManager, taskManager, localeManager);
         TicketManager ticketManager = new TicketManager(config, pluginManager);
         taskManager = new TaskManager(this);
         NotificationManager notificationManager = new NotificationManager(
