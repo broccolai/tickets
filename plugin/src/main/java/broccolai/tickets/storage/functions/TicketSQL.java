@@ -1,6 +1,5 @@
 package broccolai.tickets.storage.functions;
 
-import broccolai.corn.core.Lists;
 import broccolai.tickets.storage.TimeAmount;
 import broccolai.tickets.storage.platforms.Platform;
 import broccolai.tickets.ticket.Ticket;
@@ -25,9 +24,6 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-/**
- * Ticket SQL
- */
 public final class TicketSQL {
 
     private static Platform platform;
@@ -38,7 +34,7 @@ public final class TicketSQL {
     /**
      * Initialise TicketSQL
      *
-     * @param platformInstance the platform instance
+     * @param platformInstance Platform instance
      */
     public static void setup(@NonNull final Platform platformInstance) {
         platform = platformInstance;
@@ -47,8 +43,8 @@ public final class TicketSQL {
     /**
      * Retrieve a Ticket from the Database
      *
-     * @param id the tickets id
-     * @return the constructed ticket
+     * @param id Tickets id
+     * @return Constructed ticket
      */
     @Nullable
     public static Ticket select(final int id) {
@@ -90,8 +86,8 @@ public final class TicketSQL {
     /**
      * Retrieves tickets with the given optional status
      *
-     * @param status the optional status to filter with
-     * @return a list of the retrieved tickets
+     * @param status Optional status to filter with
+     * @return List of the retrieved tickets
      */
     @NonNull
     public static List<Ticket> selectAll(@Nullable final TicketStatus status) {
@@ -113,15 +109,18 @@ public final class TicketSQL {
             throw new IllegalArgumentException();
         }
 
-        return Lists.map(results, HelpersSQL::buildTicket);
+        return results
+                .stream()
+                .map(HelpersSQL::buildTicket)
+                .collect(Collectors.toList());
     }
 
     /**
      * Retrieves tickets with a given players unique id and an optional status
      *
-     * @param uuid   the players unique id to filter with
-     * @param status the optional status to filter with
-     * @return a list of the retrieved tickets
+     * @param uuid   Players unique id to filter with
+     * @param status Optional status to filter with
+     * @return List of the retrieved tickets
      */
     @NonNull
     public static List<Ticket> selectAll(@NonNull final UUID uuid, @Nullable final TicketStatus status) {
@@ -139,15 +138,18 @@ public final class TicketSQL {
             throw new IllegalArgumentException();
         }
 
-        return Lists.map(results, HelpersSQL::buildTicket);
+        return results
+                .stream()
+                .map(HelpersSQL::buildTicket)
+                .collect(Collectors.toList());
     }
 
     /**
      * Retrieves ticket ids with a given players unique id and an optional status
      *
-     * @param uuid     the players unique id to filter with
-     * @param statuses the optional status to filter with
-     * @return a list of the retrieved tickets
+     * @param uuid     Players unique id to filter with
+     * @param statuses Optional status to filter with
+     * @return List of the retrieved tickets
      */
     @NonNull
     public static List<Integer> selectIds(@NonNull final UUID uuid, @Nullable final TicketStatus... statuses) {
@@ -165,9 +167,9 @@ public final class TicketSQL {
     /**
      * Retrieve the last ticket with a players unique id and optionally multiple statues
      *
-     * @param uuid     the players unique id to filter with
-     * @param statuses the optional statuses to filter with
-     * @return the most recent ticket or if non are eligible null
+     * @param uuid     Players unique id to filter with
+     * @param statuses Optional statuses to filter with
+     * @return Most recent ticket or if non are eligible null
      */
     @Nullable
     public static Ticket selectLastTicket(@NonNull final UUID uuid, @Nullable final TicketStatus... statuses) {
@@ -186,8 +188,8 @@ public final class TicketSQL {
     /**
      * Retrieves the names of all ticket holders, optionally filtered by a status
      *
-     * @param statuses the optional statuses to filter by
-     * @return a list of player names
+     * @param statuses Optional statuses to filter by
+     * @return List of player names
      */
     @NonNull
     public static Set<String> selectNames(@Nullable final TicketStatus... statuses) {
@@ -210,8 +212,8 @@ public final class TicketSQL {
     /**
      * Retrieve a map of ticket stats, optionally filtered by a players unique id
      *
-     * @param uuid the optional players unique id to filter with
-     * @return an enum map of the ticket stats
+     * @param uuid Optional players unique id to filter with
+     * @return Enum map of the ticket stats
      */
     @NonNull
     public static EnumMap<TicketStatus, Integer> selectTicketStats(@Nullable final UUID uuid) {
@@ -245,8 +247,8 @@ public final class TicketSQL {
     /**
      * Checks if a ticket exists using a given id
      *
-     * @param id the tickets id to filter with
-     * @return true boolean
+     * @param id Tickets id to filter with
+     * @return Boolean
      */
     public static boolean exists(final int id) {
         try {
@@ -261,9 +263,9 @@ public final class TicketSQL {
     /**
      * Count the amount of tickets with a given unique id and status.
      *
-     * @param uuid   the players unique id to filter with
-     * @param status the status to filter with
-     * @return the number of tickets
+     * @param uuid   Players unique id to filter with
+     * @param status Status to filter with
+     * @return Number of tickets
      */
     public static int count(@NonNull final UUID uuid, @NonNull final TicketStatus status) {
         try {
@@ -281,8 +283,8 @@ public final class TicketSQL {
     /**
      * Count the amount of tickets with a given optional status
      *
-     * @param status the optional status to filter with
-     * @return the number of tickets
+     * @param status Optional status to filter with
+     * @return Number of tickets
      */
     public static int count(@Nullable final TicketStatus status) {
         String sql = "SELECT COUNT(id) FROM puretickets_ticket";
@@ -301,11 +303,11 @@ public final class TicketSQL {
     /**
      * Insert a ticket into the Database and retrieve it's ticket id
      *
-     * @param uuid     the players unique id
-     * @param status   the tickets status
-     * @param picker   the pickers unique id
-     * @param location the ticket creation location
-     * @return the tickets id
+     * @param uuid     Players unique id
+     * @param status   Tickets status
+     * @param picker   Pickers unique id
+     * @param location Ticket creation location
+     * @return Tickets id
      */
     public static int insert(
             @NonNull final UUID uuid,
@@ -337,7 +339,7 @@ public final class TicketSQL {
     /**
      * Updates a tickets entry in the Database
      *
-     * @param ticket the ticket to use
+     * @param ticket Ticket to use
      */
     public static void update(@NonNull final Ticket ticket) {
         UUID pickerUUID = ticket.getPickerUUID();
@@ -357,8 +359,8 @@ public final class TicketSQL {
     /**
      * Retrieve the ticket completions grouped by player within an option time span
      *
-     * @param span the optional span to check within
-     * @return a map of players and their ticket completions.
+     * @param span Optional span to check within
+     * @return Map of players and their ticket completions.
      */
     public static Map<UUID, Integer> highscores(@NonNull final TimeAmount span) {
         Map<UUID, Integer> data = new HashMap<>();

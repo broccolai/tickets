@@ -1,6 +1,5 @@
 package broccolai.tickets.ticket;
 
-import broccolai.corn.core.Lists;
 import com.google.gson.JsonObject;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -10,7 +9,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Objects;
+import java.util.Optional;
 import java.util.UUID;
 
 public final class Ticket {
@@ -55,29 +54,36 @@ public final class Ticket {
     }
 
     /**
-     * Get the most recent message reason by the player.
+     * Get the most recent message reason by the player
      *
      * @return the message instance
      */
     @NonNull
     public Message currentMessage() {
-        return Objects.requireNonNull(Lists.last(messages, m -> m.getReason() == MessageReason.MESSAGE));
+        return messages
+                .stream()
+                .filter(message -> message.getReason() == MessageReason.MESSAGE)
+                .findFirst()
+                .orElseThrow(IllegalStateException::new);
     }
 
     /**
-     * Get the most recent note, or null
+     * Get the most recent note
      *
      * @return Last note
      */
-    @Nullable
-    public Message lastNote() {
-        return Lists.last(messages, m -> m.getReason() == MessageReason.NOTE);
+    @NonNull
+    public Optional<Message> lastNote() {
+        return messages
+                .stream()
+                .filter(message -> message.getReason() == MessageReason.MESSAGE)
+                .findFirst();
     }
 
     /**
-     * Retrieve a LocalDateTime of when the ticket was first opened.
+     * Retrieve a LocalDateTime of when the ticket was first opened
      *
-     * @return a local date time
+     * @return Local date time
      */
     @NonNull
     public LocalDateTime dateOpened() {
@@ -85,18 +91,18 @@ public final class Ticket {
     }
 
     /**
-     * Retrieve the tickets id.
+     * Retrieve the tickets id
      *
-     * @return a primitive integer
+     * @return Primitive integer
      */
     public int getId() {
         return id;
     }
 
     /**
-     * Retrieve the players unique id.
+     * Retrieve the players unique id
      *
-     * @return the unique id
+     * @return Unique id
      */
     @NonNull
     public UUID getPlayerUUID() {
@@ -104,9 +110,9 @@ public final class Ticket {
     }
 
     /**
-     * Retrieve the messages associated with the ticket.
+     * Retrieve the messages associated with the ticket
      *
-     * @return a list of messages
+     * @return List of messages
      */
     @NonNull
     public List<Message> getMessages() {
@@ -114,9 +120,9 @@ public final class Ticket {
     }
 
     /**
-     * Retrieve the tickets creation location.
+     * Retrieve the tickets creation location
      *
-     * @return a location instance
+     * @return Location instance
      */
     @NonNull
     public Location getLocation() {
@@ -124,9 +130,9 @@ public final class Ticket {
     }
 
     /**
-     * Retrieve the tickets current status.
+     * Retrieve the tickets current status
      *
-     * @return the tickets status
+     * @return Tickets status
      */
     @NonNull
     public TicketStatus getStatus() {
@@ -134,18 +140,18 @@ public final class Ticket {
     }
 
     /**
-     * Set the tickets current status to a new value.
+     * Set the tickets current status to a new value
      *
-     * @param status the status to assign
+     * @param status Status to assign
      */
     public void setStatus(@NonNull final TicketStatus status) {
         this.status = status;
     }
 
     /**
-     * Retrieve the pickers unique id.
+     * Retrieve the pickers unique id
      *
-     * @return a potentially null unique id
+     * @return Potentially null unique id
      */
     @Nullable
     public UUID getPickerUUID() {
@@ -155,7 +161,7 @@ public final class Ticket {
     /**
      * Set the pickers unique id.
      *
-     * @param pickerUUID the pickers unique id, or null if it's by the console
+     * @param pickerUUID Pickers unique id, or null if it's by the console
      */
     public void setPickerUUID(@Nullable final UUID pickerUUID) {
         this.pickerUUID = pickerUUID;
@@ -164,7 +170,7 @@ public final class Ticket {
     /**
      * Convert the ticket instance into a json object with all data.
      *
-     * @return a json object
+     * @return JSON object
      */
     public JsonObject toJson() {
         JsonObject json = new JsonObject();
@@ -185,15 +191,11 @@ public final class Ticket {
 
         json.addProperty("status", status.name());
 
-        String data = null;
-        Message lastNote = lastNote();
+        Optional<Message> lastNote = lastNote();
+        Message currentMessage = currentMessage();
 
-        if (lastNote != null) {
-            data = lastNote.getData();
-        }
-
-        json.addProperty("note", data);
-        json.addProperty("message", currentMessage().getData());
+        json.addProperty("note", lastNote.map(Message::getData).orElse(null));
+        json.addProperty("message", currentMessage.getData());
 
         return json;
     }

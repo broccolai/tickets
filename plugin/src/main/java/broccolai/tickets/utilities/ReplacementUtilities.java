@@ -13,10 +13,8 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
-/**
- * Utilities for replacements
- */
 public final class ReplacementUtilities {
 
     private ReplacementUtilities() {
@@ -25,8 +23,8 @@ public final class ReplacementUtilities {
     /**
      * Convert a ticket to an array of replacements
      *
-     * @param ticket the ticket instance to use
-     * @return a array of replacements
+     * @param ticket Ticket instance to use
+     * @return Array of replacements
      */
     @NonNull
     public static String[] ticketReplacements(@Nullable final Ticket ticket) {
@@ -70,8 +68,8 @@ public final class ReplacementUtilities {
         results.add("picker");
         results.add(picker);
 
-        List<Message> pickMessages = Lists.filter(ticket.getMessages(), msg -> msg.getReason() == MessageReason.PICKED);
-        Message pickMessage = Iterators.getLast(pickMessages.iterator(), null);
+        Map<MessageReason, List<Message>> groupedMessages = Lists.group(ticket.getMessages(), Message::getReason);
+        Message pickMessage = Iterators.getLast(groupedMessages.get(MessageReason.PICKED).iterator(), null);
 
         results.add("pickerDate");
         results.add(pickMessage != null ? TimeUtilities.formatted(pickMessage.getDate()) : "");
@@ -79,8 +77,7 @@ public final class ReplacementUtilities {
         results.add("date");
         results.add(TimeUtilities.formatted(ticket.dateOpened()));
 
-        List<Message> noteMessages = Lists.filter(ticket.getMessages(), msg -> msg.getReason() == MessageReason.NOTE);
-        Message noteMessage = Iterators.getLast(noteMessages.iterator(), null);
+        Message noteMessage = Iterators.getLast(groupedMessages.get(MessageReason.NOTE).iterator(), null);
 
         results.add("note");
         results.add(noteMessage != null ? noteMessage.getData() : "");

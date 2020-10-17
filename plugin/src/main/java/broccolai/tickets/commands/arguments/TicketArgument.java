@@ -1,6 +1,5 @@
 package broccolai.tickets.commands.arguments;
 
-import broccolai.corn.core.Lists;
 import broccolai.tickets.exceptions.TicketNotFound;
 import broccolai.tickets.storage.functions.TicketSQL;
 import broccolai.tickets.ticket.Ticket;
@@ -19,6 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Queue;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 public final class TicketArgument extends CommandArgument<Soul, Ticket> {
 
@@ -109,7 +109,10 @@ public final class TicketArgument extends CommandArgument<Soul, Ticket> {
                 return new ArrayList<>();
             }
 
-            return Lists.map(ids, Object::toString);
+            return ids
+                    .stream()
+                    .map(Object::toString)
+                    .collect(Collectors.toList());
         }
 
     }
