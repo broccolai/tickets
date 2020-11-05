@@ -1,4 +1,4 @@
-package broccolai.tickets.ticket;
+package broccolai.tickets.message;
 
 /**
  * Enum for message reasons
