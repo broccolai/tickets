@@ -7,6 +7,7 @@ import broccolai.tickets.user.Soul;
 import broccolai.tickets.utilities.ReplacementUtilities;
 import broccolai.tickets.utilities.TimeUtilities;
 import broccolai.tickets.utilities.UserUtilities;
+import cloud.commandframework.arguments.flags.FlagContext;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
@@ -43,4 +44,14 @@ public class BaseCommand {
         });
     }
 
+    protected final TicketStatus[] statusesFromFlags(final @NonNull FlagContext flags) {
+        TicketStatus status = flags.getValue("status", null);
+
+        return status != null ? arrayOf(status) : arrayOf(TicketStatus.OPEN, TicketStatus.CLOSED);
+    }
+
+    @SafeVarargs
+    private final <T> T[] arrayOf(final @NonNull T... values) {
+        return values;
+    }
 }

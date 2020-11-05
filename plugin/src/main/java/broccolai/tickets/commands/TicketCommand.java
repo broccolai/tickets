@@ -8,7 +8,6 @@ import broccolai.tickets.exceptions.PureException;
 import broccolai.tickets.interactions.NotificationManager;
 import broccolai.tickets.locale.MessageNames;
 import broccolai.tickets.locale.Messages;
-import broccolai.tickets.storage.functions.TicketSQL;
 import broccolai.tickets.ticket.Ticket;
 import broccolai.tickets.ticket.TicketManager;
 import broccolai.tickets.ticket.TicketStatus;
@@ -20,36 +19,37 @@ import cloud.commandframework.Command;
 import cloud.commandframework.Description;
 import cloud.commandframework.arguments.standard.EnumArgument;
 import cloud.commandframework.context.CommandContext;
-import org.bukkit.plugin.PluginManager;
-import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.util.List;
+
+import org.bukkit.plugin.PluginManager;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 public final class TicketCommand extends BaseCommand {
 
     @NonNull
     private final PluginManager pluginManager;
     @NonNull
-    private final TicketManager ticketManager;
-    @NonNull
     private final NotificationManager notificationManager;
+    @NonNull
+    private final TicketManager ticketManager;
 
     /**
-     * Create a new Ticket Command.
+     * Create a new Ticket Command
      *
+     * @param manager             Command Manager
      * @param pluginManager       Plugin Manager
      * @param config              Config instance
-     * @param manager             Command Manager
-     * @param ticketManager       Ticket Manager
      * @param notificationManager Notification Manager
+     * @param ticketManager       Ticket Manager
      */
     public TicketCommand(
-            @NonNull final PluginManager pluginManager, @NonNull final Config config, @NonNull final CommandManager manager,
-            @NonNull final TicketManager ticketManager, @NonNull final NotificationManager notificationManager
+            @NonNull final CommandManager manager, @NonNull final PluginManager pluginManager, @NonNull final Config config,
+            @NonNull final NotificationManager notificationManager, @NonNull final TicketManager ticketManager
     ) {
         this.pluginManager = pluginManager;
-        this.ticketManager = ticketManager;
         this.notificationManager = notificationManager;
+        this.ticketManager = ticketManager;
 
         final Command.Builder<Soul> builder = manager.commandBuilder("ticket", "ti")
                 .senderType(PlayerSoul.class);
@@ -122,9 +122,11 @@ public final class TicketCommand extends BaseCommand {
     }
 
     private void processUpdate(@NonNull final CommandContext<Soul> c) {
+        Ticket ticket = c.get("ticket");
+
         try {
-            Ticket edited = ticketManager.update(c.get("ticket"), c.get("message"));
-            notificationManager.send(c.getSender(), null, MessageNames.UPDATE_TICKET, edited);
+            ticket.update(c.get("message"));
+            notificationManager.send(c.getSender(), null, MessageNames.UPDATE_TICKET, ticket);
         } catch (PureException e) {
             notificationManager.handleException(c.getSender(), e);
         }
@@ -132,10 +134,11 @@ public final class TicketCommand extends BaseCommand {
 
     private void processClose(@NonNull final CommandContext<Soul> c) {
         Soul soul = c.getSender();
+        Ticket ticket = c.get("ticket");
 
         try {
-            Ticket edited = ticketManager.close(soul.getUniqueId(), c.get("ticket"));
-            notificationManager.send(soul, null, MessageNames.CLOSE_TICKET, edited);
+            ticket.close(soul.getUniqueId());
+            notificationManager.send(soul, null, MessageNames.CLOSE_TICKET, ticket);
         } catch (PureException e) {
             notificationManager.handleException(soul, e);
         }
@@ -143,7 +146,12 @@ public final class TicketCommand extends BaseCommand {
 
     private void processList(@NonNull final CommandContext<Soul> c) {
         Soul soul = c.getSender();
-        List<Ticket> tickets = TicketSQL.selectAll(soul.getUniqueId(), c.flags().getValue("status", null));
+        TicketStatus status = c.flags().getValue("status", null);
+        List<Ticket> tickets = ticketManager.getTickets(
+                soul.getUniqueId(),
+                status != null ? status : TicketStatus.OPEN,
+                TicketStatus.PICKED
+        );
 
         soul.message(Messages.TITLES__YOUR_TICKETS);
 

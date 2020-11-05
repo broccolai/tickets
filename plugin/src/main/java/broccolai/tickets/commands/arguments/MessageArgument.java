@@ -1,7 +1,7 @@
 package broccolai.tickets.commands.arguments;
 
-import broccolai.tickets.ticket.Message;
-import broccolai.tickets.ticket.MessageReason;
+import broccolai.tickets.message.Message;
+import broccolai.tickets.message.MessageReason;
 import broccolai.tickets.user.Soul;
 import cloud.commandframework.arguments.CommandArgument;
 import cloud.commandframework.arguments.parser.ArgumentParseResult;
@@ -57,7 +57,7 @@ public final class MessageArgument extends CommandArgument<Soul, Message> {
                 inputQueue.remove();
             }
 
-            return ArgumentParseResult.success(new Message(MessageReason.MESSAGE, LocalDateTime.now(), sj.toString()));
+            return ArgumentParseResult.success(Message.create(MessageReason.MESSAGE, LocalDateTime.now(), sj.toString()));
         }
 
         @Override

@@ -21,17 +21,17 @@ public final class CommandManager extends PaperCommandManager<Soul> {
      *
      * @param plugin              Plugin instance
      * @param config              Configuration instance
-     * @param ticketManager       Ticket manager
      * @param userManager         User manager
      * @param notificationManager Notification manager
+     * @param ticketManager       Ticket Manager
      * @param pluginManager       Plugin manager
      */
     public CommandManager(
             @NonNull final Plugin plugin,
             @NonNull final Config config,
-            @NonNull final TicketManager ticketManager,
             @NonNull final UserManager userManager,
             @NonNull final NotificationManager notificationManager,
+            @NonNull final TicketManager ticketManager,
             @NonNull final PluginManager pluginManager
     ) throws Exception {
         super(
@@ -40,12 +40,14 @@ public final class CommandManager extends PaperCommandManager<Soul> {
                 userManager::fromSender,
                 Soul::asSender
         );
-        registerBrigadier();
-        registerAsynchronousCompletions();
+
+//        this.registerBrigadier();
+        this.registerAsynchronousCompletions();
+        this.registerCommandPreProcessor(context -> context.getCommandContext().store("ticketManager", ticketManager));
 
         new PureTicketsCommand(plugin, this);
-        new TicketCommand(pluginManager, config, this, ticketManager, notificationManager);
-        new TicketsCommand(this, config, userManager, ticketManager, notificationManager);
+        new TicketCommand(this, pluginManager, config, notificationManager, ticketManager);
+        new TicketsCommand(this, config, userManager, notificationManager, ticketManager);
     }
 
 }

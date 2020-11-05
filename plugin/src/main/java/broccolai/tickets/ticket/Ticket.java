@@ -1,5 +1,10 @@
 package broccolai.tickets.ticket;
 
+import broccolai.tickets.exceptions.TicketClosed;
+import broccolai.tickets.exceptions.TicketOpen;
+import broccolai.tickets.message.Message;
+import broccolai.tickets.message.MessageReason;
+import broccolai.tickets.utilities.Dirtyable;
 import com.google.gson.JsonObject;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -8,31 +13,28 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-public final class Ticket {
+public final class Ticket implements Dirtyable {
+
+    private boolean dirty = false;
 
     private final int id;
-    @NonNull
     private final UUID playerUUID;
-    @NonNull
-    private final List<Message> messages;
-    @NonNull
     private final Location location;
-    @NonNull
     private TicketStatus status;
-
-    @Nullable
     private UUID pickerUUID;
+
+    private final List<Message> messages = new ArrayList<>();
 
     /**
      * Construct a new Ticket using all values
      *
      * @param id         Tickets id
      * @param playerUUID Players unique id
-     * @param messages   List of messages
      * @param location   Tickets creation location
      * @param status     Tickets current status
      * @param pickerUUID Potentially unset pickers unique id
@@ -40,14 +42,12 @@ public final class Ticket {
     public Ticket(
             final int id,
             @NonNull final UUID playerUUID,
-            @NonNull final List<Message> messages,
             @NonNull final Location location,
             @NonNull final TicketStatus status,
             @Nullable final UUID pickerUUID
     ) {
         this.id = id;
         this.playerUUID = playerUUID;
-        this.messages = messages;
         this.location = location;
         this.status = status;
         this.pickerUUID = pickerUUID;
@@ -76,7 +76,7 @@ public final class Ticket {
     public Optional<Message> lastNote() {
         return messages
                 .stream()
-                .filter(message -> message.getReason() == MessageReason.MESSAGE)
+                .filter(message -> message.getReason() == MessageReason.NOTE)
                 .findFirst();
     }
 
@@ -140,15 +140,6 @@ public final class Ticket {
     }
 
     /**
-     * Set the tickets current status to a new value
-     *
-     * @param status Status to assign
-     */
-    public void setStatus(@NonNull final TicketStatus status) {
-        this.status = status;
-    }
-
-    /**
      * Retrieve the pickers unique id
      *
      * @return Potentially null unique id
@@ -159,12 +150,120 @@ public final class Ticket {
     }
 
     /**
-     * Set the pickers unique id.
+     * Adds a new message to a ticket instance
      *
-     * @param pickerUUID Pickers unique id, or null if it's by the console
+     * @param message the message to add to the ticket
+     * @throws TicketClosed if the ticket is closed
      */
-    public void setPickerUUID(@Nullable final UUID pickerUUID) {
-        this.pickerUUID = pickerUUID;
+    public void update(@NonNull final Message message) throws TicketClosed {
+        if (status == TicketStatus.CLOSED) {
+            throw new TicketClosed();
+        }
+
+        dirty = true;
+        messages.add(message);
+    }
+
+    /**
+     * Picks the supplied actioners unique id
+     *
+     * @param uuid the actioners unique id
+     * @throws TicketClosed if the ticket is closed
+     */
+    public void pick(@Nullable final UUID uuid) throws TicketClosed {
+        if (status == TicketStatus.CLOSED) {
+            throw new TicketClosed();
+        }
+
+        dirty = true;
+        status = TicketStatus.PICKED;
+        pickerUUID = uuid;
+        messages.add(Message.create(MessageReason.PICKED, LocalDateTime.now(), uuid));
+    }
+
+    /**
+     * Yields a ticket using the supplied actioners unique id
+     *
+     * @param uuid the actioners unique id
+     * @throws TicketOpen if the ticket is open
+     */
+    public void yield(@Nullable final UUID uuid) throws TicketOpen {
+        if (status == TicketStatus.OPEN) {
+            throw new TicketOpen();
+        }
+
+        dirty = true;
+        status = TicketStatus.OPEN;
+        pickerUUID = uuid;
+        messages.add(Message.create(MessageReason.YIELDED, LocalDateTime.now(), uuid));
+    }
+
+    /**
+     * Closes a ticket using the supplied actioners unique id
+     *
+     * @param uuid the actioners unique id
+     * @throws TicketClosed if the ticket is already closed
+     */
+    public void close(@Nullable final UUID uuid) throws TicketClosed {
+        if (status == TicketStatus.CLOSED) {
+            throw new TicketClosed();
+        }
+
+        dirty = true;
+        status = TicketStatus.CLOSED;
+        messages.add(Message.create(MessageReason.CLOSED, LocalDateTime.now(), uuid));
+    }
+
+    /**
+     * Done-marks a ticket using the supplied actioners unique id
+     *
+     * @param uuid the actioners unique id
+     * @throws TicketClosed if the ticket is already closed
+     */
+    public void done(@Nullable final UUID uuid) throws TicketClosed {
+        if (status == TicketStatus.CLOSED) {
+            throw new TicketClosed();
+        }
+
+        dirty = true;
+        status = TicketStatus.CLOSED;
+        messages.add(Message.create(MessageReason.DONE_MARKED, LocalDateTime.now(), uuid));
+    }
+
+    /**
+     * Opens a ticket using the supplied actioners unique id
+     *
+     * @param uuid the actioners unique id
+     * @throws TicketOpen if the ticket is already open
+     */
+    public void reopen(@Nullable final UUID uuid) throws TicketOpen {
+        if (status == TicketStatus.OPEN) {
+            throw new TicketOpen();
+        }
+
+        dirty = true;
+        status = TicketStatus.OPEN;
+        messages.add(Message.create(MessageReason.REOPENED, LocalDateTime.now(), uuid));
+    }
+
+    /**
+     * Adds a note to a ticket using the supplied actioners unique id
+     *
+     * @param uuid  the actioners unique id
+     * @param input the note message
+     */
+    public void note(@Nullable final UUID uuid, @NonNull final String input) {
+        dirty = true;
+        messages.add(Message.create(MessageReason.NOTE, LocalDateTime.now(), input, uuid));
+    }
+
+    /**
+     * Add a message to the tickets storage
+     *
+     * @param message Message to add
+     */
+    public void withMessage(final Message message) {
+        messages.add(message);
     }
 
     /**
@@ -198,6 +297,11 @@ public final class Ticket {
         json.addProperty("message", currentMessage.getData());
 
         return json;
+    }
+
+    @Override
+    public boolean isDirty() {
+        return dirty;
     }
 
 }

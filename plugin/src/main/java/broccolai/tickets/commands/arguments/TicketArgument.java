@@ -1,8 +1,9 @@
 package broccolai.tickets.commands.arguments;
 
 import broccolai.tickets.exceptions.TicketNotFound;
-import broccolai.tickets.storage.functions.TicketSQL;
 import broccolai.tickets.ticket.Ticket;
+import broccolai.tickets.ticket.TicketIdStorage;
+import broccolai.tickets.ticket.TicketManager;
 import broccolai.tickets.ticket.TicketStatus;
 import broccolai.tickets.user.Soul;
 import cloud.commandframework.arguments.CommandArgument;
@@ -12,17 +13,15 @@ import cloud.commandframework.arguments.standard.IntegerArgument;
 import cloud.commandframework.context.CommandContext;
 import org.bukkit.OfflinePlayer;
 import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Queue;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 public final class TicketArgument extends CommandArgument<Soul, Ticket> {
 
-    private TicketArgument(final boolean requiresId, final boolean issuer, @Nullable final TicketStatus... statuses) {
+    private TicketArgument(final boolean requiresId, final boolean issuer, @NonNull final TicketStatus... statuses) {
         super(true, "ticket", new TicketParser(requiresId, issuer, statuses), Ticket.class);
     }
 
@@ -34,7 +33,7 @@ public final class TicketArgument extends CommandArgument<Soul, Ticket> {
      * @param statuses   Applicable ticket statuses
      * @return Constructed ticket argument
      */
-    public static TicketArgument of(final boolean requiresId, final boolean issuer, @Nullable final TicketStatus... statuses) {
+    public static TicketArgument of(final boolean requiresId, final boolean issuer, @NonNull final TicketStatus... statuses) {
         return new TicketArgument(requiresId, issuer, statuses);
     }
 
@@ -43,10 +42,9 @@ public final class TicketArgument extends CommandArgument<Soul, Ticket> {
 
         private final boolean requiresId;
         private final boolean issuer;
-        @Nullable
-        private final TicketStatus[] statuses;
+        private final @NonNull TicketStatus[] statuses;
 
-        private TicketParser(final boolean requiresId, final boolean issuer, @Nullable final TicketStatus[] statuses) {
+        private TicketParser(final boolean requiresId, final boolean issuer, @NonNull final TicketStatus[] statuses) {
             this.requiresId = requiresId;
             this.issuer = issuer;
             this.statuses = statuses;
@@ -58,6 +56,7 @@ public final class TicketArgument extends CommandArgument<Soul, Ticket> {
                 @NonNull final CommandContext<Soul> commandContext,
                 @NonNull final Queue<String> inputQueue
         ) {
+            TicketManager ticketManager = commandContext.get("ticketManager");
             UUID target;
 
             if (issuer) {
@@ -72,7 +71,11 @@ public final class TicketArgument extends CommandArgument<Soul, Ticket> {
             if (requiresId || input != null) {
                 try {
                     @SuppressWarnings("ConstantConditions") final int inputId = Integer.parseInt(input);
-                    ticket = TicketSQL.select(inputId, target);
+                    ticket = ticketManager.getTicket(inputId).orElse(null);
+
+                    if (ticket != null && ticket.getPlayerUUID() != target) {
+                        ticket = null;
+                    }
                 } catch (NumberFormatException e) {
                     return ArgumentParseResult.failure(new IntegerArgument.IntegerParseException(
                             input,
@@ -82,7 +85,7 @@ public final class TicketArgument extends CommandArgument<Soul, Ticket> {
                     ));
                 }
             } else {
-                ticket = TicketSQL.selectLastTicket(target, statuses);
+                ticket = ticketManager.getRecentTicket(target, statuses).orElse(null);
             }
 
             if (ticket == null) {
@@ -96,23 +99,28 @@ public final class TicketArgument extends CommandArgument<Soul, Ticket> {
         @NonNull
         @Override
         public List<String> suggestions(@NonNull final CommandContext<Soul> commandContext, @NonNull final String input) {
-            List<Integer> ids;
+            TicketIdStorage idStorage = commandContext.<TicketManager>get("ticketManager").getIdStorage();
 
             try {
+                UUID uuid;
+
                 if (issuer) {
-                    ids = TicketSQL.selectIds(commandContext.getSender().getUniqueId(), statuses);
+                    uuid = commandContext.getSender().getUniqueId();
                 } else {
                     OfflinePlayer target = commandContext.get("target");
-                    ids = TicketSQL.selectIds(target.getUniqueId(), statuses);
+                    uuid = target.getUniqueId();
                 }
+
+                List<String> ids = new ArrayList<>();
+
+                for (final Integer id : idStorage.getIds(uuid, statuses)) {
+                    ids.add(id.toString());
+                }
+
+                return ids;
             } catch (final Exception e) {
                 return new ArrayList<>();
             }
-
-            return ids
-                    .stream()
-                    .map(Object::toString)
-                    .collect(Collectors.toList());
         }
 
     }

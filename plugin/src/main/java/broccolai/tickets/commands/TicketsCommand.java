@@ -8,9 +8,9 @@ import broccolai.tickets.interactions.NotificationManager;
 import broccolai.tickets.locale.MessageNames;
 import broccolai.tickets.locale.Messages;
 import broccolai.tickets.storage.TimeAmount;
-import broccolai.tickets.storage.functions.TicketSQL;
 import broccolai.tickets.ticket.Ticket;
 import broccolai.tickets.ticket.TicketManager;
+import broccolai.tickets.ticket.TicketStats;
 import broccolai.tickets.ticket.TicketStatus;
 import broccolai.tickets.user.PlayerSoul;
 import broccolai.tickets.user.Soul;
@@ -33,7 +33,6 @@ import org.bukkit.OfflinePlayer;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.util.ArrayList;
-import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -45,9 +44,9 @@ import java.util.UUID;
 public final class TicketsCommand extends BaseCommand {
 
     @NonNull
-    private final TicketManager ticketManager;
-    @NonNull
     private final NotificationManager notificationManager;
+    @NonNull
+    private final TicketManager ticketManager;
 
     /**
      * Create a new Tickets Command.
@@ -55,19 +54,19 @@ public final class TicketsCommand extends BaseCommand {
      * @param manager             Command Manager
      * @param config              Config Instance
      * @param userManager         User Manager
-     * @param ticketManager       Ticket Manager
      * @param notificationManager Notification Manager
+     * @param ticketManager       Ticket Manager
      */
     public TicketsCommand(
             @NonNull final CommandManager manager, @NonNull final Config config, @NonNull final UserManager userManager,
-            @NonNull final TicketManager ticketManager, @NonNull final NotificationManager notificationManager
+            @NonNull final NotificationManager notificationManager, @NonNull final TicketManager ticketManager
     ) {
-        this.ticketManager = ticketManager;
         this.notificationManager = notificationManager;
+        this.ticketManager = ticketManager;
 
         final Command.Builder<Soul> builder = manager.commandBuilder("tickets", "tis");
         final CommandArgument<Soul, OfflinePlayer> targetArgument = manager.argumentBuilder(OfflinePlayer.class, "target")
-                .withSuggestionsProvider((context, input) -> userManager.getNames())
+//                .withSuggestionsProvider((context, input) -> userManager.getNames())
                 .build();
 
         manager.command(builder.literal(
@@ -208,19 +207,24 @@ public final class TicketsCommand extends BaseCommand {
 
     private void processPick(@NonNull final CommandContext<Soul> c) {
         Soul soul = c.getSender();
-        Ticket modified = ticketManager.pick(soul.getUniqueId(), c.get("ticket"));
+        Ticket ticket = c.get("ticket");
 
-        notificationManager.send(soul, modified.getPlayerUUID(), MessageNames.PICK_TICKET, modified);
+        try {
+            ticket.pick(soul.getUniqueId());
+            notificationManager.send(soul, ticket.getPlayerUUID(), MessageNames.PICK_TICKET, ticket);
+        } catch (PureException e) {
+            notificationManager.handleException(soul, e);
+        }
     }
 
     private void processAssign(@NonNull final CommandContext<Soul> c) {
         Soul soul = c.getSender();
+        Ticket ticket = c.get("ticket");
         OfflinePlayer staff = c.get("staff");
 
         try {
-            Ticket modified = ticketManager.pick(staff.getUniqueId(), c.get("ticket"));
-
-            notificationManager.send(soul, staff.getUniqueId(), MessageNames.ASSIGN_TICKET, modified);
+            ticket.pick(staff.getUniqueId());
+            notificationManager.send(soul, staff.getUniqueId(), MessageNames.ASSIGN_TICKET, ticket);
         } catch (PureException e) {
             notificationManager.handleException(soul, e);
         }
@@ -228,11 +232,11 @@ public final class TicketsCommand extends BaseCommand {
 
     private void processDone(@NonNull final CommandContext<Soul> c) {
         Soul soul = c.getSender();
+        Ticket ticket = c.get("ticket");
 
         try {
-            Ticket modified = ticketManager.done(soul.getUniqueId(), c.get("ticket"));
-
-            notificationManager.send(soul, modified.getPlayerUUID(), MessageNames.DONE_TICKET, modified);
+            ticket.done(soul.getUniqueId());
+            notificationManager.send(soul, ticket.getPlayerUUID(), MessageNames.DONE_TICKET, ticket);
         } catch (PureException e) {
             notificationManager.handleException(soul, e);
         }
@@ -240,11 +244,11 @@ public final class TicketsCommand extends BaseCommand {
 
     private void processYield(@NonNull final CommandContext<Soul> c) {
         Soul soul = c.getSender();
+        Ticket ticket = c.get("ticket");
 
         try {
-            Ticket modified = ticketManager.yield(soul.getUniqueId(), c.get("ticket"));
-
-            notificationManager.send(soul, modified.getPlayerUUID(), MessageNames.YIELD_TICKET, modified);
+            ticket.yield(soul.getUniqueId());
+            notificationManager.send(soul, ticket.getPlayerUUID(), MessageNames.YIELD_TICKET, ticket);
         } catch (PureException e) {
             notificationManager.handleException(soul, e);
         }
@@ -252,18 +256,19 @@ public final class TicketsCommand extends BaseCommand {
 
     private void processNote(@NonNull final CommandContext<Soul> c) {
         Soul soul = c.getSender();
-        Ticket modified = ticketManager.note(soul.getUniqueId(), c.get("ticket"), c.get("message"));
+        Ticket ticket = c.get("ticket");
 
-        notificationManager.send(soul, modified.getPlayerUUID(), MessageNames.NOTE_TICKET, modified);
+        ticket.note(soul.getUniqueId(), c.get("message"));
+        notificationManager.send(soul, ticket.getPlayerUUID(), MessageNames.NOTE_TICKET, ticket);
     }
 
     private void processReopen(@NonNull final CommandContext<Soul> c) {
         Soul soul = c.getSender();
+        Ticket ticket = c.get("ticket");
 
         try {
-            Ticket modified = ticketManager.reopen(soul.getUniqueId(), c.get("ticket"));
-
-            notificationManager.send(soul, modified.getPlayerUUID(), MessageNames.REOPEN_TICKET, modified);
+            ticket.reopen(soul.getUniqueId());
+            notificationManager.send(soul, ticket.getPlayerUUID(), MessageNames.REOPEN_TICKET, ticket);
         } catch (PureException e) {
             notificationManager.handleException(soul, e);
         }
@@ -280,16 +285,16 @@ public final class TicketsCommand extends BaseCommand {
     private void processList(@NonNull final CommandContext<Soul> c) {
         final Soul soul = c.getSender();
         final OfflinePlayer player = c.flags().getValue("player", null);
-        final TicketStatus status = c.flags().getValue("status", null);
         final Boolean onlineOnly = c.flags().getValue("onlineOnly", false);
+        final TicketStatus[] statuses = statusesFromFlags(c.flags());
 
         if (player != null) {
             soul.message(Messages.TITLES__SPECIFIC_TICKETS, "player", player.getName());
 
-            TicketSQL.selectAll(player.getUniqueId(), status).forEach((ticket -> {
+            ticketManager.getTickets(player.getUniqueId(), statuses).forEach(ticket -> {
                 String[] replacements = ReplacementUtilities.ticketReplacements(ticket);
                 soul.message(Messages.GENERAL__LIST_FORMAT, replacements);
-            }));
+            });
             return;
         }
 
@@ -297,7 +302,7 @@ public final class TicketsCommand extends BaseCommand {
 
         // todo: ugly
         Set<Map.Entry<UUID, List<Ticket>>> unsortedTickets = Lists
-                .group(TicketSQL.selectAll(status), Ticket::getPlayerUUID)
+                .group(ticketManager.getTickets(statuses), Ticket::getPlayerUUID)
                 .entrySet();
         List<Map.Entry<UUID, List<Ticket>>> sortedTickets = new ArrayList<>(unsortedTickets);
         sortedTickets.sort((t1, t2) -> {
@@ -332,7 +337,13 @@ public final class TicketsCommand extends BaseCommand {
             soul.message(Messages.TITLES__TICKET_STATUS);
         }
 
-        EnumMap<TicketStatus, Integer> data = TicketSQL.selectTicketStats(target != null ? target.getUniqueId() : null);
+        TicketStats data;
+
+        if (target != null) {
+            data = ticketManager.getStats(target.getUniqueId());
+        } else {
+            data = ticketManager.getStats();
+        }
 
         data.forEach((status, amount) -> {
             if (amount != 0) {
@@ -345,7 +356,7 @@ public final class TicketsCommand extends BaseCommand {
         Soul soul = c.getSender();
         TimeAmount amount = c.get("amount");
 
-        Map<UUID, Integer> highscores = TicketSQL.highscores(amount);
+        Map<UUID, Integer> highscores = ticketManager.getHighscores(amount);
         soul.message(Messages.TITLES__HIGHSCORES);
 
         highscores.forEach((uuid, number) ->
