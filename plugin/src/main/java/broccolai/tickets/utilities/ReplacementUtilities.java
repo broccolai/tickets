@@ -1,8 +1,8 @@
 package broccolai.tickets.utilities;
 
 import broccolai.corn.core.Lists;
-import broccolai.tickets.ticket.Message;
-import broccolai.tickets.ticket.MessageReason;
+import broccolai.tickets.message.Message;
+import broccolai.tickets.message.MessageReason;
 import broccolai.tickets.ticket.Ticket;
 import broccolai.tickets.ticket.TicketStatus;
 import com.google.common.collect.Iterators;
@@ -69,18 +69,31 @@ public final class ReplacementUtilities {
         results.add(picker);
 
         Map<MessageReason, List<Message>> groupedMessages = Lists.group(ticket.getMessages(), Message::getReason);
-        Message pickMessage = Iterators.getLast(groupedMessages.get(MessageReason.PICKED).iterator(), null);
+
+        List<Message> pickList = groupedMessages.get(MessageReason.PICKED);
+        String pickData = "";
+
+        if (pickList != null) {
+            Message pickMessage = Iterators.getLast(pickList.iterator(), null);
+            pickData = pickMessage != null ? TimeUtilities.formatted(pickMessage.getDate()) : pickData;
+        }
 
         results.add("pickerDate");
-        results.add(pickMessage != null ? TimeUtilities.formatted(pickMessage.getDate()) : "");
+        results.add(pickData);
 
         results.add("date");
         results.add(TimeUtilities.formatted(ticket.dateOpened()));
 
-        Message noteMessage = Iterators.getLast(groupedMessages.get(MessageReason.NOTE).iterator(), null);
+        List<Message> noteList = groupedMessages.get(MessageReason.NOTE);
+        String noteData = "";
+
+        if (noteList != null) {
+            Message noteMessage = Iterators.getLast(noteList.iterator(), null);
+            noteData = noteMessage != null ? noteMessage.getData() : noteData;
+        }
 
         results.add("note");
-        results.add(noteMessage != null ? noteMessage.getData() : "");
+        results.add(noteData);
 
         Location location = ticket.getLocation();
         World world = location.getWorld();

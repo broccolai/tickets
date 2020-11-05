@@ -1,6 +1,6 @@
 package broccolai.tickets.events;
 
-import broccolai.tickets.ticket.Message;
+import broccolai.tickets.message.Message;
 import broccolai.tickets.user.PlayerSoul;
 import org.checkerframework.checker.nullness.qual.NonNull;
 

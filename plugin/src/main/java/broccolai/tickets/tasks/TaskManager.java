@@ -13,7 +13,7 @@ import java.util.List;
 /**
  * Manager for creating a clearing tasks
  */
-public class TaskManager {
+public final class TaskManager {
 
     private final Plugin plugin;
     private final List<BukkitTask> tasks = new ArrayList<>();

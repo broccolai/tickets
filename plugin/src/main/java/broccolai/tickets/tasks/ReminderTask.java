@@ -1,7 +1,7 @@
 package broccolai.tickets.tasks;
 
 import broccolai.tickets.locale.Messages;
-import broccolai.tickets.storage.functions.TicketSQL;
+import broccolai.tickets.ticket.TicketManager;
 import broccolai.tickets.ticket.TicketStatus;
 import broccolai.tickets.user.UserManager;
 import broccolai.tickets.utilities.Constants;
@@ -11,25 +11,27 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
- * Task for displaying reminders.
+ * Task to remind online staff members of current tickets
  */
 public final class ReminderTask extends BukkitRunnable {
 
-    @NonNull
     private final UserManager userManager;
+    private final TicketManager ticketManager;
 
     /**
-     * Initialise a new Reminder Task.
+     * Create a reminder task
      *
-     * @param userManager the user manager instance
+     * @param userManager User manager
+     * @param ticketManager Ticket manager
      */
-    public ReminderTask(@NonNull final UserManager userManager) {
+    public ReminderTask(@NonNull final UserManager userManager, final @NonNull TicketManager ticketManager) {
         this.userManager = userManager;
+        this.ticketManager = ticketManager;
     }
 
     @Override
     public void run() {
-        int amount = TicketSQL.count(TicketStatus.OPEN);
+        int amount = ticketManager.countTickets(TicketStatus.OPEN);
 
         if (amount == 0) {
             return;
