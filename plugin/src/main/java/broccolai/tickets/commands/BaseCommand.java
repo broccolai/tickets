@@ -54,4 +54,5 @@ public class BaseCommand {
     private final <T> T[] arrayOf(final @NonNull T... values) {
         return values;
     }
+
 }

@@ -1,20 +1,18 @@
 package broccolai.tickets.storage.mapper;
 
 import broccolai.tickets.ticket.TicketIdStorage;
-
 import broccolai.tickets.ticket.TicketStatus;
-
-import java.sql.ResultSet;
-import java.sql.SQLException;
-
-import java.util.UUID;
-
 import org.jdbi.v3.core.mapper.ColumnMapper;
 import org.jdbi.v3.core.mapper.EnumMapper;
 import org.jdbi.v3.core.mapper.RowMapper;
 import org.jdbi.v3.core.statement.StatementContext;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.UUID;
+
 public final class ValueDataMapper implements RowMapper<TicketIdStorage.ValueData> {
+
     private ColumnMapper<UUID> uuidMapper;
     private ColumnMapper<TicketStatus> statusMapper;
 
@@ -38,4 +36,5 @@ public final class ValueDataMapper implements RowMapper<TicketIdStorage.ValueDat
             statusMapper = EnumMapper.byName(TicketStatus.class);
         }
     }
+
 }

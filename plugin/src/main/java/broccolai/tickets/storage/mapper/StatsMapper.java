@@ -2,12 +2,11 @@ package broccolai.tickets.storage.mapper;
 
 import broccolai.tickets.ticket.TicketStats;
 import broccolai.tickets.ticket.TicketStatus;
+import org.jdbi.v3.core.mapper.RowMapper;
+import org.jdbi.v3.core.statement.StatementContext;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-
-import org.jdbi.v3.core.mapper.RowMapper;
-import org.jdbi.v3.core.statement.StatementContext;
 
 public final class StatsMapper implements RowMapper<TicketStats> {
 

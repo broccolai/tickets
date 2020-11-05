@@ -21,7 +21,7 @@ public final class ReminderTask extends BukkitRunnable {
     /**
      * Create a reminder task
      *
-     * @param userManager User manager
+     * @param userManager   User manager
      * @param ticketManager Ticket manager
      */
     public ReminderTask(@NonNull final UserManager userManager, final @NonNull TicketManager ticketManager) {

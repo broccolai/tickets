@@ -19,11 +19,10 @@ import cloud.commandframework.Command;
 import cloud.commandframework.Description;
 import cloud.commandframework.arguments.standard.EnumArgument;
 import cloud.commandframework.context.CommandContext;
-
-import java.util.List;
-
 import org.bukkit.plugin.PluginManager;
 import org.checkerframework.checker.nullness.qual.NonNull;
+
+import java.util.List;
 
 public final class TicketCommand extends BaseCommand {
 

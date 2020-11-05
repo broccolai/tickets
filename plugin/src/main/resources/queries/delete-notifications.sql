@@ -1,2 +1,3 @@
-DELETE FROM puretickets_notification
+DELETE
+FROM puretickets_notification
 WHERE uuid = :uuid;

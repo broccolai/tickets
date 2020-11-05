@@ -2,14 +2,12 @@ package broccolai.tickets.storage.mapper;
 
 import broccolai.tickets.message.Message;
 import broccolai.tickets.ticket.Ticket;
-
-import java.util.HashMap;
-
-import java.util.Map;
-import java.util.stream.Stream;
-
 import org.jdbi.v3.core.result.RowReducer;
 import org.jdbi.v3.core.result.RowView;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.stream.Stream;
 
 public final class TicketReducer implements RowReducer<Map<Integer, Ticket>, Ticket> {
 

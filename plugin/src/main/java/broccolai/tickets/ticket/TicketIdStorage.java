@@ -2,6 +2,10 @@ package broccolai.tickets.ticket;
 
 import broccolai.tickets.events.TicketCreationEvent;
 import broccolai.tickets.storage.SQLQueries;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.jdbi.v3.core.Jdbi;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -10,11 +14,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
-
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.jdbi.v3.core.Jdbi;
 
 public final class TicketIdStorage implements Listener {
 
@@ -39,7 +38,7 @@ public final class TicketIdStorage implements Listener {
     /**
      * Get ids with filters
      *
-     * @param uuid Unique id
+     * @param uuid     Unique id
      * @param statuses Ticket status array
      * @return List of ids
      */
@@ -72,6 +71,7 @@ public final class TicketIdStorage implements Listener {
     }
 
     public static final class ValueData {
+
         private final int id;
         private final UUID uniqueId;
         private final TicketStatus status;
@@ -79,14 +79,16 @@ public final class TicketIdStorage implements Listener {
         /**
          * Construct ValueData
          *
-         * @param id Ticket id
+         * @param id       Ticket id
          * @param uniqueId Unique id
-         * @param status Ticket status
+         * @param status   Ticket status
          */
         public ValueData(final int id, final UUID uniqueId, final TicketStatus status) {
             this.id = id;
             this.uniqueId = uniqueId;
             this.status = status;
         }
+
     }
+
 }

@@ -3,12 +3,9 @@ package broccolai.tickets.user;
 import broccolai.tickets.events.AsyncSoulJoinEvent;
 import broccolai.tickets.events.TicketCreationEvent;
 import broccolai.tickets.locale.LocaleManager;
-import broccolai.tickets.tasks.TaskManager;
 import broccolai.tickets.storage.SQLQueries;
+import broccolai.tickets.tasks.TaskManager;
 import broccolai.tickets.utilities.UserUtilities;
-
-import java.util.stream.Collectors;
-
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
@@ -26,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 /**
  * The manager for users
