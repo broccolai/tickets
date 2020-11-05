@@ -5,20 +5,23 @@ import broccolai.tickets.configuration.Config;
 import broccolai.tickets.integrations.DiscordManager;
 import broccolai.tickets.interactions.NotificationManager;
 import broccolai.tickets.locale.LocaleManager;
-import broccolai.tickets.storage.SQLManager;
+import broccolai.tickets.storage.SQLPlatforms;
 import broccolai.tickets.tasks.TaskManager;
 import broccolai.tickets.ticket.TicketManager;
 import broccolai.tickets.user.UserManager;
-import co.aikar.idb.DB;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.jdbi.v3.core.Jdbi;
 
+@SuppressWarnings("unused")
 public final class PureTickets extends JavaPlugin {
 
     private TaskManager taskManager;
+    private UserManager userManager;
+    private NotificationManager notificationManager;
     private PluginManager pluginManager;
 
     @Override
@@ -26,28 +29,31 @@ public final class PureTickets extends JavaPlugin {
         pluginManager = getServer().getPluginManager();
 
         Config config = new Config(this);
+        Jdbi jdbi = SQLPlatforms.construct(this, config);
         LocaleManager localeManager = LocaleManager.create(this);
-        SQLManager.setup(this, config);
 
-        DiscordManager discordManager = new DiscordManager(this.getLogger(), config);
-        UserManager userManager = new UserManager(pluginManager, taskManager, localeManager);
-        TicketManager ticketManager = new TicketManager(config, pluginManager);
         taskManager = new TaskManager(this);
-        NotificationManager notificationManager = new NotificationManager(
+        userManager = new UserManager(pluginManager, taskManager, localeManager, jdbi);
+        DiscordManager discordManager = new DiscordManager(this.getLogger(), config);
+        TicketManager ticketManager = new TicketManager(config, pluginManager, jdbi, taskManager);
+
+        notificationManager = new NotificationManager(
+                jdbi,
                 config,
                 taskManager,
                 localeManager,
                 userManager,
-                discordManager
+                discordManager,
+                ticketManager
         );
 
         try {
-            new CommandManager(this, config, ticketManager, userManager, notificationManager, pluginManager);
+            new CommandManager(this, config, userManager, notificationManager, ticketManager, pluginManager);
         } catch (Exception e) {
             return;
         }
 
-        registerEvents(userManager, notificationManager, ticketManager);
+        registerEvents(userManager, notificationManager, ticketManager, ticketManager.getIdStorage());
     }
 
     @Override
@@ -56,7 +62,14 @@ public final class PureTickets extends JavaPlugin {
             taskManager.clear();
         }
 
-        DB.close();
+        if (this.notificationManager != null) {
+            this.notificationManager.saveAll();
+        }
+
+        if (this.userManager != null) {
+            this.userManager.saveAll();
+        }
+
         HandlerList.unregisterAll(this);
     }
 
