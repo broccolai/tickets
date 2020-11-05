@@ -3,16 +3,22 @@ package broccolai.tickets.user;
 import broccolai.tickets.events.AsyncSoulJoinEvent;
 import broccolai.tickets.events.TicketCreationEvent;
 import broccolai.tickets.locale.LocaleManager;
-import broccolai.tickets.storage.functions.TicketSQL;
 import broccolai.tickets.tasks.TaskManager;
+import broccolai.tickets.storage.SQLQueries;
+import broccolai.tickets.utilities.UserUtilities;
+
+import java.util.stream.Collectors;
+
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.plugin.PluginManager;
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.jdbi.v3.core.Jdbi;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -26,16 +32,13 @@ import java.util.UUID;
  */
 public final class UserManager implements Listener {
 
-    @NonNull
     private final PluginManager pluginManager;
-    @NonNull
     private final TaskManager taskManager;
-    @NonNull
     private final LocaleManager localeManager;
-    @NonNull
+    private final Jdbi jdbi;
+
+    private final Set<String> names;
     private final Map<UUID, PlayerSoul> souls = new HashMap<>();
-    @NonNull
-    private final Set<String> names = TicketSQL.selectNames();
 
     /**
      * Construct a user manager
@@ -43,15 +46,25 @@ public final class UserManager implements Listener {
      * @param pluginManager Plugin manager
      * @param taskManager   Task manager
      * @param localeManager Locale manager
+     * @param jdbi          Jdbi instance
      */
     public UserManager(
             @NonNull final PluginManager pluginManager,
             @NonNull final TaskManager taskManager,
-            @NonNull final LocaleManager localeManager
+            @NonNull final LocaleManager localeManager,
+            final @NonNull Jdbi jdbi
     ) {
         this.pluginManager = pluginManager;
         this.taskManager = taskManager;
         this.localeManager = localeManager;
+        this.jdbi = jdbi;
+
+        this.names = jdbi.withHandle(handle -> {
+            return handle.createQuery(SQLQueries.SELECT_UUIDS.get())
+                    .mapTo(UUID.class)
+                    .map(UserUtilities::nameFromUUID)
+                    .collect(Collectors.toSet());
+        });
     }
 
     /**
@@ -65,7 +78,7 @@ public final class UserManager implements Listener {
         UUID uuid;
 
         if (sender instanceof ConsoleCommandSender) {
-            uuid = ConsoleSoul.CONSOLE_UUID;
+            return new ConsoleSoul(localeManager);
         } else {
             Player player = (Player) sender;
             uuid = player.getUniqueId();
@@ -99,12 +112,64 @@ public final class UserManager implements Listener {
         return new ArrayList<>(names);
     }
 
+    /**
+     * Load a users settings from storage
+     *
+     * @param uuid Unique id
+     * @return UserSettings object
+     */
+    public @NonNull UserSettings loadSettings(final @NonNull UUID uuid) {
+        return jdbi.withHandle(handle -> {
+            boolean exists = handle.createQuery(SQLQueries.EXISTS_SETTINGS.get())
+                    .bind("uuid", uuid)
+                    .mapTo(Boolean.class)
+                    .first();
+
+            if (exists) {
+                return handle.createQuery(SQLQueries.SELECT_SETTINGS.get())
+                        .bind("uuid", uuid)
+                        .mapTo(UserSettings.class)
+                        .first();
+            }
+
+            UserSettings settings = new UserSettings(true);
+
+            handle.createUpdate(SQLQueries.INSERT_SETTINGS.get())
+                    .bind("uuid", uuid)
+                    .bind("announcements", settings.getAnnouncements())
+                    .execute();
+
+            return settings;
+        });
+    }
+
+    /**
+     * Save all cached souls
+     */
+    public void saveAll() {
+        this.souls.values().forEach(this::cleanup);
+    }
+
     @NonNull
     private PlayerSoul makeAndPut(@NonNull final Player player) {
-        PlayerSoul soul = new PlayerSoul(localeManager, player);
+        PlayerSoul soul = new PlayerSoul(this, localeManager, player);
 
         souls.put(player.getUniqueId(), soul);
         return soul;
+    }
+
+    private void cleanup(final @NonNull PlayerSoul soul) {
+        if (!soul.isDirty()) {
+            return;
+        }
+
+        UserSettings settings = soul.preferences();
+        jdbi.useHandle(handle -> {
+            handle.createUpdate(SQLQueries.UPDATE_SETTINGS.get())
+                    .bind("uuid", soul.getUniqueId())
+                    .bind("announcements", settings.getAnnouncements())
+                    .execute();
+        });
     }
 
     /**
@@ -114,7 +179,7 @@ public final class UserManager implements Listener {
      */
     @EventHandler
     public void onTicketCreation(@NonNull final TicketCreationEvent e) {
-        names.add(e.getSoul().getName());
+        this.names.add(e.getSoul().getName());
     }
 
     /**
@@ -128,6 +193,19 @@ public final class UserManager implements Listener {
             PlayerSoul soul = fromPlayer(e.getPlayer());
             AsyncSoulJoinEvent event = new AsyncSoulJoinEvent(soul);
             pluginManager.callEvent(event);
+        });
+    }
+
+    /**
+     * Listener for Player Quits
+     *
+     * @param e Event
+     */
+    @EventHandler
+    public void onQuit(final @NonNull PlayerQuitEvent e) {
+        taskManager.async(() -> {
+            PlayerSoul soul = this.fromPlayer(e.getPlayer());
+            cleanup(soul);
         });
     }
 

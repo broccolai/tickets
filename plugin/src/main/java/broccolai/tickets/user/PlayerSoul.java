@@ -1,7 +1,7 @@
 package broccolai.tickets.user;
 
 import broccolai.tickets.locale.LocaleManager;
-import broccolai.tickets.storage.functions.SettingsSQL;
+import broccolai.tickets.utilities.Dirtyable;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -11,7 +11,9 @@ import java.util.Objects;
 import java.util.UUID;
 import java.util.function.Consumer;
 
-public final class PlayerSoul extends Soul {
+public final class PlayerSoul extends Soul implements Dirtyable {
+
+    private final UserManager userManager;
 
     @NonNull
     private final Player player;
@@ -20,14 +22,22 @@ public final class PlayerSoul extends Soul {
     @Nullable
     private UserSettings settings = null;
 
+    private boolean dirty = false;
+
     /**
      * Construct a PlayerSoul with a Player instance
      *
+     * @param userManager   User manager
      * @param localeManager Locale manager instance
      * @param player        Player instance
      */
-    public PlayerSoul(@NonNull final LocaleManager localeManager, @NonNull final Player player) {
+    public PlayerSoul(
+            final @NonNull UserManager userManager,
+            final @NonNull LocaleManager localeManager,
+            final @NonNull Player player
+    ) {
         super(localeManager);
+        this.userManager = userManager;
         this.player = player;
         this.uniqueId = player.getUniqueId();
     }
@@ -76,14 +86,8 @@ public final class PlayerSoul extends Soul {
             return settings;
         }
 
-        if (SettingsSQL.exists(uniqueId)) {
-            settings = SettingsSQL.select(uniqueId);
-        } else {
-            settings = new UserSettings(true);
-            SettingsSQL.insert(uniqueId, settings);
-        }
-
-        return settings;
+        this.settings = this.userManager.loadSettings(uniqueId);
+        return this.settings;
     }
 
     /**
@@ -95,7 +99,12 @@ public final class PlayerSoul extends Soul {
         UserSettings settings = preferences();
         action.accept(settings);
 
-        SettingsSQL.update(uniqueId, settings);
+        dirty = true;
+    }
+
+    @Override
+    public boolean isDirty() {
+        return dirty;
     }
 
 }
