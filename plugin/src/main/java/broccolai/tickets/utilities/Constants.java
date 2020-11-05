@@ -1,8 +1,5 @@
 package broccolai.tickets.utilities;
 
-/**
- * Class to contain constants
- */
 public final class Constants {
 
     private Constants() {

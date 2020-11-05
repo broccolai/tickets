@@ -5,7 +5,6 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 
 public final class AsyncSoulJoinEvent extends BaseEvent {
 
-    @NonNull
     private final PlayerSoul soul;
 
     /**
@@ -13,7 +12,7 @@ public final class AsyncSoulJoinEvent extends BaseEvent {
      *
      * @param soul Players soul
      */
-    public AsyncSoulJoinEvent(@NonNull final PlayerSoul soul) {
+    public AsyncSoulJoinEvent(final @NonNull PlayerSoul soul) {
         super(true);
         this.soul = soul;
     }
@@ -23,8 +22,7 @@ public final class AsyncSoulJoinEvent extends BaseEvent {
      *
      * @return Players soul
      */
-    @NonNull
-    public PlayerSoul getSoul() {
+    public @NonNull PlayerSoul getSoul() {
         return soul;
     }
 

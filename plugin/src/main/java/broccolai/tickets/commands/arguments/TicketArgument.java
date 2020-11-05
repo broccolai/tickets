@@ -21,7 +21,7 @@ import java.util.UUID;
 
 public final class TicketArgument extends CommandArgument<Soul, Ticket> {
 
-    private TicketArgument(final boolean requiresId, final boolean issuer, @NonNull final TicketStatus... statuses) {
+    private TicketArgument(final boolean requiresId, final boolean issuer, final @NonNull TicketStatus... statuses) {
         super(true, "ticket", new TicketParser(requiresId, issuer, statuses), Ticket.class);
     }
 
@@ -33,7 +33,11 @@ public final class TicketArgument extends CommandArgument<Soul, Ticket> {
      * @param statuses   Applicable ticket statuses
      * @return Constructed ticket argument
      */
-    public static TicketArgument of(final boolean requiresId, final boolean issuer, @NonNull final TicketStatus... statuses) {
+    public static @NonNull TicketArgument of(
+            final boolean requiresId,
+            final boolean issuer,
+            final @NonNull TicketStatus... statuses
+    ) {
         return new TicketArgument(requiresId, issuer, statuses);
     }
 
@@ -44,17 +48,16 @@ public final class TicketArgument extends CommandArgument<Soul, Ticket> {
         private final boolean issuer;
         private final @NonNull TicketStatus[] statuses;
 
-        private TicketParser(final boolean requiresId, final boolean issuer, @NonNull final TicketStatus[] statuses) {
+        private TicketParser(final boolean requiresId, final boolean issuer, final @NonNull TicketStatus[] statuses) {
             this.requiresId = requiresId;
             this.issuer = issuer;
             this.statuses = statuses;
         }
 
-        @NonNull
         @Override
-        public ArgumentParseResult<Ticket> parse(
-                @NonNull final CommandContext<Soul> commandContext,
-                @NonNull final Queue<String> inputQueue
+        public @NonNull ArgumentParseResult<Ticket> parse(
+                final @NonNull CommandContext<Soul> commandContext,
+                final @NonNull Queue<String> inputQueue
         ) {
             TicketManager ticketManager = commandContext.get("ticketManager");
             UUID target;
@@ -96,9 +99,11 @@ public final class TicketArgument extends CommandArgument<Soul, Ticket> {
             return ArgumentParseResult.success(ticket);
         }
 
-        @NonNull
         @Override
-        public List<String> suggestions(@NonNull final CommandContext<Soul> commandContext, @NonNull final String input) {
+        public @NonNull List<String> suggestions(
+                final @NonNull CommandContext<Soul> commandContext,
+                final @NonNull String input
+        ) {
             TicketIdStorage idStorage = commandContext.<TicketManager>get("ticketManager").getIdStorage();
 
             try {

@@ -15,19 +15,11 @@ import java.util.Base64;
 import java.util.UUID;
 import java.util.logging.Logger;
 
-/**
- * Manager for Discord interactions
- */
 public class DiscordManager {
 
-    @NonNull
     private final HttpClient client;
-
-    @NonNull
     private final Logger logger;
-    @Nullable
     private final String serverName;
-    @NonNull
     private final Boolean enabled;
 
     /**
@@ -36,7 +28,7 @@ public class DiscordManager {
      * @param logger the logger to log errors to
      * @param config the config instance to use
      */
-    public DiscordManager(@NonNull final Logger logger, @NonNull final Config config) {
+    public DiscordManager(final @NonNull Logger logger, final @NonNull Config config) {
         this.client = HttpClient.newBuilder()
                 .withBaseURL(config.getApiDomain() + "/api/v2")
                 .withDecorator((req) -> {
@@ -65,7 +57,7 @@ public class DiscordManager {
      * @param author the authors unique id
      * @param action the action to send
      */
-    public void sendInformation(@NonNull final Ticket ticket, @Nullable final UUID author, @NonNull final String action) {
+    public void sendInformation(final @NonNull Ticket ticket, final @Nullable UUID author, final @NonNull String action) {
         if (!enabled) {
             return;
         }

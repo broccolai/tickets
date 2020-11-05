@@ -58,8 +58,8 @@ public final class PureTickets extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        if (taskManager != null) {
-            taskManager.clear();
+        if (this.taskManager != null) {
+            this.taskManager.clear();
         }
 
         if (this.notificationManager != null) {
@@ -78,9 +78,9 @@ public final class PureTickets extends JavaPlugin {
      *
      * @param listeners Listeners to register
      */
-    private void registerEvents(@NonNull final Listener... listeners) {
-        for (Listener listener : listeners) {
-            pluginManager.registerEvents(listener, this);
+    private void registerEvents(final @NonNull Listener... listeners) {
+        for (final Listener listener : listeners) {
+            this.pluginManager.registerEvents(listener, this);
         }
     }
 

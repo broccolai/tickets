@@ -45,7 +45,7 @@ public enum SQLQueries {
      *
      * @return Query
      */
-    public String get() {
+    public @NonNull String get() {
         return query;
     }
 

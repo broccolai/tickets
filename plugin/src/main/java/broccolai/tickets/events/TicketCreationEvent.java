@@ -4,14 +4,9 @@ import broccolai.tickets.ticket.Ticket;
 import broccolai.tickets.user.PlayerSoul;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-/**
- * Event representing the creation of a ticket
- */
 public final class TicketCreationEvent extends BaseEvent {
 
-    @NonNull
     private final PlayerSoul soul;
-    @NonNull
     private final Ticket ticket;
 
     /**
@@ -20,7 +15,7 @@ public final class TicketCreationEvent extends BaseEvent {
      * @param soul   the ticket creator
      * @param ticket the constructed ticket
      */
-    public TicketCreationEvent(@NonNull final PlayerSoul soul, @NonNull final Ticket ticket) {
+    public TicketCreationEvent(final @NonNull PlayerSoul soul, final @NonNull Ticket ticket) {
         super(true);
         this.soul = soul;
         this.ticket = ticket;
@@ -31,8 +26,7 @@ public final class TicketCreationEvent extends BaseEvent {
      *
      * @return Players soul
      */
-    @NonNull
-    public PlayerSoul getSoul() {
+    public @NonNull PlayerSoul getSoul() {
         return soul;
     }
 
@@ -41,8 +35,7 @@ public final class TicketCreationEvent extends BaseEvent {
      *
      * @return Ticket object
      */
-    @NonNull
-    public Ticket getTicket() {
+    public @NonNull Ticket getTicket() {
         return ticket;
     }
 

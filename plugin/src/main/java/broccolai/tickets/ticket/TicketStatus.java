@@ -12,10 +12,9 @@ public enum TicketStatus {
     PICKED(ChatColor.YELLOW),
     CLOSED(ChatColor.RED);
 
-    @NonNull
     private final ChatColor color;
 
-    TicketStatus(@NonNull final ChatColor color) {
+    TicketStatus(final @NonNull ChatColor color) {
         this.color = color;
     }
 
@@ -24,8 +23,7 @@ public enum TicketStatus {
      *
      * @return the ChatColor
      */
-    @NonNull
-    public ChatColor getColor() {
+    public @NonNull ChatColor getColor() {
         return color;
     }
 
@@ -35,8 +33,7 @@ public enum TicketStatus {
      * @param input the potential statuses name
      * @return the constructed status, or if not found null
      */
-    @Nullable
-    public static TicketStatus from(@NonNull final String input) {
+    public static @Nullable TicketStatus from(final @NonNull String input) {
         for (TicketStatus value : values()) {
             if (value.name().equalsIgnoreCase(input)) {
                 return value;

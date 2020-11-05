@@ -15,9 +15,7 @@ import java.io.InputStreamReader;
 import java.lang.reflect.Field;
 import java.util.Arrays;
 
-/**
- * Wrapper for the Plugins Configuration
- */
+@SuppressWarnings("unused")
 public final class Config {
 
     private String LOCALE;
@@ -61,7 +59,7 @@ public final class Config {
      *
      * @param plugin the Plugin instance to use
      */
-    public Config(@NonNull final Plugin plugin) {
+    public Config(final @NonNull Plugin plugin) {
         //noinspection rawtypes
         Class<Pair> pairClass = Pair.class;
 

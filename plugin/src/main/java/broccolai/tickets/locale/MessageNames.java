@@ -2,9 +2,6 @@ package broccolai.tickets.locale;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-/**
- * Enum representing potential message names
- */
 public enum MessageNames {
     NEW_TICKET(TargetType.SENDER, TargetType.ANNOUNCEMENT, TargetType.DISCORD),
     UPDATE_TICKET(TargetType.SENDER, TargetType.ANNOUNCEMENT, TargetType.DISCORD),
@@ -25,7 +22,7 @@ public enum MessageNames {
      *
      * @param targets the corresponding target types
      */
-    MessageNames(@NonNull final TargetType... targets) {
+    MessageNames(final @NonNull TargetType... targets) {
         this.targets = targets;
     }
 
@@ -34,8 +31,7 @@ public enum MessageNames {
      *
      * @return array of target types
      */
-    @NonNull
-    public TargetType[] getTargets() {
+    public @NonNull TargetType[] getTargets() {
         return targets;
     }
 }

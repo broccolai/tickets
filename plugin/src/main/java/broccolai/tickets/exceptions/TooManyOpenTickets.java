@@ -4,9 +4,6 @@ import broccolai.tickets.configuration.Config;
 import broccolai.tickets.locale.Messages;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-/**
- * Exception representing a player trying to open another ticket when they're at the limit
- */
 public final class TooManyOpenTickets extends PureException {
 
     /**
@@ -14,7 +11,7 @@ public final class TooManyOpenTickets extends PureException {
      *
      * @param config Configuration object
      */
-    public TooManyOpenTickets(@NonNull final Config config) {
+    public TooManyOpenTickets(final @NonNull Config config) {
         super(Messages.EXCEPTIONS__TOO_MANY_OPEN_TICKETS, "limit", config.getTicketLimitOpen().toString());
     }
 

@@ -10,9 +10,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-/**
- * Manager for creating a clearing tasks
- */
 public final class TaskManager {
 
     private final Plugin plugin;
@@ -23,7 +20,7 @@ public final class TaskManager {
      *
      * @param plugin Plugin instance
      */
-    public TaskManager(@NonNull final Plugin plugin) {
+    public TaskManager(final @NonNull Plugin plugin) {
         this.plugin = plugin;
     }
 
@@ -32,7 +29,7 @@ public final class TaskManager {
      *
      * @param runnable Runnable
      */
-    public void async(@NonNull final Runnable runnable) {
+    public void async(final @NonNull Runnable runnable) {
         Bukkit.getScheduler().runTaskAsynchronously(plugin, runnable);
     }
 
@@ -43,7 +40,7 @@ public final class TaskManager {
      * @param delay    Delay long
      * @param repeat   Repeat long
      */
-    public void addRepeatingTask(@NonNull final BukkitRunnable runnable, final long delay, final long repeat) {
+    public void addRepeatingTask(final @NonNull BukkitRunnable runnable, final long delay, final long repeat) {
         BukkitTask task = runnable.runTaskTimerAsynchronously(plugin, delay, repeat);
         tasks.add(task);
     }

@@ -22,25 +22,22 @@ public final class ConsoleSoul extends Soul {
     }
 
     @Override
-    @NonNull
-    public String getName() {
+    public @NonNull String getName() {
         return "CONSOLE";
     }
 
     @Override
-    @NonNull
-    public UUID getUniqueId() {
+    public @NonNull UUID getUniqueId() {
         return CONSOLE_UUID;
     }
 
     @Override
-    @NonNull
-    public CommandSender asSender() {
+    public @NonNull CommandSender asSender() {
         return CONSOLE_SENDER;
     }
 
     @Override
-    public void message(@NonNull final String message) {
+    public void message(final @NonNull String message) {
         CONSOLE_SENDER.sendMessage(message);
     }
 

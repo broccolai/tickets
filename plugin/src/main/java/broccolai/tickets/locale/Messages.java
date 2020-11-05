@@ -3,9 +3,6 @@ package broccolai.tickets.locale;
 import broccolai.corn.spigot.locale.LocaleKeys;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-/**
- * Enum representing locale messages.
- */
 @SuppressWarnings("unused")
 public enum Messages implements LocaleKeys {
 
@@ -92,8 +89,7 @@ public enum Messages implements LocaleKeys {
      * @param messageNames the message name
      * @return a message
      */
-    @NonNull
-    public static Messages retrieve(@NonNull final TargetType targetType, @NonNull final MessageNames messageNames) {
+    public static @NonNull Messages retrieve(final @NonNull TargetType targetType, final @NonNull MessageNames messageNames) {
         return valueOf(targetType.name() + "__" + messageNames.name());
     }
 }

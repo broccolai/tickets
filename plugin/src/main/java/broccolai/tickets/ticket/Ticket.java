@@ -25,8 +25,8 @@ public final class Ticket implements Dirtyable {
     private final int id;
     private final UUID playerUUID;
     private final Location location;
-    private TicketStatus status;
-    private UUID pickerUUID;
+    private @NonNull TicketStatus status;
+    private @Nullable UUID pickerUUID;
 
     private final List<Message> messages = new ArrayList<>();
 
@@ -41,10 +41,10 @@ public final class Ticket implements Dirtyable {
      */
     public Ticket(
             final int id,
-            @NonNull final UUID playerUUID,
-            @NonNull final Location location,
-            @NonNull final TicketStatus status,
-            @Nullable final UUID pickerUUID
+            final @NonNull UUID playerUUID,
+            final @NonNull Location location,
+            final @NonNull TicketStatus status,
+            final @Nullable UUID pickerUUID
     ) {
         this.id = id;
         this.playerUUID = playerUUID;
@@ -58,8 +58,7 @@ public final class Ticket implements Dirtyable {
      *
      * @return the message instance
      */
-    @NonNull
-    public Message currentMessage() {
+    public @NonNull Message currentMessage() {
         return messages
                 .stream()
                 .filter(message -> message.getReason() == MessageReason.MESSAGE)
@@ -72,8 +71,7 @@ public final class Ticket implements Dirtyable {
      *
      * @return Last note
      */
-    @NonNull
-    public Optional<Message> lastNote() {
+    public @NonNull Optional<Message> lastNote() {
         return messages
                 .stream()
                 .filter(message -> message.getReason() == MessageReason.NOTE)
@@ -85,8 +83,7 @@ public final class Ticket implements Dirtyable {
      *
      * @return Local date time
      */
-    @NonNull
-    public LocalDateTime dateOpened() {
+    public @NonNull LocalDateTime dateOpened() {
         return messages.get(0).getDate();
     }
 
@@ -104,8 +101,7 @@ public final class Ticket implements Dirtyable {
      *
      * @return Unique id
      */
-    @NonNull
-    public UUID getPlayerUUID() {
+    public @NonNull UUID getPlayerUUID() {
         return playerUUID;
     }
 
@@ -114,8 +110,7 @@ public final class Ticket implements Dirtyable {
      *
      * @return List of messages
      */
-    @NonNull
-    public List<Message> getMessages() {
+    public @NonNull List<Message> getMessages() {
         return messages;
     }
 
@@ -124,8 +119,7 @@ public final class Ticket implements Dirtyable {
      *
      * @return Location instance
      */
-    @NonNull
-    public Location getLocation() {
+    public @NonNull Location getLocation() {
         return location;
     }
 
@@ -134,8 +128,7 @@ public final class Ticket implements Dirtyable {
      *
      * @return Tickets status
      */
-    @NonNull
-    public TicketStatus getStatus() {
+    public @NonNull TicketStatus getStatus() {
         return status;
     }
 
@@ -144,8 +137,7 @@ public final class Ticket implements Dirtyable {
      *
      * @return Potentially null unique id
      */
-    @Nullable
-    public UUID getPickerUUID() {
+    public @Nullable UUID getPickerUUID() {
         return pickerUUID;
     }
 
@@ -155,7 +147,7 @@ public final class Ticket implements Dirtyable {
      * @param message the message to add to the ticket
      * @throws TicketClosed if the ticket is closed
      */
-    public void update(@NonNull final Message message) throws TicketClosed {
+    public void update(final @NonNull Message message) throws TicketClosed {
         if (status == TicketStatus.CLOSED) {
             throw new TicketClosed();
         }
@@ -170,7 +162,7 @@ public final class Ticket implements Dirtyable {
      * @param uuid the actioners unique id
      * @throws TicketClosed if the ticket is closed
      */
-    public void pick(@Nullable final UUID uuid) throws TicketClosed {
+    public void pick(final @Nullable UUID uuid) throws TicketClosed {
         if (status == TicketStatus.CLOSED) {
             throw new TicketClosed();
         }
@@ -187,7 +179,7 @@ public final class Ticket implements Dirtyable {
      * @param uuid the actioners unique id
      * @throws TicketOpen if the ticket is open
      */
-    public void yield(@Nullable final UUID uuid) throws TicketOpen {
+    public void yield(final @Nullable UUID uuid) throws TicketOpen {
         if (status == TicketStatus.OPEN) {
             throw new TicketOpen();
         }
@@ -204,7 +196,7 @@ public final class Ticket implements Dirtyable {
      * @param uuid the actioners unique id
      * @throws TicketClosed if the ticket is already closed
      */
-    public void close(@Nullable final UUID uuid) throws TicketClosed {
+    public void close(final @Nullable UUID uuid) throws TicketClosed {
         if (status == TicketStatus.CLOSED) {
             throw new TicketClosed();
         }
@@ -220,7 +212,7 @@ public final class Ticket implements Dirtyable {
      * @param uuid the actioners unique id
      * @throws TicketClosed if the ticket is already closed
      */
-    public void done(@Nullable final UUID uuid) throws TicketClosed {
+    public void done(final @Nullable UUID uuid) throws TicketClosed {
         if (status == TicketStatus.CLOSED) {
             throw new TicketClosed();
         }
@@ -236,7 +228,7 @@ public final class Ticket implements Dirtyable {
      * @param uuid the actioners unique id
      * @throws TicketOpen if the ticket is already open
      */
-    public void reopen(@Nullable final UUID uuid) throws TicketOpen {
+    public void reopen(final @Nullable UUID uuid) throws TicketOpen {
         if (status == TicketStatus.OPEN) {
             throw new TicketOpen();
         }
@@ -252,7 +244,7 @@ public final class Ticket implements Dirtyable {
      * @param uuid  the actioners unique id
      * @param input the note message
      */
-    public void note(@Nullable final UUID uuid, @NonNull final String input) {
+    public void note(final @Nullable UUID uuid, final @NonNull String input) {
         dirty = true;
         messages.add(Message.create(MessageReason.NOTE, LocalDateTime.now(), input, uuid));
     }
@@ -271,7 +263,7 @@ public final class Ticket implements Dirtyable {
      *
      * @return JSON object
      */
-    public JsonObject toJson() {
+    public @NonNull JsonObject toJson() {
         JsonObject json = new JsonObject();
         json.addProperty("id", id);
 

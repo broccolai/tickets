@@ -15,7 +15,7 @@ import java.util.StringJoiner;
 
 public final class MessageArgument extends CommandArgument<Soul, Message> {
 
-    private MessageArgument(final boolean required, @NonNull final String name) {
+    private MessageArgument(final boolean required, final @NonNull String name) {
         super(required, name, new MessageParser(), Message.class);
     }
 
@@ -25,8 +25,7 @@ public final class MessageArgument extends CommandArgument<Soul, Message> {
      * @param name Argument name
      * @return Created argument
      */
-    @NonNull
-    public static MessageArgument of(@NonNull final String name) {
+    public static @NonNull MessageArgument of(final @NonNull String name) {
         return new MessageArgument(true, name);
     }
 
@@ -34,10 +33,9 @@ public final class MessageArgument extends CommandArgument<Soul, Message> {
     private static final class MessageParser implements ArgumentParser<Soul, Message> {
 
         @Override
-        @NonNull
-        public ArgumentParseResult<Message> parse(
-                @NonNull final CommandContext<Soul> commandContext,
-                @NonNull final Queue<String> inputQueue
+        public @NonNull ArgumentParseResult<Message> parse(
+                final @NonNull CommandContext<Soul> commandContext,
+                final @NonNull Queue<String> inputQueue
         ) {
             String input = inputQueue.peek();
             if (input == null) {

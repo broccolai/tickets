@@ -10,7 +10,7 @@ final class TicketRemovalListener implements RemovalListener<Integer, Ticket> {
     private final TaskManager taskManager;
     private final TicketManager ticketManager;
 
-    TicketRemovalListener(@NonNull final TaskManager taskManager, final @NonNull TicketManager ticketManager) {
+    TicketRemovalListener(final @NonNull TaskManager taskManager, final @NonNull TicketManager ticketManager) {
         this.taskManager = taskManager;
         this.ticketManager = ticketManager;
     }

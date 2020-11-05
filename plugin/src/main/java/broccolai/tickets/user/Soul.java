@@ -18,13 +18,12 @@ public abstract class Soul implements Recipient {
      *
      * @param localeManager Locale Manager instance
      */
-    public Soul(@NonNull final LocaleManager localeManager) {
+    public Soul(final @NonNull LocaleManager localeManager) {
         this.localeManager = localeManager;
     }
 
     @Override
-    @NonNull
-    public final LocaleManager getLocaleManager() {
+    public final @NonNull LocaleManager getLocaleManager() {
         return localeManager;
     }
 
@@ -33,23 +32,20 @@ public abstract class Soul implements Recipient {
      *
      * @return Name
      */
-    @NonNull
-    public abstract String getName();
+    public abstract @NonNull String getName();
 
     /**
      * Get the souls unique id
      *
      * @return Unique id
      */
-    @NonNull
-    public abstract UUID getUniqueId();
+    public abstract @NonNull UUID getUniqueId();
 
     /**
      * Get the Command Sender associated with the soul
      *
      * @return Command Sender
      */
-    @Nullable
-    public abstract CommandSender asSender();
+    public abstract @Nullable CommandSender asSender();
 
 }

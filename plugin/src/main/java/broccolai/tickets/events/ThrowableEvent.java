@@ -5,13 +5,9 @@ import org.bukkit.event.Cancellable;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-/**
- * Event that can be thrown (cancelled) with a message
- */
 class ThrowableEvent extends BaseEvent implements Cancellable {
 
-    @Nullable
-    private PureException exception = null;
+    private @Nullable PureException exception = null;
     private boolean isCancelled = false;
 
     /**
@@ -38,7 +34,7 @@ class ThrowableEvent extends BaseEvent implements Cancellable {
      *
      * @param exception the PureException to use
      */
-    public void cancel(@NonNull final PureException exception) {
+    public void cancel(final @NonNull PureException exception) {
         this.exception = exception;
         isCancelled = true;
     }
@@ -47,8 +43,7 @@ class ThrowableEvent extends BaseEvent implements Cancellable {
         return exception != null;
     }
 
-    @NonNull
-    public PureException getException() {
+    public @NonNull PureException getException() {
         assert exception != null;
         return exception;
     }

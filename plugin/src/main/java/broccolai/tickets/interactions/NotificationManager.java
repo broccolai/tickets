@@ -36,9 +36,6 @@ import org.jdbi.v3.core.statement.PreparedBatch;
 
 import java.util.UUID;
 
-/**
- * Notification Manager
- */
 public final class NotificationManager implements Listener {
 
     private final Jdbi jdbi;
@@ -61,11 +58,11 @@ public final class NotificationManager implements Listener {
      */
     public NotificationManager(
             final @NonNull Jdbi jdbi,
-            @NonNull final Config config,
-            @NonNull final TaskManager taskManager,
-            @NonNull final LocaleManager localeManager,
-            @NonNull final UserManager userManager,
-            @NonNull final DiscordManager discordManager,
+            final @NonNull Config config,
+            final @NonNull TaskManager taskManager,
+            final @NonNull LocaleManager localeManager,
+            final @NonNull UserManager userManager,
+            final @NonNull DiscordManager discordManager,
             final @NonNull TicketManager ticketManager
     ) {
         this.jdbi = jdbi;
@@ -87,10 +84,10 @@ public final class NotificationManager implements Listener {
      * @param ticket the ticket instance
      */
     public void send(
-            @NonNull final Soul soul,
-            @Nullable final UUID target,
-            @NonNull final MessageNames names,
-            @NonNull final Ticket ticket
+            final @NonNull Soul soul,
+            final @Nullable UUID target,
+            final @NonNull MessageNames names,
+            final @NonNull Ticket ticket
     ) {
         String[] specificReplacements = {"user", soul.getName(), "target", UserUtilities.nameFromUUID(target)};
         String[] genericReplacements = ReplacementUtilities.ticketReplacements(ticket);
@@ -109,9 +106,12 @@ public final class NotificationManager implements Listener {
                     OfflinePlayer op = Bukkit.getOfflinePlayer(target);
 
                     if (op.isOnline()) {
-                        userManager.fromPlayer((Player) op).message(message, replacements);
+                        this.userManager.fromPlayer((Player) op).message(message, replacements);
                     } else {
-                        pendingNotifications.put(target, localeManager.composeMessage(message, replacements).complete());
+                        this.pendingNotifications.put(
+                                target,
+                                this.localeManager.composeMessage(message, replacements).complete()
+                        );
                     }
 
                     break;
@@ -137,7 +137,7 @@ public final class NotificationManager implements Listener {
                     break;
 
                 case DISCORD:
-                    discordManager.sendInformation(ticket, soul.getUniqueId(), names.name());
+                    this.discordManager.sendInformation(ticket, soul.getUniqueId(), names.name());
                     break;
 
                 default:
@@ -152,7 +152,7 @@ public final class NotificationManager implements Listener {
      * @param soul      the command sender to message
      * @param exception the PureException to handle
      */
-    public void handleException(@NonNull final Soul soul, @NonNull final PureException exception) {
+    public void handleException(final @NonNull Soul soul, final @NonNull PureException exception) {
         if (exception.getValue() != null) {
             soul.message(exception.getValue());
             return;
@@ -186,8 +186,8 @@ public final class NotificationManager implements Listener {
      * @param e Event
      */
     @EventHandler
-    public void onTicketCreation(@NonNull final TicketCreationEvent e) {
-        send(e.getSoul(), null, MessageNames.NEW_TICKET, e.getTicket());
+    public void onTicketCreation(final @NonNull TicketCreationEvent e) {
+        this.send(e.getSoul(), null, MessageNames.NEW_TICKET, e.getTicket());
     }
 
     /**
@@ -196,7 +196,7 @@ public final class NotificationManager implements Listener {
      * @param e Event
      */
     @EventHandler
-    public void onAsyncSoulJoin(@NonNull final AsyncSoulJoinEvent e) {
+    public void onAsyncSoulJoin(final @NonNull AsyncSoulJoinEvent e) {
         final Soul soul = e.getSoul();
 
         this.jdbi.useHandle(handle -> {
@@ -205,7 +205,7 @@ public final class NotificationManager implements Listener {
                     .mapTo(String.class)
                     .forEach(soul::message);
 
-            pendingNotifications
+            this.pendingNotifications
                     .removeAll(soul.getUniqueId())
                     .forEach(soul::message);
 

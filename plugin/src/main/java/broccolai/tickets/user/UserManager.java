@@ -47,9 +47,9 @@ public final class UserManager implements Listener {
      * @param jdbi          Jdbi instance
      */
     public UserManager(
-            @NonNull final PluginManager pluginManager,
-            @NonNull final TaskManager taskManager,
-            @NonNull final LocaleManager localeManager,
+            final @NonNull PluginManager pluginManager,
+            final @NonNull TaskManager taskManager,
+            final @NonNull LocaleManager localeManager,
             final @NonNull Jdbi jdbi
     ) {
         this.pluginManager = pluginManager;
@@ -71,8 +71,7 @@ public final class UserManager implements Listener {
      * @param sender Command Sender
      * @return Soul
      */
-    @NonNull
-    public Soul fromSender(@NonNull final CommandSender sender) {
+    public @NonNull Soul fromSender(final @NonNull CommandSender sender) {
         UUID uuid;
 
         if (sender instanceof ConsoleCommandSender) {
@@ -95,8 +94,7 @@ public final class UserManager implements Listener {
      * @param player Player instance
      * @return Player soul
      */
-    @NonNull
-    public PlayerSoul fromPlayer(@NonNull final Player player) {
+    public @NonNull PlayerSoul fromPlayer(final @NonNull Player player) {
         return (PlayerSoul) fromSender(player);
     }
 
@@ -105,8 +103,7 @@ public final class UserManager implements Listener {
      *
      * @return List of names
      */
-    @NonNull
-    public List<String> getNames() {
+    public @NonNull List<String> getNames() {
         return new ArrayList<>(names);
     }
 
@@ -148,8 +145,7 @@ public final class UserManager implements Listener {
         this.souls.values().forEach(this::cleanup);
     }
 
-    @NonNull
-    private PlayerSoul makeAndPut(@NonNull final Player player) {
+    private @NonNull PlayerSoul makeAndPut(final @NonNull Player player) {
         PlayerSoul soul = new PlayerSoul(this, localeManager, player);
 
         souls.put(player.getUniqueId(), soul);
@@ -176,7 +172,7 @@ public final class UserManager implements Listener {
      * @param e Event
      */
     @EventHandler
-    public void onTicketCreation(@NonNull final TicketCreationEvent e) {
+    public void onTicketCreation(final @NonNull TicketCreationEvent e) {
         this.names.add(e.getSoul().getName());
     }
 
@@ -186,7 +182,7 @@ public final class UserManager implements Listener {
      * @param e Event
      */
     @EventHandler
-    public void onJoin(@NonNull final PlayerJoinEvent e) {
+    public void onJoin(final @NonNull PlayerJoinEvent e) {
         taskManager.async(() -> {
             PlayerSoul soul = fromPlayer(e.getPlayer());
             AsyncSoulJoinEvent event = new AsyncSoulJoinEvent(soul);

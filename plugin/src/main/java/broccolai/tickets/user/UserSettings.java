@@ -24,7 +24,7 @@ public final class UserSettings {
      * @param option Option
      * @param value  Value to use
      */
-    public void set(@NonNull final Options option, final boolean value) {
+    public void set(final @NonNull Options option, final boolean value) {
         if (option == Options.ANNOUNCEMENTS) {
             announcements = value;
         }

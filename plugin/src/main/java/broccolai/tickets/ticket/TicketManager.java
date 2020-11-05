@@ -35,9 +35,6 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
-/**
- * Manager for Ticket interaction
- */
 @SuppressWarnings("unused")
 public final class TicketManager implements Listener {
 
@@ -56,10 +53,10 @@ public final class TicketManager implements Listener {
      * @param taskManager   todo
      */
     public TicketManager(
-            @NonNull final Config config,
-            @NonNull final PluginManager pluginManager,
-            @NonNull final Jdbi jdbi,
-            @NonNull final TaskManager taskManager
+            final @NonNull Config config,
+            final @NonNull PluginManager pluginManager,
+            final @NonNull Jdbi jdbi,
+            final @NonNull TaskManager taskManager
     ) {
         this.config = config;
         this.pluginManager = pluginManager;
@@ -260,7 +257,7 @@ public final class TicketManager implements Listener {
      * @param span Time span to get highscores against
      * @return Map of unique id's and their score
      */
-    public Map<UUID, Integer> getHighscores(@NonNull final TimeAmount span) {
+    public Map<UUID, Integer> getHighscores(final @NonNull TimeAmount span) {
         long length = span.getLength() != null
                 ? LocalDateTime.now().atZone(ZoneId.systemDefault()).toEpochSecond() - span.getLength()
                 : 0;
@@ -353,7 +350,7 @@ public final class TicketManager implements Listener {
         return idStorage;
     }
 
-    private String joinSetToInt(@NonNull final Set<Integer> input) {
+    private @NonNull String joinSetToInt(final @NonNull Set<Integer> input) {
         StringBuilder sb = new StringBuilder();
 
         for (int num : input) {
@@ -370,7 +367,7 @@ public final class TicketManager implements Listener {
      * @param e Event
      */
     @EventHandler
-    public void onTicketConstructPredicates(@NonNull final TicketConstructionEvent e) {
+    public void onTicketConstructPredicates(final @NonNull TicketConstructionEvent e) {
         PlayerSoul soul = e.getSoul();
 
         if (this.countTickets(soul.getUniqueId(), TicketStatus.OPEN) > config.getTicketLimitOpen() + 1) {
@@ -384,7 +381,7 @@ public final class TicketManager implements Listener {
      * @param e Event
      */
     @EventHandler(priority = EventPriority.HIGHEST)
-    public void onTicketConstruct(@NonNull final TicketConstructionEvent e) {
+    public void onTicketConstruct(final @NonNull TicketConstructionEvent e) {
         PlayerSoul soul = e.getSoul();
         Message message = e.getMessage();
 

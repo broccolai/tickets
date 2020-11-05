@@ -20,12 +20,11 @@ class BaseEvent extends Event {
         super(isAsync);
     }
 
-    @NonNull
-    public HandlerList getHandlers() {
+    public @NonNull HandlerList getHandlers() {
         return HANDLERS;
     }
 
-    public static HandlerList getHandlerList() {
+    public static @NonNull HandlerList getHandlerList() {
         return HANDLERS;
     }
 

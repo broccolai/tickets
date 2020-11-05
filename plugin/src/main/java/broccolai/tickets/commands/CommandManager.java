@@ -11,13 +11,10 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-/**
- * The Command Manager.
- */
 public final class CommandManager extends PaperCommandManager<Soul> {
 
     /**
-     * Initialise the Command Manager.
+     * Initialise the Command Manager
      *
      * @param plugin              Plugin instance
      * @param config              Configuration instance
@@ -27,12 +24,12 @@ public final class CommandManager extends PaperCommandManager<Soul> {
      * @param pluginManager       Plugin manager
      */
     public CommandManager(
-            @NonNull final Plugin plugin,
-            @NonNull final Config config,
-            @NonNull final UserManager userManager,
-            @NonNull final NotificationManager notificationManager,
-            @NonNull final TicketManager ticketManager,
-            @NonNull final PluginManager pluginManager
+            final @NonNull Plugin plugin,
+            final @NonNull Config config,
+            final @NonNull UserManager userManager,
+            final @NonNull NotificationManager notificationManager,
+            final @NonNull TicketManager ticketManager,
+            final @NonNull PluginManager pluginManager
     ) throws Exception {
         super(
                 plugin,

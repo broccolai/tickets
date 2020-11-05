@@ -26,9 +26,6 @@ import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
 
-/**
- * SQL Manager
- */
 public final class SQLPlatforms {
 
     private static final Gson GSON = new Gson();

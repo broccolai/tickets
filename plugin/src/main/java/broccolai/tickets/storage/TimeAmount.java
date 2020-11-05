@@ -2,9 +2,6 @@ package broccolai.tickets.storage;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-/**
- * Enum of time amounts
- */
 public enum TimeAmount {
     DAY(86400L),
     WEEK(604800L),
@@ -12,10 +9,9 @@ public enum TimeAmount {
     YEAR(31556952L),
     FOREVER(null);
 
-    @Nullable
-    private final Long length;
+    private final @Nullable Long length;
 
-    TimeAmount(@Nullable final Long length) {
+    TimeAmount(final @Nullable Long length) {
         this.length = length;
     }
 
@@ -24,8 +20,7 @@ public enum TimeAmount {
      *
      * @return a long
      */
-    @Nullable
-    public Long getLength() {
+    public @Nullable Long getLength() {
         return length;
     }
 }

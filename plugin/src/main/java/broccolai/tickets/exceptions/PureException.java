@@ -5,9 +5,6 @@ import broccolai.tickets.locale.Messages;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-/**
- * an base exception class for other PureExceptions to inherit
- */
 public class PureException extends RuntimeException {
 
     @Nullable
@@ -31,7 +28,7 @@ public class PureException extends RuntimeException {
      *
      * @param value the message to give
      */
-    public PureException(@Nullable final String value) {
+    public PureException(final @Nullable String value) {
         this.message = null;
         this.replacements = null;
         this.value = value;
@@ -43,7 +40,7 @@ public class PureException extends RuntimeException {
      * @param message      the locale message key
      * @param replacements the replacements to use
      */
-    public PureException(@Nullable final Messages message, @NonNull final String... replacements) {
+    public PureException(final @Nullable Messages message, final @NonNull String... replacements) {
         this.message = message;
         this.replacements = replacements;
         this.value = null;

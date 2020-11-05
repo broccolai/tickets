@@ -10,9 +10,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-/**
- * Task to remind online staff members of current tickets
- */
 public final class ReminderTask extends BukkitRunnable {
 
     private final UserManager userManager;
@@ -24,7 +21,7 @@ public final class ReminderTask extends BukkitRunnable {
      * @param userManager   User manager
      * @param ticketManager Ticket manager
      */
-    public ReminderTask(@NonNull final UserManager userManager, final @NonNull TicketManager ticketManager) {
+    public ReminderTask(final @NonNull UserManager userManager, final @NonNull TicketManager ticketManager) {
         this.userManager = userManager;
         this.ticketManager = ticketManager;
     }

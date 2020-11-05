@@ -5,9 +5,6 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-/**
- * Utilities for time
- */
 public final class TimeUtilities {
 
     private TimeUtilities() {
@@ -16,19 +13,18 @@ public final class TimeUtilities {
     /**
      * Convert a time into a standardised string representation
      *
-     * @param time the time to format
-     * @return a formatted time string
+     * @param time Time to format
+     * @return Formatted time string
      */
-    @NonNull
-    public static String formatted(@NonNull final LocalDateTime time) {
+    public static @NonNull String formatted(final @NonNull LocalDateTime time) {
         return time.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
     }
 
     /**
      * Convert a minute to a tick
      *
-     * @param minute time value to transition
-     * @return long value
+     * @param minute Time value to transition
+     * @return Long value
      */
     public static long minuteToLong(final int minute) {
         return minute * 60 * 20;

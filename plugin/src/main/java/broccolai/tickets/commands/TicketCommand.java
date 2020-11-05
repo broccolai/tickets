@@ -26,11 +26,8 @@ import java.util.List;
 
 public final class TicketCommand extends BaseCommand {
 
-    @NonNull
     private final PluginManager pluginManager;
-    @NonNull
     private final NotificationManager notificationManager;
-    @NonNull
     private final TicketManager ticketManager;
 
     /**
@@ -43,8 +40,8 @@ public final class TicketCommand extends BaseCommand {
      * @param ticketManager       Ticket Manager
      */
     public TicketCommand(
-            @NonNull final CommandManager manager, @NonNull final PluginManager pluginManager, @NonNull final Config config,
-            @NonNull final NotificationManager notificationManager, @NonNull final TicketManager ticketManager
+            final @NonNull CommandManager manager, final @NonNull PluginManager pluginManager, final @NonNull Config config,
+            final @NonNull NotificationManager notificationManager, final @NonNull TicketManager ticketManager
     ) {
         this.pluginManager = pluginManager;
         this.notificationManager = notificationManager;
@@ -110,7 +107,7 @@ public final class TicketCommand extends BaseCommand {
                 .handler(c -> processLog(c.getSender(), c.get("ticket"))));
     }
 
-    private void processCreate(@NonNull final CommandContext<Soul> c) {
+    private void processCreate(final @NonNull CommandContext<Soul> c) {
         PlayerSoul soul = (PlayerSoul) c.getSender();
         TicketConstructionEvent constructionEvent = new TicketConstructionEvent(soul, c.get("message"));
         pluginManager.callEvent(constructionEvent);
@@ -120,7 +117,7 @@ public final class TicketCommand extends BaseCommand {
         }
     }
 
-    private void processUpdate(@NonNull final CommandContext<Soul> c) {
+    private void processUpdate(final @NonNull CommandContext<Soul> c) {
         Ticket ticket = c.get("ticket");
 
         try {
@@ -131,7 +128,7 @@ public final class TicketCommand extends BaseCommand {
         }
     }
 
-    private void processClose(@NonNull final CommandContext<Soul> c) {
+    private void processClose(final @NonNull CommandContext<Soul> c) {
         Soul soul = c.getSender();
         Ticket ticket = c.get("ticket");
 
@@ -143,7 +140,7 @@ public final class TicketCommand extends BaseCommand {
         }
     }
 
-    private void processList(@NonNull final CommandContext<Soul> c) {
+    private void processList(final @NonNull CommandContext<Soul> c) {
         Soul soul = c.getSender();
         TicketStatus status = c.flags().getValue("status", null);
         List<Ticket> tickets = ticketManager.getTickets(

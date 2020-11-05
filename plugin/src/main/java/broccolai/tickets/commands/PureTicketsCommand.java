@@ -12,21 +12,17 @@ import cloud.commandframework.context.CommandContext;
 import org.bukkit.plugin.Plugin;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-/**
- * Command used for information and per-user configuration.
- */
 public final class PureTicketsCommand {
 
-    @NonNull
     private final Plugin plugin;
 
     /**
-     * Create a Pure Tickets Command.
+     * Create a Pure Tickets Command
      *
      * @param plugin  Plugin instance
      * @param manager Command Manager
      */
-    public PureTicketsCommand(@NonNull final Plugin plugin, @NonNull final CommandManager manager) {
+    public PureTicketsCommand(final @NonNull Plugin plugin, final @NonNull CommandManager manager) {
         this.plugin = plugin;
 
         final Command.Builder<Soul> builder = manager.commandBuilder("puretickets", "pt");
@@ -45,11 +41,11 @@ public final class PureTicketsCommand {
                 .handler(this::processReload));
     }
 
-    private void processInfo(@NonNull final CommandContext<Soul> c) {
+    private void processInfo(final @NonNull CommandContext<Soul> c) {
         c.getSender().message(plugin.getName() + " " + plugin.getDescription().getVersion());
     }
 
-    private void processSettings(@NonNull final CommandContext<Soul> c) {
+    private void processSettings(final @NonNull CommandContext<Soul> c) {
         PlayerSoul soul = (PlayerSoul) c.getSender();
         UserSettings.Options setting = c.get("setting");
         Boolean value = c.get("value");
@@ -59,7 +55,7 @@ public final class PureTicketsCommand {
         soul.message(Messages.OTHER__SETTING_UPDATE, "setting", setting.name().toLowerCase(), "status", status);
     }
 
-    private void processReload(@NonNull final CommandContext<Soul> c) {
+    private void processReload(final @NonNull CommandContext<Soul> c) {
         plugin.onDisable();
         plugin.onEnable();
         c.getSender().message("PureTickets reloaded");

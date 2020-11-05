@@ -1,8 +1,5 @@
 package broccolai.tickets.message;
 
-/**
- * Enum for message reasons
- */
 public enum MessageReason {
     MESSAGE,
     REOPENED,

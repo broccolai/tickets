@@ -38,14 +38,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-/**
- * Command used for staff to interact with other players tickets.
- */
 public final class TicketsCommand extends BaseCommand {
 
-    @NonNull
     private final NotificationManager notificationManager;
-    @NonNull
     private final TicketManager ticketManager;
 
     /**
@@ -58,8 +53,8 @@ public final class TicketsCommand extends BaseCommand {
      * @param ticketManager       Ticket Manager
      */
     public TicketsCommand(
-            @NonNull final CommandManager manager, @NonNull final Config config, @NonNull final UserManager userManager,
-            @NonNull final NotificationManager notificationManager, @NonNull final TicketManager ticketManager
+            final @NonNull CommandManager manager, final @NonNull Config config, final @NonNull UserManager userManager,
+            final @NonNull NotificationManager notificationManager, final @NonNull TicketManager ticketManager
     ) {
         this.notificationManager = notificationManager;
         this.ticketManager = ticketManager;
@@ -205,7 +200,7 @@ public final class TicketsCommand extends BaseCommand {
                 .build());
     }
 
-    private void processPick(@NonNull final CommandContext<Soul> c) {
+    private void processPick(final @NonNull CommandContext<Soul> c) {
         Soul soul = c.getSender();
         Ticket ticket = c.get("ticket");
 
@@ -217,7 +212,7 @@ public final class TicketsCommand extends BaseCommand {
         }
     }
 
-    private void processAssign(@NonNull final CommandContext<Soul> c) {
+    private void processAssign(final @NonNull CommandContext<Soul> c) {
         Soul soul = c.getSender();
         Ticket ticket = c.get("ticket");
         OfflinePlayer staff = c.get("staff");
@@ -230,7 +225,7 @@ public final class TicketsCommand extends BaseCommand {
         }
     }
 
-    private void processDone(@NonNull final CommandContext<Soul> c) {
+    private void processDone(final @NonNull CommandContext<Soul> c) {
         Soul soul = c.getSender();
         Ticket ticket = c.get("ticket");
 
@@ -242,7 +237,7 @@ public final class TicketsCommand extends BaseCommand {
         }
     }
 
-    private void processYield(@NonNull final CommandContext<Soul> c) {
+    private void processYield(final @NonNull CommandContext<Soul> c) {
         Soul soul = c.getSender();
         Ticket ticket = c.get("ticket");
 
@@ -254,7 +249,7 @@ public final class TicketsCommand extends BaseCommand {
         }
     }
 
-    private void processNote(@NonNull final CommandContext<Soul> c) {
+    private void processNote(final @NonNull CommandContext<Soul> c) {
         Soul soul = c.getSender();
         Ticket ticket = c.get("ticket");
 
@@ -262,7 +257,7 @@ public final class TicketsCommand extends BaseCommand {
         notificationManager.send(soul, ticket.getPlayerUUID(), MessageNames.NOTE_TICKET, ticket);
     }
 
-    private void processReopen(@NonNull final CommandContext<Soul> c) {
+    private void processReopen(final @NonNull CommandContext<Soul> c) {
         Soul soul = c.getSender();
         Ticket ticket = c.get("ticket");
 
@@ -274,7 +269,7 @@ public final class TicketsCommand extends BaseCommand {
         }
     }
 
-    private void processTeleport(@NonNull final CommandContext<Soul> c) {
+    private void processTeleport(final @NonNull CommandContext<Soul> c) {
         PlayerSoul soul = (PlayerSoul) c.getSender();
         Ticket ticket = c.get("ticket");
 
@@ -282,7 +277,7 @@ public final class TicketsCommand extends BaseCommand {
         PaperLib.teleportAsync(soul.asPlayer(), ticket.getLocation());
     }
 
-    private void processList(@NonNull final CommandContext<Soul> c) {
+    private void processList(final @NonNull CommandContext<Soul> c) {
         final Soul soul = c.getSender();
         final OfflinePlayer player = c.flags().getValue("player", null);
         final Boolean onlineOnly = c.flags().getValue("onlineOnly", false);
@@ -327,7 +322,7 @@ public final class TicketsCommand extends BaseCommand {
         });
     }
 
-    private void processStatus(@NonNull final CommandContext<Soul> c) {
+    private void processStatus(final @NonNull CommandContext<Soul> c) {
         Soul soul = c.getSender();
         OfflinePlayer target = c.getOrDefault("target", null);
 
@@ -352,7 +347,7 @@ public final class TicketsCommand extends BaseCommand {
         });
     }
 
-    private void processHighscore(@NonNull final CommandContext<Soul> c) {
+    private void processHighscore(final @NonNull CommandContext<Soul> c) {
         Soul soul = c.getSender();
         TimeAmount amount = c.get("amount");
 

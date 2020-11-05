@@ -13,7 +13,7 @@ import java.util.Map;
 
 public final class LocaleManager extends CornLocaleManager {
 
-    private LocaleManager(@NonNull final FileConfiguration defaultSource, @NonNull final LocaleKeys prefix) {
+    private LocaleManager(final @NonNull FileConfiguration defaultSource, final @NonNull LocaleKeys prefix) {
         super(defaultSource, prefix);
     }
 
@@ -23,8 +23,7 @@ public final class LocaleManager extends CornLocaleManager {
      * @param plugin Plugin instance
      * @return the created locale manager
      */
-    @NonNull
-    public static LocaleManager create(@NonNull final Plugin plugin) {
+    public static @NonNull LocaleManager create(final @NonNull Plugin plugin) {
         Map<Locale, FileConfiguration> locales = LocaleUtils.saveLocales(plugin,
                 new File(plugin.getDataFolder(), "locales"), "/locales"
         );

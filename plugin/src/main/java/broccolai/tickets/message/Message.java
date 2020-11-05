@@ -7,9 +7,6 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-/**
- * Class representing a ticket message
- */
 public final class Message implements Dirtyable {
 
     private boolean dirty = false;
@@ -24,10 +21,10 @@ public final class Message implements Dirtyable {
     private final UUID sender;
 
     private Message(
-            @NonNull final MessageReason reason,
-            @NonNull final LocalDateTime date,
-            @Nullable final String data,
-            @Nullable final UUID sender
+            final @NonNull MessageReason reason,
+            final @NonNull LocalDateTime date,
+            final @Nullable String data,
+            final @Nullable UUID sender
     ) {
         this.reason = reason;
         this.date = date;
@@ -43,10 +40,10 @@ public final class Message implements Dirtyable {
      * @param data   String data
      * @return Constructed Ticket
      */
-    public static Message create(
-            @NonNull final MessageReason reason,
-            @NonNull final LocalDateTime date,
-            @Nullable final String data
+    public static @NonNull Message create(
+            final @NonNull MessageReason reason,
+            final @NonNull LocalDateTime date,
+            final @Nullable String data
     ) {
         Message message = new Message(reason, date, data, null);
         message.dirty = true;
@@ -62,10 +59,10 @@ public final class Message implements Dirtyable {
      * @param sender Unique id of the message creator
      * @return Constructed Ticket
      */
-    public static Message create(
-            @NonNull final MessageReason reason,
-            @NonNull final LocalDateTime date,
-            @Nullable final UUID sender
+    public static @NonNull Message create(
+            final @NonNull MessageReason reason,
+            final @NonNull LocalDateTime date,
+            final @Nullable UUID sender
     ) {
         Message message = new Message(reason, date, null, sender);
         message.dirty = true;
@@ -82,11 +79,11 @@ public final class Message implements Dirtyable {
      * @param sender Unique id of the message creator
      * @return Constructed Ticket
      */
-    public static Message create(
-            @NonNull final MessageReason reason,
-            @NonNull final LocalDateTime date,
-            @Nullable final String data,
-            @Nullable final UUID sender
+    public static @NonNull Message create(
+            final @NonNull MessageReason reason,
+            final @NonNull LocalDateTime date,
+            final @Nullable String data,
+            final @Nullable UUID sender
     ) {
         Message message = new Message(reason, date, data, sender);
         message.dirty = true;
@@ -103,11 +100,11 @@ public final class Message implements Dirtyable {
      * @param sender Unique id of the message creator
      * @return Constructed Ticket
      */
-    public static Message load(
-            @NonNull final MessageReason reason,
-            @NonNull final LocalDateTime date,
-            @Nullable final String data,
-            @Nullable final UUID sender
+    public static @NonNull Message load(
+            final @NonNull MessageReason reason,
+            final @NonNull LocalDateTime date,
+            final @Nullable String data,
+            final @Nullable UUID sender
     ) {
         return new Message(reason, date, data, sender);
     }
@@ -117,8 +114,7 @@ public final class Message implements Dirtyable {
      *
      * @return the MessageReason
      */
-    @NonNull
-    public MessageReason getReason() {
+    public @NonNull MessageReason getReason() {
         return reason;
     }
 
@@ -127,8 +123,7 @@ public final class Message implements Dirtyable {
      *
      * @return the LocalDateTime
      */
-    @NonNull
-    public LocalDateTime getDate() {
+    public @NonNull LocalDateTime getDate() {
         return date;
     }
 
@@ -137,8 +132,7 @@ public final class Message implements Dirtyable {
      *
      * @return the data
      */
-    @Nullable
-    public String getData() {
+    public @Nullable String getData() {
         return data;
     }
 
@@ -147,8 +141,7 @@ public final class Message implements Dirtyable {
      *
      * @return the unique id
      */
-    @Nullable
-    public UUID getSender() {
+    public @Nullable UUID getSender() {
         return sender;
     }
 

@@ -20,7 +20,7 @@ public final class FileReader {
      * @param file File path relative to plugin
      * @return Files content
      */
-    public static String fromPath(final @NonNull String file) {
+    public static @NonNull String fromPath(final @NonNull String file) {
         try (InputStream stream = PureTickets.class.getResourceAsStream(file);
              Reader reader = new InputStreamReader(stream)) {
             return CharStreams.toString(reader);

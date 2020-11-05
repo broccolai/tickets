@@ -26,8 +26,7 @@ public final class ReplacementUtilities {
      * @param ticket Ticket instance to use
      * @return Array of replacements
      */
-    @NonNull
-    public static String[] ticketReplacements(@Nullable final Ticket ticket) {
+    public static @NonNull String[] ticketReplacements(final @Nullable Ticket ticket) {
         List<String> results = new ArrayList<>();
 
         if (ticket == null) {

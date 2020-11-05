@@ -15,12 +15,9 @@ public final class PlayerSoul extends Soul implements Dirtyable {
 
     private final UserManager userManager;
 
-    @NonNull
-    private final Player player;
-    @NonNull
-    private final UUID uniqueId;
-    @Nullable
-    private UserSettings settings = null;
+    private final @NonNull Player player;
+    private final @NonNull UUID uniqueId;
+    private @Nullable UserSettings settings = null;
 
     private boolean dirty = false;
 
@@ -43,25 +40,22 @@ public final class PlayerSoul extends Soul implements Dirtyable {
     }
 
     @Override
-    @NonNull
-    public String getName() {
+    public @NonNull String getName() {
         return Objects.requireNonNull(player.getName());
     }
 
     @Override
-    @NonNull
-    public UUID getUniqueId() {
+    public @NonNull UUID getUniqueId() {
         return uniqueId;
     }
 
     @Override
-    @NonNull
-    public CommandSender asSender() {
+    public @NonNull CommandSender asSender() {
         return asPlayer();
     }
 
     @Override
-    public void message(@NonNull final String message) {
+    public void message(final @NonNull String message) {
         asPlayer().sendMessage(message);
     }
 
@@ -70,8 +64,7 @@ public final class PlayerSoul extends Soul implements Dirtyable {
      *
      * @return Player object
      */
-    @NonNull
-    public Player asPlayer() {
+    public @NonNull Player asPlayer() {
         return player;
     }
 
@@ -80,8 +73,7 @@ public final class PlayerSoul extends Soul implements Dirtyable {
      *
      * @return a constructed UserSettings instance
      */
-    @NonNull
-    public UserSettings preferences() {
+    public @NonNull UserSettings preferences() {
         if (settings != null) {
             return settings;
         }
@@ -95,7 +87,7 @@ public final class PlayerSoul extends Soul implements Dirtyable {
      *
      * @param action the function to apply to the Users Settings
      */
-    public void modifyPreferences(@NonNull final Consumer<UserSettings> action) {
+    public void modifyPreferences(final @NonNull Consumer<UserSettings> action) {
         UserSettings settings = preferences();
         action.accept(settings);
 

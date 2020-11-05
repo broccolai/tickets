@@ -10,12 +10,9 @@ import broccolai.tickets.utilities.UserUtilities;
 import cloud.commandframework.arguments.flags.FlagContext;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-/**
- * Base commands for ticket commands inherit from.
- */
 public class BaseCommand {
 
-    protected final void processShow(@NonNull final Soul soul, @NonNull final Ticket ticket) {
+    protected final void processShow(final @NonNull Soul soul, final @NonNull Ticket ticket) {
         String[] replacements = ReplacementUtilities.ticketReplacements(ticket);
 
         soul.message(Messages.TITLES__SHOW_TICKET, replacements);
@@ -30,7 +27,7 @@ public class BaseCommand {
         }
     }
 
-    protected final void processLog(@NonNull final Soul soul, @NonNull final Ticket ticket) {
+    protected final void processLog(final @NonNull Soul soul, final @NonNull Ticket ticket) {
         String[] replacements = ReplacementUtilities.ticketReplacements(ticket);
 
         soul.message(Messages.TITLES__TICKET_LOG, replacements);
@@ -44,14 +41,14 @@ public class BaseCommand {
         });
     }
 
-    protected final TicketStatus[] statusesFromFlags(final @NonNull FlagContext flags) {
+    protected final @NonNull TicketStatus[] statusesFromFlags(final @NonNull FlagContext flags) {
         TicketStatus status = flags.getValue("status", null);
 
         return status != null ? arrayOf(status) : arrayOf(TicketStatus.OPEN, TicketStatus.CLOSED);
     }
 
     @SafeVarargs
-    private final <T> T[] arrayOf(final @NonNull T... values) {
+    private final <T> @NonNull T[] arrayOf(final @NonNull T... values) {
         return values;
     }
 
