@@ -15,7 +15,6 @@ repositories {
 
     maven("https://hub.spigotmc.org/nexus/content/repositories/snapshots/")
     maven("https://oss.sonatype.org/content/repositories/public/")
-    maven("https://repo.aikar.co/content/groups/aikar/")
     maven("https://mvnrepository.com/artifact/org.jetbrains/annotations")
     maven("https://mvn.intellectualsites.com/content/repositories/snapshots")
     maven {
@@ -36,13 +35,13 @@ dependencies {
     checkstyle("ca.stellardrift:stylecheck:0.1-SNAPSHOT")
     compileOnly("org.checkerframework:checker-qual:3.5.0")
 
-    api("co.aikar:idb-core:1.0.0-SNAPSHOT")
+    api("org.jdbi:jdbi3-core:3.16.0")
+    api("com.github.ben-manes.caffeine:caffeine:2.8.6")
     api("org.slf4j:slf4j-simple:1.7.13")
-    api("com.zaxxer:HikariCP:2.7.9")
     api("broccolai:corn-core:1.1.1")
     api("broccolai:corn-spigot:1.1.1")
     api("com.intellectualsites.http:HTTP4J:1.3-SNAPSHOT")
-    api("cloud.commandframework:cloud-paper:1.0.0-SNAPSHOT")
+    api("cloud.commandframework:cloud-paper:1.2.0-SNAPSHOT")
     api("io.papermc:paperlib:1.0.5")
 
     compileOnly("org.spigotmc:spigot-api:1.16.1-R0.1-SNAPSHOT")
@@ -72,13 +71,6 @@ tasks {
         archiveFileName.set(project.name + ".jar")
         mergeServiceFiles()
         minimize()
-    }
-
-    compileJava {
-        options.encoding = "UTF-8"
-        options.compilerArgs.add("-parameters")
-        options.isFork = true
-        options.forkOptions.executable = "javac"
     }
 
     processResources {
