@@ -9,17 +9,20 @@ import broccolai.tickets.locale.LocaleManager;
 import broccolai.tickets.locale.MessageNames;
 import broccolai.tickets.locale.Messages;
 import broccolai.tickets.locale.TargetType;
-import broccolai.tickets.storage.functions.NotificationSQL;
 import broccolai.tickets.tasks.ReminderTask;
 import broccolai.tickets.tasks.TaskManager;
 import broccolai.tickets.ticket.Ticket;
+import broccolai.tickets.ticket.TicketManager;
 import broccolai.tickets.user.PlayerSoul;
 import broccolai.tickets.user.Soul;
 import broccolai.tickets.user.UserManager;
 import broccolai.tickets.utilities.Constants;
 import broccolai.tickets.utilities.ReplacementUtilities;
+import broccolai.tickets.storage.SQLQueries;
 import broccolai.tickets.utilities.TimeUtilities;
 import broccolai.tickets.utilities.UserUtilities;
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.Multimap;
 import com.google.common.collect.ObjectArrays;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -28,6 +31,8 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jdbi.v3.core.Jdbi;
+import org.jdbi.v3.core.statement.PreparedBatch;
 
 import java.util.UUID;
 
@@ -36,34 +41,39 @@ import java.util.UUID;
  */
 public final class NotificationManager implements Listener {
 
-    @NonNull
+    private final Jdbi jdbi;
     private final LocaleManager localeManager;
-    @NonNull
     private final UserManager userManager;
-    @NonNull
     private final DiscordManager discordManager;
+
+    private final Multimap<UUID, String> pendingNotifications = ArrayListMultimap.create();
 
     /**
      * Initialise a Notification Manager
      *
-     * @param config         the config instance
-     * @param taskManager    the task manager
-     * @param userManager    the user manager
-     * @param discordManager the discord manager
-     * @param localeManager  the locale manager
+     * @param jdbi           Jdbi instance
+     * @param config         Config instance
+     * @param taskManager    Task manager
+     * @param userManager    User manager
+     * @param discordManager Discord manager
+     * @param localeManager  Locale manager
+     * @param ticketManager  Ticket Manager
      */
     public NotificationManager(
+            final @NonNull Jdbi jdbi,
             @NonNull final Config config,
             @NonNull final TaskManager taskManager,
             @NonNull final LocaleManager localeManager,
             @NonNull final UserManager userManager,
-            @NonNull final DiscordManager discordManager
+            @NonNull final DiscordManager discordManager,
+            final @NonNull TicketManager ticketManager
     ) {
+        this.jdbi = jdbi;
         this.localeManager = localeManager;
         this.userManager = userManager;
         this.discordManager = discordManager;
 
-        taskManager.addRepeatingTask(new ReminderTask(userManager),
+        taskManager.addRepeatingTask(new ReminderTask(userManager, ticketManager),
                 TimeUtilities.minuteToLong(config.getReminderDelay()), TimeUtilities.minuteToLong(config.getReminderRepeat())
         );
     }
@@ -101,7 +111,7 @@ public final class NotificationManager implements Listener {
                     if (op.isOnline()) {
                         userManager.fromPlayer((Player) op).message(message, replacements);
                     } else {
-                        NotificationSQL.add(target, localeManager.composeMessage(message, replacements).complete());
+                        pendingNotifications.put(target, localeManager.composeMessage(message, replacements).complete());
                     }
 
                     break;
@@ -153,6 +163,24 @@ public final class NotificationManager implements Listener {
     }
 
     /**
+     * Insert all pending notifications into storage
+     */
+    public void saveAll() {
+        this.jdbi.useHandle(handle -> {
+            PreparedBatch batch = handle.prepareBatch(SQLQueries.INSERT_NOTIFICATION.get());
+
+            pendingNotifications.forEach((uuid, string) -> {
+                batch
+                        .bind("uuid", uuid)
+                        .bind("message", string)
+                        .add();
+            });
+
+            batch.execute();
+        });
+    }
+
+    /**
      * Event to notify player when a ticket is created
      *
      * @param e Event
@@ -171,8 +199,20 @@ public final class NotificationManager implements Listener {
     public void onAsyncSoulJoin(@NonNull final AsyncSoulJoinEvent e) {
         final Soul soul = e.getSoul();
 
-        NotificationSQL.retrieve(soul.getUniqueId())
-                .forEach(soul::message);
+        this.jdbi.useHandle(handle -> {
+            handle.createQuery(SQLQueries.SELECT_NOTIFICATIONS.get())
+                    .bind("uuid", soul.getUniqueId())
+                    .mapTo(String.class)
+                    .forEach(soul::message);
+
+            pendingNotifications
+                    .removeAll(soul.getUniqueId())
+                    .forEach(soul::message);
+
+            handle.createUpdate(SQLQueries.DELETE_NOTIFICATIONS.get())
+                    .bind("uuid", soul.getUniqueId())
+                    .execute();
+        });
     }
 
 }
