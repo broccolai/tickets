@@ -1,10 +1,11 @@
-package broccolai.tickets.events;
+package broccolai.tickets.events.api;
 
+import broccolai.tickets.events.ExceptionEvent;
 import broccolai.tickets.message.Message;
 import broccolai.tickets.user.PlayerSoul;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-public final class TicketConstructionEvent extends ThrowableEvent {
+public final class TicketConstructionEvent extends ExceptionEvent {
 
     private final PlayerSoul soul;
     private final Message message;
@@ -16,7 +17,6 @@ public final class TicketConstructionEvent extends ThrowableEvent {
      * @param message the tickets initial message
      */
     public TicketConstructionEvent(final @NonNull PlayerSoul soul, final @NonNull Message message) {
-        super(true);
         this.soul = soul;
         this.message = message;
     }
@@ -27,7 +27,7 @@ public final class TicketConstructionEvent extends ThrowableEvent {
      * @return Players soul
      */
     public @NonNull PlayerSoul getSoul() {
-        return soul;
+        return this.soul;
     }
 
     /**
@@ -36,7 +36,7 @@ public final class TicketConstructionEvent extends ThrowableEvent {
      * @return Message object
      */
     public @NonNull Message getMessage() {
-        return message;
+        return this.message;
     }
 
 }

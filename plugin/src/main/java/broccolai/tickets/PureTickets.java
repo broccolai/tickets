@@ -2,6 +2,7 @@ package broccolai.tickets;
 
 import broccolai.tickets.commands.CommandManager;
 import broccolai.tickets.configuration.Config;
+import broccolai.tickets.events.EventManager;
 import broccolai.tickets.integrations.DiscordManager;
 import broccolai.tickets.interactions.NotificationManager;
 import broccolai.tickets.locale.LocaleManager;
@@ -26,16 +27,15 @@ public final class PureTickets extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        pluginManager = getServer().getPluginManager();
-
+        EventManager eventManager = new EventManager();
         Config config = new Config(this);
         Jdbi jdbi = SQLPlatforms.construct(this, config);
         LocaleManager localeManager = LocaleManager.create(this);
 
         taskManager = new TaskManager(this);
-        userManager = new UserManager(pluginManager, taskManager, localeManager, jdbi);
+        userManager = new UserManager(eventManager, taskManager, localeManager, jdbi);
         DiscordManager discordManager = new DiscordManager(this.getLogger(), config);
-        TicketManager ticketManager = new TicketManager(config, pluginManager, jdbi, taskManager);
+        TicketManager ticketManager = new TicketManager(eventManager, config, jdbi, taskManager);
 
         notificationManager = new NotificationManager(
                 jdbi,
@@ -48,12 +48,12 @@ public final class PureTickets extends JavaPlugin {
         );
 
         try {
-            new CommandManager(this, config, userManager, notificationManager, ticketManager, pluginManager);
+            new CommandManager(this, config, userManager, notificationManager, ticketManager, eventManager);
         } catch (Exception e) {
             return;
         }
 
-        registerEvents(userManager, notificationManager, ticketManager, ticketManager.getIdStorage());
+        eventManager.registerListeners(userManager, notificationManager, ticketManager, ticketManager.getIdStorage());
     }
 
     @Override

@@ -5,7 +5,7 @@ import broccolai.tickets.locale.Messages;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-public class PureException extends RuntimeException {
+public abstract class PureException extends RuntimeException {
 
     @Nullable
     private final LocaleKeys message;

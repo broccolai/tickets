@@ -15,6 +15,7 @@ repositories {
 
     maven("https://hub.spigotmc.org/nexus/content/repositories/snapshots/")
     maven("https://oss.sonatype.org/content/repositories/public/")
+    maven("https://oss.sonatype.org/content/repositories/snapshots/")
     maven("https://mvnrepository.com/artifact/org.jetbrains/annotations")
     maven("https://mvn.intellectualsites.com/content/repositories/snapshots")
     maven {
@@ -43,6 +44,8 @@ dependencies {
     api("com.intellectualsites.http:HTTP4J:1.3-SNAPSHOT")
     api("cloud.commandframework:cloud-paper:1.2.0-SNAPSHOT")
     api("io.papermc:paperlib:1.0.5")
+    api("net.kyori:event-api:4.0.0-SNAPSHOT")
+    api("net.kyori:event-method-asm:4.0.0-SNAPSHOT")
 
     compileOnly("org.spigotmc:spigot-api:1.16.1-R0.1-SNAPSHOT")
 }
@@ -55,6 +58,10 @@ configure<JavaPluginConvention> {
 tasks {
     shadowJar {
         val base = project.group.toString() + ".lib."
+
+        dependencies {
+            exclude(dependency("com.google.guava:guava:21.0"))
+        }
 
         relocate("cloud.commandframework", base + "cloud")
         relocate("com.intellectualsites.http", base + "http")

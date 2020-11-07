@@ -14,7 +14,6 @@ public enum MessageNames {
     NOTE_TICKET(TargetType.SENDER, TargetType.NOTIFICATION, TargetType.ANNOUNCEMENT, TargetType.DISCORD),
     TELEPORT_TICKET(TargetType.SENDER);
 
-    @NonNull
     private final TargetType[] targets;
 
     /**

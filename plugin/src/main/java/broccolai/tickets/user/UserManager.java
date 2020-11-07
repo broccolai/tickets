@@ -1,19 +1,19 @@
 package broccolai.tickets.user;
 
-import broccolai.tickets.events.AsyncSoulJoinEvent;
-import broccolai.tickets.events.TicketCreationEvent;
+import broccolai.tickets.events.EventListener;
+import broccolai.tickets.events.EventManager;
+import broccolai.tickets.events.api.SoulJoinEvent;
+import broccolai.tickets.events.api.TicketCreationEvent;
 import broccolai.tickets.locale.LocaleManager;
 import broccolai.tickets.storage.SQLQueries;
 import broccolai.tickets.tasks.TaskManager;
 import broccolai.tickets.utilities.UserUtilities;
+import net.kyori.event.method.annotation.Subscribe;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.plugin.PluginManager;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.jdbi.v3.core.Jdbi;
 
@@ -28,9 +28,9 @@ import java.util.stream.Collectors;
 /**
  * The manager for users
  */
-public final class UserManager implements Listener {
+public final class UserManager implements EventListener {
 
-    private final PluginManager pluginManager;
+    private final EventManager eventManager;
     private final TaskManager taskManager;
     private final LocaleManager localeManager;
     private final Jdbi jdbi;
@@ -41,23 +41,23 @@ public final class UserManager implements Listener {
     /**
      * Construct a user manager
      *
-     * @param pluginManager Plugin manager
+     * @param eventManager  Event manager
      * @param taskManager   Task manager
      * @param localeManager Locale manager
      * @param jdbi          Jdbi instance
      */
     public UserManager(
-            final @NonNull PluginManager pluginManager,
+            final @NonNull EventManager eventManager,
             final @NonNull TaskManager taskManager,
             final @NonNull LocaleManager localeManager,
             final @NonNull Jdbi jdbi
     ) {
-        this.pluginManager = pluginManager;
+        this.eventManager = eventManager;
         this.taskManager = taskManager;
         this.localeManager = localeManager;
         this.jdbi = jdbi;
 
-        this.names = jdbi.withHandle(handle -> {
+        this.names = this.jdbi.withHandle(handle -> {
             return handle.createQuery(SQLQueries.SELECT_UUIDS.get())
                     .mapTo(UUID.class)
                     .map(UserUtilities::nameFromUUID)
@@ -81,11 +81,11 @@ public final class UserManager implements Listener {
             uuid = player.getUniqueId();
         }
 
-        if (souls.containsKey(uuid)) {
-            return souls.get(uuid);
+        if (this.souls.containsKey(uuid)) {
+            return this.souls.get(uuid);
         }
 
-        return makeAndPut((Player) sender);
+        return this.makeAndPut((Player) sender);
     }
 
     /**
@@ -95,7 +95,7 @@ public final class UserManager implements Listener {
      * @return Player soul
      */
     public @NonNull PlayerSoul fromPlayer(final @NonNull Player player) {
-        return (PlayerSoul) fromSender(player);
+        return (PlayerSoul) this.fromSender(player);
     }
 
     /**
@@ -114,7 +114,7 @@ public final class UserManager implements Listener {
      * @return UserSettings object
      */
     public @NonNull UserSettings loadSettings(final @NonNull UUID uuid) {
-        return jdbi.withHandle(handle -> {
+        return this.jdbi.withHandle(handle -> {
             boolean exists = handle.createQuery(SQLQueries.EXISTS_SETTINGS.get())
                     .bind("uuid", uuid)
                     .mapTo(Boolean.class)
@@ -148,7 +148,7 @@ public final class UserManager implements Listener {
     private @NonNull PlayerSoul makeAndPut(final @NonNull Player player) {
         PlayerSoul soul = new PlayerSoul(this, localeManager, player);
 
-        souls.put(player.getUniqueId(), soul);
+        this.souls.put(player.getUniqueId(), soul);
         return soul;
     }
 
@@ -158,7 +158,7 @@ public final class UserManager implements Listener {
         }
 
         UserSettings settings = soul.preferences();
-        jdbi.useHandle(handle -> {
+        this.jdbi.useHandle(handle -> {
             handle.createUpdate(SQLQueries.UPDATE_SETTINGS.get())
                     .bind("uuid", soul.getUniqueId())
                     .bind("announcements", settings.getAnnouncements())
@@ -171,7 +171,7 @@ public final class UserManager implements Listener {
      *
      * @param e Event
      */
-    @EventHandler
+    @Subscribe
     public void onTicketCreation(final @NonNull TicketCreationEvent e) {
         this.names.add(e.getSoul().getName());
     }
@@ -181,12 +181,12 @@ public final class UserManager implements Listener {
      *
      * @param e Event
      */
-    @EventHandler
+    @Subscribe
     public void onJoin(final @NonNull PlayerJoinEvent e) {
         taskManager.async(() -> {
-            PlayerSoul soul = fromPlayer(e.getPlayer());
-            AsyncSoulJoinEvent event = new AsyncSoulJoinEvent(soul);
-            pluginManager.callEvent(event);
+            PlayerSoul soul = this.fromPlayer(e.getPlayer());
+            SoulJoinEvent event = new SoulJoinEvent(soul);
+            this.eventManager.call(event);
         });
     }
 
@@ -195,11 +195,11 @@ public final class UserManager implements Listener {
      *
      * @param e Event
      */
-    @EventHandler
+    @Subscribe
     public void onQuit(final @NonNull PlayerQuitEvent e) {
         taskManager.async(() -> {
             PlayerSoul soul = this.fromPlayer(e.getPlayer());
-            cleanup(soul);
+            this.cleanup(soul);
         });
     }
 

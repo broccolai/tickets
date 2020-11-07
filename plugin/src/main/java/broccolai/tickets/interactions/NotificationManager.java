@@ -1,8 +1,9 @@
 package broccolai.tickets.interactions;
 
 import broccolai.tickets.configuration.Config;
-import broccolai.tickets.events.AsyncSoulJoinEvent;
-import broccolai.tickets.events.TicketCreationEvent;
+import broccolai.tickets.events.EventListener;
+import broccolai.tickets.events.api.SoulJoinEvent;
+import broccolai.tickets.events.api.TicketCreationEvent;
 import broccolai.tickets.exceptions.PureException;
 import broccolai.tickets.integrations.DiscordManager;
 import broccolai.tickets.locale.LocaleManager;
@@ -24,11 +25,10 @@ import broccolai.tickets.utilities.UserUtilities;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.ObjectArrays;
+import net.kyori.event.method.annotation.Subscribe;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.jdbi.v3.core.Jdbi;
@@ -36,7 +36,7 @@ import org.jdbi.v3.core.statement.PreparedBatch;
 
 import java.util.UUID;
 
-public final class NotificationManager implements Listener {
+public final class NotificationManager implements EventListener {
 
     private final Jdbi jdbi;
     private final LocaleManager localeManager;
@@ -169,12 +169,11 @@ public final class NotificationManager implements Listener {
         this.jdbi.useHandle(handle -> {
             PreparedBatch batch = handle.prepareBatch(SQLQueries.INSERT_NOTIFICATION.get());
 
-            pendingNotifications.forEach((uuid, string) -> {
-                batch
-                        .bind("uuid", uuid)
-                        .bind("message", string)
-                        .add();
-            });
+            this.pendingNotifications.forEach((uuid, string) -> batch
+                    .bind("uuid", uuid)
+                    .bind("message", string)
+                    .add()
+            );
 
             batch.execute();
         });
@@ -185,7 +184,7 @@ public final class NotificationManager implements Listener {
      *
      * @param e Event
      */
-    @EventHandler
+    @Subscribe
     public void onTicketCreation(final @NonNull TicketCreationEvent e) {
         this.send(e.getSoul(), null, MessageNames.NEW_TICKET, e.getTicket());
     }
@@ -195,8 +194,8 @@ public final class NotificationManager implements Listener {
      *
      * @param e Event
      */
-    @EventHandler
-    public void onAsyncSoulJoin(final @NonNull AsyncSoulJoinEvent e) {
+    @Subscribe
+    public void onAsyncSoulJoin(final @NonNull SoulJoinEvent e) {
         final Soul soul = e.getSoul();
 
         this.jdbi.useHandle(handle -> {

@@ -1,8 +1,10 @@
 package broccolai.tickets.ticket;
 
 import broccolai.tickets.configuration.Config;
-import broccolai.tickets.events.TicketConstructionEvent;
-import broccolai.tickets.events.TicketCreationEvent;
+import broccolai.tickets.events.EventListener;
+import broccolai.tickets.events.EventManager;
+import broccolai.tickets.events.api.TicketConstructionEvent;
+import broccolai.tickets.events.api.TicketCreationEvent;
 import broccolai.tickets.exceptions.TooManyOpenTickets;
 import broccolai.tickets.message.Message;
 import broccolai.tickets.storage.SQLQueries;
@@ -12,12 +14,10 @@ import broccolai.tickets.tasks.TaskManager;
 import broccolai.tickets.user.PlayerSoul;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
+import net.kyori.event.method.annotation.PostOrder;
+import net.kyori.event.method.annotation.Subscribe;
 import org.bukkit.Location;
 import org.bukkit.World;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
-import org.bukkit.event.Listener;
-import org.bukkit.plugin.PluginManager;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.jdbi.v3.core.Jdbi;
 
@@ -36,10 +36,10 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 @SuppressWarnings("unused")
-public final class TicketManager implements Listener {
+public final class TicketManager implements EventListener {
 
+    private final EventManager eventManager;
     private final Config config;
-    private final PluginManager pluginManager;
     private final Jdbi jdbi;
     private final TicketIdStorage idStorage;
     private final Cache<Integer, Ticket> ticketCache;
@@ -47,19 +47,19 @@ public final class TicketManager implements Listener {
     /**
      * Initialise a new Ticket Manager
      *
-     * @param config        the config instance to use
-     * @param pluginManager the pluginManager to call events with
-     * @param jdbi          todo
-     * @param taskManager   todo
+     * @param eventManager Event Manager
+     * @param config       Config instance
+     * @param jdbi         Jdbi instance
+     * @param taskManager  Task manager
      */
     public TicketManager(
+            final @NonNull EventManager eventManager,
             final @NonNull Config config,
-            final @NonNull PluginManager pluginManager,
             final @NonNull Jdbi jdbi,
             final @NonNull TaskManager taskManager
     ) {
+        this.eventManager = eventManager;
         this.config = config;
-        this.pluginManager = pluginManager;
         this.jdbi = jdbi;
         this.idStorage = new TicketIdStorage(jdbi);
 
@@ -78,7 +78,7 @@ public final class TicketManager implements Listener {
      */
     public @NonNull Optional<Ticket> getTicket(final int id) {
         try {
-            Ticket ticket = ticketCache.get(id, () -> jdbi.withHandle(handle -> {
+            Ticket ticket = this.ticketCache.get(id, () -> this.jdbi.withHandle(handle -> {
                 return handle.createQuery(SQLQueries.SELECT_TICKET.get())
                         .bind("id", id)
                         .reduceRows(new TicketReducer())
@@ -101,7 +101,7 @@ public final class TicketManager implements Listener {
      */
     public @NonNull Optional<Ticket> getRecentTicket(final @NonNull UUID uuid, final @NonNull TicketStatus... statuses) {
         try {
-            int id = jdbi.withHandle(handle -> {
+            int id = this.jdbi.withHandle(handle -> {
                 return handle.createQuery(SQLQueries.SELECT_HIGHEST_ID_WHERE.get())
                         .bind("uuid", uuid)
                         .mapTo(Integer.class)
@@ -109,7 +109,7 @@ public final class TicketManager implements Listener {
                         .orElseThrow(Exception::new);
             });
 
-            return getTicket(id);
+            return this.getTicket(id);
         } catch (Exception e) {
             return Optional.empty();
         }
@@ -124,14 +124,14 @@ public final class TicketManager implements Listener {
     public @NonNull List<Ticket> getTickets(final TicketStatus... statuses) {
         TicketStatus[] toBind = statuses.length != 0 ? statuses : TicketStatus.values();
 
-        List<Integer> ids = jdbi.withHandle(handle -> {
+        List<Integer> ids = this.jdbi.withHandle(handle -> {
             return handle.createQuery(SQLQueries.SELECT_IDS_STATUS.get())
                     .bindList("statuses", Arrays.asList(toBind))
                     .mapTo(Integer.class)
                     .list();
         });
 
-        return getTickets(ids.toArray(new Integer[0]));
+        return this.getTickets(ids.toArray(new Integer[0]));
     }
 
     /**
@@ -144,7 +144,7 @@ public final class TicketManager implements Listener {
     public @NonNull List<Ticket> getTickets(final @NonNull UUID uuid, final @NonNull TicketStatus... statuses) {
         TicketStatus[] toBind = statuses.length != 0 ? statuses : TicketStatus.values();
 
-        List<Integer> ids = jdbi.withHandle(handle -> {
+        List<Integer> ids = this.jdbi.withHandle(handle -> {
             return handle.createQuery(SQLQueries.SELECT_IDS_UUID_STATUS.get())
                     .bind("uuid", uuid.toString())
                     .bindList("statuses", Arrays.asList(statuses))
@@ -152,7 +152,7 @@ public final class TicketManager implements Listener {
                     .list();
         });
 
-        return getTickets(ids.toArray(new Integer[0]));
+        return this.getTickets(ids.toArray(new Integer[0]));
     }
 
     /**
@@ -177,7 +177,7 @@ public final class TicketManager implements Listener {
         }
 
         if (!toQuery.isEmpty()) {
-            List<Ticket> queriedTickets = jdbi.withHandle(handle -> {
+            List<Ticket> queriedTickets = this.jdbi.withHandle(handle -> {
                 return handle.createQuery(SQLQueries.SELECT_TICKETS.get())
                         .bindList("ids", toQuery)
                         .reduceRows(new TicketReducer())
@@ -198,7 +198,7 @@ public final class TicketManager implements Listener {
      * @return Count of filtered tickets
      */
     public int countTickets(final @NonNull TicketStatus... statuses) {
-        return jdbi.withHandle(handle -> {
+        return this.jdbi.withHandle(handle -> {
             return handle.createQuery(SQLQueries.COUNT_TICKETS.get())
                     .bindList("statuses", Arrays.asList(statuses))
                     .mapTo(Integer.class)
@@ -214,7 +214,7 @@ public final class TicketManager implements Listener {
      * @return Count of filtered tickets
      */
     public int countTickets(final @NonNull UUID uuid, final @NonNull TicketStatus... statuses) {
-        return jdbi.withHandle(handle -> {
+        return this.jdbi.withHandle(handle -> {
             return handle.createQuery(SQLQueries.COUNT_TICKETS_UUID.get())
                     .bind("uuid", uuid)
                     .bindList("statuses", Arrays.asList(statuses))
@@ -229,7 +229,7 @@ public final class TicketManager implements Listener {
      * @return Ticket stats
      */
     public TicketStats getStats() {
-        return jdbi.withHandle(handle -> {
+        return this.jdbi.withHandle(handle -> {
             return handle.createQuery(SQLQueries.SELECT_TICKET_STATS.get())
                     .mapTo(TicketStats.class)
                     .first();
@@ -243,7 +243,7 @@ public final class TicketManager implements Listener {
      * @return Ticket sats
      */
     public TicketStats getStats(final @NonNull UUID uuid) {
-        return jdbi.withHandle(handle -> {
+        return this.jdbi.withHandle(handle -> {
             return handle.createQuery(SQLQueries.SELECT_TICKET_STATS_UUID.get())
                     .bind("uuid", uuid)
                     .mapTo(TicketStats.class)
@@ -262,7 +262,7 @@ public final class TicketManager implements Listener {
                 ? LocalDateTime.now().atZone(ZoneId.systemDefault()).toEpochSecond() - span.getLength()
                 : 0;
 
-        return jdbi.withHandle(handle -> {
+        return this.jdbi.withHandle(handle -> {
             return handle.createQuery(SQLQueries.SELECT_HIGHSCORES.get())
                     .bind("status", TicketStatus.CLOSED)
                     .bind("date", length)
@@ -285,7 +285,7 @@ public final class TicketManager implements Listener {
      * @return Tickets id
      */
     public int insertTicket(final @NonNull UUID uuid, final @NonNull Location location) {
-        return jdbi.withHandle(handle -> {
+        return this.jdbi.withHandle(handle -> {
             int id = handle.createQuery(SQLQueries.SELECT_HIGHEST_ID.get())
                     .mapTo(Integer.class)
                     .findFirst()
@@ -314,7 +314,7 @@ public final class TicketManager implements Listener {
      * @param ticket Ticket
      */
     public void updateTicket(final @NonNull Ticket ticket) {
-        jdbi.useHandle(handle -> {
+        this.jdbi.useHandle(handle -> {
             handle.createUpdate(SQLQueries.UPDATE_TICKET.get())
                     .bind("id", ticket.getId())
                     .bind("status", ticket.getStatus())
@@ -330,7 +330,7 @@ public final class TicketManager implements Listener {
      * @param message  Message
      */
     public void insertMessage(final int ticketId, final @NonNull Message message) {
-        jdbi.useHandle(handle -> {
+        this.jdbi.useHandle(handle -> {
             handle.createUpdate(SQLQueries.INSERT_MESSAGE.get())
                     .bind("ticket", ticketId)
                     .bind("reason", message.getReason())
@@ -366,11 +366,12 @@ public final class TicketManager implements Listener {
      *
      * @param e Event
      */
-    @EventHandler
+    @Subscribe
+    @PostOrder(1)
     public void onTicketConstructPredicates(final @NonNull TicketConstructionEvent e) {
         PlayerSoul soul = e.getSoul();
 
-        if (this.countTickets(soul.getUniqueId(), TicketStatus.OPEN) > config.getTicketLimitOpen() + 1) {
+        if (this.countTickets(soul.getUniqueId(), TicketStatus.OPEN) > this.config.getTicketLimitOpen() + 1) {
             e.cancel(new TooManyOpenTickets(config));
         }
     }
@@ -380,7 +381,8 @@ public final class TicketManager implements Listener {
      *
      * @param e Event
      */
-    @EventHandler(priority = EventPriority.HIGHEST)
+    @Subscribe
+    @PostOrder(5)
     public void onTicketConstruct(final @NonNull TicketConstructionEvent e) {
         PlayerSoul soul = e.getSoul();
         Message message = e.getMessage();
@@ -395,7 +397,7 @@ public final class TicketManager implements Listener {
         this.insertMessage(id, message);
 
         TicketCreationEvent creationEvent = new TicketCreationEvent(soul, ticket);
-        pluginManager.callEvent(creationEvent);
+        this.eventManager.call(creationEvent);
     }
 
 }

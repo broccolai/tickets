@@ -1,9 +1,9 @@
 package broccolai.tickets.ticket;
 
-import broccolai.tickets.events.TicketCreationEvent;
+import broccolai.tickets.events.EventListener;
+import broccolai.tickets.events.api.TicketCreationEvent;
 import broccolai.tickets.storage.SQLQueries;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
+import net.kyori.event.method.annotation.Subscribe;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.jdbi.v3.core.Jdbi;
 
@@ -15,7 +15,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-public final class TicketIdStorage implements Listener {
+public final class TicketIdStorage implements EventListener {
 
     private final Map<UUID, Set<Integer>> uniqueIdLinks = new HashMap<>();
     private final Map<TicketStatus, Set<Integer>> ticketStatusLinks = new HashMap<>();
@@ -57,7 +57,7 @@ public final class TicketIdStorage implements Listener {
      *
      * @param event Event
      */
-    @EventHandler
+    @Subscribe
     public void onCreate(final @NonNull TicketCreationEvent event) {
         Ticket ticket = event.getTicket();
         this.update(ticket.getId(), ticket.getPlayerUUID(), ticket.getStatus());

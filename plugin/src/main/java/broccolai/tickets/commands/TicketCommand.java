@@ -3,7 +3,8 @@ package broccolai.tickets.commands;
 import broccolai.tickets.commands.arguments.MessageArgument;
 import broccolai.tickets.commands.arguments.TicketArgument;
 import broccolai.tickets.configuration.Config;
-import broccolai.tickets.events.TicketConstructionEvent;
+import broccolai.tickets.events.EventManager;
+import broccolai.tickets.events.api.TicketConstructionEvent;
 import broccolai.tickets.exceptions.PureException;
 import broccolai.tickets.interactions.NotificationManager;
 import broccolai.tickets.locale.MessageNames;
@@ -19,14 +20,13 @@ import cloud.commandframework.Command;
 import cloud.commandframework.Description;
 import cloud.commandframework.arguments.standard.EnumArgument;
 import cloud.commandframework.context.CommandContext;
-import org.bukkit.plugin.PluginManager;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.util.List;
 
 public final class TicketCommand extends BaseCommand {
 
-    private final PluginManager pluginManager;
+    private final EventManager eventManager;
     private final NotificationManager notificationManager;
     private final TicketManager ticketManager;
 
@@ -34,16 +34,16 @@ public final class TicketCommand extends BaseCommand {
      * Create a new Ticket Command
      *
      * @param manager             Command Manager
-     * @param pluginManager       Plugin Manager
+     * @param eventManager        Event Manager
      * @param config              Config instance
      * @param notificationManager Notification Manager
      * @param ticketManager       Ticket Manager
      */
     public TicketCommand(
-            final @NonNull CommandManager manager, final @NonNull PluginManager pluginManager, final @NonNull Config config,
+            final @NonNull CommandManager manager, final @NonNull EventManager eventManager, final @NonNull Config config,
             final @NonNull NotificationManager notificationManager, final @NonNull TicketManager ticketManager
     ) {
-        this.pluginManager = pluginManager;
+        this.eventManager = eventManager;
         this.notificationManager = notificationManager;
         this.ticketManager = ticketManager;
 
@@ -110,11 +110,11 @@ public final class TicketCommand extends BaseCommand {
     private void processCreate(final @NonNull CommandContext<Soul> c) {
         PlayerSoul soul = (PlayerSoul) c.getSender();
         TicketConstructionEvent constructionEvent = new TicketConstructionEvent(soul, c.get("message"));
-        pluginManager.callEvent(constructionEvent);
+        this.eventManager.call(constructionEvent);
 
-        if (constructionEvent.hasException()) {
-            notificationManager.handleException(soul, constructionEvent.getException());
-        }
+        constructionEvent.getException().ifPresent(exception -> {
+            notificationManager.handleException(soul, exception);
+        });
     }
 
     private void processUpdate(final @NonNull CommandContext<Soul> c) {
