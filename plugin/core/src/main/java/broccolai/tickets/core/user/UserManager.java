@@ -227,12 +227,12 @@ public abstract class UserManager<C, P extends C, S extends PlayerSoul<C, P>> im
                 .stream()
                 .filter(soul -> soul instanceof PlayerSoul)
                 .map(soul -> (S) soul)
-                .forEach(this::cleanup);
+                .forEach(this::save);
+
+        this.souls.clear();
     }
 
-    protected final void cleanup(final @NonNull S soul) {
-        this.souls.remove(soul.getUniqueId());
-
+    protected final void save(final @NonNull S soul) {
         if (!soul.isDirty()) {
             return;
         }
@@ -295,7 +295,8 @@ public abstract class UserManager<C, P extends C, S extends PlayerSoul<C, P>> im
     protected void processQuit(final @NonNull P player) {
         this.taskManager.async(() -> {
             S soul = this.fromPlayer(player);
-            this.cleanup(soul);
+            this.save(soul);
+            this.souls.remove(soul.getUniqueId());
         });
     }
 
