@@ -1,6 +1,6 @@
 package broccolai.tickets.core.exceptions;
 
-import broccolai.tickets.core.locale.Messages;
+import broccolai.tickets.core.locale.NewMessages;
 
 public final class TicketClosed extends PureException {
 
@@ -10,7 +10,7 @@ public final class TicketClosed extends PureException {
      * Exception for when a ticket is already closed
      */
     public TicketClosed() {
-        super(Messages.EXCEPTIONS__TICKET_CLOSED);
+        super(NewMessages.EXCEPTION__TICKET_CLOSED.use());
     }
 
 }

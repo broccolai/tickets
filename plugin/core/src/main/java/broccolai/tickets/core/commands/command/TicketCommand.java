@@ -117,7 +117,9 @@ public final class TicketCommand<C> extends BaseCommand<C> {
         TicketConstructionEvent constructionEvent = new TicketConstructionEvent(soul, c.get("message"));
         this.eventManager.post(constructionEvent);
 
-        constructionEvent.getException().ifPresent(soul::handleException);
+        constructionEvent.getException()
+                .map(PureException::getComponent)
+                .ifPresent(soul::sendActionBar);
     }
 
     private void processUpdate(final @NonNull CommandContext<Soul<C>> c) {
@@ -128,7 +130,7 @@ public final class TicketCommand<C> extends BaseCommand<C> {
             ticket.update(c.get("message"));
             this.eventManager.post(new NotificationEvent(NotificationReason.UPDATE_TICKET, soul, null, ticket));
         } catch (PureException e) {
-            soul.handleException(e);
+            soul.sendMessage(e.getComponent());
         }
     }
 
@@ -140,7 +142,7 @@ public final class TicketCommand<C> extends BaseCommand<C> {
             ticket.close(soul.getUniqueId());
             this.eventManager.post(new NotificationEvent(NotificationReason.CLOSE_TICKET, soul, null, ticket));
         } catch (PureException e) {
-            soul.handleException(e);
+            soul.sendMessage(e.getComponent());
         }
     }
 

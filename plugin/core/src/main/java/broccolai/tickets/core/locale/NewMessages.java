@@ -56,7 +56,13 @@ public enum NewMessages {
     TITLE__TICKET_STATUS,
     TITLE__SHOW_TICKET,
     TITLE__TICKET_LOG,
-    TITLE__HIGHSCORES;
+    TITLE__HIGHSCORES,
+    // exceptions
+    EXCEPTION__TICKET_NOT_FOUND,
+    EXCEPTION__INVALID_SETTING_TYPE,
+    EXCEPTION__TOO_MANY_OPEN_TICKETS,
+    EXCEPTION__TICKET_CLOSED,
+    EXCEPTION__TICKET_OPEN;
 
     private static final MiniMessage MINI = MiniMessage.get();
 

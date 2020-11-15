@@ -5,7 +5,6 @@ import broccolai.tickets.core.events.TicketsEventBus;
 import broccolai.tickets.core.events.api.NotificationEvent;
 import broccolai.tickets.core.events.api.SoulJoinEvent;
 import broccolai.tickets.core.events.api.TicketCreationEvent;
-import broccolai.tickets.core.exceptions.PureException;
 import broccolai.tickets.core.storage.SQLQueries;
 import broccolai.tickets.core.user.PlayerSoul;
 import broccolai.tickets.core.user.Soul;
@@ -47,23 +46,6 @@ public final class NotificationManager<S extends PlayerSoul<?, ?>> implements Ev
         this.jdbi = jdbi;
         this.eventBus = eventBus;
         this.userManager = userManager;
-    }
-
-    /**
-     * Handle a PureException and send the result to a CommandSender
-     *
-     * @param soul      the command sender to message
-     * @param exception the PureException to handle
-     */
-    public void handleException(final @NonNull Soul<?> soul, final @NonNull PureException exception) {
-        // todo
-        if (exception.getValue() != null) {
-//            soul.message(exception.getValue());
-            return;
-        }
-
-        assert exception.getMessageKey() != null;
-//        soul.message(exception.getMessageKey(), exception.getReplacements());
     }
 
     /**

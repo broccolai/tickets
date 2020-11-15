@@ -1,6 +1,5 @@
 package broccolai.tickets.core.user;
 
-import broccolai.tickets.core.exceptions.PureException;
 import com.google.gson.JsonObject;
 import net.kyori.adventure.audience.ForwardingAudience;
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -23,15 +22,6 @@ public interface Soul<C> extends ForwardingAudience.Single {
      * @return Unique id
      */
     @NonNull UUID getUniqueId();
-
-    /**
-     * Handle a {@link PureException}
-     *
-     * @param exception Exception to handle
-     */
-    default void handleException(final @NonNull PureException exception) {
-        this.sendMessage(exception.get());
-    }
 
     /**
      * Check if the soul has a certain permission

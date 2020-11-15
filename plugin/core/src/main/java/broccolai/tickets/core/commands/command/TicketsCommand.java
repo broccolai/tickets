@@ -208,7 +208,7 @@ public final class TicketsCommand<C> extends BaseCommand<C> {
             ticket.pick(soul.getUniqueId());
             this.eventBus.post(new NotificationEvent(NotificationReason.PICK_TICKET, soul, ticket.getPlayerUUID(), ticket));
         } catch (PureException e) {
-            soul.handleException(e);
+            soul.sendMessage(e.getComponent());
         }
     }
 
@@ -221,7 +221,7 @@ public final class TicketsCommand<C> extends BaseCommand<C> {
             ticket.pick(staff);
             this.eventBus.post(new NotificationEvent(NotificationReason.ASSIGN_TICKET, soul, staff, ticket));
         } catch (PureException e) {
-            soul.handleException(e);
+            soul.sendMessage(e.getComponent());
         }
     }
 
@@ -233,7 +233,7 @@ public final class TicketsCommand<C> extends BaseCommand<C> {
             ticket.done(soul.getUniqueId());
             this.eventBus.post(new NotificationEvent(NotificationReason.DONE_TICKET, soul, ticket.getPlayerUUID(), ticket));
         } catch (PureException e) {
-            soul.handleException(e);
+            soul.sendMessage(e.getComponent());
         }
     }
 
@@ -245,7 +245,7 @@ public final class TicketsCommand<C> extends BaseCommand<C> {
             ticket.yield(soul.getUniqueId());
             this.eventBus.post(new NotificationEvent(NotificationReason.YIELD_TICKET, soul, ticket.getPlayerUUID(), ticket));
         } catch (PureException e) {
-            soul.handleException(e);
+            soul.sendMessage(e.getComponent());
         }
     }
 
@@ -265,7 +265,7 @@ public final class TicketsCommand<C> extends BaseCommand<C> {
             ticket.reopen(soul.getUniqueId());
             this.eventBus.post(new NotificationEvent(NotificationReason.REOPEN_TICKET, soul, ticket.getPlayerUUID(), ticket));
         } catch (PureException e) {
-            soul.handleException(e);
+            soul.sendMessage(e.getComponent());
         }
     }
 
