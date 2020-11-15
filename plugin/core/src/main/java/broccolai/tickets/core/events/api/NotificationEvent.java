@@ -40,7 +40,7 @@ public class NotificationEvent implements Event {
         Template[] extraTemplates = new Template[1];
         extraTemplates[0] = Template.of("user", sender.getName());
 
-        this.templates = concat(extraTemplates, involvedTicket.getTemplates());
+        this.templates = concat(extraTemplates, involvedTicket.templates());
     }
 
     /**

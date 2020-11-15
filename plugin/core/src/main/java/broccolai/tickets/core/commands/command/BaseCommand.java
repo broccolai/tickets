@@ -1,13 +1,12 @@
 package broccolai.tickets.core.commands.command;
 
-import broccolai.tickets.core.locale.Messages;
+import broccolai.tickets.core.locale.NewMessages;
 import broccolai.tickets.core.ticket.Ticket;
 import broccolai.tickets.core.ticket.TicketStatus;
 import broccolai.tickets.core.user.Soul;
 import broccolai.tickets.core.user.UserManager;
-import broccolai.tickets.core.utilities.ReplacementUtilities;
-import broccolai.tickets.core.utilities.TimeUtilities;
 import cloud.commandframework.arguments.flags.FlagContext;
+import net.kyori.adventure.text.Component;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 public abstract class BaseCommand<C> {
@@ -24,32 +23,19 @@ public abstract class BaseCommand<C> {
     }
 
     protected final void processShow(final @NonNull Soul<C> soul, final @NonNull Ticket ticket) {
-        String[] replacements = ReplacementUtilities.ticketReplacements(ticket);
+        Component show = NewMessages.FORMAT__SHOW.use(ticket.templates());
 
-        soul.message(Messages.TITLES__SHOW_TICKET, replacements);
-        soul.message(Messages.SHOW__SENDER, replacements);
-        soul.message(Messages.SHOW__MESSAGE, replacements);
-        soul.message(Messages.SHOW__LOCATION, replacements);
-
-        if (ticket.getStatus() != TicketStatus.PICKED) {
-            soul.message(Messages.SHOW__UNPICKED);
-        } else {
-            soul.message(Messages.SHOW__PICKER, replacements);
-        }
+        soul.sendMessage(show);
     }
 
     protected final void processLog(final @NonNull Soul<C> soul, final @NonNull Ticket ticket) {
-        String[] replacements = ReplacementUtilities.ticketReplacements(ticket);
-
-        soul.message(Messages.TITLES__TICKET_LOG, replacements);
+        Component title = NewMessages.TITLE__TICKET_LOG.use(ticket.templates());
+        soul.sendMessage(title);
 
         ticket.getMessages().forEach(message -> {
-            String suffix = message.getData() != null ? message.getData()
-                    : message.getSender() != null ? this.userManager.getName(message.getSender()) : "";
+            Component log = NewMessages.FORMAT__LOG.use(message.templates());
 
-            soul.message(Messages.GENERAL__LOG_FORMAT, "reason", message.getReason().name(),
-                    "date", TimeUtilities.formatted(message.getDate()), "suffix", suffix
-            );
+            soul.sendMessage(log);
         });
     }
 

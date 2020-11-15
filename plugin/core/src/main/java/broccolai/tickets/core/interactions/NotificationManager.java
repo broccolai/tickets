@@ -30,7 +30,7 @@ public final class NotificationManager<S extends PlayerSoul<?, ?>> implements Ev
     private final TicketsEventBus eventBus;
     private final UserManager<?, ?, S> userManager;
 
-    private final Multimap<UUID, String> pendingNotifications = ArrayListMultimap.create();
+    private final Multimap<UUID, Component> pendingNotifications = ArrayListMultimap.create();
 
     /**
      * Initialise a Notification Manager
@@ -56,13 +56,14 @@ public final class NotificationManager<S extends PlayerSoul<?, ?>> implements Ev
      * @param exception the PureException to handle
      */
     public void handleException(final @NonNull Soul<?> soul, final @NonNull PureException exception) {
+        // todo
         if (exception.getValue() != null) {
-            soul.message(exception.getValue());
+//            soul.message(exception.getValue());
             return;
         }
 
         assert exception.getMessageKey() != null;
-        soul.message(exception.getMessageKey(), exception.getReplacements());
+//        soul.message(exception.getMessageKey(), exception.getReplacements());
     }
 
     /**
@@ -74,7 +75,7 @@ public final class NotificationManager<S extends PlayerSoul<?, ?>> implements Ev
 
             this.pendingNotifications.forEach((uuid, string) -> batch
                     .bind("uuid", uuid)
-                    .bind("message", string)
+                    .bind("message", MINI.serialize(string))
                     .add()
             );
 
@@ -120,11 +121,11 @@ public final class NotificationManager<S extends PlayerSoul<?, ?>> implements Ev
         Component component = e.getReason().notifies().get().use(e.getTemplates());
 
         if (optionalSoul.isPresent()) {
-            optionalSoul.get().message(component);
+            optionalSoul.get().sendMessage(component);
             return;
         }
 
-        this.pendingNotifications.put(target, MINI.serialize(component));
+        this.pendingNotifications.put(target, component);
     }
 
     /**
@@ -139,12 +140,12 @@ public final class NotificationManager<S extends PlayerSoul<?, ?>> implements Ev
         this.jdbi.useHandle(handle -> {
             handle.createQuery(SQLQueries.SELECT_NOTIFICATIONS.get())
                     .bind("uuid", soul.getUniqueId())
-                    .mapTo(String.class)
-                    .forEach(soul::message);
+                    .mapTo(Component.class)
+                    .forEach(soul::sendMessage);
 
             this.pendingNotifications
                     .removeAll(soul.getUniqueId())
-                    .forEach(soul::message);
+                    .forEach(soul::sendMessage);
 
             handle.createUpdate(SQLQueries.DELETE_NOTIFICATIONS.get())
                     .bind("uuid", soul.getUniqueId())

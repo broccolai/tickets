@@ -271,7 +271,7 @@ public final class Ticket implements Dirtyable {
     /**
      * @return Get templates
      */
-    public @NonNull Template[] getTemplates() {
+    public @NonNull Template[] templates() {
         Template[] results = new Template[11];
 
         results[0] = Template.of("id", String.valueOf(this.id));

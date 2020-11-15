@@ -25,13 +25,6 @@ public interface Soul<C> extends ForwardingAudience.Single {
     @NonNull UUID getUniqueId();
 
     /**
-     * @param object todo
-     */
-    default void message(Object... object) {
-        // todo: remove
-    }
-
-    /**
      * Handle a {@link PureException}
      *
      * @param exception Exception to handle

@@ -1,6 +1,8 @@
 package broccolai.tickets.core.message;
 
 import broccolai.tickets.core.utilities.Dirtyable;
+import broccolai.tickets.core.utilities.TimeUtilities;
+import net.kyori.adventure.text.minimessage.Template;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
@@ -148,6 +150,18 @@ public final class Message implements Dirtyable {
     @Override
     public boolean isDirty() {
         return dirty;
+    }
+
+    /**
+     * @return Get templates
+     */
+    public @NonNull Template[] templates() {
+        Template[] templates = new Template[2];
+
+        templates[0] = Template.of("reason", this.reason.name());
+        templates[1] = Template.of("date", TimeUtilities.formatted(this.date));
+
+        return templates;
     }
 
 }

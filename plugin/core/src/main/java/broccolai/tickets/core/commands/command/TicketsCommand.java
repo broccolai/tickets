@@ -8,7 +8,7 @@ import broccolai.tickets.core.events.TicketsEventBus;
 import broccolai.tickets.core.events.api.NotificationEvent;
 import broccolai.tickets.core.exceptions.PureException;
 import broccolai.tickets.core.interactions.NotificationReason;
-import broccolai.tickets.core.locale.Messages;
+import broccolai.tickets.core.locale.NewMessages;
 import broccolai.tickets.core.storage.TimeAmount;
 import broccolai.tickets.core.ticket.Ticket;
 import broccolai.tickets.core.ticket.TicketManager;
@@ -18,7 +18,6 @@ import broccolai.tickets.core.user.PlayerSoul;
 import broccolai.tickets.core.user.Soul;
 import broccolai.tickets.core.user.UserManager;
 import broccolai.tickets.core.utilities.Constants;
-import broccolai.tickets.core.utilities.ReplacementUtilities;
 import cloud.commandframework.Command;
 import cloud.commandframework.CommandManager;
 import cloud.commandframework.Description;
@@ -27,6 +26,9 @@ import cloud.commandframework.arguments.standard.EnumArgument;
 import cloud.commandframework.arguments.standard.StringArgument;
 import cloud.commandframework.context.CommandContext;
 import com.google.common.collect.ImmutableMap;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.minimessage.Template;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.util.ArrayList;
@@ -282,16 +284,24 @@ public final class TicketsCommand<C> extends BaseCommand<C> {
         final TicketStatus[] statuses = statusesFromFlags(c.flags());
 
         if (player != null) {
-            soul.message(Messages.TITLES__SPECIFIC_TICKETS, "player", this.userManager.getName(player));
+            // todo
+            Template template = Template.of("player", this.userManager.getName(player));
+            Component title = NewMessages.TITLE__SPECIFIC_TICKETS.use(template);
+            TextComponent.Builder builder = Component.text()
+                    .append(title);
 
             this.ticketManager.getTickets(player, statuses).forEach(ticket -> {
-                String[] replacements = ReplacementUtilities.ticketReplacements(ticket);
-                soul.message(Messages.GENERAL__LIST_FORMAT, replacements);
+                Component list = NewMessages.FORMAT__LIST.use(ticket.templates());
+                builder.append(Component.newline(), list);
             });
+
+            soul.sendMessage(builder);
             return;
         }
 
-        soul.message(Messages.TITLES__ALL_TICKETS);
+        Component title = NewMessages.TITLE__ALL_TICKETS.use();
+        TextComponent.Builder builder = Component.text()
+                .append(title);
 
         // todo: ugly
         Set<Map.Entry<UUID, List<Ticket>>> unsortedTickets = Lists
@@ -309,38 +319,53 @@ public final class TicketsCommand<C> extends BaseCommand<C> {
                 return;
             }
 
-            soul.message(Messages.GENERAL__LIST_HEADER_FORMAT, "name", this.userManager.getName(uuid));
+            // todo
+            Template template = Template.of("player", this.userManager.getName(uuid));
+            Component listHeader = NewMessages.FORMAT__LIST_HEADER.use(template);
+            builder.append(Component.newline(), listHeader);
 
             tickets.forEach(ticket -> {
-                String[] replacements = ReplacementUtilities.ticketReplacements(ticket);
-                soul.message(Messages.GENERAL__LIST_FORMAT, replacements);
+                Component list = NewMessages.FORMAT__LIST.use(ticket.templates());
+                builder.append(Component.newline(), list);
             });
         });
+
+        soul.sendMessage(builder);
     }
 
     private void processStatus(final @NonNull CommandContext<Soul<C>> c) {
         Soul<C> soul = c.getSender();
         UUID target = c.getOrDefault("target", null);
 
-        if (target != null) {
-            soul.message(Messages.TITLES__SPECIFIC_TICKETS, "player", this.userManager.getName(target));
-        } else {
-            soul.message(Messages.TITLES__TICKET_STATUS);
-        }
-
+        TextComponent.Builder builder = Component.text();
         TicketStats data;
-
         if (target != null) {
+            // todo
+            Template playerTemplate = Template.of("player", this.userManager.getName(target));
+            Component title = NewMessages.TITLE__SPECIFIC_TICKETS.use(playerTemplate);
+
             data = this.ticketManager.getStats(target);
+            builder.append(title);
         } else {
+            Component title = NewMessages.TITLE__TICKET_STATUS.use();
+
             data = this.ticketManager.getStats();
+            builder.append(title);
         }
 
+        NewMessages key = NewMessages.FORMAT__SHOW;
         data.forEach((status, amount) -> {
             if (amount != 0) {
-                soul.message(amount.toString() + " " + status.name().toLowerCase());
+                Component component = key.use(
+                        Template.of("amount", String.valueOf(amount)),
+                        Template.of("status", status.name().toLowerCase())
+                );
+
+                builder.append(Component.empty(), component);
             }
         });
+
+        soul.sendMessage(builder);
     }
 
     private void processHighscore(final @NonNull CommandContext<Soul<C>> c) {
@@ -348,15 +373,20 @@ public final class TicketsCommand<C> extends BaseCommand<C> {
         TimeAmount amount = c.get("amount");
 
         Map<UUID, Integer> highscores = this.ticketManager.getHighscores(amount);
-        soul.message(Messages.TITLES__HIGHSCORES);
 
-        highscores.forEach((uuid, number) ->
-                soul.message(
-                        Messages.GENERAL__HS_FORMAT,
-                        "target", this.userManager.getName(uuid),
-                        "amount", number.toString()
-                )
-        );
+        Component title = NewMessages.TITLE__HIGHSCORES.use();
+        TextComponent.Builder builder = Component.text()
+                .append(title);
+
+        highscores.forEach((uuid, number) -> {
+            Component component = NewMessages.FORMAT__HS.use(
+                    Template.of("target", this.userManager.getName(uuid)),
+                    Template.of("amount", number.toString())
+            );
+            builder.append(component);
+        });
+
+        soul.sendMessage(builder);
     }
 
 }

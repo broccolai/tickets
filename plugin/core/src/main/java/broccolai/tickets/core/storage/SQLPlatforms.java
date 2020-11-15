@@ -2,6 +2,7 @@ package broccolai.tickets.core.storage;
 
 import broccolai.tickets.core.configuration.Config;
 import broccolai.tickets.core.message.Message;
+import broccolai.tickets.core.storage.mapper.ComponentMapper;
 import broccolai.tickets.core.storage.mapper.DateMapper;
 import broccolai.tickets.core.storage.mapper.LocationMapper;
 import broccolai.tickets.core.storage.mapper.MessageMapper;
@@ -17,6 +18,7 @@ import broccolai.tickets.core.utilities.FileReader;
 import broccolai.tickets.core.utilities.TicketLocation;
 import com.google.gson.Gson;
 import io.leangen.geantyref.TypeToken;
+import net.kyori.adventure.text.Component;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.jdbi.v3.core.Jdbi;
 
@@ -57,6 +59,7 @@ public final class SQLPlatforms {
                 .registerRowMapper(TicketStats.class, new StatsMapper())
                 .registerRowMapper(TicketIdStorage.ValueData.class, new ValueDataMapper())
                 .registerColumnMapper(LocalDateTime.class, new DateMapper())
+                .registerColumnMapper(Component.class, new ComponentMapper())
                 .registerColumnMapper(TicketLocation.class, new LocationMapper());
 
         String jsonData = FileReader.fromPath(MIGRATION_PATH + "migrations-index.json");

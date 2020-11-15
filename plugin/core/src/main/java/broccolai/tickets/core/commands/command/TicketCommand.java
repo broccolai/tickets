@@ -8,7 +8,7 @@ import broccolai.tickets.core.events.api.NotificationEvent;
 import broccolai.tickets.core.events.api.TicketConstructionEvent;
 import broccolai.tickets.core.exceptions.PureException;
 import broccolai.tickets.core.interactions.NotificationReason;
-import broccolai.tickets.core.locale.Messages;
+import broccolai.tickets.core.locale.NewMessages;
 import broccolai.tickets.core.ticket.Ticket;
 import broccolai.tickets.core.ticket.TicketManager;
 import broccolai.tickets.core.ticket.TicketStatus;
@@ -16,12 +16,13 @@ import broccolai.tickets.core.user.PlayerSoul;
 import broccolai.tickets.core.user.Soul;
 import broccolai.tickets.core.user.UserManager;
 import broccolai.tickets.core.utilities.Constants;
-import broccolai.tickets.core.utilities.ReplacementUtilities;
 import cloud.commandframework.Command;
 import cloud.commandframework.CommandManager;
 import cloud.commandframework.Description;
 import cloud.commandframework.arguments.standard.EnumArgument;
 import cloud.commandframework.context.CommandContext;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.util.List;
@@ -152,12 +153,15 @@ public final class TicketCommand<C> extends BaseCommand<C> {
                 TicketStatus.PICKED
         );
 
-        soul.message(Messages.TITLES__YOUR_TICKETS);
+        TextComponent.Builder builder = Component.text()
+                .append(NewMessages.TITLE__YOUR_TICKETS.use());
 
         tickets.forEach(ticket -> {
-            String[] replacements = ReplacementUtilities.ticketReplacements(ticket);
-            soul.message(Messages.GENERAL__LIST_FORMAT, replacements);
+            Component list = NewMessages.FORMAT__LIST.use(ticket.templates());
+            builder.append(Component.newline(), list);
         });
+
+        soul.sendMessage(builder);
     }
 
 }

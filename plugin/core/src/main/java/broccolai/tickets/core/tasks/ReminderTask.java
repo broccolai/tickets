@@ -1,11 +1,13 @@
 package broccolai.tickets.core.tasks;
 
-import broccolai.tickets.core.locale.Messages;
+import broccolai.tickets.core.locale.NewMessages;
 import broccolai.tickets.core.ticket.TicketManager;
 import broccolai.tickets.core.ticket.TicketStatus;
 import broccolai.tickets.core.user.PlayerSoul;
 import broccolai.tickets.core.user.UserManager;
 import broccolai.tickets.core.utilities.Constants;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.Template;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 public final class ReminderTask implements Runnable {
@@ -33,9 +35,12 @@ public final class ReminderTask implements Runnable {
         }
 
         for (PlayerSoul<?, ?> soul : userManager.getAllOnlinePlayer()) {
-            if (soul.hasPermission(Constants.STAFF_PERMISSION + ".remind")) {
-                soul.message(Messages.OTHER__REMINDER, "amount", String.valueOf(amount));
+            if (!soul.hasPermission(Constants.STAFF_PERMISSION + ".remind")) {
+                continue;
             }
+
+            Component component = NewMessages.FORMAT__REMINDER.use(Template.of("amount", String.valueOf(amount)));
+            soul.sendMessage(component);
         }
     }
 

@@ -1,7 +1,7 @@
 package broccolai.tickets.core.commands.command;
 
 import broccolai.tickets.core.PureTickets;
-import broccolai.tickets.core.locale.Messages;
+import broccolai.tickets.core.locale.NewMessages;
 import broccolai.tickets.core.user.PlayerSoul;
 import broccolai.tickets.core.user.Soul;
 import broccolai.tickets.core.user.UserSettings;
@@ -11,6 +11,8 @@ import cloud.commandframework.CommandManager;
 import cloud.commandframework.arguments.standard.BooleanArgument;
 import cloud.commandframework.arguments.standard.EnumArgument;
 import cloud.commandframework.context.CommandContext;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.Template;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 public final class PureTicketsCommand<C> {
@@ -43,7 +45,9 @@ public final class PureTicketsCommand<C> {
     }
 
     private void processInfo(final @NonNull CommandContext<Soul<C>> c) {
-        c.getSender().message("PureTickets: " + this.pureTickets.version());
+        Component component = Component.text("PureTickets: ")
+                .append(Component.text(this.pureTickets.version()));
+        c.getSender().sendMessage(component);
     }
 
     private void processSettings(final @NonNull CommandContext<Soul<C>> c) {
@@ -53,13 +57,21 @@ public final class PureTicketsCommand<C> {
         String status = value ? "enabled" : "disabled";
 
         soul.modifyPreferences(settings -> settings.set(c.get("setting"), c.get("value")));
-        soul.message(Messages.OTHER__SETTING_UPDATE, "setting", setting.name().toLowerCase(), "status", status);
+
+        // todo
+        Component component = NewMessages.FORMAT__SETTING_UPDATE.use(
+          Template.of("setting", setting.name().toLowerCase()),
+          Template.of("status", status)
+        );
+        soul.sendMessage(component);
     }
 
     private void processReload(final @NonNull CommandContext<Soul<C>> c) {
         this.pureTickets.stop();
         this.pureTickets.start();
-        c.getSender().message("PureTickets reloaded");
+
+        Component component = Component.text("PureTickets reloaded");
+        c.getSender().sendMessage(component);
     }
 
 }
