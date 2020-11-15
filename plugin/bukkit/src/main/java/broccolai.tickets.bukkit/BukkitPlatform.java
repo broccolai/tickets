@@ -10,8 +10,7 @@ import broccolai.tickets.core.TicketsPlatform;
 import broccolai.tickets.core.commands.TicketsCommandManager;
 import broccolai.tickets.core.configuration.Config;
 import broccolai.tickets.core.events.TicketsEventBus;
-import broccolai.tickets.core.locale.LocaleManager;
-import broccolai.tickets.core.locale.NewMessages;
+import broccolai.tickets.core.locale.Message;
 import broccolai.tickets.core.tasks.TaskManager;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.Configuration;
@@ -60,17 +59,16 @@ public final class BukkitPlatform extends JavaPlugin implements TicketsPlatform<
         localeFolder.mkdirs();
         Configuration configuration = YamlConfiguration.loadConfiguration(new File(localeFolder, "locale_" + locale + ".yml"));
 
-        NewMessages.setup(configuration::getString);
+        Message.setup(configuration::getString);
     }
 
     @Override
     public BukkitUserManager getUserManager(
             @NonNull final TicketsEventBus eventManager,
             @NonNull final TaskManager taskManager,
-            @NonNull final LocaleManager localeManager,
             @NonNull final Jdbi jdbi
     ) {
-        BukkitUserManager bukkitUserManager = new BukkitUserManager(this, eventManager, taskManager, localeManager, jdbi);
+        BukkitUserManager bukkitUserManager = new BukkitUserManager(this, eventManager, taskManager, jdbi);
         this.getServer().getPluginManager().registerEvents(bukkitUserManager, this);
 
         return bukkitUserManager;

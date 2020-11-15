@@ -3,7 +3,6 @@ package broccolai.tickets.core;
 import broccolai.tickets.core.commands.TicketsCommandManager;
 import broccolai.tickets.core.configuration.Config;
 import broccolai.tickets.core.events.TicketsEventBus;
-import broccolai.tickets.core.locale.LocaleManager;
 import broccolai.tickets.core.tasks.TaskManager;
 import broccolai.tickets.core.user.PlayerSoul;
 import broccolai.tickets.core.user.UserManager;
@@ -43,14 +42,12 @@ public interface TicketsPlatform<C, P extends C, S extends PlayerSoul<C, P>> {
      *
      * @param eventManager  Event manager
      * @param taskManager   Task manager
-     * @param localeManager Locale manager
      * @param jdbi          Jdbi instance
      * @return User manager
      */
     UserManager<C, P, S> getUserManager(
             @NonNull TicketsEventBus eventManager,
             @NonNull TaskManager taskManager,
-            @NonNull LocaleManager localeManager,
             @NonNull Jdbi jdbi
     );
 

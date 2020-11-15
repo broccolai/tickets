@@ -8,7 +8,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import java.util.Arrays;
 import java.util.function.Function;
 
-public enum NewMessages {
+public enum Message {
 
     PREFIX,
     // sender
@@ -73,7 +73,7 @@ public enum NewMessages {
      * @return a
      */
     public @NonNull Component use(final @NonNull Template... templates) {
-        Template[] allTemplates = NewMessages.withPrefix(templates);
+        Template[] allTemplates = Message.withPrefix(templates);
 
         return MINI.parse(component, allTemplates);
     }
@@ -95,7 +95,7 @@ public enum NewMessages {
      * @param nodeToRaw a
      */
     public static void setup(final @NonNull Function<String, String> nodeToRaw) {
-        for (NewMessages value : NewMessages.values()) {
+        for (Message value : Message.values()) {
             value.component = nodeToRaw.apply(value.name().toLowerCase());
         }
     }

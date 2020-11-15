@@ -1,7 +1,7 @@
 package broccolai.tickets.core.commands.command;
 
 import broccolai.tickets.core.PureTickets;
-import broccolai.tickets.core.locale.NewMessages;
+import broccolai.tickets.core.locale.Message;
 import broccolai.tickets.core.user.PlayerSoul;
 import broccolai.tickets.core.user.Soul;
 import broccolai.tickets.core.user.UserSettings;
@@ -59,7 +59,7 @@ public final class PureTicketsCommand<C> {
         soul.modifyPreferences(settings -> settings.set(c.get("setting"), c.get("value")));
 
         // todo
-        Component component = NewMessages.FORMAT__SETTING_UPDATE.use(
+        Component component = Message.FORMAT__SETTING_UPDATE.use(
           Template.of("setting", setting.name().toLowerCase()),
           Template.of("status", status)
         );

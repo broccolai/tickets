@@ -1,6 +1,6 @@
 package broccolai.tickets.core.exceptions;
 
-import broccolai.tickets.core.locale.NewMessages;
+import broccolai.tickets.core.locale.Message;
 
 public final class TicketNotFound extends PureException {
 
@@ -10,7 +10,7 @@ public final class TicketNotFound extends PureException {
      * Initialise a localised PureException
      */
     public TicketNotFound() {
-        super(NewMessages.EXCEPTION__TICKET_NOT_FOUND.use());
+        super(Message.EXCEPTION__TICKET_NOT_FOUND.use());
     }
 
 }

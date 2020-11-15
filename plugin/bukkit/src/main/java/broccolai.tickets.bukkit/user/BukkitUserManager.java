@@ -1,7 +1,6 @@
 package broccolai.tickets.bukkit.user;
 
 import broccolai.tickets.core.events.TicketsEventBus;
-import broccolai.tickets.core.locale.LocaleManager;
 import broccolai.tickets.core.tasks.TaskManager;
 import broccolai.tickets.core.user.ConsoleSoul;
 import broccolai.tickets.core.user.PlayerSoul;
@@ -36,17 +35,15 @@ public final class BukkitUserManager extends UserManager<CommandSender, Player, 
      * @param plugin        Plugin instance
      * @param eventManager  Event manager
      * @param taskManager   Task manager
-     * @param localeManager Locale manager
      * @param jdbi          Jdbi instance
      */
     public BukkitUserManager(
             final @NonNull Plugin plugin,
             final @NonNull TicketsEventBus eventManager,
             final @NonNull TaskManager taskManager,
-            final @NonNull LocaleManager localeManager,
             final @NonNull Jdbi jdbi
     ) {
-        super(eventManager, taskManager, localeManager, jdbi);
+        super(eventManager, taskManager, jdbi);
         this.audiences = BukkitAudiences.create(plugin);
 
         this.initialise();

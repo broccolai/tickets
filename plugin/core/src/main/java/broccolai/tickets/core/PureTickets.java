@@ -5,7 +5,6 @@ import broccolai.tickets.core.configuration.Config;
 import broccolai.tickets.core.events.TicketsEventBus;
 import broccolai.tickets.core.integrations.DiscordManager;
 import broccolai.tickets.core.interactions.NotificationManager;
-import broccolai.tickets.core.locale.LocaleManager;
 import broccolai.tickets.core.storage.SQLPlatforms;
 import broccolai.tickets.core.tasks.ReminderTask;
 import broccolai.tickets.core.tasks.TaskManager;
@@ -45,10 +44,9 @@ public final class PureTickets<C, P extends C, S extends PlayerSoul<C, P>> {
         this.platform.setupMessages(config);
 
         Jdbi jdbi = SQLPlatforms.construct(this.platform.getRootFolder(), config);
-        LocaleManager localeManager = LocaleManager.create();
 
         taskManager = this.platform.getTaskManager();
-        userManager = this.platform.getUserManager(eventBus, taskManager, localeManager, jdbi);
+        userManager = this.platform.getUserManager(eventBus, taskManager, jdbi);
         notificationManager = new NotificationManager<>(jdbi, eventBus, userManager);
 
         DiscordManager discordManager = new DiscordManager(this.platform.getLogger(), config);

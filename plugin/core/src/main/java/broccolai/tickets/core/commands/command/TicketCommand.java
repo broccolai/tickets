@@ -8,7 +8,7 @@ import broccolai.tickets.core.events.api.NotificationEvent;
 import broccolai.tickets.core.events.api.TicketConstructionEvent;
 import broccolai.tickets.core.exceptions.PureException;
 import broccolai.tickets.core.interactions.NotificationReason;
-import broccolai.tickets.core.locale.NewMessages;
+import broccolai.tickets.core.locale.Message;
 import broccolai.tickets.core.ticket.Ticket;
 import broccolai.tickets.core.ticket.TicketManager;
 import broccolai.tickets.core.ticket.TicketStatus;
@@ -156,10 +156,10 @@ public final class TicketCommand<C> extends BaseCommand<C> {
         );
 
         TextComponent.Builder builder = Component.text()
-                .append(NewMessages.TITLE__YOUR_TICKETS.use());
+                .append(Message.TITLE__YOUR_TICKETS.use());
 
         tickets.forEach(ticket -> {
-            Component list = NewMessages.FORMAT__LIST.use(ticket.templates());
+            Component list = Message.FORMAT__LIST.use(ticket.templates());
             builder.append(Component.newline(), list);
         });
 

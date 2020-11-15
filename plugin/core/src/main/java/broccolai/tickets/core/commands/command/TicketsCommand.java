@@ -8,7 +8,7 @@ import broccolai.tickets.core.events.TicketsEventBus;
 import broccolai.tickets.core.events.api.NotificationEvent;
 import broccolai.tickets.core.exceptions.PureException;
 import broccolai.tickets.core.interactions.NotificationReason;
-import broccolai.tickets.core.locale.NewMessages;
+import broccolai.tickets.core.locale.Message;
 import broccolai.tickets.core.storage.TimeAmount;
 import broccolai.tickets.core.ticket.Ticket;
 import broccolai.tickets.core.ticket.TicketManager;
@@ -286,12 +286,12 @@ public final class TicketsCommand<C> extends BaseCommand<C> {
         if (player != null) {
             // todo
             Template template = Template.of("player", this.userManager.getName(player));
-            Component title = NewMessages.TITLE__SPECIFIC_TICKETS.use(template);
+            Component title = Message.TITLE__SPECIFIC_TICKETS.use(template);
             TextComponent.Builder builder = Component.text()
                     .append(title);
 
             this.ticketManager.getTickets(player, statuses).forEach(ticket -> {
-                Component list = NewMessages.FORMAT__LIST.use(ticket.templates());
+                Component list = Message.FORMAT__LIST.use(ticket.templates());
                 builder.append(Component.newline(), list);
             });
 
@@ -299,7 +299,7 @@ public final class TicketsCommand<C> extends BaseCommand<C> {
             return;
         }
 
-        Component title = NewMessages.TITLE__ALL_TICKETS.use();
+        Component title = Message.TITLE__ALL_TICKETS.use();
         TextComponent.Builder builder = Component.text()
                 .append(title);
 
@@ -321,11 +321,11 @@ public final class TicketsCommand<C> extends BaseCommand<C> {
 
             // todo
             Template template = Template.of("player", this.userManager.getName(uuid));
-            Component listHeader = NewMessages.FORMAT__LIST_HEADER.use(template);
+            Component listHeader = Message.FORMAT__LIST_HEADER.use(template);
             builder.append(Component.newline(), listHeader);
 
             tickets.forEach(ticket -> {
-                Component list = NewMessages.FORMAT__LIST.use(ticket.templates());
+                Component list = Message.FORMAT__LIST.use(ticket.templates());
                 builder.append(Component.newline(), list);
             });
         });
@@ -342,18 +342,18 @@ public final class TicketsCommand<C> extends BaseCommand<C> {
         if (target != null) {
             // todo
             Template playerTemplate = Template.of("player", this.userManager.getName(target));
-            Component title = NewMessages.TITLE__SPECIFIC_TICKETS.use(playerTemplate);
+            Component title = Message.TITLE__SPECIFIC_TICKETS.use(playerTemplate);
 
             data = this.ticketManager.getStats(target);
             builder.append(title);
         } else {
-            Component title = NewMessages.TITLE__TICKET_STATUS.use();
+            Component title = Message.TITLE__TICKET_STATUS.use();
 
             data = this.ticketManager.getStats();
             builder.append(title);
         }
 
-        NewMessages key = NewMessages.FORMAT__SHOW;
+        Message key = Message.FORMAT__SHOW;
         data.forEach((status, amount) -> {
             if (amount != 0) {
                 Component component = key.use(
@@ -374,12 +374,12 @@ public final class TicketsCommand<C> extends BaseCommand<C> {
 
         Map<UUID, Integer> highscores = this.ticketManager.getHighscores(amount);
 
-        Component title = NewMessages.TITLE__HIGHSCORES.use();
+        Component title = Message.TITLE__HIGHSCORES.use();
         TextComponent.Builder builder = Component.text()
                 .append(title);
 
         highscores.forEach((uuid, number) -> {
-            Component component = NewMessages.FORMAT__HS.use(
+            Component component = Message.FORMAT__HS.use(
                     Template.of("target", this.userManager.getName(uuid)),
                     Template.of("amount", number.toString())
             );

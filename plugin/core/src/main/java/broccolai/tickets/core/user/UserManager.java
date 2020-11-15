@@ -5,7 +5,6 @@ import broccolai.tickets.core.events.EventListener;
 import broccolai.tickets.core.events.api.NotificationEvent;
 import broccolai.tickets.core.events.api.SoulJoinEvent;
 import broccolai.tickets.core.events.api.TicketCreationEvent;
-import broccolai.tickets.core.locale.LocaleManager;
 import broccolai.tickets.core.storage.SQLQueries;
 import broccolai.tickets.core.tasks.TaskManager;
 import broccolai.tickets.core.utilities.Constants;
@@ -34,7 +33,6 @@ public abstract class UserManager<C, P extends C, S extends PlayerSoul<C, P>> im
 
     protected final EventBus<Event> eventManager;
     protected final TaskManager taskManager;
-    protected final LocaleManager localeManager;
     protected final Jdbi jdbi;
 
     protected final Map<UUID, Soul<C>> souls = new HashMap<>();
@@ -45,21 +43,16 @@ public abstract class UserManager<C, P extends C, S extends PlayerSoul<C, P>> im
      *
      * @param eventManager  Event manager
      * @param taskManager   Task manager
-     * @param localeManager Locale manager
      * @param jdbi          Jdbi instance
      */
     public UserManager(
             final @NonNull EventBus<Event> eventManager,
             final @NonNull TaskManager taskManager,
-            final @NonNull LocaleManager localeManager,
             final @NonNull Jdbi jdbi
     ) {
         this.eventManager = eventManager;
         this.taskManager = taskManager;
-        this.localeManager = localeManager;
         this.jdbi = jdbi;
-
-
     }
 
     /**

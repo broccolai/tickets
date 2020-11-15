@@ -1,6 +1,6 @@
 package broccolai.tickets.core.tasks;
 
-import broccolai.tickets.core.locale.NewMessages;
+import broccolai.tickets.core.locale.Message;
 import broccolai.tickets.core.ticket.TicketManager;
 import broccolai.tickets.core.ticket.TicketStatus;
 import broccolai.tickets.core.user.PlayerSoul;
@@ -39,7 +39,7 @@ public final class ReminderTask implements Runnable {
                 continue;
             }
 
-            Component component = NewMessages.FORMAT__REMINDER.use(Template.of("amount", String.valueOf(amount)));
+            Component component = Message.FORMAT__REMINDER.use(Template.of("amount", String.valueOf(amount)));
             soul.sendMessage(component);
         }
     }

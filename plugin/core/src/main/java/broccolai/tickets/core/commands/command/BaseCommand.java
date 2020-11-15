@@ -1,6 +1,6 @@
 package broccolai.tickets.core.commands.command;
 
-import broccolai.tickets.core.locale.NewMessages;
+import broccolai.tickets.core.locale.Message;
 import broccolai.tickets.core.ticket.Ticket;
 import broccolai.tickets.core.ticket.TicketStatus;
 import broccolai.tickets.core.user.Soul;
@@ -23,17 +23,17 @@ public abstract class BaseCommand<C> {
     }
 
     protected final void processShow(final @NonNull Soul<C> soul, final @NonNull Ticket ticket) {
-        Component show = NewMessages.FORMAT__SHOW.use(ticket.templates());
+        Component show = Message.FORMAT__SHOW.use(ticket.templates());
 
         soul.sendMessage(show);
     }
 
     protected final void processLog(final @NonNull Soul<C> soul, final @NonNull Ticket ticket) {
-        Component title = NewMessages.TITLE__TICKET_LOG.use(ticket.templates());
+        Component title = Message.TITLE__TICKET_LOG.use(ticket.templates());
         soul.sendMessage(title);
 
         ticket.getMessages().forEach(message -> {
-            Component log = NewMessages.FORMAT__LOG.use(message.templates());
+            Component log = Message.FORMAT__LOG.use(message.templates());
 
             soul.sendMessage(log);
         });

@@ -1,7 +1,7 @@
 package broccolai.tickets.core.exceptions;
 
 import broccolai.tickets.core.configuration.Config;
-import broccolai.tickets.core.locale.NewMessages;
+import broccolai.tickets.core.locale.Message;
 import net.kyori.adventure.text.minimessage.Template;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
@@ -15,7 +15,7 @@ public final class TooManyOpenTickets extends PureException {
      * @param config Configuration object
      */
     public TooManyOpenTickets(final @NonNull Config config) {
-        super(NewMessages.EXCEPTION__TICKET_NOT_FOUND.use(
+        super(Message.EXCEPTION__TICKET_NOT_FOUND.use(
                 Template.of("limit", config.getTicketLimitOpen().toString())
         ));
     }
