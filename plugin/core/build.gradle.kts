@@ -19,7 +19,7 @@ dependencies {
     api("broccolai:corn-spigot:1.1.1")
 
     // Command library
-    api("cloud.commandframework:cloud-core:1.2.0-SNAPSHOT")
+    api("cloud.commandframework:cloud-core:1.2.0")
 
     // Http library
     api("com.intellectualsites.http:HTTP4J:1.3-SNAPSHOT")
