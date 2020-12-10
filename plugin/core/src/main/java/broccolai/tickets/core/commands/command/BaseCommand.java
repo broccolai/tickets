@@ -7,6 +7,9 @@ import broccolai.tickets.core.user.Soul;
 import broccolai.tickets.core.user.UserManager;
 import cloud.commandframework.arguments.flags.FlagContext;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.event.HoverEvent;
+import net.kyori.adventure.text.minimessage.Template;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 public abstract class BaseCommand<C> {
@@ -23,7 +26,20 @@ public abstract class BaseCommand<C> {
     }
 
     protected final void processShow(final @NonNull Soul<C> soul, final @NonNull Ticket ticket) {
-        Component show = Message.FORMAT__SHOW.use(ticket.templates());
+        Template[] templates = ticket.templates();
+
+        TextComponent.Builder show = Component.text()
+                .append(
+                        Message.SHOW__SENDER.use(templates),
+                        Message.SHOW__MESSAGE.use(templates),
+                        Message.SHOW__LOCATION.use(templates)
+                );
+
+        if (ticket.getStatus() != TicketStatus.PICKED) {
+            show.append(Message.SHOW__UNPICKED.use(templates));
+        } else {
+            show.append(Message.SHOW__PICKER.use(templates));
+        }
 
         soul.sendMessage(show);
     }
