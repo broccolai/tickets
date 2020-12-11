@@ -84,15 +84,6 @@ public final class Ticket implements Dirtyable {
     }
 
     /**
-     * Retrieve a LocalDateTime of when the ticket was first opened
-     *
-     * @return Local date time
-     */
-    public @NonNull LocalDateTime dateOpened() {
-        return messages.get(0).getDate();
-    }
-
-    /**
      * Retrieve the tickets id
      *
      * @return Primitive integer
@@ -106,8 +97,21 @@ public final class Ticket implements Dirtyable {
      *
      * @return Unique id
      */
-    public @NonNull UUID getPlayerUUID() {
-        return playerUUID;
+    public @NonNull User getPlayer() {
+        return this.userManager.getUser(playerUUID);
+    }
+
+    /**
+     * Retrieve the pickers unique id
+     *
+     * @return Potentially null unique id
+     */
+    public @NonNull Optional<User> getPicker() {
+        if (pickerUUID == null) {
+            return Optional.empty();
+        }
+
+        return Optional.of(this.userManager.getUser(pickerUUID));
     }
 
     /**
@@ -137,13 +141,8 @@ public final class Ticket implements Dirtyable {
         return status;
     }
 
-    /**
-     * Retrieve the pickers unique id
-     *
-     * @return Potentially null unique id
-     */
-    public @Nullable UUID getPickerUUID() {
-        return pickerUUID;
+    public @NonNull UUID getPlayerUniqueID() {
+        return this.playerUUID;
     }
 
     /**
@@ -151,7 +150,7 @@ public final class Ticket implements Dirtyable {
      *
      * @return Potentially null unique id
      */
-    public @NotNull Optional<UUID> getPicker() {
+    public @NotNull Optional<UUID> getPickerUniqueId() {
         return Optional.ofNullable(pickerUUID);
     }
 
@@ -333,7 +332,7 @@ public final class Ticket implements Dirtyable {
 
     @Override
     public boolean isDirty() {
-        return dirty;
+        return this.dirty;
     }
 
 }
