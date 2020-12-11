@@ -41,6 +41,7 @@ public final class PureTickets<C, P extends C, S extends PlayerSoul<C, P>> {
         eventBus = new TicketsEventBus();
 
         Config config = this.platform.getConfig(this);
+        this.platform.copyLocales();
         this.platform.setupMessages(config);
 
         Jdbi jdbi = SQLPlatforms.construct(this.platform.getRootFolder(), config);

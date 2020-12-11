@@ -33,6 +33,16 @@ public interface TicketsPlatform<C, P extends C, S extends PlayerSoul<C, P>> {
     Config getConfig(@NonNull PureTickets<?, ?, ?> pureTickets);
 
     /**
+     * s
+     */
+    void copyLocales();
+
+    /**
+     * s
+     */
+    void mergeYaml(@NonNull final InputStream input, @NonNull final File destination);
+
+    /**
      * @param config s
      */
     void setupMessages(@NonNull Config config);

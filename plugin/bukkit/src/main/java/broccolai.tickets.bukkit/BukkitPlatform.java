@@ -12,8 +12,11 @@ import broccolai.tickets.core.configuration.Config;
 import broccolai.tickets.core.events.TicketsEventBus;
 import broccolai.tickets.core.locale.Message;
 import broccolai.tickets.core.tasks.TaskManager;
+import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.Configuration;
+import org.bukkit.configuration.InvalidConfigurationException;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -22,6 +25,18 @@ import org.jdbi.v3.core.Jdbi;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.FileSystem;
+import java.nio.file.FileSystems;
+import java.nio.file.Files;
+import java.util.HashMap;
+import java.util.Locale;
 
 @SuppressWarnings("unused")
 public final class BukkitPlatform extends JavaPlugin implements TicketsPlatform<CommandSender, Player, BukkitPlayerSoul> {
@@ -51,9 +66,65 @@ public final class BukkitPlatform extends JavaPlugin implements TicketsPlatform<
     }
 
     @Override
+    public void copyLocales() {
+        File localeFolder = new File(this.getDataFolder(), "locales");
+        URL sourceUrl = this.getClass().getResource("/locales/");
+
+        //noinspection ResultOfMethodCallIgnored
+        localeFolder.mkdirs();
+
+        try (final FileSystem fs = FileSystems.newFileSystem(sourceUrl.toURI(), new HashMap<>())) {
+            Files.walk(fs.getPath("/locales"))
+                    .filter(path -> path.toString().endsWith(".yml"))
+                    .forEach(path -> {
+                        final String pathString = path.toString();
+                        final Locale locale = Locale.forLanguageTag(pathString.substring(9, pathString.length() - 4));
+
+                        final File target = new File(localeFolder, path.getFileName().toString());
+                        final InputStream stream = this.getClass().getResourceAsStream(path.toString());
+
+                        if (!target.exists()) {
+                            try {
+                                Files.copy(stream, target.getAbsoluteFile().toPath());
+                            } catch (IOException e) {
+                                Bukkit.getLogger().warning("Could not save locale file");
+                            }
+                        } else {
+                            this.mergeYaml(stream, target);
+                        }
+
+                        try {
+                            final FileConfiguration yaml = new YamlConfiguration();
+                            yaml.load(target);
+                        } catch (final InvalidConfigurationException | IOException e) {
+                            Bukkit.getLogger().warning("Could not load locale file");
+                        }
+                    });
+        } catch (final IOException | URISyntaxException e) {
+            Bukkit.getLogger().warning("Could not save locale file");
+        }
+    }
+
+    @Override
+    public void mergeYaml(@NonNull final InputStream input, @NonNull final File destination) {
+        try {
+            Reader reader = new InputStreamReader(input, StandardCharsets.UTF_8);
+            FileConfiguration inputYaml = YamlConfiguration.loadConfiguration(reader);
+            FileConfiguration outputYaml = YamlConfiguration.loadConfiguration(destination);
+
+            inputYaml.getKeys(true).forEach(path -> outputYaml.set(path, outputYaml.get(path, inputYaml.get(path))));
+            outputYaml.save(destination);
+            input.close();
+            reader.close();
+        } catch (final IOException e) {
+            Bukkit.getLogger().warning("Could not merge yaml");
+        }
+    }
+
+    @Override
     public void setupMessages(final @NonNull Config config) {
         String locale = config.getLocale();
-        File localeFolder = new File(this.getDataFolder(), "locale");
+        File localeFolder = new File(this.getDataFolder(), "locales");
 
         //noinspection ResultOfMethodCallIgnored
         localeFolder.mkdirs();
