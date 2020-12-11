@@ -9,7 +9,7 @@ dependencies {
 
     // Kyroi/Adventure
     api("net.kyori:adventure-api:4.2.0-SNAPSHOT")
-    api("net.kyori:adventure-text-minimessage:4.0.0-SNAPSHOT")
+    api("net.kyori:adventure-text-minimessage:4.1.0-SNAPSHOT")
 
     // Jdbi
     api("org.jdbi:jdbi3-core:3.16.0")
