@@ -38,6 +38,10 @@ public interface Soul<C> extends ForwardingAudience.Single {
      */
     @Nullable C asSender();
 
+    default @NonNull User asUser() {
+        return new User.Simple(this.getUniqueId(), this.getName());
+    }
+
     /**
      * @return Json representation
      */
