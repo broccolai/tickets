@@ -60,4 +60,5 @@ public interface User {
         }
 
     }
+
 }

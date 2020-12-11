@@ -59,8 +59,8 @@ public final class PureTicketsCommand<C> {
         soul.modifyPreferences(settings -> settings.set(c.get("setting"), c.get("value")));
 
         Component component = Message.FORMAT__SETTING_UPDATE.use(
-          Template.of("setting", setting.name().toLowerCase()),
-          Template.of("status", status)
+                Template.of("setting", setting.name().toLowerCase()),
+                Template.of("status", status)
         );
         soul.sendMessage(component);
     }

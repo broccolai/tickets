@@ -118,7 +118,7 @@
         <module name="PackageName"/>
         <module name="ParameterName"/>
         <module name="StaticVariableName">
-            <property name="applyToPrivate" value="false" />
+            <property name="applyToPrivate" value="false"/>
         </module>
         <module name="TypeName"/>
 

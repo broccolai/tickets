@@ -9,6 +9,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public final class ComponentMapper implements ColumnMapper<Component> {
+
     private static final MiniMessage MINI = MiniMessage.get();
 
     @Override

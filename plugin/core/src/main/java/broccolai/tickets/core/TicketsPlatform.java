@@ -41,7 +41,7 @@ public interface TicketsPlatform<C, P extends C, S extends PlayerSoul<C, P>> {
     /**
      * Merge two yaml files
      *
-     * @param input InputStream to read from
+     * @param input       InputStream to read from
      * @param destination File to merge into
      */
     void mergeYaml(@NonNull InputStream input, @NonNull File destination);
@@ -54,9 +54,9 @@ public interface TicketsPlatform<C, P extends C, S extends PlayerSoul<C, P>> {
     /**
      * Get the user manager
      *
-     * @param eventManager  Event manager
-     * @param taskManager   Task manager
-     * @param jdbi          Jdbi instance
+     * @param eventManager Event manager
+     * @param taskManager  Task manager
+     * @param jdbi         Jdbi instance
      * @return User manager
      */
     UserManager<C, P, S> getUserManager(

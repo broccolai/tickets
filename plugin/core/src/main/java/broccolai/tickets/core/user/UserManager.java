@@ -42,9 +42,9 @@ public abstract class UserManager<C, P extends C, S extends PlayerSoul<C, P>> im
     /**
      * Construct a user manager
      *
-     * @param eventManager  Event manager
-     * @param taskManager   Task manager
-     * @param jdbi          Jdbi instance
+     * @param eventManager Event manager
+     * @param taskManager  Task manager
+     * @param jdbi         Jdbi instance
      */
     public UserManager(
             final @NonNull EventBus<Event> eventManager,

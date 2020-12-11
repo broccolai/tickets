@@ -31,10 +31,10 @@ public final class BukkitUserManager extends UserManager<CommandSender, Player, 
     /**
      * Construct a user manager
      *
-     * @param plugin        Plugin instance
-     * @param eventManager  Event manager
-     * @param taskManager   Task manager
-     * @param jdbi          Jdbi instance
+     * @param plugin       Plugin instance
+     * @param eventManager Event manager
+     * @param taskManager  Task manager
+     * @param jdbi         Jdbi instance
      */
     public BukkitUserManager(
             final @NonNull Plugin plugin,
