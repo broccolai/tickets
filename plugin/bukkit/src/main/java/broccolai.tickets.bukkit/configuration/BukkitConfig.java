@@ -1,6 +1,5 @@
 package broccolai.tickets.bukkit.configuration;
 
-import broccolai.corn.spigot.locale.LocaleUtils;
 import broccolai.tickets.bukkit.BukkitPlatform;
 import broccolai.tickets.core.PureTickets;
 import broccolai.tickets.core.configuration.Config;
@@ -37,7 +36,7 @@ public final class BukkitConfig extends Config {
 
         plugin.saveDefaultConfig();
         InputStream stream = plugin.getClass().getResourceAsStream("/config.yml");
-        LocaleUtils.mergeYaml(stream, new File(plugin.getDataFolder(), "config.yml"));
+        plugin.mergeYaml(stream, new File(plugin.getDataFolder(), "config.yml"));
 
         stream = plugin.getClass().getResourceAsStream("/config.yml");
         FileConfiguration config = plugin.getConfig();
