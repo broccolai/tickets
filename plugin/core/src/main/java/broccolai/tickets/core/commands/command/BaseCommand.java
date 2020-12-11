@@ -68,7 +68,7 @@ public abstract class BaseCommand<C> {
     protected final @NonNull TicketStatus[] statusesFromFlags(final @NonNull FlagContext flags) {
         TicketStatus status = flags.getValue("status", null);
 
-        return status != null ? of(status) : of(TicketStatus.OPEN, TicketStatus.CLOSED);
+        return status != null ? this.of(status) : this.of(TicketStatus.OPEN, TicketStatus.PICKED);
     }
 
     private @NonNull TicketStatus[] of(final @NonNull TicketStatus... values) {

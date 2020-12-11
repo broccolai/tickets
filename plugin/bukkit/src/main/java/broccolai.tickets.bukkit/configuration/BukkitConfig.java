@@ -30,7 +30,6 @@ public final class BukkitConfig extends Config {
 
     @Override
     protected void setup(final @NonNull PureTickets<?, ?, ?> pureTickets) {
-        System.out.println("hi");
         BukkitPlatform plugin = (BukkitPlatform) pureTickets.getPlatform();
 
         //noinspection rawtypes
