@@ -35,10 +35,10 @@ public enum NotificationReason {
             Message.ANNOUNCEMENT__NOTE_TICKET,
             true
     ),
-    PICK_TICKET(
-            Message.SENDER__PICK_TICKET,
-            Message.NOTIFY__PICK_TICKET,
-            Message.ANNOUNCEMENT__PICK_TICKET,
+    CLAIM_TICKET(
+            Message.SENDER__CLAIM_TICKET,
+            Message.NOTIFY__CLAIM_TICKET,
+            Message.ANNOUNCEMENT__CLAIM_TICKET,
             true
     ),
     REOPEN_TICKET(
@@ -59,10 +59,10 @@ public enum NotificationReason {
             Message.ANNOUNCEMENT__UPDATE_TICKET,
             true
     ),
-    YIELD_TICKET(
-            Message.SENDER__YIELD_TICKET,
-            Message.NOTIFY__YIELD_TICKET,
-            Message.ANNOUNCEMENT__YIELD_TICKET,
+    UNCLAIM_TICKET(
+            Message.SENDER__UNCLAIM_TICKET,
+            Message.NOTIFY__UNCLAIM_TICKET,
+            Message.ANNOUNCEMENT__UNCLAIM_TICKET,
             true
     );
 

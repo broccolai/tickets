@@ -75,14 +75,14 @@ public final class TicketsCommand<C> extends BaseCommand<C> {
                 .handler(c -> processShow(c.getSender(), c.get("ticket"))));
 
         manager.command(builder.literal(
-                config.getAliasPick().getFirst(),
-                Description.of("Pick a ticket"),
-                config.getAliasPick().getSecond()
+                config.getAliasClaim().getFirst(),
+                Description.of("Claim a ticket"),
+                config.getAliasClaim().getSecond()
         )
                 .permission(Constants.STAFF_PERMISSION + ".pick")
                 .argument(TargetArgument.of("target"))
                 .argument(TicketArgument.of(false, false, TicketStatus.OPEN))
-                .handler(this::processPick)
+                .handler(this::processClaim)
                 .build());
 
         manager.command(builder.literal(
@@ -99,7 +99,7 @@ public final class TicketsCommand<C> extends BaseCommand<C> {
 
         manager.command(builder.literal(
                 config.getAliasDone().getFirst(),
-                Description.of("Done-mark a ticket"),
+                Description.of("Complete a ticket"),
                 config.getAliasDone().getSecond()
         )
                 .permission(Constants.STAFF_PERMISSION + ".done")
@@ -109,14 +109,14 @@ public final class TicketsCommand<C> extends BaseCommand<C> {
                 .build());
 
         manager.command(builder.literal(
-                config.getAliasYield().getFirst(),
-                Description.of("Yield a ticket"),
-                config.getAliasYield().getSecond()
+                config.getAliasUnclaim().getFirst(),
+                Description.of("Unclaim a ticket"),
+                config.getAliasUnclaim().getSecond()
         )
                 .permission(Constants.STAFF_PERMISSION + ".yield")
                 .argument(TargetArgument.of("target"))
                 .argument(TicketArgument.of(false, false, TicketStatus.PICKED))
-                .handler(this::processYield)
+                .handler(this::processUnclaim)
                 .build());
 
         manager.command(builder.literal(
@@ -200,13 +200,13 @@ public final class TicketsCommand<C> extends BaseCommand<C> {
                 .build());
     }
 
-    private void processPick(final @NonNull CommandContext<Soul<C>> c) {
+    private void processClaim(final @NonNull CommandContext<Soul<C>> c) {
         Soul<C> soul = c.getSender();
         Ticket ticket = c.get("ticket");
 
         try {
             ticket.pick(soul.getUniqueId());
-            this.eventBus.post(new NotificationEvent(NotificationReason.PICK_TICKET, soul, ticket.getPlayerUUID(), ticket));
+            this.eventBus.post(new NotificationEvent(NotificationReason.CLAIM_TICKET, soul, ticket.getPlayerUniqueID(), ticket));
         } catch (PureException e) {
             soul.sendMessage(e.getComponent());
         }
@@ -231,19 +231,20 @@ public final class TicketsCommand<C> extends BaseCommand<C> {
 
         try {
             ticket.done(soul.getUniqueId());
-            this.eventBus.post(new NotificationEvent(NotificationReason.DONE_TICKET, soul, ticket.getPlayerUUID(), ticket));
+            this.eventBus.post(new NotificationEvent(NotificationReason.DONE_TICKET, soul, ticket.getPlayerUniqueID(), ticket));
         } catch (PureException e) {
             soul.sendMessage(e.getComponent());
         }
     }
 
-    private void processYield(final @NonNull CommandContext<Soul<C>> c) {
+    private void processUnclaim(final @NonNull CommandContext<Soul<C>> c) {
         Soul<C> soul = c.getSender();
         Ticket ticket = c.get("ticket");
 
         try {
             ticket.yield(soul.getUniqueId());
-            this.eventBus.post(new NotificationEvent(NotificationReason.YIELD_TICKET, soul, ticket.getPlayerUUID(), ticket));
+            this.eventBus.post(new NotificationEvent(NotificationReason.UNCLAIM_TICKET, soul, ticket.getPlayerUniqueID(),
+                    ticket));
         } catch (PureException e) {
             soul.sendMessage(e.getComponent());
         }
@@ -254,7 +255,7 @@ public final class TicketsCommand<C> extends BaseCommand<C> {
         Ticket ticket = c.get("ticket");
 
         ticket.note(soul.getUniqueId(), c.get("message"));
-        this.eventBus.post(new NotificationEvent(NotificationReason.NOTE_TICKET, soul, ticket.getPlayerUUID(), ticket));
+        this.eventBus.post(new NotificationEvent(NotificationReason.NOTE_TICKET, soul, ticket.getPlayerUniqueID(), ticket));
     }
 
     private void processReopen(final @NonNull CommandContext<Soul<C>> c) {
@@ -263,7 +264,7 @@ public final class TicketsCommand<C> extends BaseCommand<C> {
 
         try {
             ticket.reopen(soul.getUniqueId());
-            this.eventBus.post(new NotificationEvent(NotificationReason.REOPEN_TICKET, soul, ticket.getPlayerUUID(), ticket));
+            this.eventBus.post(new NotificationEvent(NotificationReason.REOPEN_TICKET, soul, ticket.getPlayerUniqueID(), ticket));
         } catch (PureException e) {
             soul.sendMessage(e.getComponent());
         }
@@ -273,7 +274,7 @@ public final class TicketsCommand<C> extends BaseCommand<C> {
         PlayerSoul<C, ?> soul = (PlayerSoul<C, ?>) c.getSender();
         Ticket ticket = c.get("ticket");
 
-        this.eventBus.post(new NotificationEvent(NotificationReason.TELEPORT_TICKET, soul, ticket.getPlayerUUID(), ticket));
+        this.eventBus.post(new NotificationEvent(NotificationReason.TELEPORT_TICKET, soul, ticket.getPlayerUniqueID(), ticket));
         soul.teleport(ticket.getLocation());
     }
 
@@ -281,7 +282,7 @@ public final class TicketsCommand<C> extends BaseCommand<C> {
         final Soul<C> soul = c.getSender();
         final UUID player = c.flags().getValue("player", null);
         final Boolean onlineOnly = c.flags().getValue("onlineOnly", false);
-        final TicketStatus[] statuses = statusesFromFlags(c.flags());
+        final TicketStatus[] statuses = this.statusesFromFlags(c.flags());
 
         if (player != null) {
             // todo
@@ -305,7 +306,7 @@ public final class TicketsCommand<C> extends BaseCommand<C> {
 
         // todo: ugly
         Set<Map.Entry<UUID, List<Ticket>>> unsortedTickets = Lists
-                .group(this.ticketManager.getTickets(statuses), Ticket::getPlayerUUID)
+                .group(this.ticketManager.getTickets(statuses), Ticket::getPlayerUniqueID)
                 .entrySet();
         List<Map.Entry<UUID, List<Ticket>>> sortedTickets = new ArrayList<>(unsortedTickets);
         sortedTickets.sort((t1, t2) -> {
@@ -353,7 +354,7 @@ public final class TicketsCommand<C> extends BaseCommand<C> {
             builder.append(title);
         }
 
-        Message key = Message.FORMAT__SHOW;
+        Message key = Message.FORMAT__STATUS;
         data.forEach((status, amount) -> {
             if (amount != 0) {
                 Component component = key.use(

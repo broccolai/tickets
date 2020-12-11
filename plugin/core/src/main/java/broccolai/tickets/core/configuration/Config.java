@@ -29,10 +29,10 @@ public abstract class Config {
     protected Pair<String, String[]> ALIAS__UPDATE;
     protected Pair<String, String[]> ALIAS__CLOSE;
     protected Pair<String, String[]> ALIAS__SHOW;
-    protected Pair<String, String[]> ALIAS__PICK;
+    protected Pair<String, String[]> ALIAS__CLAIM;
     protected Pair<String, String[]> ALIAS__ASSIGN;
     protected Pair<String, String[]> ALIAS__DONE;
-    protected Pair<String, String[]> ALIAS__YIELD;
+    protected Pair<String, String[]> ALIAS__UNCLAIM;
     protected Pair<String, String[]> ALIAS__NOTE;
     protected Pair<String, String[]> ALIAS__REOPEN;
     protected Pair<String, String[]> ALIAS__TELEPORT;
@@ -188,8 +188,8 @@ public abstract class Config {
     /**
      * @return Alias pick
      */
-    public Pair<String, String[]> getAliasPick() {
-        return ALIAS__PICK;
+    public Pair<String, String[]> getAliasClaim() {
+        return ALIAS__CLAIM;
     }
 
     /**
@@ -209,8 +209,8 @@ public abstract class Config {
     /**
      * @return Alias yield
      */
-    public Pair<String, String[]> getAliasYield() {
-        return ALIAS__YIELD;
+    public Pair<String, String[]> getAliasUnclaim() {
+        return ALIAS__UNCLAIM;
     }
 
     /**
