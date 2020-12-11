@@ -3,6 +3,7 @@ package broccolai.tickets.bukkit.commands;
 import broccolai.tickets.core.commands.TicketsCommandManager;
 import broccolai.tickets.core.user.Soul;
 import cloud.commandframework.CommandManager;
+import cloud.commandframework.bukkit.CloudBukkitCapabilities;
 import cloud.commandframework.execution.AsynchronousCommandExecutionCoordinator;
 import cloud.commandframework.paper.PaperCommandManager;
 import org.bukkit.command.CommandSender;
@@ -37,7 +38,9 @@ public final class BukkitTicketsCommandManager extends TicketsCommandManager<Com
                     backwardsCommandSenderMapper
             );
 
-            manager.registerAsynchronousCompletions();
+            if (manager.queryCapability(CloudBukkitCapabilities.ASYNCHRONOUS_COMPLETION)) {
+                manager.registerAsynchronousCompletions();
+            }
 
             return manager;
         } catch (final Exception e) {
