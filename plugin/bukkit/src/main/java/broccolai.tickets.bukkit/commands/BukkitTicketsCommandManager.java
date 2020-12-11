@@ -30,12 +30,16 @@ public final class BukkitTicketsCommandManager extends TicketsCommandManager<Com
             @NonNull final Function<Soul<CommandSender>, CommandSender> backwardsCommandSenderMapper
     ) {
         try {
-            return new PaperCommandManager<>(
+            PaperCommandManager<Soul<CommandSender>> manager = new PaperCommandManager<>(
                     this.plugin,
                     AsynchronousCommandExecutionCoordinator.<Soul<CommandSender>>newBuilder().build(),
                     commandSenderMapper,
                     backwardsCommandSenderMapper
             );
+
+            manager.registerAsynchronousCompletions();
+
+            return manager;
         } catch (final Exception e) {
             e.printStackTrace();
             throw new RuntimeException("PureTickets could not create a Command Manager");
