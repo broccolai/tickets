@@ -12,6 +12,8 @@ import broccolai.tickets.core.storage.TimeAmount;
 import broccolai.tickets.core.storage.mapper.TicketReducer;
 import broccolai.tickets.core.tasks.TaskManager;
 import broccolai.tickets.core.user.PlayerSoul;
+import broccolai.tickets.core.user.User;
+import broccolai.tickets.core.user.UserManager;
 import broccolai.tickets.core.utilities.TicketLocation;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
@@ -38,6 +40,7 @@ import java.util.stream.Collectors;
 public final class TicketManager implements EventListener {
 
     private final TicketsEventBus eventBus;
+    private final UserManager<?, ?, ?> userManager;
     private final Config config;
     private final Jdbi jdbi;
     private final TicketIdStorage idStorage;
@@ -53,11 +56,13 @@ public final class TicketManager implements EventListener {
      */
     public TicketManager(
             final @NonNull TicketsEventBus eventBus,
+            final @NonNull UserManager<?, ?, ?> userManager,
             final @NonNull Config config,
             final @NonNull Jdbi jdbi,
             final @NonNull TaskManager taskManager
     ) {
         this.eventBus = eventBus;
+        this.userManager = userManager;
         this.config = config;
         this.jdbi = jdbi;
         this.idStorage = new TicketIdStorage(jdbi);

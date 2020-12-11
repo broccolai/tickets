@@ -13,6 +13,7 @@ import broccolai.tickets.core.storage.mapper.ValueDataMapper;
 import broccolai.tickets.core.ticket.Ticket;
 import broccolai.tickets.core.ticket.TicketIdStorage;
 import broccolai.tickets.core.ticket.TicketStats;
+import broccolai.tickets.core.user.UserManager;
 import broccolai.tickets.core.user.UserSettings;
 import broccolai.tickets.core.utilities.FileReader;
 import broccolai.tickets.core.utilities.TicketLocation;
@@ -52,16 +53,6 @@ public final class SQLPlatforms {
             jdbi = sqlite(rootFolder);
         }
 
-        jdbi
-                .registerRowMapper(Ticket.class, new TicketMapper())
-                .registerRowMapper(Message.class, new MessageMapper())
-                .registerRowMapper(UserSettings.class, new SettingsMapper())
-                .registerRowMapper(TicketStats.class, new StatsMapper())
-                .registerRowMapper(TicketIdStorage.ValueData.class, new ValueDataMapper())
-                .registerColumnMapper(LocalDateTime.class, new DateMapper())
-                .registerColumnMapper(Component.class, new ComponentMapper())
-                .registerColumnMapper(TicketLocation.class, new LocationMapper());
-
         String jsonData = FileReader.fromPath(MIGRATION_PATH + "migrations-index.json");
 
         List<MigrationEntry> migrations = GSON
@@ -94,11 +85,25 @@ public final class SQLPlatforms {
                             handle.execute(query);
                         }
 
-                        handle.execute(SQLQueries.UPDATE_VERSION.get(), migration.getVersion());
+                        handle.createUpdate(SQLQueries.UPDATE_VERSION.get())
+                            .bind("version", migration.getVersion())
+                            .execute();
                     });
         });
 
         return jdbi;
+    }
+
+    public static void setupMappers(final @NonNull Jdbi jdbi, final @NonNull UserManager<?, ?, ?> userManager) {
+        jdbi
+                .registerRowMapper(Ticket.class, new TicketMapper(userManager))
+                .registerRowMapper(Message.class, new MessageMapper())
+                .registerRowMapper(UserSettings.class, new SettingsMapper())
+                .registerRowMapper(TicketStats.class, new StatsMapper())
+                .registerRowMapper(TicketIdStorage.ValueData.class, new ValueDataMapper())
+                .registerColumnMapper(LocalDateTime.class, new DateMapper())
+                .registerColumnMapper(Component.class, new ComponentMapper())
+                .registerColumnMapper(TicketLocation.class, new LocationMapper());
     }
 
     private static @NonNull Jdbi mysql(final @NonNull Config config) {

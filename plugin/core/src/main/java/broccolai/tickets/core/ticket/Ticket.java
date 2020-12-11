@@ -21,6 +21,8 @@ import java.util.UUID;
 
 public final class Ticket implements Dirtyable {
 
+    private final UserManager<?, ?, ?> userManager;
+
     private boolean dirty = false;
 
     private final int id;
@@ -41,12 +43,14 @@ public final class Ticket implements Dirtyable {
      * @param pickerUUID Potentially unset pickers unique id
      */
     public Ticket(
+            final @NonNull UserManager<?, ?, ?> userManager,
             final int id,
             final @NonNull UUID playerUUID,
             final @NonNull TicketLocation location,
             final @NonNull TicketStatus status,
             final @Nullable UUID pickerUUID
     ) {
+        this.userManager = userManager;
         this.id = id;
         this.playerUUID = playerUUID;
         this.location = location;

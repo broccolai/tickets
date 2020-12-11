@@ -51,6 +51,8 @@ public final class PureTickets<C, P extends C, S extends PlayerSoul<C, P>> {
         userManager = this.platform.getUserManager(eventBus, taskManager, jdbi);
         notificationManager = new NotificationManager<>(jdbi, eventBus, userManager);
 
+        SQLPlatforms.setupMappers(jdbi, userManager);
+
         DiscordManager discordManager = new DiscordManager(this.platform.getLogger(), config);
         this.ticketManager = new TicketManager(eventBus, userManager, config, jdbi, taskManager);
 

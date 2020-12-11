@@ -2,7 +2,9 @@ package broccolai.tickets.core.storage.mapper;
 
 import broccolai.tickets.core.ticket.Ticket;
 import broccolai.tickets.core.ticket.TicketStatus;
+import broccolai.tickets.core.user.UserManager;
 import broccolai.tickets.core.utilities.TicketLocation;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.jdbi.v3.core.mapper.ColumnMapper;
 import org.jdbi.v3.core.mapper.EnumMapper;
 import org.jdbi.v3.core.mapper.RowMapper;
@@ -14,9 +16,15 @@ import java.util.UUID;
 
 public final class TicketMapper implements RowMapper<Ticket> {
 
+    private final UserManager<?, ?, ?> userManager;
+
     private ColumnMapper<UUID> uuidMapper;
     private ColumnMapper<TicketLocation> locationMapper;
     private ColumnMapper<TicketStatus> statusMapper;
+
+    public TicketMapper(final @NonNull UserManager<?, ?, ?> userManager) {
+        this.userManager = userManager;
+    }
 
     @Override
     public Ticket map(final ResultSet rs, final StatementContext ctx) throws SQLException {
@@ -28,7 +36,7 @@ public final class TicketMapper implements RowMapper<Ticket> {
         TicketStatus status = statusMapper.map(rs, "status", ctx);
         UUID assignee = uuidMapper.map(rs, "picker", ctx);
 
-        return new Ticket(id, creator, location, status, assignee);
+        return new Ticket(userManager, id, creator, location, status, assignee);
     }
 
     private void registerMappers(final StatementContext ctx) {
