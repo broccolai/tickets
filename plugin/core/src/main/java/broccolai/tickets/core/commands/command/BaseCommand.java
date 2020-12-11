@@ -45,14 +45,24 @@ public abstract class BaseCommand<C> {
     }
 
     protected final void processLog(final @NonNull Soul<C> soul, final @NonNull Ticket ticket) {
-        Component title = Message.TITLE__TICKET_LOG.use(ticket.templates());
-        soul.sendMessage(title);
+        TextComponent.Builder component = Component.text()
+                .append(Message.TITLE__TICKET_LOG.use(ticket.templates()));
 
         ticket.getMessages().forEach(message -> {
-            Component log = Message.FORMAT__LOG.use(message.templates());
+            HoverEvent<Component> event;
 
-            soul.sendMessage(log);
+            if (message.getData() != null) {
+                event = HoverEvent.showText(
+                        Component.text(message.getData())
+                );
+            } else {
+                event = null;
+            }
+
+            component.append(Component.newline(), Message.FORMAT__LOG.use(message.templates()).hoverEvent(event));
         });
+
+        soul.sendMessage(component);
     }
 
     protected final @NonNull TicketStatus[] statusesFromFlags(final @NonNull FlagContext flags) {
