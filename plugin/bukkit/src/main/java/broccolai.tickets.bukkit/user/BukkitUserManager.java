@@ -9,7 +9,6 @@ import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
-import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -61,7 +60,7 @@ public final class BukkitUserManager extends UserManager<CommandSender, Player, 
 
     @Override
     public @NonNull UUID getUniqueId(final @NonNull CommandSender sender) {
-        if (sender instanceof ConsoleCommandSender) {
+        if (!(sender instanceof Player)) {
             return ConsoleSoul.CONSOLE_UUID;
         }
 
