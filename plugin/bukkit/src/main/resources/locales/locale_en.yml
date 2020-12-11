@@ -43,6 +43,8 @@ show:
   message: "<aqua>Current Message: <white><message>"
   location: "<aqua>Location: <white>X <x>, Y <y>, Z <z> in <world>"
 exception:
+  no_permission: "<prefix> You do not have permission for this command"
+  invalid_sender: "<prefix> This command must be executed by <sender>"
   ticket_not_found: "<prefix> Ticket could not be found"
   invalid_setting_type: "<prefix> Invalid setting type"
   too_many_open_tickets: "<prefix> You have too many open tickets, the limit is <limit>"

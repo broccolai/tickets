@@ -6,11 +6,16 @@ import broccolai.tickets.core.commands.command.TicketCommand;
 import broccolai.tickets.core.commands.command.TicketsCommand;
 import broccolai.tickets.core.configuration.Config;
 import broccolai.tickets.core.events.TicketsEventBus;
+import broccolai.tickets.core.locale.Message;
 import broccolai.tickets.core.ticket.TicketManager;
 import broccolai.tickets.core.user.Soul;
 import broccolai.tickets.core.user.UserManager;
 import cloud.commandframework.CommandManager;
 import cloud.commandframework.context.CommandContext;
+import cloud.commandframework.exceptions.InvalidCommandSenderException;
+import cloud.commandframework.minecraft.extras.MinecraftExceptionHandler;
+import net.kyori.adventure.audience.ForwardingAudience;
+import net.kyori.adventure.text.minimessage.Template;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.util.function.Function;
@@ -44,6 +49,19 @@ public abstract class TicketsCommandManager<C> {
         new PureTicketsCommand<>(cloudManager, pureTickets);
         new TicketCommand<>(cloudManager, config, eventBus, userManager, ticketManager);
         new TicketsCommand<>(cloudManager, config, eventBus, userManager, ticketManager);
+
+        new MinecraftExceptionHandler<Soul<C>>()
+                .withHandler(MinecraftExceptionHandler.ExceptionType.NO_PERMISSION, (soul, ex) -> {
+                    return Message.EXCEPTION__NO_PERMISSION.use();
+                })
+                .withHandler(MinecraftExceptionHandler.ExceptionType.INVALID_SENDER, (soul, ex) -> {
+                    InvalidCommandSenderException icse = (InvalidCommandSenderException) ex;
+                    String className = icse.getRequiredSender().getSimpleName();
+                    return Message.EXCEPTION__INVALID_SENDER.use(Template.of("sender", className));
+                })
+                .withArgumentParsingHandler()
+                .withInvalidSyntaxHandler()
+                .apply(cloudManager, ForwardingAudience.Single::audience);
     }
 
     protected abstract @NonNull CommandManager<Soul<C>> getCommandManager(
