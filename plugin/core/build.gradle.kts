@@ -16,7 +16,7 @@ dependencies {
     api("com.github.ben-manes.caffeine:caffeine:2.8.6")
 
     // Corn
-    api("broccolai:corn-spigot:1.1.1")
+    api("broccolai:corn-core:1.1.1")
 
     // Command library
     api("cloud.commandframework:cloud-core:1.2.0")
