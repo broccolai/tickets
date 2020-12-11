@@ -1,93 +1,128 @@
-import org.apache.tools.ant.filters.ReplaceTokens
+import com.github.jengelman.gradle.plugins.shadow.ShadowPlugin
 
 plugins {
+    id("java")
     id("java-library")
-    id("com.github.johnrengelman.shadow") version "6.0.0"
     id("checkstyle")
+    id("idea")
+    id("com.github.johnrengelman.shadow") version "6.1.0"
 }
 
-version = "3.1.2"
-group = "broccolai.tickets"
+version = "4.0.0"
 
-repositories {
-    mavenCentral()
+allprojects {
+    group = "broccolai.tickets"
+    version = rootProject.version
 
-    maven("https://hub.spigotmc.org/nexus/content/repositories/snapshots/")
-    maven("https://oss.sonatype.org/content/repositories/public/")
-    maven("https://repo.aikar.co/content/groups/aikar/")
-    maven("https://mvnrepository.com/artifact/org.jetbrains/annotations")
-    maven("https://mvn.intellectualsites.com/content/repositories/snapshots")
-    maven {
-        name = "GitHubPackages"
-        url = uri("https://maven.pkg.github.com/broccolai/corn")
-        credentials {
-            username = System.getenv("GH_USERNAME") ?: System.getenv("GITHUB_ACTOR")
-            password = System.getenv("GH_TOKEN") ?: System.getenv("GITHUB_TOKEN")
+    repositories {
+        mavenLocal()
+        mavenCentral()
+
+        maven {
+            name = "Spigot repository"
+            url = uri("https://hub.spigotmc.org/nexus/content/repositories/snapshots/")
+        }
+
+        maven {
+            name = "Sonatype public"
+            url = uri("https://oss.sonatype.org/content/repositories/public/")
+        }
+
+        maven {
+            name = "Sonatype Snapshots"
+            url = uri("https://oss.sonatype.org/content/repositories/snapshots/")
+        }
+
+        maven {
+            name = "Intellectual Sites"
+            url = uri("https://mvn.intellectualsites.com/content/repositories/snapshots")
+        }
+
+        maven {
+            name = "papermc"
+            url = uri("https://papermc.io/repo/repository/maven-public/")
+        }
+
+        maven {
+            name = "GitHub Packages"
+            url = uri("https://maven.pkg.github.com/broccolai/corn")
+            credentials {
+                username = System.getenv("GH_USERNAME") ?: System.getenv("GITHUB_ACTOR")
+                password = System.getenv("GH_TOKEN") ?: System.getenv("GITHUB_TOKEN")
+            }
+        }
+    }
+
+}
+
+subprojects {
+    apply {
+        plugin<JavaPlugin>()
+        plugin<JavaLibraryPlugin>()
+        plugin<ShadowPlugin>()
+        plugin<CheckstylePlugin>()
+        plugin<IdeaPlugin>()
+    }
+
+    dependencies {
+        // Checkstyle
+        checkstyle("ca.stellardrift:stylecheck:0.1-SNAPSHOT")
+
+        // Checker-qual annotations
+        compileOnlyApi("org.checkerframework:checker-qual:3.5.0")
+    }
+
+    configure<JavaPluginConvention> {
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = sourceCompatibility
+    }
+
+    tasks {
+        compileJava {
+            options.apply {
+                isFork = true
+                compilerArgs.add("-Xlint:all")
+                compilerArgs.add("-parameters")
+            }
+        }
+
+        build {
+            dependsOn(named("shadowJar"))
+        }
+
+        checkstyle {
+            val configRoot = File(rootProject.projectDir, ".checkstyle")
+            toolVersion = "8.34"
+            configDirectory.set(configRoot)
+            configProperties["basedir"] = configRoot.absolutePath
         }
     }
 }
 
-dependencies {
-    checkstyle("ca.stellardrift:stylecheck:0.1-SNAPSHOT")
-    implementation("org.jetbrains:annotations:19.0.0")
-
-    api("co.aikar:taskchain-bukkit:3.7.2")
-    api("co.aikar:acf-paper:0.5.0-SNAPSHOT")
-    api("co.aikar:idb-core:1.0.0-SNAPSHOT")
-    api("org.slf4j:slf4j-simple:1.7.13")
-    api("com.zaxxer:HikariCP:2.7.9")
-    api("broccolai:corn-core:1.0.1")
-    api("broccolai:corn-spigot:1.0.1")
-    api("com.intellectualsites.http:HTTP4J:1.3-SNAPSHOT")
-
-    compileOnly("org.spigotmc:spigot-api:1.16.1-R0.1-SNAPSHOT")
-}
-
-configure<JavaPluginConvention> {
-    targetCompatibility = JavaVersion.VERSION_1_8
-    sourceCompatibility = JavaVersion.VERSION_1_8
-}
-
 tasks {
     shadowJar {
-        val base = project.group.toString() + ".lib."
+        dependencies {
+            exclude(dependency("com.google.guava:guava:21.0"))
+        }
 
-        relocate("co.aikar.taskchain", base + "taskchain")
-        relocate("co.aikar.commands", base + "commands")
-        relocate("co.aikar.locales", base + "locales")
-        relocate("co.aikar.idb", base + "idb")
+        fun reloc(vararg deps: String) {
+            for (i in deps.indices step 2) {
+                relocate(deps[i], project.group.toString() + ".lib." + deps[i + 1])
+            }
+        }
 
-        relocate("broccolai.corn.core", base + "corn.core")
-        relocate("broccolai.corn.spigot", base + "corn.spigot")
+        reloc(
+                "cloud.commandframework", "cloud",
+                "com.intellectualsites.http", "http",
+                "io.leangen.geantyref", "geantyref",
+                "io.papermc.lib", "paperlib",
+                "broccolai.corn", "corn"
+        )
 
-        relocate("com.zaxxer.hikari", base + "hikari")
-        relocate("net.jodah.expiringmap", base + "expiringmap")
 
         archiveFileName.set(project.name + ".jar")
         mergeServiceFiles()
         minimize()
-    }
-
-    compileJava {
-        options.encoding = "UTF-8"
-        options.compilerArgs.add("-parameters")
-        options.isFork = true
-        options.forkOptions.executable = "javac"
-    }
-
-    processResources {
-        filter<ReplaceTokens>("tokens" to mapOf("version" to project.version))
-    }
-
-    build {
-        dependsOn(shadowJar)
-    }
-
-    checkstyle {
-        val configRoot = File(rootProject.projectDir, ".checkstyle")
-        toolVersion = "8.34"
-        configDirectory.set(configRoot)
-        configProperties["basedir"] = configRoot.absolutePath
     }
 }
 

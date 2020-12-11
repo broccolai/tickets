@@ -7,7 +7,7 @@ import express from 'express';
 const app = express();
 
 app.use(express.json());
-app.use(cors());
+app.use(cors<express.Request>());
 
 app.use(one);
 app.use(two);
