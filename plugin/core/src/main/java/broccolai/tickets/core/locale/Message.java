@@ -40,7 +40,6 @@ public enum Message {
     ANNOUNCEMENT__REOPEN_TICKET,
     ANNOUNCEMENT__NOTE_TICKET,
     // format
-    FORMAT__SHOW,
     FORMAT__LIST,
     FORMAT__LIST_HEADER,
     FORMAT__LOG,
@@ -102,7 +101,8 @@ public enum Message {
      */
     public static void setup(final @NonNull Function<String, String> nodeToRaw) {
         for (Message value : Message.values()) {
-            value.component = nodeToRaw.apply(value.name().toLowerCase());
+            String target = value.name().toLowerCase().replace("__", ".");
+            value.component = nodeToRaw.apply(target);
         }
     }
 }
