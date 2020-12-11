@@ -165,6 +165,12 @@ public abstract class UserManager<C, P extends C, S extends PlayerSoul<C, P>> im
         return this.getPlayer(uuid).map(this::fromPlayer);
     }
 
+    /**
+     * Get {@link User} from a {@link UUID}
+     *
+     * @param uuid Unique id
+     * @return User
+     */
     public User getUser(final @NonNull UUID uuid) {
         return new User.Simple(uuid, this.getName(uuid));
     }

@@ -34,14 +34,17 @@ public interface TicketsPlatform<C, P extends C, S extends PlayerSoul<C, P>> {
     Config getConfig(@NonNull PureTickets<?, ?, ?> pureTickets);
 
     /**
-     * s
+     * Copy locales into their proper folder
      */
     void copyLocales();
 
     /**
-     * s
+     * Merge two yaml files
+     *
+     * @param input InputStream to read from
+     * @param destination File to merge into
      */
-    void mergeYaml(@NonNull final InputStream input, @NonNull final File destination);
+    void mergeYaml(@NonNull InputStream input, @NonNull File destination);
 
     /**
      * @param config s

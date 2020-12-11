@@ -1,6 +1,5 @@
 package broccolai.tickets.core.commands.arguments;
 
-import broccolai.tickets.core.user.PlayerSoul;
 import broccolai.tickets.core.user.Soul;
 import broccolai.tickets.core.user.User;
 import broccolai.tickets.core.user.UserManager;
@@ -11,17 +10,11 @@ import cloud.commandframework.context.CommandContext;
 import cloud.commandframework.exceptions.parsing.NoInputProvidedException;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Queue;
 import java.util.UUID;
 
 public final class TargetArgument<C> extends CommandArgument<Soul<C>, User> {
-
-    private static final long TIME_DIFF = 60 * 60;
-
-    private static List<String> NAMES = null;
-    private static long TIME_SET = 0;
 
     private TargetArgument(final @NonNull String name) {
         super(true, name, new TargetParser<>(), User.class);
@@ -66,23 +59,9 @@ public final class TargetArgument<C> extends CommandArgument<Soul<C>, User> {
         public @NonNull List<@NonNull String> suggestions(
                 @NonNull final CommandContext<Soul<C>> commandContext, @NonNull final String input
         ) {
-            long currentTime = System.currentTimeMillis();
+            UserManager<C, ?, ?> userManager = commandContext.get("userManager");
 
-            if (currentTime - TIME_DIFF > TIME_SET) {
-                UserManager<C, ?, ?> userManager = commandContext.get("userManager");
-
-                List<String> names = new ArrayList<>();
-
-                for (PlayerSoul<?, ?> soul : userManager.getAllOnlinePlayer()) {
-                    names.add(soul.getName());
-                }
-
-                TIME_SET = currentTime;
-                NAMES = names;
-            }
-
-
-            return NAMES;
+            return userManager.getNames();
         }
 
     }

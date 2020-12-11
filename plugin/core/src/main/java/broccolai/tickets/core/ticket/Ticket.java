@@ -42,11 +42,12 @@ public final class Ticket implements Dirtyable {
     /**
      * Construct a new Ticket using all values
      *
-     * @param id         Tickets id
-     * @param playerUUID Players unique id
-     * @param location   Tickets creation location
-     * @param status     Tickets current status
-     * @param pickerUUID Potentially unset pickers unique id
+     * @param userManager User manager
+     * @param id          Tickets id
+     * @param playerUUID  Players unique id
+     * @param location    Tickets creation location
+     * @param status      Tickets current status
+     * @param pickerUUID  Potentially unset pickers unique id
      */
     public Ticket(
             final @NonNull UserManager<?, ?, ?> userManager,
@@ -147,6 +148,11 @@ public final class Ticket implements Dirtyable {
         return status;
     }
 
+    /**
+     * Retrieve unique id of creator
+     *
+     * @return Unique id of creator
+     */
     public @NonNull UUID getPlayerUniqueID() {
         return this.playerUUID;
     }
@@ -291,7 +297,7 @@ public final class Ticket implements Dirtyable {
         results[1] = Template.of("message", messageData);
 
         String messageDate = TimeUtilities.formatted(message.getDate());
-        results[2] = Template.of("date", messageData);
+        results[2] = Template.of("date", messageDate);
 
         String status = this.status.name();
         results[3] = Template.of("status", status);
@@ -326,8 +332,8 @@ public final class Ticket implements Dirtyable {
                 Component.text()
                         .append(
                                 Component.text()
-                                    .content("Ticket ")
-                                    .append(identifier.build()),
+                                        .content("Ticket ")
+                                        .append(identifier.build()),
                                 Component.newline(),
                                 Component.text("Status: " + status)
                         )

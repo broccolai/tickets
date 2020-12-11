@@ -6,7 +6,6 @@ import broccolai.tickets.core.commands.arguments.TicketArgument;
 import broccolai.tickets.core.configuration.Config;
 import broccolai.tickets.core.events.TicketsEventBus;
 import broccolai.tickets.core.events.api.NotificationEvent;
-import broccolai.tickets.core.exceptions.PureException;
 import broccolai.tickets.core.interactions.NotificationReason;
 import broccolai.tickets.core.locale.Message;
 import broccolai.tickets.core.storage.TimeAmount;

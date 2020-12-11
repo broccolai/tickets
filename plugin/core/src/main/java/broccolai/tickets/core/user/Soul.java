@@ -38,6 +38,11 @@ public interface Soul<C> extends ForwardingAudience.Single {
      */
     @Nullable C asSender();
 
+    /**
+     * Create a {@link User} with information stored in the {@link Soul}
+     *
+     * @return User with soul information
+     */
     default @NonNull User asUser() {
         return new User.Simple(this.getUniqueId(), this.getName());
     }

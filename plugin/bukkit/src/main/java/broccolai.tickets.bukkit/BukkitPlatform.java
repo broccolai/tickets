@@ -73,7 +73,7 @@ public final class BukkitPlatform extends JavaPlugin implements TicketsPlatform<
         //noinspection ResultOfMethodCallIgnored
         localeFolder.mkdirs();
 
-        try (final FileSystem fs = FileSystems.newFileSystem(sourceUrl.toURI(), new HashMap<>())) {
+        try (FileSystem fs = FileSystems.newFileSystem(sourceUrl.toURI(), new HashMap<>())) {
             Files.walk(fs.getPath("/locales"))
                     .filter(path -> path.toString().endsWith(".yml"))
                     .forEach(path -> {

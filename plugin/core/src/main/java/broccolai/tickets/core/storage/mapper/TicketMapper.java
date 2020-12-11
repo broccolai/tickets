@@ -22,6 +22,11 @@ public final class TicketMapper implements RowMapper<Ticket> {
     private ColumnMapper<TicketLocation> locationMapper;
     private ColumnMapper<TicketStatus> statusMapper;
 
+    /**
+     * Initialise the TicketMapper
+     *
+     * @param userManager User manager
+     */
     public TicketMapper(final @NonNull UserManager<?, ?, ?> userManager) {
         this.userManager = userManager;
     }

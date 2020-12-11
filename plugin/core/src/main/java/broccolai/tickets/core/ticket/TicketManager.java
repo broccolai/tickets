@@ -50,6 +50,7 @@ public final class TicketManager implements EventListener {
      * Initialise a new Ticket Manager
      *
      * @param eventBus    Event Manager
+     * @param userManager User manager
      * @param config      Config instance
      * @param jdbi        Jdbi instance
      * @param taskManager Task manager
@@ -353,6 +354,9 @@ public final class TicketManager implements EventListener {
         return idStorage;
     }
 
+    /**
+     * Save all users
+     */
     public void saveAll() {
         this.ticketCache.asMap().forEach((id, ticket) -> {
 

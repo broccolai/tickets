@@ -86,14 +86,20 @@ public final class SQLPlatforms {
                         }
 
                         handle.createUpdate(SQLQueries.UPDATE_VERSION.get())
-                            .bind("version", migration.getVersion())
-                            .execute();
+                                .bind("version", migration.getVersion())
+                                .execute();
                     });
         });
 
         return jdbi;
     }
 
+    /**
+     * Setup type mappers for JDBI
+     *
+     * @param jdbi        Jdbi instance
+     * @param userManager User manager
+     */
     public static void setupMappers(final @NonNull Jdbi jdbi, final @NonNull UserManager<?, ?, ?> userManager) {
         jdbi
                 .registerRowMapper(Ticket.class, new TicketMapper(userManager))
