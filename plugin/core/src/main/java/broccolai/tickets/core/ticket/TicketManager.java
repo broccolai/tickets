@@ -99,15 +99,15 @@ public final class TicketManager implements EventListener {
     /**
      * Get the most recent (highest id) ticket, filtered with a uuid and ticket statuses
      *
-     * @param uuid     Unique id
+     * @param user     User instance
      * @param statuses Statuses to filter with
      * @return Optional ticket
      */
-    public @NonNull Optional<Ticket> getRecentTicket(final @NonNull UUID uuid, final @NonNull TicketStatus... statuses) {
+    public @NonNull Optional<Ticket> getRecentTicket(final @NonNull User user, final @NonNull TicketStatus... statuses) {
         try {
             int id = this.jdbi.withHandle(handle -> {
                 return handle.createQuery(SQLQueries.SELECT_HIGHEST_ID_WHERE.get())
-                        .bind("uuid", uuid)
+                        .bind("uuid", user.getUniqueId())
                         .mapTo(Integer.class)
                         .findFirst()
                         .orElseThrow(Exception::new);
@@ -321,7 +321,7 @@ public final class TicketManager implements EventListener {
             handle.createUpdate(SQLQueries.UPDATE_TICKET.get())
                     .bind("id", ticket.getId())
                     .bind("status", ticket.getStatus())
-                    .bind("picker", ticket.getPickerUUID())
+                    .bind("picker", ticket.getPickerUniqueId().orElse(null))
                     .execute();
         });
     }
@@ -403,7 +403,7 @@ public final class TicketManager implements EventListener {
         TicketLocation location = soul.currentLocation();
 
         int id = this.insertTicket(uuid, location);
-        Ticket ticket = new Ticket(id, uuid, location, TicketStatus.OPEN, null);
+        Ticket ticket = new Ticket(userManager, id, uuid, location, TicketStatus.OPEN, null);
 
         ticket.withMessage(message);
         this.insertMessage(id, message);
