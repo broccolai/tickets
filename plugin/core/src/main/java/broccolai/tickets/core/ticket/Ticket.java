@@ -4,10 +4,16 @@ import broccolai.tickets.core.exceptions.TicketClosed;
 import broccolai.tickets.core.exceptions.TicketOpen;
 import broccolai.tickets.core.message.Message;
 import broccolai.tickets.core.message.MessageReason;
+import broccolai.tickets.core.user.User;
+import broccolai.tickets.core.user.UserManager;
 import broccolai.tickets.core.utilities.Dirtyable;
 import broccolai.tickets.core.utilities.TicketLocation;
 import broccolai.tickets.core.utilities.TimeUtilities;
 import com.google.gson.JsonObject;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.event.HoverEvent;
+import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.minimessage.Template;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -275,26 +281,63 @@ public final class Ticket implements Dirtyable {
      * @return Get templates
      */
     public @NonNull Template[] templates() {
-        Template[] results = new Template[11];
+        Template[] results = new Template[12];
 
         results[0] = Template.of("id", String.valueOf(this.id));
 
         Message message = this.currentMessage();
-        results[1] = Template.of("message", message.getData());
-        results[2] = Template.of("date", TimeUtilities.formatted(message.getDate()));
 
-        results[3] = Template.of("status", this.status.name());
-        results[4] = Template.of("color", this.status.getColor().asHexString());
+        String messageData = message.getData();
+        results[1] = Template.of("message", messageData);
 
-        // todo
-        results[5] = Template.of("player", this.playerUUID.toString());
-        // todo
-        results[6] = Template.of("picker", this.getPicker().map(Object::toString).orElse("unpicked"));
+        String messageDate = TimeUtilities.formatted(message.getDate());
+        results[2] = Template.of("date", messageData);
 
-        results[7] = Template.of("world", this.location.getWorld());
-        results[8] = Template.of("x", String.valueOf(this.location.getX()));
-        results[9] = Template.of("y", String.valueOf(this.location.getY()));
-        results[10] = Template.of("z", String.valueOf(this.location.getZ()));
+        String status = this.status.name();
+        results[3] = Template.of("status", status);
+
+        TextColor color = this.status.getColor();
+        results[4] = Template.of("color", color.asHexString());
+
+        String player = this.getPlayer().getName();
+        results[5] = Template.of("player", player);
+
+        String picker = this.getPicker().map(User::getName).orElse("unpicked");
+        results[6] = Template.of("picker", picker);
+
+        String world = this.location.getWorld();
+        results[7] = Template.of("world", world);
+
+        String x = String.valueOf(this.location.getX());
+        results[8] = Template.of("x", x);
+
+        String y = String.valueOf(this.location.getY());
+        results[9] = Template.of("y", y);
+
+        String z = String.valueOf(this.location.getZ());
+        results[10] = Template.of("z", z);
+
+        TextComponent.Builder identifier = Component.text()
+                .content("#")
+                .color(this.status.getColor())
+                .append(Component.text(this.id));
+
+        final HoverEvent<Component> hover = HoverEvent.showText(
+                Component.text()
+                        .append(
+                                Component.text()
+                                    .content("Ticket ")
+                                    .append(identifier.build()),
+                                Component.newline(),
+                                Component.text("Status: " + status)
+                        )
+        );
+
+        Component complete = identifier
+                .hoverEvent(hover)
+                .build();
+
+        results[11] = Template.of("ticket", complete);
 
         return results;
     }
