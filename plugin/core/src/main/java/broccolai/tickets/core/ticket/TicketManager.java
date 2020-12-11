@@ -348,6 +348,15 @@ public final class TicketManager implements EventListener {
         return idStorage;
     }
 
+    public void saveAll() {
+        this.ticketCache.asMap().forEach((id, ticket) -> {
+
+            if (ticket.isDirty()) {
+                this.updateTicket(ticket);
+            }
+        });
+    }
+
     private @NonNull String joinSetToInt(final @NonNull Set<Integer> input) {
         StringBuilder sb = new StringBuilder();
 

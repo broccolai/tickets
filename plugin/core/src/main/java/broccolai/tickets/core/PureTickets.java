@@ -24,6 +24,7 @@ public final class PureTickets<C, P extends C, S extends PlayerSoul<C, P>> {
     private TaskManager taskManager;
     private NotificationManager<?> notificationManager;
     private UserManager<C, P, S> userManager;
+    private TicketManager ticketManager;
 
     /**
      * Start a PureTickets module
@@ -51,7 +52,7 @@ public final class PureTickets<C, P extends C, S extends PlayerSoul<C, P>> {
         notificationManager = new NotificationManager<>(jdbi, eventBus, userManager);
 
         DiscordManager discordManager = new DiscordManager(this.platform.getLogger(), config);
-        TicketManager ticketManager = new TicketManager(eventBus, config, jdbi, taskManager);
+        this.ticketManager = new TicketManager(eventBus, userManager, config, jdbi, taskManager);
 
 
         TicketsCommandManager<C> commandManager = this.platform.getCommandManager();
@@ -82,6 +83,10 @@ public final class PureTickets<C, P extends C, S extends PlayerSoul<C, P>> {
 
         if (this.userManager != null) {
             this.userManager.saveAll();
+        }
+
+        if (this.ticketManager != null) {
+            this.ticketManager.saveAll();
         }
     }
 
