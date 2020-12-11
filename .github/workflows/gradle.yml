@@ -33,4 +33,4 @@ jobs:
     - uses: actions/upload-artifact@v2
       with:
           name: tickets.jar
-          path: plugin/build/libs/PureTickets.jar
+          path: plugin/build/libs/tickets-bukkit.jar
