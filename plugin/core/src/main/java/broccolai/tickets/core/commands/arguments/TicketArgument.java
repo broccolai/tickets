@@ -6,6 +6,7 @@ import broccolai.tickets.core.ticket.TicketIdStorage;
 import broccolai.tickets.core.ticket.TicketManager;
 import broccolai.tickets.core.ticket.TicketStatus;
 import broccolai.tickets.core.user.Soul;
+import broccolai.tickets.core.user.User;
 import cloud.commandframework.arguments.CommandArgument;
 import cloud.commandframework.arguments.parser.ArgumentParseResult;
 import cloud.commandframework.arguments.parser.ArgumentParser;
@@ -60,10 +61,10 @@ public final class TicketArgument<C> extends CommandArgument<Soul<C>, Ticket> {
                 final @NonNull Queue<String> inputQueue
         ) {
             TicketManager ticketManager = commandContext.get("ticketManager");
-            UUID target;
+            User target;
 
             if (issuer) {
-                target = commandContext.getSender().getUniqueId();
+                target = commandContext.getSender().asUser();
             } else {
                 target = commandContext.get("target");
             }
@@ -76,7 +77,7 @@ public final class TicketArgument<C> extends CommandArgument<Soul<C>, Ticket> {
                     @SuppressWarnings("ConstantConditions") final int inputId = Integer.parseInt(input);
                     ticket = ticketManager.getTicket(inputId).orElse(null);
 
-                    if (ticket != null && ticket.getPlayerUUID() != target) {
+                    if (ticket != null && !ticket.getPlayer().equals(target)) {
                         ticket = null;
                     }
                 } catch (NumberFormatException e) {
@@ -112,7 +113,8 @@ public final class TicketArgument<C> extends CommandArgument<Soul<C>, Ticket> {
                 if (issuer) {
                     uuid = commandContext.getSender().getUniqueId();
                 } else {
-                    uuid = commandContext.get("target");
+                    User user = commandContext.get("target");
+                    uuid = user.getUniqueId();
                 }
 
                 List<String> ids = new ArrayList<>();
