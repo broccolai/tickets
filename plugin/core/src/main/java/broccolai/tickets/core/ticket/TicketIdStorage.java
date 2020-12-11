@@ -45,10 +45,17 @@ public final class TicketIdStorage implements EventListener {
     public @NonNull List<Integer> getIds(final UUID uuid, final TicketStatus... statuses) {
         Set<Integer> results = new HashSet<>(uniqueIdLinks.get(uuid));
 
-        for (final TicketStatus status : statuses) {
-            results.addAll(ticketStatusLinks.get(status));
+        if (statuses.length == 0) {
+            return new ArrayList<>(results);
         }
 
+        Set<Integer> toIntersect = new HashSet<>();
+
+        for (final TicketStatus status : statuses) {
+            toIntersect.addAll(ticketStatusLinks.get(status));
+        }
+
+        results.retainAll(toIntersect);
         return new ArrayList<>(results);
     }
 
@@ -60,7 +67,7 @@ public final class TicketIdStorage implements EventListener {
     @Subscribe
     public void onCreate(final @NonNull TicketCreationEvent event) {
         Ticket ticket = event.getTicket();
-        this.update(ticket.getId(), ticket.getPlayerUUID(), ticket.getStatus());
+        this.update(ticket.getId(), ticket.getPlayerUniqueID(), ticket.getStatus());
     }
 
     private void update(final int id, final @NonNull UUID uniqueId, final @NonNull TicketStatus status) {
