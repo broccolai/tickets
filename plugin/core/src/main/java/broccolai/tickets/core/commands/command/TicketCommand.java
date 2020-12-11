@@ -126,24 +126,16 @@ public final class TicketCommand<C> extends BaseCommand<C> {
         Soul<C> soul = c.getSender();
         Ticket ticket = c.get("ticket");
 
-        try {
-            ticket.update(c.get("message"));
-            this.eventManager.post(new NotificationEvent(NotificationReason.UPDATE_TICKET, soul, null, ticket));
-        } catch (PureException e) {
-            soul.sendMessage(e.getComponent());
-        }
+        ticket.update(c.get("message"));
+        this.eventManager.post(new NotificationEvent(NotificationReason.UPDATE_TICKET, soul, null, ticket));
     }
 
     private void processClose(final @NonNull CommandContext<Soul<C>> c) {
         Soul<C> soul = c.getSender();
         Ticket ticket = c.get("ticket");
 
-        try {
-            ticket.close(soul.getUniqueId());
-            this.eventManager.post(new NotificationEvent(NotificationReason.CLOSE_TICKET, soul, null, ticket));
-        } catch (PureException e) {
-            soul.sendMessage(e.getComponent());
-        }
+        ticket.close(soul.getUniqueId());
+        this.eventManager.post(new NotificationEvent(NotificationReason.CLOSE_TICKET, soul, null, ticket));
     }
 
     private void processList(final @NonNull CommandContext<Soul<C>> c) {

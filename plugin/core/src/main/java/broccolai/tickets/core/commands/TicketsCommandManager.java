@@ -6,6 +6,7 @@ import broccolai.tickets.core.commands.command.TicketCommand;
 import broccolai.tickets.core.commands.command.TicketsCommand;
 import broccolai.tickets.core.configuration.Config;
 import broccolai.tickets.core.events.TicketsEventBus;
+import broccolai.tickets.core.exceptions.PureException;
 import broccolai.tickets.core.locale.Message;
 import broccolai.tickets.core.ticket.TicketManager;
 import broccolai.tickets.core.user.Soul;
@@ -58,6 +59,10 @@ public abstract class TicketsCommandManager<C> {
                     InvalidCommandSenderException icse = (InvalidCommandSenderException) ex;
                     String className = icse.getRequiredSender().getSimpleName();
                     return Message.EXCEPTION__INVALID_SENDER.use(Template.of("sender", className));
+                })
+                .withHandler(MinecraftExceptionHandler.ExceptionType.COMMAND_EXECUTION, (soul, ex) -> {
+                    PureException exception = (PureException) ex.getCause();
+                    return exception.getComponent();
                 })
                 .withArgumentParsingHandler()
                 .withInvalidSyntaxHandler()

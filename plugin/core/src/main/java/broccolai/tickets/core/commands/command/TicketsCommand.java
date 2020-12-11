@@ -204,12 +204,8 @@ public final class TicketsCommand<C> extends BaseCommand<C> {
         Soul<C> soul = c.getSender();
         Ticket ticket = c.get("ticket");
 
-        try {
-            ticket.pick(soul.getUniqueId());
-            this.eventBus.post(new NotificationEvent(NotificationReason.CLAIM_TICKET, soul, ticket.getPlayerUniqueID(), ticket));
-        } catch (PureException e) {
-            soul.sendMessage(e.getComponent());
-        }
+        ticket.pick(soul.getUniqueId());
+        this.eventBus.post(new NotificationEvent(NotificationReason.CLAIM_TICKET, soul, ticket.getPlayerUniqueID(), ticket));
     }
 
     private void processAssign(final @NonNull CommandContext<Soul<C>> c) {
@@ -217,37 +213,26 @@ public final class TicketsCommand<C> extends BaseCommand<C> {
         Ticket ticket = c.get("ticket");
         UUID staff = c.get("staff");
 
-        try {
-            ticket.pick(staff);
-            this.eventBus.post(new NotificationEvent(NotificationReason.ASSIGN_TICKET, soul, staff, ticket));
-        } catch (PureException e) {
-            soul.sendMessage(e.getComponent());
-        }
+        ticket.pick(staff);
+        this.eventBus.post(new NotificationEvent(NotificationReason.ASSIGN_TICKET, soul, staff, ticket));
     }
 
     private void processDone(final @NonNull CommandContext<Soul<C>> c) {
         Soul<C> soul = c.getSender();
         Ticket ticket = c.get("ticket");
 
-        try {
-            ticket.done(soul.getUniqueId());
-            this.eventBus.post(new NotificationEvent(NotificationReason.DONE_TICKET, soul, ticket.getPlayerUniqueID(), ticket));
-        } catch (PureException e) {
-            soul.sendMessage(e.getComponent());
-        }
+        ticket.done(soul.getUniqueId());
+        this.eventBus.post(new NotificationEvent(NotificationReason.DONE_TICKET, soul, ticket.getPlayerUniqueID(), ticket));
     }
 
     private void processUnclaim(final @NonNull CommandContext<Soul<C>> c) {
         Soul<C> soul = c.getSender();
         Ticket ticket = c.get("ticket");
 
-        try {
-            ticket.yield(soul.getUniqueId());
-            this.eventBus.post(new NotificationEvent(NotificationReason.UNCLAIM_TICKET, soul, ticket.getPlayerUniqueID(),
-                    ticket));
-        } catch (PureException e) {
-            soul.sendMessage(e.getComponent());
-        }
+        ticket.yield(soul.getUniqueId());
+        this.eventBus.post(new NotificationEvent(NotificationReason.UNCLAIM_TICKET, soul, ticket.getPlayerUniqueID(),
+                ticket
+        ));
     }
 
     private void processNote(final @NonNull CommandContext<Soul<C>> c) {
@@ -262,12 +247,8 @@ public final class TicketsCommand<C> extends BaseCommand<C> {
         Soul<C> soul = c.getSender();
         Ticket ticket = c.get("ticket");
 
-        try {
-            ticket.reopen(soul.getUniqueId());
-            this.eventBus.post(new NotificationEvent(NotificationReason.REOPEN_TICKET, soul, ticket.getPlayerUniqueID(), ticket));
-        } catch (PureException e) {
-            soul.sendMessage(e.getComponent());
-        }
+        ticket.reopen(soul.getUniqueId());
+        this.eventBus.post(new NotificationEvent(NotificationReason.REOPEN_TICKET, soul, ticket.getPlayerUniqueID(), ticket));
     }
 
     private void processTeleport(final @NonNull CommandContext<Soul<C>> c) {
