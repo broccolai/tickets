@@ -45,7 +45,6 @@ public final class BukkitUserManager extends UserManager<CommandSender, Player, 
     ) {
         super(eventManager, taskManager, jdbi);
         this.audiences = BukkitAudiences.create(plugin);
-
         this.initialise();
     }
 
@@ -84,13 +83,6 @@ public final class BukkitUserManager extends UserManager<CommandSender, Player, 
     }
 
     @Override
-    public @NonNull String getName(@NonNull final UUID uuid) {
-        String rawName = Bukkit.getOfflinePlayer(uuid).getName();
-
-        return rawName != null ? rawName : "unknown";
-    }
-
-    @Override
     public boolean isOnline(@NonNull final UUID uuid) {
         return Bukkit.getOfflinePlayer(uuid).isOnline();
     }
@@ -111,6 +103,13 @@ public final class BukkitUserManager extends UserManager<CommandSender, Player, 
 
         this.souls.put(player.getUniqueId(), soul);
         return soul;
+    }
+
+    @Override
+    protected @NonNull String internalGetName(@NonNull final UUID uuid) {
+        String rawName = Bukkit.getOfflinePlayer(uuid).getName();
+
+        return rawName != null ? rawName : "unknown";
     }
 
     /**

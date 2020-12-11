@@ -36,6 +36,7 @@ public abstract class UserManager<C, P extends C, S extends PlayerSoul<C, P>> im
     protected final Jdbi jdbi;
 
     protected final Map<UUID, Soul<C>> souls = new HashMap<>();
+    protected final Map<UUID, String> uuidName = new HashMap<>();
     protected Set<String> names;
 
     /**
@@ -101,14 +102,6 @@ public abstract class UserManager<C, P extends C, S extends PlayerSoul<C, P>> im
     public abstract @NonNull Optional<P> getPlayer(@NonNull UUID uuid);
 
     /**
-     * Get the name associated with a a unique id
-     *
-     * @param uuid Unique id
-     * @return Get the name linked
-     */
-    public abstract @NonNull String getName(@NonNull UUID uuid);
-
-    /**
      * Check if a players uuid is online
      *
      * @param uuid Unique id
@@ -131,6 +124,8 @@ public abstract class UserManager<C, P extends C, S extends PlayerSoul<C, P>> im
     protected abstract @NotNull ConsoleSoul<C> createConsoleSoul();
 
     protected abstract @NonNull S makeAndPut(@NonNull P player);
+
+    protected abstract @NonNull String internalGetName(@NonNull UUID uuid);
 
     /**
      * Create a Soul from the Command Sender and register it
@@ -168,6 +163,24 @@ public abstract class UserManager<C, P extends C, S extends PlayerSoul<C, P>> im
      */
     public @NonNull Optional<S> fromUniqueId(final @NonNull UUID uuid) {
         return this.getPlayer(uuid).map(this::fromPlayer);
+    }
+
+    public User getUser(final @NonNull UUID uuid) {
+        return new User.Simple(uuid, this.getName(uuid));
+    }
+
+    /**
+     * Get the name associated with a a unique id
+     *
+     * @param uuid Unique id
+     * @return Get the name linked
+     */
+    public final @NonNull String getName(final @NonNull UUID uuid) {
+        if (this.uuidName.containsKey(uuid)) {
+            return this.uuidName.get(uuid);
+        }
+
+        return this.internalGetName(uuid);
     }
 
     /**
