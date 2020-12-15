@@ -1,7 +1,7 @@
 dependencies {
     // Minecraft expectations
     compileOnlyApi("com.google.guava:guava:21.0")
-    compileOnlyApi("com.google.code.gson:gson:2.8.0")
+    compileOnlyApi("com.google.code.gson:gson:2.8.6")
 
     // Kyori/event
     api("net.kyori:event-api:4.0.0-SNAPSHOT")
