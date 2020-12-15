@@ -12,7 +12,7 @@ dependencies {
     api("net.kyori:adventure-text-minimessage:4.1.0-SNAPSHOT")
 
     // Jdbi
-    api("org.jdbi:jdbi3-core:3.16.0")
+    api("org.jdbi:jdbi3-core:3.18.0")
     api("com.github.ben-manes.caffeine:caffeine:2.8.6")
 
     // Corn
