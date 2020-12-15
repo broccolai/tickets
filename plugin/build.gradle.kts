@@ -102,7 +102,7 @@ subprojects {
 tasks {
     shadowJar {
         dependencies {
-            exclude(dependency("com.google.guava:guava:21.0"))
+            exclude(dependency("com.google.guava:guava:23.0"))
         }
 
         fun reloc(vararg deps: String) {
