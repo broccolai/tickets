@@ -8,5 +8,5 @@ client
   .then(() => console.info('PureTickets connected to Discord with token'))
   .catch(() => console.error('PureTickets backend could not connect to Discord, check your token'));
 
-const port = process.env.PORT || 400;
+const port = process.env.PORT || 10400;
 app.listen(port, () => console.info(`PureTickets backend running on port ${port}`));
