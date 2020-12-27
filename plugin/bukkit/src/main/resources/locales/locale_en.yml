@@ -11,12 +11,12 @@ sender:
   note_ticket: "<prefix> Note added to ticket <ticket>"
   teleport_ticket: "<prefix> Teleported to ticket <ticket> creation location"
 notify:
-  claim_ticket: "<user> has picked your ticket"
-  unclaim_ticket: "<user> has yielded your ticket"
-  assign_ticket: "<user> has assigned you to ticket <id>"
-  done_ticket: "<user> has completed your ticket"
-  reopen_ticket: "<user> has reopened your ticket"
-  note_ticket: "<user> has added a note to your ticket <note>"
+  claim_ticket: "<prefix> <user> has picked your ticket"
+  unclaim_ticket: "<prefix> <user> has yielded your ticket"
+  assign_ticket: "<prefix> <user> has assigned you to ticket <id>"
+  done_ticket: "<prefix> <user> has completed your ticket"
+  reopen_ticket: "<prefix> <user> has reopened your ticket"
+  note_ticket: "<prefix> <user> has added a note to your ticket <note>"
 announcement:
   new_ticket: "<prefix> <user> opened a new ticket <ticket><white> - <message>"
   update_ticket: "<prefix> <user> updated ticket <ticket><white> - <message>"
