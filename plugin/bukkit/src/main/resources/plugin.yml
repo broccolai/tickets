@@ -43,10 +43,10 @@ permissions:
     children:
       tickets.staff: true
       tickets.staff.show: true
-      tickets.staff.pick: true
+      tickets.staff.claim: true
       tickets.staff.assign: true
       tickets.staff.done: true
-      tickets.staff.yield: true
+      tickets.staff.unclaim: true
       tickets.staff.reopen: true
       tickets.staff.teleport: true
       tickets.staff.log: true
@@ -58,18 +58,18 @@ permissions:
   tickets.staff.show:
     default: op
     description: Allows a user to view a ticket
-  tickets.staff.pick:
+  tickets.staff.claim:
     default: op
-    description: Allows a user to pick a ticket
+    description: Allows a user to claim a ticket
   tickets.staff.assign:
     default: op
     description: Allows a user to assign a ticket to someone
   tickets.staff.done:
     default: op
     description: Allows a user to done-mark a ticket
-  tickets.staff.yield:
+  tickets.staff.unclaim:
     default: op
-    description: Allows a user to yield a ticket
+    description: Allows a user to unclaim a ticket
   tickets.staff.reopen:
     default: op
     description: Allows a user to reopen a ticket
