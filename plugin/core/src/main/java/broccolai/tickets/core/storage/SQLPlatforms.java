@@ -15,81 +15,54 @@ import broccolai.tickets.core.ticket.TicketIdStorage;
 import broccolai.tickets.core.ticket.TicketStats;
 import broccolai.tickets.core.user.UserManager;
 import broccolai.tickets.core.user.UserSettings;
-import broccolai.tickets.core.utilities.FileReader;
 import broccolai.tickets.core.utilities.TicketLocation;
-import com.google.gson.Gson;
-import io.leangen.geantyref.TypeToken;
-import net.kyori.adventure.text.Component;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.jdbi.v3.core.Jdbi;
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
 
 import java.io.File;
 import java.time.LocalDateTime;
-import java.util.Comparator;
-import java.util.List;
+import javax.sql.DataSource;
+
+import net.kyori.adventure.text.Component;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.flywaydb.core.Flyway;
+import org.jdbi.v3.core.Jdbi;
 
 public final class SQLPlatforms {
-
-    private static final Gson GSON = new Gson();
-    private static final String MIGRATION_PATH = "/queries/migrations/";
 
     private SQLPlatforms() {
     }
 
     /**
+     * @param loader     Temp
      * @param rootFolder Root folder to look in when using sqlite
      * @param config     Configuration instance
      * @return Constructed Jdbi
      */
-    public static @NonNull Jdbi construct(
+    public @NonNull
+    static Jdbi construct(
+            final @NonNull ClassLoader loader,
             final @NonNull File rootFolder,
             final @NonNull Config config
     ) {
-        final Jdbi jdbi;
+        final boolean isMySQL = config.getStorageMySQL();
+        final DataSource source;
 
-        if (config.getStorageMySQL()) {
-            jdbi = mysql(config);
+        if (isMySQL) {
+            source = mysql(config);
         } else {
-            jdbi = sqlite(rootFolder);
+            source = sqlite(rootFolder);
         }
 
-        String jsonData = FileReader.fromPath(MIGRATION_PATH + "migrations-index.json");
+        final Jdbi jdbi = Jdbi.create(source);
 
-        List<MigrationEntry> migrations = GSON
-                .fromJson(
-                        jsonData,
-                        new TypeToken<List<MigrationEntry>>() {
-                        }.getType()
-                );
+        Flyway flyway = Flyway.configure(loader)
+                .baselineOnMigrate(true)
+                .locations("queries/migrations")
+                .dataSource(source)
+                .load();
 
-        jdbi.useTransaction(handle -> {
-            SQLQueries.CREATE_META.forEach(handle::execute);
-
-            int version = handle.createQuery(SQLQueries.SELECT_VERSION.get())
-                    .mapTo(int.class)
-                    .findOne()
-                    .orElse(0);
-
-            migrations.stream()
-                    .filter(migration -> migration.getVersion() > version)
-                    .sorted(Comparator.comparingInt(MigrationEntry::getVersion))
-                    .forEach(migration -> {
-                        // todo:
-                        System.out.println("Migrating database to version " + migration.getVersion() + "...");
-                        String queries = FileReader.fromPath(MIGRATION_PATH + migration.getPath());
-
-                        for (final String query : queries.split(";")) {
-                            if (query.trim().isEmpty()) {
-                                continue;
-                            }
-                            handle.execute(query);
-                        }
-
-                        handle.createUpdate(SQLQueries.UPDATE_VERSION.get())
-                                .bind("version", migration.getVersion())
-                                .execute();
-                    });
-        });
+        flyway.migrate();
 
         return jdbi;
     }
@@ -112,17 +85,24 @@ public final class SQLPlatforms {
                 .registerColumnMapper(TicketLocation.class, new LocationMapper());
     }
 
-    private static @NonNull Jdbi mysql(final @NonNull Config config) {
-        return Jdbi.create(
-                "jdbc:mysql://" + config.getStorageHost() + "/" + config.getStorageName(),
-                config.getStorageUser(),
-                config.getStoragePassword()
-        );
+    private static @NonNull DataSource mysql(final @NonNull Config config) {
+        HikariConfig hikariConfig = new HikariConfig();
+        hikariConfig.setJdbcUrl("jdbc:mysql://" + config.getStorageHost() + "/" + config.getStorageName());
+        hikariConfig.setUsername(config.getStorageUser());
+        hikariConfig.setPassword(config.getStoragePassword());
+        hikariConfig.setMaximumPoolSize(10);
+
+        return new HikariDataSource(hikariConfig);
     }
 
-    private static @NonNull Jdbi sqlite(final @NonNull File rootFolder) {
+    private static @NonNull DataSource sqlite(final @NonNull File rootFolder) {
         final File file = new File(rootFolder, "tickets.db");
-        return Jdbi.create("jdbc:sqlite:" + file.toString());
+
+        HikariConfig hikariConfig = new HikariConfig();
+        hikariConfig.setJdbcUrl("jdbc:sqlite:" + file.toString());
+        hikariConfig.setMaximumPoolSize(10);
+
+        return new HikariDataSource(hikariConfig);
     }
 
     @SuppressWarnings("unused")

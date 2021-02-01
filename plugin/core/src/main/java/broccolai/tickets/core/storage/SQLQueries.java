@@ -6,7 +6,6 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import java.util.function.Consumer;
 
 public enum SQLQueries {
-    CREATE_META,
     INSERT_TICKET,
     INSERT_MESSAGE,
     INSERT_SETTINGS,

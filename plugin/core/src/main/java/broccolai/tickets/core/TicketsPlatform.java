@@ -98,4 +98,9 @@ public interface TicketsPlatform<C, P extends C, S extends PlayerSoul<C, P>> {
      */
     @NonNull TaskManager getTaskManager();
 
+    /**
+     * @return Temp
+     */
+    @NonNull ClassLoader getCustomClassLoader();
+
 }

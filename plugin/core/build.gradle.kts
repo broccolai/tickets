@@ -16,7 +16,7 @@ dependencies {
     api("com.github.ben-manes.caffeine:caffeine:2.8.6")
 
     // Corn
-    api("broccolai:corn-core:1.1.1")
+    api("broccolai:corn-core:1.0.0")
 
     // Command library
     api("cloud.commandframework:cloud-core:1.2.0")
@@ -27,4 +27,8 @@ dependencies {
 
     // Logging
     api("org.slf4j:slf4j-simple:1.7.13")
+
+    // Flyway
+    implementation("com.zaxxer:HikariCP:3.4.5")
+    implementation("org.flywaydb:flyway-core:7.5.2")
 }

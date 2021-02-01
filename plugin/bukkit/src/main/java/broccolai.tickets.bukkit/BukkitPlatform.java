@@ -165,4 +165,9 @@ public final class BukkitPlatform extends JavaPlugin implements TicketsPlatform<
         return new BukkitTaskManager(this);
     }
 
+    @Override
+    public @NonNull ClassLoader getCustomClassLoader() {
+        return this.getClassLoader();
+    }
+
 }
