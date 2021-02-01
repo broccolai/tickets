@@ -10,7 +10,7 @@ dependencies {
     api("net.kyori:adventure-platform-bukkit:4.0.0-SNAPSHOT")
 
     // Cloud
-    api("cloud.commandframework:cloud-paper:1.2.0")
+    api("cloud.commandframework:cloud-paper:1.4.0")
 
     // Paper lib for async tp
     api("io.papermc:paperlib:1.0.5")

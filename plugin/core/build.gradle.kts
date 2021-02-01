@@ -19,8 +19,8 @@ dependencies {
     api("broccolai.corn:corn-core:1.0.0")
 
     // Command library
-    api("cloud.commandframework:cloud-core:1.2.0")
-    api("cloud.commandframework:cloud-minecraft-extras:1.2.0")
+    api("cloud.commandframework:cloud-core:1.4.0")
+    api("cloud.commandframework:cloud-minecraft-extras:1.4.0")
 
     // Http library
     api("com.intellectualsites.http:HTTP4J:1.3-SNAPSHOT")
