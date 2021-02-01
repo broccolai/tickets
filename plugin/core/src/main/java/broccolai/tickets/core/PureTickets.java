@@ -58,7 +58,7 @@ public final class PureTickets<C, P extends C, S extends PlayerSoul<C, P>> {
 
 
         TicketsCommandManager<C> commandManager = this.platform.getCommandManager();
-        commandManager.initialise(this, config, eventBus, userManager, ticketManager);
+        commandManager.initialise(this, config, eventBus, userManager, ticketManager, jdbi);
 
         taskManager.addRepeatingTask(new ReminderTask(userManager, ticketManager),
                 TimeUtilities.minuteToLong(config.getReminderDelay()), TimeUtilities.minuteToLong(config.getReminderRepeat())

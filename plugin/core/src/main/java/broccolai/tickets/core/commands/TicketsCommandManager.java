@@ -14,12 +14,19 @@ import broccolai.tickets.core.user.UserManager;
 import cloud.commandframework.CommandManager;
 import cloud.commandframework.context.CommandContext;
 import cloud.commandframework.exceptions.InvalidCommandSenderException;
+import cloud.commandframework.extra.confirmation.CommandConfirmationManager;
 import cloud.commandframework.minecraft.extras.MinecraftExceptionHandler;
+
+import java.util.concurrent.TimeUnit;
+
 import net.kyori.adventure.audience.ForwardingAudience;
+import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.Template;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.util.function.Function;
+
+import org.jdbi.v3.core.Jdbi;
 
 public abstract class TicketsCommandManager<C> {
 
@@ -31,13 +38,15 @@ public abstract class TicketsCommandManager<C> {
      * @param eventBus      Event bus
      * @param userManager   User manager
      * @param ticketManager Ticket manager
+     * @param jdbi          Jdbi instance
      */
     public void initialise(
             final @NonNull PureTickets<C, ?, ?> pureTickets,
             final @NonNull Config config,
             final @NonNull TicketsEventBus eventBus,
             final @NonNull UserManager<C, ?, ?> userManager,
-            final @NonNull TicketManager ticketManager
+            final @NonNull TicketManager ticketManager,
+            final @NonNull Jdbi jdbi
     ) {
         CommandManager<Soul<C>> cloudManager = this.getCommandManager(userManager::fromSender, Soul::asSender);
 
@@ -47,7 +56,18 @@ public abstract class TicketsCommandManager<C> {
             commandContext.store("userManager", userManager);
         });
 
-        new PureTicketsCommand<>(cloudManager, pureTickets);
+        CommandConfirmationManager<Soul<C>> confirmationManager = new CommandConfirmationManager<>(
+                30L,
+                TimeUnit.SECONDS,
+                context -> context.getCommandContext()
+                        .getSender()
+                        .sendMessage(Component.text("Confirmation required! run /puretickets confirm")),
+                sender -> sender.sendMessage(Component.text("You don't have any pending commands"))
+        );
+
+        confirmationManager.registerConfirmationProcessor(cloudManager);
+
+        new PureTicketsCommand<>(cloudManager, pureTickets, confirmationManager, jdbi);
         new TicketCommand<>(cloudManager, config, eventBus, userManager, ticketManager);
         new TicketsCommand<>(cloudManager, config, eventBus, userManager, ticketManager);
 

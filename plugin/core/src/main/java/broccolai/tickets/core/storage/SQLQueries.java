@@ -30,7 +30,8 @@ public enum SQLQueries {
     EXISTS_SETTINGS,
     COUNT_TICKETS,
     COUNT_TICKETS_UUID,
-    DELETE_NOTIFICATIONS;
+    DELETE_NOTIFICATIONS,
+    PURGE_EVERYTHING;
 
     private final String query;
 
