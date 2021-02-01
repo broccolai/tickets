@@ -26,7 +26,7 @@ dependencies {
     api("com.intellectualsites.http:HTTP4J:1.3-SNAPSHOT")
 
     // Logging
-    api("org.slf4j:slf4j-simple:1.7.13")
+    api("org.slf4j:slf4j-simple:1.7.30")
 
     // Flyway
     implementation("com.zaxxer:HikariCP:3.4.5")
