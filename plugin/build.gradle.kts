@@ -44,12 +44,8 @@ allprojects {
         }
 
         maven {
-            name = "GitHub Packages"
-            url = uri("https://maven.pkg.github.com/broccolai/corn")
-            credentials {
-                username = System.getenv("GH_USERNAME") ?: System.getenv("GITHUB_ACTOR")
-                password = System.getenv("GH_TOKEN") ?: System.getenv("GITHUB_TOKEN")
-            }
+            name = "broccolai"
+            url = uri("https://repo.broccol.ai")
         }
     }
 
