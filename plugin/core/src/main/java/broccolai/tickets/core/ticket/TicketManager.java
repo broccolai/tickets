@@ -296,6 +296,8 @@ public final class TicketManager implements EventListener {
                     .findFirst()
                     .orElse(1);
 
+            id++;
+
             String world = location.getWorld();
             String worldSerialised = world != null ? world : "null";
             String locationSerialised = (worldSerialised + "|" + location.getX() + "|" + location.getY() + "|" + location.getZ());
