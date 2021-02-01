@@ -207,13 +207,13 @@ public abstract class UserManager<C, P extends C, S extends PlayerSoul<C, P>> im
     public @NonNull UserSettings loadSettings(final @NonNull UUID uuid) {
         return this.jdbi.withHandle(handle -> {
             boolean exists = handle.createQuery(SQLQueries.EXISTS_SETTINGS.get())
-                    .bind("uuid", uuid)
+                    .bind("uuid", uuid.toString())
                     .mapTo(Boolean.class)
                     .first();
 
             if (exists) {
                 return handle.createQuery(SQLQueries.SELECT_SETTINGS.get())
-                        .bind("uuid", uuid)
+                        .bind("uuid", uuid.toString())
                         .mapTo(UserSettings.class)
                         .first();
             }
@@ -221,7 +221,7 @@ public abstract class UserManager<C, P extends C, S extends PlayerSoul<C, P>> im
             UserSettings settings = new UserSettings(true);
 
             handle.createUpdate(SQLQueries.INSERT_SETTINGS.get())
-                    .bind("uuid", uuid)
+                    .bind("uuid", uuid.toString())
                     .bind("announcements", settings.getAnnouncements())
                     .execute();
 
@@ -252,7 +252,7 @@ public abstract class UserManager<C, P extends C, S extends PlayerSoul<C, P>> im
         UserSettings settings = soul.preferences();
         this.jdbi.useHandle(handle -> {
             handle.createUpdate(SQLQueries.UPDATE_SETTINGS.get())
-                    .bind("uuid", soul.getUniqueId())
+                    .bind("uuid", soul.getUniqueId().toString())
                     .bind("announcements", settings.getAnnouncements())
                     .execute();
         });

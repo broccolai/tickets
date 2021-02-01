@@ -56,7 +56,7 @@ public final class NotificationManager<S extends PlayerSoul<?, ?>> implements Ev
             PreparedBatch batch = handle.prepareBatch(SQLQueries.INSERT_NOTIFICATION.get());
 
             this.pendingNotifications.forEach((uuid, string) -> batch
-                    .bind("uuid", uuid)
+                    .bind("uuid", uuid.toString())
                     .bind("message", MINI.serialize(string))
                     .add()
             );
@@ -121,7 +121,7 @@ public final class NotificationManager<S extends PlayerSoul<?, ?>> implements Ev
 
         this.jdbi.useHandle(handle -> {
             handle.createQuery(SQLQueries.SELECT_NOTIFICATIONS.get())
-                    .bind("uuid", soul.getUniqueId())
+                    .bind("uuid", soul.getUniqueId().toString())
                     .mapTo(Component.class)
                     .forEach(soul::sendMessage);
 
@@ -130,7 +130,7 @@ public final class NotificationManager<S extends PlayerSoul<?, ?>> implements Ev
                     .forEach(soul::sendMessage);
 
             handle.createUpdate(SQLQueries.DELETE_NOTIFICATIONS.get())
-                    .bind("uuid", soul.getUniqueId())
+                    .bind("uuid", soul.getUniqueId().toString())
                     .execute();
         });
     }

@@ -108,7 +108,7 @@ public final class TicketManager implements EventListener {
         try {
             int id = this.jdbi.withHandle(handle -> {
                 return handle.createQuery(SQLQueries.SELECT_HIGHEST_ID_WHERE.get())
-                        .bind("uuid", user.getUniqueId())
+                        .bind("uuid", user.getUniqueId().toString())
                         .mapTo(Integer.class)
                         .findFirst()
                         .orElseThrow(Exception::new);
@@ -221,7 +221,7 @@ public final class TicketManager implements EventListener {
     public int countTickets(final @NonNull UUID uuid, final @NonNull TicketStatus... statuses) {
         return this.jdbi.withHandle(handle -> {
             return handle.createQuery(SQLQueries.COUNT_TICKETS_UUID.get())
-                    .bind("uuid", uuid)
+                    .bind("uuid", uuid.toString())
                     .bindList("statuses", Arrays.asList(statuses))
                     .mapTo(Integer.class)
                     .first();
@@ -250,7 +250,7 @@ public final class TicketManager implements EventListener {
     public TicketStats getStats(final @NonNull UUID uuid) {
         return this.jdbi.withHandle(handle -> {
             return handle.createQuery(SQLQueries.SELECT_TICKET_STATS_UUID.get())
-                    .bind("uuid", uuid)
+                    .bind("uuid", uuid.toString())
                     .mapTo(TicketStats.class)
                     .first();
         });
@@ -302,7 +302,7 @@ public final class TicketManager implements EventListener {
 
             handle.createUpdate(SQLQueries.INSERT_TICKET.get())
                     .bind("id", id)
-                    .bind("uuid", uuid)
+                    .bind("uuid", uuid.toString())
                     .bind("status", TicketStatus.OPEN.name())
                     .bind("picker", (UUID) null)
                     .bind("location", locationSerialised)
@@ -339,7 +339,7 @@ public final class TicketManager implements EventListener {
                     .bind("ticket", ticketId)
                     .bind("reason", message.getReason())
                     .bind("data", message.getData())
-                    .bind("sender", message.getSender())
+                    .bind("sender", String.valueOf(message.getSender()))
                     .bind("date", message.getDate())
                     .execute();
         });
