@@ -64,7 +64,7 @@ public final class PureTickets<C, P extends C, S extends PlayerSoul<C, P>> {
                 TimeUtilities.minuteToLong(config.getReminderDelay()), TimeUtilities.minuteToLong(config.getReminderRepeat())
         );
 
-        eventBus.registerListeners(userManager, notificationManager, ticketManager, ticketManager.getIdStorage());
+        eventBus.registerListeners(userManager, notificationManager, ticketManager, ticketManager.getIdStorage(), discordManager);
     }
 
     /**
