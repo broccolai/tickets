@@ -25,7 +25,13 @@ public final class MessageMapper implements RowMapper<Message> {
         MessageReason reason = reasonMapper.map(rs, "reason", ctx);
         LocalDateTime date = dateMapper.map(rs, "date", ctx);
         String data = rs.getString("data");
-        UUID sender = uuidMapper.map(rs, "sender", ctx);
+        UUID sender;
+
+        if (rs.getString("sender").equals("null")) {
+            sender = null;
+        } else {
+            sender = uuidMapper.map(rs, "sender", ctx);
+        }
 
         return Message.load(reason, date, data, sender);
     }
