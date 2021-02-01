@@ -358,6 +358,7 @@ public final class Ticket implements Dirtyable {
         json.addProperty("id", this.id);
 
         JsonObject playerJson = new JsonObject();
+        playerJson.addProperty("name", this.userManager.getName(this.playerUUID));
         playerJson.addProperty("uuid", this.playerUUID.toString());
         json.add("player", playerJson);
 
