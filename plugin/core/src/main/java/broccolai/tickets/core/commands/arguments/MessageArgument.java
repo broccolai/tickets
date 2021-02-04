@@ -2,7 +2,7 @@ package broccolai.tickets.core.commands.arguments;
 
 import broccolai.tickets.core.message.Message;
 import broccolai.tickets.core.message.MessageReason;
-import broccolai.tickets.core.user.Soul;
+import broccolai.tickets.core.model.user.UserAudience;
 import cloud.commandframework.arguments.CommandArgument;
 import cloud.commandframework.arguments.parser.ArgumentParseResult;
 import cloud.commandframework.arguments.parser.ArgumentParser;
@@ -13,29 +13,28 @@ import java.time.LocalDateTime;
 import java.util.Queue;
 import java.util.StringJoiner;
 
-public final class MessageArgument<C> extends CommandArgument<Soul<C>, Message> {
+public final class MessageArgument extends CommandArgument<UserAudience, Message> {
 
     private MessageArgument(final boolean required, final @NonNull String name) {
-        super(required, name, new MessageParser<>(), Message.class);
+        super(required, name, new MessageParser(), Message.class);
     }
 
     /**
      * Create a new required command argument
      *
      * @param name Argument name
-     * @param <C>  Sender type
      * @return Created argument
      */
-    public static <C> @NonNull MessageArgument<C> of(final @NonNull String name) {
-        return new MessageArgument<>(true, name);
+    public static @NonNull MessageArgument of(final @NonNull String name) {
+        return new MessageArgument(true, name);
     }
 
 
-    private static final class MessageParser<C> implements ArgumentParser<Soul<C>, Message> {
+    private static final class MessageParser implements ArgumentParser<UserAudience, Message> {
 
         @Override
         public @NonNull ArgumentParseResult<Message> parse(
-                final @NonNull CommandContext<Soul<C>> commandContext,
+                final @NonNull CommandContext<UserAudience> commandContext,
                 final @NonNull Queue<String> inputQueue
         ) {
             String input = inputQueue.peek();

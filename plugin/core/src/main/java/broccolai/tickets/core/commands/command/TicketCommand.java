@@ -8,56 +8,64 @@ import broccolai.tickets.core.events.api.NotificationEvent;
 import broccolai.tickets.core.events.api.TicketConstructionEvent;
 import broccolai.tickets.core.exceptions.PureException;
 import broccolai.tickets.core.interactions.NotificationReason;
-import broccolai.tickets.core.locale.Message;
+import broccolai.tickets.core.model.user.PlayerUserAudience;
+import broccolai.tickets.core.model.user.UserAudience;
+import broccolai.tickets.core.service.MessageService;
 import broccolai.tickets.core.ticket.Ticket;
 import broccolai.tickets.core.ticket.TicketManager;
 import broccolai.tickets.core.ticket.TicketStatus;
-import broccolai.tickets.core.user.PlayerSoul;
-import broccolai.tickets.core.user.Soul;
 import broccolai.tickets.core.user.UserManager;
 import broccolai.tickets.core.utilities.Constants;
+import cloud.commandframework.ArgumentDescription;
 import cloud.commandframework.Command;
 import cloud.commandframework.CommandManager;
-import cloud.commandframework.Description;
 import cloud.commandframework.arguments.standard.EnumArgument;
 import cloud.commandframework.context.CommandContext;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.TextComponent;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.util.List;
 
-public final class TicketCommand<C> extends BaseCommand<C> {
+public final class TicketCommand<C> extends CommonCommands {
 
+    private final Config config;
+    private final MessageService messageService;
     private final TicketsEventBus eventManager;
+    private final UserManager<C, ?, ?> userManager;
     private final TicketManager ticketManager;
 
     /**
      * Create a new Ticket Command
      *
-     * @param manager       Command Manager
      * @param config        Config instance
      * @param eventManager  Event Manager
      * @param userManager   User Manager
      * @param ticketManager Ticket Manager
      */
     public TicketCommand(
-            final @NonNull CommandManager<Soul<C>> manager,
             final @NonNull Config config,
+            final @NonNull MessageService messageService,
             final @NonNull TicketsEventBus eventManager,
             final @NonNull UserManager<C, ?, ?> userManager,
             final @NonNull TicketManager ticketManager
     ) {
-        super(userManager);
+        this.config = config;
+        this.messageService = messageService;
         this.eventManager = eventManager;
+        this.userManager = userManager;
         this.ticketManager = ticketManager;
+    }
 
-        final Command.Builder<Soul<C>> builder = manager.commandBuilder("ticket", "ti")
-                .senderType(userManager.getPlayerSoulClass());
+    @Override
+    public void register(
+            @NonNull final CommandManager<@NonNull UserAudience> manager
+    ) {
+        final Command.Builder<UserAudience> builder = manager.commandBuilder("ticket", "ti")
+                .senderType(PlayerUserAudience.class);
 
         manager.command(builder.literal(
                 config.getAliasCreate().getFirst(),
-                Description.of("Create a ticket"),
+                ArgumentDescription.of("Create a ticket"),
                 config.getAliasCreate().getSecond()
         )
                 .permission(Constants.USER_PERMISSION + ".create")
@@ -66,7 +74,7 @@ public final class TicketCommand<C> extends BaseCommand<C> {
 
         manager.command(builder.literal(
                 config.getAliasUpdate().getFirst(),
-                Description.of("Update a ticket"),
+                ArgumentDescription.of("Update a ticket"),
                 config.getAliasUpdate().getSecond()
         )
                 .permission(Constants.USER_PERMISSION + ".update")
@@ -76,7 +84,7 @@ public final class TicketCommand<C> extends BaseCommand<C> {
 
         manager.command(builder.literal(
                 config.getAliasClose().getFirst(),
-                Description.of("Close a ticket"),
+                ArgumentDescription.of("Close a ticket"),
                 config.getAliasClose().getSecond()
         )
                 .permission(Constants.USER_PERMISSION + ".close")
@@ -85,7 +93,7 @@ public final class TicketCommand<C> extends BaseCommand<C> {
 
         manager.command(builder.literal(
                 config.getAliasList().getFirst(),
-                Description.of("List tickets"),
+                ArgumentDescription.of("List tickets"),
                 config.getAliasList().getSecond()
         )
                 .permission(Constants.USER_PERMISSION + ".list")
@@ -95,7 +103,7 @@ public final class TicketCommand<C> extends BaseCommand<C> {
 
         manager.command(builder.literal(
                 config.getAliasShow().getFirst(),
-                Description.of("Show a ticket"),
+                ArgumentDescription.of("Show a ticket"),
                 config.getAliasShow().getSecond()
         )
                 .permission(Constants.USER_PERMISSION + ".show")
@@ -104,7 +112,7 @@ public final class TicketCommand<C> extends BaseCommand<C> {
 
         manager.command(builder.literal(
                 config.getAliasLog().getFirst(),
-                Description.of("View a tickets log"),
+                ArgumentDescription.of("View a tickets log"),
                 config.getAliasLog().getSecond()
         )
                 .permission(Constants.USER_PERMISSION + ".log")
@@ -112,50 +120,43 @@ public final class TicketCommand<C> extends BaseCommand<C> {
                 .handler(c -> processLog(c.getSender(), c.get("ticket"))));
     }
 
-    private void processCreate(final @NonNull CommandContext<Soul<C>> c) {
-        PlayerSoul<C, ?> soul = (PlayerSoul<C, ?>) c.getSender();
-        TicketConstructionEvent constructionEvent = new TicketConstructionEvent(soul, c.get("message"));
+    private void processCreate(final @NonNull CommandContext<UserAudience> c) {
+        PlayerUserAudience playerUser = (PlayerUserAudience) c.getSender();
+        TicketConstructionEvent constructionEvent = new TicketConstructionEvent(playerUser, c.get("message"));
         this.eventManager.post(constructionEvent);
 
         constructionEvent.getException()
                 .map(PureException::getComponent)
-                .ifPresent(soul::sendActionBar);
+                .ifPresent(soul::sendMessage);
     }
 
-    private void processUpdate(final @NonNull CommandContext<Soul<C>> c) {
-        Soul<C> soul = c.getSender();
+    private void processUpdate(final @NonNull CommandContext<UserAudience> c) {
+        UserAudience soul = c.getSender();
         Ticket ticket = c.get("ticket");
 
         ticket.update(c.get("message"));
         this.eventManager.post(new NotificationEvent(NotificationReason.UPDATE_TICKET, soul, null, ticket));
     }
 
-    private void processClose(final @NonNull CommandContext<Soul<C>> c) {
-        Soul<C> soul = c.getSender();
+    private void processClose(final @NonNull CommandContext<UserAudience> c) {
+        UserAudience soul = c.getSender();
         Ticket ticket = c.get("ticket");
 
-        ticket.close(soul.getUniqueId());
+        ticket.close(soul.uuid());
         this.eventManager.post(new NotificationEvent(NotificationReason.CLOSE_TICKET, soul, null, ticket));
     }
 
-    private void processList(final @NonNull CommandContext<Soul<C>> c) {
-        Soul<C> soul = c.getSender();
+    private void processList(final @NonNull CommandContext<UserAudience> c) {
+        UserAudience soul = c.getSender();
         TicketStatus status = c.flags().getValue("status", null);
-        List<Ticket> tickets = ticketManager.getTickets(
-                soul.getUniqueId(),
+        List<Ticket> tickets = this.ticketManager.getTickets(
+                soul.uuid(),
                 status != null ? status : TicketStatus.OPEN,
                 TicketStatus.PICKED
         );
 
-        TextComponent.Builder builder = Component.text()
-                .append(Message.TITLE__YOUR_TICKETS.use());
-
-        tickets.forEach(ticket -> {
-            Component list = Message.FORMAT__LIST.use(ticket.templates());
-            builder.append(Component.newline(), list);
-        });
-
-        soul.sendMessage(builder);
+        Component component = this.messageService.commandsTicketList(tickets);
+        soul.sendMessage(component);
     }
 
 }

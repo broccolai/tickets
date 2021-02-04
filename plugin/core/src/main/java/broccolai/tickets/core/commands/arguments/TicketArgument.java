@@ -1,11 +1,11 @@
 package broccolai.tickets.core.commands.arguments;
 
 import broccolai.tickets.core.exceptions.TicketNotFound;
+import broccolai.tickets.core.model.user.UserAudience;
 import broccolai.tickets.core.ticket.Ticket;
 import broccolai.tickets.core.ticket.TicketIdStorage;
 import broccolai.tickets.core.ticket.TicketManager;
 import broccolai.tickets.core.ticket.TicketStatus;
-import broccolai.tickets.core.user.Soul;
 import broccolai.tickets.core.user.User;
 import cloud.commandframework.arguments.CommandArgument;
 import cloud.commandframework.arguments.parser.ArgumentParseResult;
@@ -19,10 +19,10 @@ import java.util.List;
 import java.util.Queue;
 import java.util.UUID;
 
-public final class TicketArgument<C> extends CommandArgument<Soul<C>, Ticket> {
+public final class TicketArgument extends CommandArgument<UserAudience, Ticket> {
 
     private TicketArgument(final boolean requiresId, final boolean issuer, final @NonNull TicketStatus... statuses) {
-        super(true, "ticket", new TicketParser<>(requiresId, issuer, statuses), Ticket.class);
+        super(true, "ticket", new TicketParser(requiresId, issuer, statuses), Ticket.class);
     }
 
     /**
@@ -31,19 +31,18 @@ public final class TicketArgument<C> extends CommandArgument<Soul<C>, Ticket> {
      * @param requiresId Should require an id
      * @param issuer     Parse from the sender
      * @param statuses   Applicable ticket statuses
-     * @param <C>        Command Sender type
      * @return Constructed ticket argument
      */
-    public static <C> @NonNull TicketArgument<C> of(
+    public static @NonNull TicketArgument of(
             final boolean requiresId,
             final boolean issuer,
             final @NonNull TicketStatus... statuses
     ) {
-        return new TicketArgument<>(requiresId, issuer, statuses);
+        return new TicketArgument(requiresId, issuer, statuses);
     }
 
 
-    private static final class TicketParser<C> implements ArgumentParser<Soul<C>, Ticket> {
+    private static final class TicketParser implements ArgumentParser<UserAudience, Ticket> {
 
         private final boolean requiresId;
         private final boolean issuer;
@@ -57,14 +56,14 @@ public final class TicketArgument<C> extends CommandArgument<Soul<C>, Ticket> {
 
         @Override
         public @NonNull ArgumentParseResult<Ticket> parse(
-                final @NonNull CommandContext<Soul<C>> commandContext,
+                final @NonNull CommandContext<UserAudience> commandContext,
                 final @NonNull Queue<String> inputQueue
         ) {
             TicketManager ticketManager = commandContext.get("ticketManager");
-            User target;
+            UserAudience target;
 
             if (issuer) {
-                target = commandContext.getSender().asUser();
+                target = commandContext.getSender();
             } else {
                 target = commandContext.get("target");
             }
@@ -102,7 +101,7 @@ public final class TicketArgument<C> extends CommandArgument<Soul<C>, Ticket> {
 
         @Override
         public @NonNull List<String> suggestions(
-                final @NonNull CommandContext<Soul<C>> commandContext,
+                final @NonNull CommandContext<UserAudience> commandContext,
                 final @NonNull String input
         ) {
             TicketIdStorage idStorage = commandContext.<TicketManager>get("ticketManager").getIdStorage();
@@ -111,7 +110,7 @@ public final class TicketArgument<C> extends CommandArgument<Soul<C>, Ticket> {
                 UUID uuid;
 
                 if (issuer) {
-                    uuid = commandContext.getSender().getUniqueId();
+                    uuid = commandContext.getSender().uuid();
                 } else {
                     User user = commandContext.get("target");
                     uuid = user.getUniqueId();

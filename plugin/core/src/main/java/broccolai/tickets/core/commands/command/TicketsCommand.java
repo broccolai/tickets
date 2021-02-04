@@ -19,7 +19,7 @@ import broccolai.tickets.core.user.UserManager;
 import broccolai.tickets.core.utilities.Constants;
 import cloud.commandframework.Command;
 import cloud.commandframework.CommandManager;
-import cloud.commandframework.Description;
+import cloud.commandframework.ArgumentDescription;
 import cloud.commandframework.arguments.standard.BooleanArgument;
 import cloud.commandframework.arguments.standard.EnumArgument;
 import cloud.commandframework.arguments.standard.StringArgument;
@@ -36,46 +36,50 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-public final class TicketsCommand<C> extends BaseCommand<C> {
+public final class TicketsCommand<C> extends CommonCommands<C> {
 
+    private final Config config;
     private final TicketsEventBus eventBus;
     private final TicketManager ticketManager;
 
     /**
      * Create a new Tickets Command.
      *
-     * @param manager       Command Manager
      * @param config        Config Instance
      * @param eventBus      Event bus
      * @param userManager   User Manager
      * @param ticketManager Ticket Manager
      */
     public TicketsCommand(
-            final @NonNull CommandManager<Soul<C>> manager,
             final @NonNull Config config,
             final @NonNull TicketsEventBus eventBus,
             final @NonNull UserManager<C, ?, ?> userManager,
             final @NonNull TicketManager ticketManager
     ) {
-        super(userManager);
+        this.config = config;
         this.eventBus = eventBus;
         this.ticketManager = ticketManager;
+    }
 
+    @Override
+    public void register(
+            @NonNull final CommandManager<@NonNull Soul<C>> manager
+    ) {
         final Command.Builder<Soul<C>> builder = manager.commandBuilder("tickets", "tis");
 
         manager.command(builder.literal(
                 config.getAliasShow().getFirst(),
-                Description.of("Show a ticket"),
+                ArgumentDescription.of("Show a ticket"),
                 config.getAliasShow().getSecond()
         )
                 .permission(Constants.STAFF_PERMISSION + ".show")
                 .argument(TargetArgument.of("target"))
                 .argument(TicketArgument.of(false, false))
-                .handler(c -> processShow(c.getSender(), c.get("ticket"))));
+                .handler(c -> this.processShow(c.getSender(), c.get("ticket"))));
 
         manager.command(builder.literal(
                 config.getAliasClaim().getFirst(),
-                Description.of("Claim a ticket"),
+                ArgumentDescription.of("Claim a ticket"),
                 config.getAliasClaim().getSecond()
         )
                 .permission(Constants.STAFF_PERMISSION + ".pick")
@@ -86,7 +90,7 @@ public final class TicketsCommand<C> extends BaseCommand<C> {
 
         manager.command(builder.literal(
                 config.getAliasAssign().getFirst(),
-                Description.of("Assign a ticket"),
+                ArgumentDescription.of("Assign a ticket"),
                 config.getAliasAssign().getSecond()
         )
                 .permission(Constants.STAFF_PERMISSION + ".assign")
@@ -98,7 +102,7 @@ public final class TicketsCommand<C> extends BaseCommand<C> {
 
         manager.command(builder.literal(
                 config.getAliasDone().getFirst(),
-                Description.of("Complete a ticket"),
+                ArgumentDescription.of("Complete a ticket"),
                 config.getAliasDone().getSecond()
         )
                 .permission(Constants.STAFF_PERMISSION + ".done")
@@ -109,7 +113,7 @@ public final class TicketsCommand<C> extends BaseCommand<C> {
 
         manager.command(builder.literal(
                 config.getAliasUnclaim().getFirst(),
-                Description.of("Unclaim a ticket"),
+                ArgumentDescription.of("Unclaim a ticket"),
                 config.getAliasUnclaim().getSecond()
         )
                 .permission(Constants.STAFF_PERMISSION + ".yield")
@@ -120,7 +124,7 @@ public final class TicketsCommand<C> extends BaseCommand<C> {
 
         manager.command(builder.literal(
                 config.getAliasNote().getFirst(),
-                Description.of("Add a note to a ticket"),
+                ArgumentDescription.of("Add a note to a ticket"),
                 config.getAliasNote().getSecond()
         )
                 .permission(Constants.STAFF_PERMISSION + ".note")
@@ -132,7 +136,7 @@ public final class TicketsCommand<C> extends BaseCommand<C> {
 
         manager.command(builder.literal(
                 config.getAliasReopen().getFirst(),
-                Description.of("Reopen a ticket"),
+                ArgumentDescription.of("Reopen a ticket"),
                 config.getAliasReopen().getSecond()
         )
                 .permission(Constants.STAFF_PERMISSION + ".reopen")
@@ -143,7 +147,7 @@ public final class TicketsCommand<C> extends BaseCommand<C> {
 
         manager.command(builder.literal(
                 config.getAliasTeleport().getFirst(),
-                Description.of("Teleport to a tickets creation location"),
+                ArgumentDescription.of("Teleport to a tickets creation location"),
                 config.getAliasTeleport().getSecond()
         )
                 .senderType(userManager.getPlayerSoulClass())
@@ -155,7 +159,7 @@ public final class TicketsCommand<C> extends BaseCommand<C> {
 
         manager.command(builder.literal(
                 config.getAliasLog().getFirst(),
-                Description.of("View a tickets log"),
+                ArgumentDescription.of("View a tickets log"),
                 config.getAliasLog().getSecond()
         )
                 .permission(Constants.STAFF_PERMISSION + ".log")
@@ -166,7 +170,7 @@ public final class TicketsCommand<C> extends BaseCommand<C> {
 
         manager.command(builder.literal(
                 config.getAliasList().getFirst(),
-                Description.of("List tickets"),
+                ArgumentDescription.of("List tickets"),
                 config.getAliasList().getSecond()
         )
                 .permission(Constants.STAFF_PERMISSION + ".list")
@@ -180,7 +184,7 @@ public final class TicketsCommand<C> extends BaseCommand<C> {
 
         manager.command(builder.literal(
                 config.getAliasStatus().getFirst(),
-                Description.of("View amount of tickets in"),
+                ArgumentDescription.of("View amount of tickets in"),
                 config.getAliasStatus().getSecond()
         )
                 .permission(Constants.STAFF_PERMISSION + ".status")
@@ -190,7 +194,7 @@ public final class TicketsCommand<C> extends BaseCommand<C> {
 
         manager.command(builder.literal(
                 config.getAliasHighscore().getFirst(),
-                Description.of("View highscores of ticket completions"),
+                ArgumentDescription.of("View highscores of ticket completions"),
                 config.getAliasHighscore().getSecond()
         )
                 .permission(Constants.STAFF_PERMISSION + ".highscore")
@@ -369,5 +373,6 @@ public final class TicketsCommand<C> extends BaseCommand<C> {
 
         soul.sendMessage(builder);
     }
+
 
 }
