@@ -31,8 +31,11 @@ public abstract class BaseCommand<C> {
         TextComponent.Builder show = Component.text()
                 .append(
                         Message.SHOW__SENDER.use(templates),
+                        Component.newline(),
                         Message.SHOW__MESSAGE.use(templates),
-                        Message.SHOW__LOCATION.use(templates)
+                        Component.newline(),
+                        Message.SHOW__LOCATION.use(templates),
+                        Component.newline()
                 );
 
         if (ticket.getStatus() != TicketStatus.PICKED) {
