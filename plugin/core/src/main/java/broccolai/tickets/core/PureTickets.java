@@ -1,8 +1,10 @@
 package broccolai.tickets.core;
 
 import broccolai.tickets.core.commands.TicketsCommandManager;
+import broccolai.tickets.core.commands.command.BaseCommand;
 import broccolai.tickets.core.configuration.Config;
 import broccolai.tickets.core.events.TicketsEventBus;
+import broccolai.tickets.core.inject.module.PluginModule;
 import broccolai.tickets.core.integrations.DiscordManager;
 import broccolai.tickets.core.interactions.NotificationManager;
 import broccolai.tickets.core.storage.SQLPlatforms;
@@ -12,6 +14,8 @@ import broccolai.tickets.core.ticket.TicketManager;
 import broccolai.tickets.core.user.PlayerSoul;
 import broccolai.tickets.core.user.UserManager;
 import broccolai.tickets.core.utilities.TimeUtilities;
+import com.google.inject.Guice;
+import com.google.inject.Injector;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.jdbi.v3.core.Jdbi;
 
@@ -40,6 +44,15 @@ public final class PureTickets<C, P extends C, S extends PlayerSoul<C, P>> {
      */
     public void start() {
         eventBus = new TicketsEventBus();
+
+        Injector injector = Guice.createInjector(
+                new PluginModule(this.platform)
+        );
+
+        for (Class<? extends BaseCommand> command : this.platform.COMMAND_CLASSES) {
+            //todo: use
+            throw new RuntimeException();
+        }
 
         Config config = this.platform.getConfig(this);
         this.platform.copyLocales();

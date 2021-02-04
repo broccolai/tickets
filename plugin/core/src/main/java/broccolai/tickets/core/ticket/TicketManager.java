@@ -7,12 +7,12 @@ import broccolai.tickets.core.events.api.TicketConstructionEvent;
 import broccolai.tickets.core.events.api.TicketCreationEvent;
 import broccolai.tickets.core.exceptions.TooManyOpenTickets;
 import broccolai.tickets.core.message.Message;
+import broccolai.tickets.core.model.user.UserAudience;
 import broccolai.tickets.core.storage.SQLQueries;
 import broccolai.tickets.core.storage.TimeAmount;
 import broccolai.tickets.core.storage.mapper.TicketReducer;
 import broccolai.tickets.core.tasks.TaskManager;
 import broccolai.tickets.core.user.PlayerSoul;
-import broccolai.tickets.core.user.User;
 import broccolai.tickets.core.user.UserManager;
 import broccolai.tickets.core.utilities.TicketLocation;
 import com.google.common.cache.Cache;
@@ -104,11 +104,11 @@ public final class TicketManager implements EventListener {
      * @param statuses Statuses to filter with
      * @return Optional ticket
      */
-    public @NonNull Optional<Ticket> getRecentTicket(final @NonNull User user, final @NonNull TicketStatus... statuses) {
+    public @NonNull Optional<Ticket> getRecentTicket(final @NonNull UserAudience user, final @NonNull TicketStatus... statuses) {
         try {
             int id = this.jdbi.withHandle(handle -> {
                 return handle.createQuery(SQLQueries.SELECT_HIGHEST_ID_WHERE.get())
-                        .bind("uuid", user.getUniqueId().toString())
+                        .bind("uuid", user.uuid().toString())
                         .mapTo(Integer.class)
                         .findFirst()
                         .orElseThrow(Exception::new);

@@ -2,6 +2,7 @@ package broccolai.tickets.bukkit;
 
 import broccolai.tickets.bukkit.commands.BukkitTicketsCommandManager;
 import broccolai.tickets.bukkit.configuration.BukkitConfig;
+import broccolai.tickets.bukkit.service.BukkitUserService;
 import broccolai.tickets.bukkit.tasks.BukkitTaskManager;
 import broccolai.tickets.bukkit.user.BukkitPlayerSoul;
 import broccolai.tickets.bukkit.user.BukkitUserManager;
@@ -11,6 +12,7 @@ import broccolai.tickets.core.commands.TicketsCommandManager;
 import broccolai.tickets.core.configuration.Config;
 import broccolai.tickets.core.events.TicketsEventBus;
 import broccolai.tickets.core.locale.Message;
+import broccolai.tickets.core.service.UserService;
 import broccolai.tickets.core.tasks.TaskManager;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
@@ -168,6 +170,11 @@ public final class BukkitPlatform extends JavaPlugin implements TicketsPlatform<
     @Override
     public @NonNull ClassLoader getCustomClassLoader() {
         return this.getClassLoader();
+    }
+
+    @Override
+    public Class<? extends UserService<?, ?>> userServiceClass() {
+        return BukkitUserService.class;
     }
 
 }

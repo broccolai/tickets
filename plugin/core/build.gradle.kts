@@ -9,6 +9,7 @@ dependencies {
 
     // Kyroi/Adventure
     api("net.kyori:adventure-api:4.2.0-SNAPSHOT")
+    api("net.kyori:adventure-platform-api:4.0.0-SNAPSHOT")
     api("net.kyori:adventure-text-minimessage:4.1.0-SNAPSHOT")
 
     // Jdbi
@@ -31,4 +32,7 @@ dependencies {
     // Flyway
     implementation("com.zaxxer:HikariCP:3.4.5")
     implementation("org.flywaydb:flyway-core:7.5.2")
+
+    // Guice
+    implementation("com.google.inject:guice:5.0.0-BETA-1")
 }

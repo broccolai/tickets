@@ -3,6 +3,7 @@ package broccolai.tickets.core;
 import broccolai.tickets.core.commands.TicketsCommandManager;
 import broccolai.tickets.core.configuration.Config;
 import broccolai.tickets.core.events.TicketsEventBus;
+import broccolai.tickets.core.inject.platform.TicketPlugin;
 import broccolai.tickets.core.tasks.TaskManager;
 import broccolai.tickets.core.user.PlayerSoul;
 import broccolai.tickets.core.user.UserManager;
@@ -13,7 +14,7 @@ import java.io.File;
 import java.io.InputStream;
 import java.util.logging.Logger;
 
-public interface TicketsPlatform<C, P extends C, S extends PlayerSoul<C, P>> {
+public interface TicketsPlatform<C, P extends C, S extends PlayerSoul<C, P>> extends TicketPlugin {
 
     /**
      * Function to be called when platform is being enabled
