@@ -57,6 +57,7 @@ public final class SQLPlatforms {
         final Jdbi jdbi = Jdbi.create(source);
 
         Flyway flyway = Flyway.configure(loader)
+                .baselineVersion("0")
                 .baselineOnMigrate(true)
                 .locations("queries/migrations")
                 .dataSource(source)
