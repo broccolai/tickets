@@ -59,6 +59,11 @@ public final class TicketIdStorage implements EventListener {
         return new ArrayList<>(results);
     }
 
+    public void update(final @NonNull Ticket ticket) {
+        this.ticketStatusLinks.values().forEach(set -> set.remove(ticket.getId()));
+        this.ticketStatusLinks.get(ticket.getStatus()).add(ticket.getId());
+    }
+
     /**
      * Listener for ticket creations
      *
