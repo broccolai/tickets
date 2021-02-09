@@ -125,16 +125,20 @@ public final class TicketCommand<C> extends BaseCommand<C> {
     private void processUpdate(final @NonNull CommandContext<Soul<C>> c) {
         Soul<C> soul = c.getSender();
         Ticket ticket = c.get("ticket");
+        broccolai.tickets.core.message.Message message = c.get("message");
 
-        ticket.update(c.get("message"));
+        ticket.update(message);
         this.eventManager.post(new NotificationEvent(NotificationReason.UPDATE_TICKET, soul, null, ticket));
+        ticketManager.updateTicket(ticket);
+        ticketManager.insertMessage(ticket.getId(), message);
     }
 
     private void processClose(final @NonNull CommandContext<Soul<C>> c) {
         Soul<C> soul = c.getSender();
         Ticket ticket = c.get("ticket");
 
-        ticket.close(soul.getUniqueId());
+        ticketManager.insertMessage(ticket.getId(), ticket.close(soul.getUniqueId()));
+        ticketManager.updateTicket(ticket);
         this.eventManager.post(new NotificationEvent(NotificationReason.CLOSE_TICKET, soul, null, ticket));
     }
 

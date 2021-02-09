@@ -15,6 +15,7 @@ import broccolai.tickets.core.ticket.TicketStats;
 import broccolai.tickets.core.ticket.TicketStatus;
 import broccolai.tickets.core.user.PlayerSoul;
 import broccolai.tickets.core.user.Soul;
+import broccolai.tickets.core.user.User;
 import broccolai.tickets.core.user.UserManager;
 import broccolai.tickets.core.utilities.Constants;
 import cloud.commandframework.Command;
@@ -203,8 +204,9 @@ public final class TicketsCommand<C> extends BaseCommand<C> {
         Soul<C> soul = c.getSender();
         Ticket ticket = c.get("ticket");
 
-        ticket.pick(soul.getUniqueId());
+        ticketManager.insertMessage(ticket.getId(), ticket.pick(soul.getUniqueId()));
         this.eventBus.post(new NotificationEvent(NotificationReason.CLAIM_TICKET, soul, ticket.getPlayerUniqueID(), ticket));
+        ticketManager.updateTicket(ticket);
     }
 
     private void processAssign(final @NonNull CommandContext<Soul<C>> c) {
@@ -212,42 +214,47 @@ public final class TicketsCommand<C> extends BaseCommand<C> {
         Ticket ticket = c.get("ticket");
         UUID staff = c.get("staff");
 
-        ticket.pick(staff);
+        ticketManager.insertMessage(ticket.getId(), ticket.pick(staff));
         this.eventBus.post(new NotificationEvent(NotificationReason.ASSIGN_TICKET, soul, staff, ticket));
+        ticketManager.updateTicket(ticket);
     }
 
     private void processDone(final @NonNull CommandContext<Soul<C>> c) {
         Soul<C> soul = c.getSender();
         Ticket ticket = c.get("ticket");
 
-        ticket.done(soul.getUniqueId());
+        ticketManager.insertMessage(ticket.getId(), ticket.done(soul.getUniqueId()));
         this.eventBus.post(new NotificationEvent(NotificationReason.DONE_TICKET, soul, ticket.getPlayerUniqueID(), ticket));
+        ticketManager.updateTicket(ticket);
     }
 
     private void processUnclaim(final @NonNull CommandContext<Soul<C>> c) {
         Soul<C> soul = c.getSender();
         Ticket ticket = c.get("ticket");
 
-        ticket.yield(soul.getUniqueId());
+        ticketManager.insertMessage(ticket.getId(), ticket.yield(soul.getUniqueId()));
         this.eventBus.post(new NotificationEvent(NotificationReason.UNCLAIM_TICKET, soul, ticket.getPlayerUniqueID(),
                 ticket
         ));
+        ticketManager.updateTicket(ticket);
     }
 
     private void processNote(final @NonNull CommandContext<Soul<C>> c) {
         Soul<C> soul = c.getSender();
         Ticket ticket = c.get("ticket");
 
-        ticket.note(soul.getUniqueId(), c.get("message"));
+        ticketManager.insertMessage(ticket.getId(), ticket.note(soul.getUniqueId(), c.get("message")));
         this.eventBus.post(new NotificationEvent(NotificationReason.NOTE_TICKET, soul, ticket.getPlayerUniqueID(), ticket));
+        ticketManager.updateTicket(ticket);
     }
 
     private void processReopen(final @NonNull CommandContext<Soul<C>> c) {
         Soul<C> soul = c.getSender();
         Ticket ticket = c.get("ticket");
 
-        ticket.reopen(soul.getUniqueId());
+        ticketManager.insertMessage(ticket.getId(), ticket.reopen(soul.getUniqueId()));
         this.eventBus.post(new NotificationEvent(NotificationReason.REOPEN_TICKET, soul, ticket.getPlayerUniqueID(), ticket));
+        ticketManager.updateTicket(ticket);
     }
 
     private void processTeleport(final @NonNull CommandContext<Soul<C>> c) {
@@ -260,29 +267,26 @@ public final class TicketsCommand<C> extends BaseCommand<C> {
 
     private void processList(final @NonNull CommandContext<Soul<C>> c) {
         final Soul<C> soul = c.getSender();
-        final UUID player = c.flags().getValue("player", null);
+        final User player = c.flags().getValue("player", null);
         final Boolean onlineOnly = c.flags().getValue("onlineOnly", false);
         final TicketStatus[] statuses = this.statusesFromFlags(c.flags());
 
         if (player != null) {
             // todo
-            Template template = Template.of("player", this.userManager.getName(player));
+            Template template = Template.of("player", player.getName());
             Component title = Message.TITLE__SPECIFIC_TICKETS.use(template);
-            TextComponent.Builder builder = Component.text()
-                    .append(title);
+            soul.sendMessage(title);
 
-            this.ticketManager.getTickets(player, statuses).forEach(ticket -> {
+            this.ticketManager.getTickets(player.getUniqueId(), statuses).forEach(ticket -> {
                 Component list = Message.FORMAT__LIST.use(ticket.templates());
-                builder.append(Component.newline(), list);
+                soul.sendMessage(list);
             });
 
-            soul.sendMessage(builder);
             return;
         }
 
         Component title = Message.TITLE__ALL_TICKETS.use();
-        TextComponent.Builder builder = Component.text()
-                .append(title);
+        soul.sendMessage(title);
 
         // todo: ugly
         Set<Map.Entry<UUID, List<Ticket>>> unsortedTickets = Lists
@@ -303,29 +307,27 @@ public final class TicketsCommand<C> extends BaseCommand<C> {
             // todo
             Template template = Template.of("player", this.userManager.getName(uuid));
             Component listHeader = Message.FORMAT__LIST_HEADER.use(template);
-            builder.append(Component.newline(), listHeader);
+            soul.sendMessage(listHeader);
 
             tickets.forEach(ticket -> {
                 Component list = Message.FORMAT__LIST.use(ticket.templates());
-                builder.append(Component.newline(), list);
+                soul.sendMessage(list);
             });
         });
-
-        soul.sendMessage(builder);
     }
 
     private void processStatus(final @NonNull CommandContext<Soul<C>> c) {
         Soul<C> soul = c.getSender();
-        UUID target = c.getOrDefault("target", null);
+        User target = c.getOrDefault("target", null);
 
         TextComponent.Builder builder = Component.text();
         TicketStats data;
         if (target != null) {
             // todo
-            Template playerTemplate = Template.of("player", this.userManager.getName(target));
+            Template playerTemplate = Template.of("player", target.getName());
             Component title = Message.TITLE__SPECIFIC_TICKETS.use(playerTemplate);
 
-            data = this.ticketManager.getStats(target);
+            data = this.ticketManager.getStats(target.getUniqueId());
             builder.append(title);
         } else {
             Component title = Message.TITLE__TICKET_STATUS.use();
@@ -364,7 +366,7 @@ public final class TicketsCommand<C> extends BaseCommand<C> {
                     Template.of("target", this.userManager.getName(uuid)),
                     Template.of("amount", number.toString())
             );
-            builder.append(component);
+            builder.append(Component.newline(), component);
         });
 
         soul.sendMessage(builder);
