@@ -324,7 +324,7 @@ public final class TicketManager implements EventListener {
             handle.createUpdate(SQLQueries.UPDATE_TICKET.get())
                     .bind("id", ticket.getId())
                     .bind("status", ticket.getStatus())
-                    .bind("picker", ticket.getPickerUniqueId().orElse(null))
+                    .bind("picker", ticket.getPickerUniqueId().map(UUID::toString).orElse(null))
                     .execute();
         });
     }
