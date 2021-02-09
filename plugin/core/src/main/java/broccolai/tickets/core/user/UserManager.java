@@ -152,7 +152,9 @@ public abstract class UserManager<C, P extends C, S extends PlayerSoul<C, P>> im
      */
     @SuppressWarnings("unchecked")
     public @NonNull S fromPlayer(final @NonNull P player) {
-        return (S) this.fromSender(player);
+        S user = (S) this.fromSender(player);
+        this.names.add(user.getName());
+        return user;
     }
 
     /**
