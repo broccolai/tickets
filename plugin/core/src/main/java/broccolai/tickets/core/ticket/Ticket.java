@@ -74,7 +74,7 @@ public final class Ticket implements Dirtyable {
         return messages
                 .stream()
                 .filter(message -> message.getReason() == MessageReason.MESSAGE)
-                .findFirst()
+                .min((m1, m2) -> m2.getDate().compareTo(m1.getDate()))
                 .orElseThrow(IllegalStateException::new);
     }
 
@@ -187,7 +187,7 @@ public final class Ticket implements Dirtyable {
      * @param uuid the actioners unique id
      * @throws TicketClosed if the ticket is closed
      */
-    public void pick(final @Nullable UUID uuid) throws TicketClosed {
+    public Message pick(final @Nullable UUID uuid) throws TicketClosed {
         if (status == TicketStatus.CLOSED) {
             throw new TicketClosed();
         }
@@ -195,7 +195,10 @@ public final class Ticket implements Dirtyable {
         dirty = true;
         status = TicketStatus.PICKED;
         pickerUUID = uuid;
-        messages.add(Message.create(MessageReason.PICKED, LocalDateTime.now(), uuid));
+        Message message = Message.create(MessageReason.PICKED, LocalDateTime.now(), uuid);
+        messages.add(message);
+
+        return message;
     }
 
     /**
@@ -204,7 +207,7 @@ public final class Ticket implements Dirtyable {
      * @param uuid the actioners unique id
      * @throws TicketOpen if the ticket is open
      */
-    public void yield(final @Nullable UUID uuid) throws TicketOpen {
+    public Message yield(final @Nullable UUID uuid) throws TicketOpen {
         if (status == TicketStatus.OPEN) {
             throw new TicketOpen();
         }
@@ -212,7 +215,10 @@ public final class Ticket implements Dirtyable {
         dirty = true;
         status = TicketStatus.OPEN;
         pickerUUID = uuid;
-        messages.add(Message.create(MessageReason.YIELDED, LocalDateTime.now(), uuid));
+        Message message = Message.create(MessageReason.YIELDED, LocalDateTime.now(), uuid);
+        messages.add(message);
+
+        return message;
     }
 
     /**
@@ -221,14 +227,17 @@ public final class Ticket implements Dirtyable {
      * @param uuid the actioners unique id
      * @throws TicketClosed if the ticket is already closed
      */
-    public void close(final @Nullable UUID uuid) throws TicketClosed {
+    public Message close(final @Nullable UUID uuid) throws TicketClosed {
         if (status == TicketStatus.CLOSED) {
             throw new TicketClosed();
         }
 
         dirty = true;
         status = TicketStatus.CLOSED;
-        messages.add(Message.create(MessageReason.CLOSED, LocalDateTime.now(), uuid));
+        Message message = Message.create(MessageReason.CLOSED, LocalDateTime.now(), uuid);
+        messages.add(message);
+
+        return message;
     }
 
     /**
@@ -237,14 +246,17 @@ public final class Ticket implements Dirtyable {
      * @param uuid the actioners unique id
      * @throws TicketClosed if the ticket is already closed
      */
-    public void done(final @Nullable UUID uuid) throws TicketClosed {
+    public Message done(final @Nullable UUID uuid) throws TicketClosed {
         if (status == TicketStatus.CLOSED) {
             throw new TicketClosed();
         }
 
         dirty = true;
         status = TicketStatus.CLOSED;
-        messages.add(Message.create(MessageReason.DONE_MARKED, LocalDateTime.now(), uuid));
+        Message message = Message.create(MessageReason.DONE_MARKED, LocalDateTime.now(), uuid);
+        messages.add(message);
+
+        return message;
     }
 
     /**
@@ -253,14 +265,17 @@ public final class Ticket implements Dirtyable {
      * @param uuid the actioners unique id
      * @throws TicketOpen if the ticket is already open
      */
-    public void reopen(final @Nullable UUID uuid) throws TicketOpen {
+    public Message reopen(final @Nullable UUID uuid) throws TicketOpen {
         if (status == TicketStatus.OPEN) {
             throw new TicketOpen();
         }
 
         dirty = true;
         status = TicketStatus.OPEN;
-        messages.add(Message.create(MessageReason.REOPENED, LocalDateTime.now(), uuid));
+        Message message = Message.create(MessageReason.REOPENED, LocalDateTime.now(), uuid);
+        messages.add(message);
+
+        return message;
     }
 
     /**
@@ -269,9 +284,12 @@ public final class Ticket implements Dirtyable {
      * @param uuid  the actioners unique id
      * @param input the note message
      */
-    public void note(final @Nullable UUID uuid, final @NonNull String input) {
+    public Message note(final @Nullable UUID uuid, final @NonNull String input) {
         dirty = true;
-        messages.add(Message.create(MessageReason.NOTE, LocalDateTime.now(), input, uuid));
+        Message message = Message.create(MessageReason.NOTE, LocalDateTime.now(), input, uuid);
+        messages.add(message);
+
+        return message;
     }
 
     /**
