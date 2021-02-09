@@ -40,7 +40,7 @@ public final class TargetArgument<C> extends CommandArgument<Soul<C>, User> {
         ) {
             String input = queue.peek();
 
-            if (input == null) {
+            if (input == null || input.isEmpty()) {
                 return ArgumentParseResult.failure(new NoInputProvidedException(
                         TargetParser.class,
                         commandContext
