@@ -27,7 +27,7 @@ public final class MessageMapper implements RowMapper<Message> {
         String data = rs.getString("data");
         UUID sender;
 
-        if (rs.getString("sender").equals("null")) {
+        if (rs.getString("sender") == null || rs.getString("sender").equals("null")) {
             sender = null;
         } else {
             sender = uuidMapper.map(rs, "sender", ctx);
