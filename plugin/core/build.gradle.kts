@@ -8,7 +8,7 @@ dependencies {
     api("net.kyori:event-method-asm:4.0.0-SNAPSHOT")
 
     // Kyroi/Adventure
-    api("net.kyori:adventure-api:4.2.0-SNAPSHOT")
+    api("net.kyori:adventure-api:4.5.0")
     api("net.kyori:adventure-text-minimessage:4.1.0-SNAPSHOT")
 
     // Jdbi
