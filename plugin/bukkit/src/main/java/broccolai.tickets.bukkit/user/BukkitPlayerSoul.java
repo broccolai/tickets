@@ -55,9 +55,12 @@ public final class BukkitPlayerSoul extends PlayerSoul<CommandSender, Player> {
 
     @Override
     public void teleport(@NonNull final TicketLocation location) {
-        World bukkitWorld = Bukkit.getWorld(location.getWorld());
-        Location bukkitLocation = new Location(bukkitWorld, location.getX(), location.getY(), location.getZ());
-        PaperLib.teleportAsync(this.player, bukkitLocation);
+        //todo: fix with guice
+        Bukkit.getScheduler().runTask(Bukkit.getPluginManager().getPlugin("PureTickets"), () -> {
+            World bukkitWorld = Bukkit.getWorld(location.getWorld());
+            Location bukkitLocation = new Location(bukkitWorld, location.getX(), location.getY(), location.getZ());
+            PaperLib.teleportAsync(this.player, bukkitLocation);
+        });
     }
 
 }
