@@ -1,11 +1,14 @@
 package broccolai.tickets.bukkit.user;
 
 import broccolai.tickets.core.events.TicketsEventBus;
+import broccolai.tickets.core.events.api.NotificationEvent;
+import broccolai.tickets.core.events.api.TicketCreationEvent;
 import broccolai.tickets.core.tasks.TaskManager;
 import broccolai.tickets.core.user.ConsoleSoul;
 import broccolai.tickets.core.user.PlayerSoul;
 import broccolai.tickets.core.user.UserManager;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
+import net.kyori.event.method.annotation.Subscribe;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
@@ -125,6 +128,18 @@ public final class BukkitUserManager extends UserManager<CommandSender, Player, 
     @EventHandler
     public void onQuit(final @NotNull PlayerQuitEvent e) {
         this.processQuit(e.getPlayer());
+    }
+
+    @Override
+    @Subscribe
+    public void onTicketCreation(final @NonNull TicketCreationEvent e) {
+        super.onTicketCreation(e);
+    }
+
+    @Override
+    @Subscribe
+    public void onNotification(final @NonNull NotificationEvent e) {
+        super.onNotification(e);
     }
 
 }
