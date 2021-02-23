@@ -69,6 +69,7 @@ public enum Message {
     EXCEPTION__INVALID_SETTING_TYPE,
     EXCEPTION__TOO_MANY_OPEN_TICKETS,
     EXCEPTION__TICKET_CLOSED,
+    EXCEPTION__TICKET_PICKED,
     EXCEPTION__TICKET_OPEN;
 
     private static final MiniMessage MINI = MiniMessage.get();

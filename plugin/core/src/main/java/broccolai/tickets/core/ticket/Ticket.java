@@ -2,6 +2,7 @@ package broccolai.tickets.core.ticket;
 
 import broccolai.tickets.core.exceptions.TicketClosed;
 import broccolai.tickets.core.exceptions.TicketOpen;
+import broccolai.tickets.core.exceptions.TicketPicked;
 import broccolai.tickets.core.message.Message;
 import broccolai.tickets.core.message.MessageReason;
 import broccolai.tickets.core.user.User;
@@ -190,6 +191,10 @@ public final class Ticket implements Dirtyable {
     public Message pick(final @Nullable UUID uuid) throws TicketClosed {
         if (status == TicketStatus.CLOSED) {
             throw new TicketClosed();
+        }
+
+        if (status == TicketStatus.PICKED) {
+            throw new TicketPicked();
         }
 
         dirty = true;

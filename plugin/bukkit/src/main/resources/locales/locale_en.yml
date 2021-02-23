@@ -50,6 +50,7 @@ exception:
   too_many_open_tickets: "<prefix> You have too many open tickets, the limit is <limit>"
   ticket_closed: "<prefix> This ticket is closed"
   ticket_open: "<prefix> This ticket is already open"
+  ticket_picked: "<prefix> This ticket is already picked"
 format:
   list: "<ticket> <dark_gray>- <white><message>"
   list_header: "<green><player>"
