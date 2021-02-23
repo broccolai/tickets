@@ -26,16 +26,17 @@ import cloud.commandframework.arguments.standard.EnumArgument;
 import cloud.commandframework.arguments.standard.StringArgument;
 import cloud.commandframework.context.CommandContext;
 import com.google.common.collect.ImmutableMap;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.TextComponent;
-import net.kyori.adventure.text.minimessage.Template;
-import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.minimessage.Template;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 public final class TicketsCommand<C> extends BaseCommand<C> {
 
@@ -353,23 +354,20 @@ public final class TicketsCommand<C> extends BaseCommand<C> {
 
     private void processHighscore(final @NonNull CommandContext<Soul<C>> c) {
         Soul<C> soul = c.getSender();
-        TimeAmount amount = c.get("amount");
+        TimeAmount amount = c.<TimeAmount>getOptional("amount").orElse(TimeAmount.FOREVER);
 
         Map<UUID, Integer> highscores = this.ticketManager.getHighscores(amount);
 
         Component title = Message.TITLE__HIGHSCORES.use();
-        TextComponent.Builder builder = Component.text()
-                .append(title);
+        soul.sendMessage(title);
 
         highscores.forEach((uuid, number) -> {
             Component component = Message.FORMAT__HS.use(
                     Template.of("target", this.userManager.getName(uuid)),
                     Template.of("amount", number.toString())
             );
-            builder.append(Component.newline(), component);
+            soul.sendMessage(component);
         });
-
-        soul.sendMessage(builder);
     }
 
 }
