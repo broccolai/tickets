@@ -15,5 +15,5 @@ public interface TicketPlugin {
     );
 
     Class<? extends UserService<?, ?>> userServiceClass();
-    
+
 }
