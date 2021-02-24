@@ -1,4 +1,6 @@
 dependencies {
+    api(project(":tickets-api"))
+
     // Minecraft expectations
     compileOnlyApi("com.google.guava:guava:21.0")
     compileOnlyApi("com.google.code.gson:gson:2.8.0")

@@ -1,6 +1,7 @@
 rootProject.name = "tickets"
 
-include("core", "bukkit")
+include("api", "core", "bukkit")
 
+project(":api").name = "tickets-api"
 project(":core").name = "tickets-core"
 project(":bukkit").name = "tickets-bukkit"
