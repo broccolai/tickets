@@ -4,6 +4,7 @@ import broccolai.tickets.core.configuration.Config;
 import broccolai.tickets.core.events.EventListener;
 import broccolai.tickets.core.events.api.NotificationEvent;
 import broccolai.tickets.core.interactions.NotificationReason;
+import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.intellectualsites.http.EntityMapper;
@@ -16,6 +17,8 @@ import java.util.Base64;
 import java.util.logging.Logger;
 
 public class DiscordManager implements EventListener {
+
+    private static final Gson GSON = new GsonBuilder().create();
 
     private final HttpClient client;
     private final Logger logger;
@@ -69,7 +72,7 @@ public class DiscordManager implements EventListener {
 
         json.addProperty("server", this.serverName);
         json.add("ticket", event.getInvolvedTicket().toJson());
-        json.add("author", event.getSender().toJson());
+        json.add("author", GSON.toJsonTree(event.getSender()));
         json.addProperty("action", reason.name());
 
         client.post("/announce")
