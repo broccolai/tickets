@@ -159,7 +159,7 @@ public final class BukkitPlatform extends JavaPlugin implements TicketsPlatform<
 
     @Override
     public @NotNull TicketsCommandManager<CommandSender> getCommandManager() {
-        return new BukkitTicketsCommandManager(this);
+        return new BukkitTicketsCommandManager(this, null); //todo
     }
 
     @Override

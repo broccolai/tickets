@@ -7,6 +7,9 @@ import broccolai.tickets.core.events.TicketsEventBus;
 import broccolai.tickets.core.inject.module.PluginModule;
 import broccolai.tickets.core.integrations.DiscordManager;
 import broccolai.tickets.core.interactions.NotificationManager;
+import broccolai.tickets.core.service.MessageService;
+import broccolai.tickets.core.service.UserService;
+import broccolai.tickets.core.service.impl.MiniMessageService;
 import broccolai.tickets.core.storage.SQLPlatforms;
 import broccolai.tickets.core.tasks.ReminderTask;
 import broccolai.tickets.core.tasks.TaskManager;
@@ -49,7 +52,7 @@ public final class PureTickets<C, P extends C, S extends PlayerSoul<C, P>> {
                 new PluginModule(this.platform)
         );
 
-        for (Class<? extends BaseCommand> command : this.platform.COMMAND_CLASSES) {
+        for (Class<? extends BaseCommand> command : TicketsPlatform.COMMAND_CLASSES) {
             //todo: use
             throw new RuntimeException();
         }
@@ -66,12 +69,13 @@ public final class PureTickets<C, P extends C, S extends PlayerSoul<C, P>> {
 
         SQLPlatforms.setupMappers(jdbi, userManager);
 
+        UserService<?, ?> userService = null; //todo
         DiscordManager discordManager = new DiscordManager(this.platform.getLogger(), config);
-        this.ticketManager = new TicketManager(eventBus, userManager, config, jdbi, taskManager);
+        this.ticketManager = new TicketManager(eventBus, userManager, userService, config, jdbi, taskManager);
 
-
+        MessageService messageService = new MiniMessageService();
         TicketsCommandManager<C> commandManager = this.platform.getCommandManager();
-        commandManager.initialise(this, config, eventBus, userManager, ticketManager, jdbi);
+        commandManager.initialise(this, config, eventBus, userManager, ticketManager, messageService, jdbi);
 
         taskManager.addRepeatingTask(new ReminderTask(userManager, ticketManager),
                 TimeUtilities.minuteToLong(config.getReminderDelay()), TimeUtilities.minuteToLong(config.getReminderRepeat())

@@ -72,7 +72,7 @@ public final class NotificationManager<S extends PlayerSoul<?, ?>> implements Ev
      */
     @Subscribe
     public void onTicketCreation(final @NonNull TicketCreationEvent e) {
-        this.eventBus.post(new NotificationEvent(NotificationReason.NEW_TICKET, e.getSoul(), null, e.getTicket()));
+        this.eventBus.post(new NotificationEvent(NotificationReason.NEW_TICKET, e.soul(), null, e.ticket()));
     }
 
     /**
