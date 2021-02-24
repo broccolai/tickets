@@ -1,9 +1,9 @@
-package broccolai.tickets.core.model.user;
-
-import java.util.UUID;
+package broccolai.tickets.api.model.user;
 
 import net.kyori.adventure.audience.Audience;
 import org.checkerframework.checker.nullness.qual.NonNull;
+
+import java.util.UUID;
 
 public final class ConsoleSoul implements OnlineSoul {
 

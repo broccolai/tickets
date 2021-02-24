@@ -1,6 +1,6 @@
 package broccolai.tickets.core.commands.arguments;
 
-import broccolai.tickets.core.model.user.OnlineSoul;
+import broccolai.tickets.api.model.user.OnlineSoul;
 import broccolai.tickets.core.user.User;
 import broccolai.tickets.core.user.UserManager;
 import cloud.commandframework.arguments.CommandArgument;

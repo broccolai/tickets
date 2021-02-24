@@ -1,5 +1,7 @@
 package broccolai.tickets.core.ticket;
 
+import broccolai.tickets.api.model.user.OnlineSoul;
+import broccolai.tickets.api.model.user.PlayerSoul;
 import broccolai.tickets.core.configuration.Config;
 import broccolai.tickets.core.events.EventListener;
 import broccolai.tickets.core.events.TicketsEventBus;
@@ -7,8 +9,6 @@ import broccolai.tickets.core.events.api.TicketConstructionEvent;
 import broccolai.tickets.core.events.api.TicketCreationEvent;
 import broccolai.tickets.core.exceptions.TooManyOpenTickets;
 import broccolai.tickets.core.message.Message;
-import broccolai.tickets.core.model.user.OnlineSoul;
-import broccolai.tickets.core.model.user.PlayerSoul;
 import broccolai.tickets.core.service.UserService;
 import broccolai.tickets.core.storage.SQLQueries;
 import broccolai.tickets.core.storage.TimeAmount;
@@ -408,7 +408,7 @@ public final class TicketManager implements EventListener {
         Message message = e.getMessage();
 
         UUID uuid = soul.uuid();
-        TicketLocation location = soul.location();
+        TicketLocation location = null; //todo
 
         int id = this.insertTicket(uuid, location);
         Ticket ticket = new Ticket(userManager, id, uuid, location, TicketStatus.OPEN, null);

@@ -1,6 +1,6 @@
 package broccolai.tickets.core.commands.command;
 
-import broccolai.tickets.core.model.user.OnlineSoul;
+import broccolai.tickets.api.model.user.OnlineSoul;
 import cloud.commandframework.CommandManager;
 import org.checkerframework.checker.nullness.qual.NonNull;
 

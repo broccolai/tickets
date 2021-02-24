@@ -1,7 +1,7 @@
 package broccolai.tickets.core.events.api;
 
+import broccolai.tickets.api.model.user.PlayerSoul;
 import broccolai.tickets.core.events.Event;
-import broccolai.tickets.core.model.user.PlayerSoul;
 import broccolai.tickets.core.ticket.Ticket;
 import org.checkerframework.checker.nullness.qual.NonNull;
 

@@ -1,8 +1,8 @@
 package broccolai.tickets.core.commands.command;
 
+import broccolai.tickets.api.model.user.OnlineSoul;
 import broccolai.tickets.core.PureTickets;
 import broccolai.tickets.core.locale.Message;
-import broccolai.tickets.core.model.user.OnlineSoul;
 import broccolai.tickets.core.storage.SQLQueries;
 import broccolai.tickets.core.user.PlayerSoul;
 import broccolai.tickets.core.user.UserSettings;

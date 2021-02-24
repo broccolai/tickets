@@ -1,7 +1,7 @@
 package broccolai.tickets.core.commands.command;
 
+import broccolai.tickets.api.model.user.OnlineSoul;
 import broccolai.tickets.core.locale.Message;
-import broccolai.tickets.core.model.user.OnlineSoul;
 import broccolai.tickets.core.ticket.Ticket;
 import broccolai.tickets.core.ticket.TicketStatus;
 import net.kyori.adventure.text.Component;

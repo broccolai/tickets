@@ -1,8 +1,8 @@
 package broccolai.tickets.core.service.impl;
 
-import broccolai.tickets.core.model.user.ConsoleSoul;
-import broccolai.tickets.core.model.user.OnlineSoul;
-import broccolai.tickets.core.model.user.Soul;
+import broccolai.tickets.api.model.user.ConsoleSoul;
+import broccolai.tickets.api.model.user.OnlineSoul;
+import broccolai.tickets.api.model.user.Soul;
 import broccolai.tickets.core.service.UserService;
 
 import java.util.HashMap;

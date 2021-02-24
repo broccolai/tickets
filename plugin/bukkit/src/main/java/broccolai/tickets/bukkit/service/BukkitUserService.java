@@ -1,8 +1,8 @@
 package broccolai.tickets.bukkit.service;
 
+import broccolai.tickets.api.model.user.ConsoleSoul;
+import broccolai.tickets.api.model.user.PlayerSoul;
 import broccolai.tickets.bukkit.model.User.BukkitPlayerSoul;
-import broccolai.tickets.core.model.user.ConsoleSoul;
-import broccolai.tickets.core.model.user.PlayerSoul;
 import broccolai.tickets.core.service.impl.SimpleUserService;
 import net.kyori.adventure.platform.AudienceProvider;
 import org.bukkit.Bukkit;

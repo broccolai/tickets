@@ -1,8 +1,8 @@
 package broccolai.tickets.core.events.api;
 
+import broccolai.tickets.api.model.user.OnlineSoul;
 import broccolai.tickets.core.events.Event;
 import broccolai.tickets.core.interactions.NotificationReason;
-import broccolai.tickets.core.model.user.OnlineSoul;
 import broccolai.tickets.core.ticket.Ticket;
 import net.kyori.adventure.text.minimessage.Template;
 import org.checkerframework.checker.nullness.qual.NonNull;

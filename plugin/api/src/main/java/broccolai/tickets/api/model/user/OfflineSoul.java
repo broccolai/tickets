@@ -1,4 +1,4 @@
-package broccolai.tickets.core.model.user;
+package broccolai.tickets.api.model.user;
 
 public interface OfflineSoul extends Soul {
 

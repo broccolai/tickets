@@ -1,5 +1,7 @@
 package broccolai.tickets.core.commands.command;
 
+import broccolai.tickets.api.model.user.OnlineSoul;
+import broccolai.tickets.api.model.user.PlayerSoul;
 import broccolai.tickets.core.commands.arguments.MessageArgument;
 import broccolai.tickets.core.commands.arguments.TicketArgument;
 import broccolai.tickets.core.configuration.Config;
@@ -8,8 +10,6 @@ import broccolai.tickets.core.events.api.NotificationEvent;
 import broccolai.tickets.core.events.api.TicketConstructionEvent;
 import broccolai.tickets.core.exceptions.PureException;
 import broccolai.tickets.core.interactions.NotificationReason;
-import broccolai.tickets.core.model.user.PlayerSoul;
-import broccolai.tickets.core.model.user.OnlineSoul;
 import broccolai.tickets.core.service.MessageService;
 import broccolai.tickets.core.ticket.Ticket;
 import broccolai.tickets.core.ticket.TicketManager;

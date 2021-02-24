@@ -1,8 +1,8 @@
 package broccolai.tickets.bukkit.commands;
 
+import broccolai.tickets.api.model.user.OnlineSoul;
 import broccolai.tickets.bukkit.model.User.BukkitOnlineSoul;
 import broccolai.tickets.core.commands.TicketsCommandManager;
-import broccolai.tickets.core.model.user.OnlineSoul;
 import broccolai.tickets.core.service.UserService;
 import cloud.commandframework.CommandManager;
 import cloud.commandframework.bukkit.CloudBukkitCapabilities;

@@ -1,9 +1,9 @@
 package broccolai.tickets.core.events.api;
 
+import broccolai.tickets.api.model.user.PlayerSoul;
 import broccolai.tickets.core.events.ExceptionEvent;
 import broccolai.tickets.core.message.Message;
 
-import broccolai.tickets.core.model.user.PlayerSoul;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 public final class TicketConstructionEvent extends ExceptionEvent {

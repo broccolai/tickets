@@ -1,7 +1,7 @@
 package broccolai.tickets.core.commands.arguments;
 
+import broccolai.tickets.api.model.user.OnlineSoul;
 import broccolai.tickets.core.exceptions.TicketNotFound;
-import broccolai.tickets.core.model.user.OnlineSoul;
 import broccolai.tickets.core.ticket.Ticket;
 import broccolai.tickets.core.ticket.TicketIdStorage;
 import broccolai.tickets.core.ticket.TicketManager;

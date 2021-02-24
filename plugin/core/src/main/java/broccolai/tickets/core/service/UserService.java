@@ -1,9 +1,9 @@
 package broccolai.tickets.core.service;
 
-import broccolai.tickets.core.model.user.PlayerSoul;
-import broccolai.tickets.core.model.user.OnlineSoul;
+import broccolai.tickets.api.model.user.OnlineSoul;
 
-import broccolai.tickets.core.model.user.Soul;
+import broccolai.tickets.api.model.user.PlayerSoul;
+import broccolai.tickets.api.model.user.Soul;
 
 import java.util.UUID;
 

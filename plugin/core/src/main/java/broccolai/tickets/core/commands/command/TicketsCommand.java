@@ -1,6 +1,8 @@
 package broccolai.tickets.core.commands.command;
 
 import broccolai.corn.core.Lists;
+import broccolai.tickets.api.model.user.OnlineSoul;
+import broccolai.tickets.api.model.user.PlayerSoul;
 import broccolai.tickets.core.commands.arguments.TargetArgument;
 import broccolai.tickets.core.commands.arguments.TicketArgument;
 import broccolai.tickets.core.configuration.Config;
@@ -8,8 +10,6 @@ import broccolai.tickets.core.events.TicketsEventBus;
 import broccolai.tickets.core.events.api.NotificationEvent;
 import broccolai.tickets.core.interactions.NotificationReason;
 import broccolai.tickets.core.locale.Message;
-import broccolai.tickets.core.model.user.PlayerSoul;
-import broccolai.tickets.core.model.user.OnlineSoul;
 import broccolai.tickets.core.storage.TimeAmount;
 import broccolai.tickets.core.ticket.Ticket;
 import broccolai.tickets.core.ticket.TicketManager;
@@ -268,7 +268,7 @@ public final class TicketsCommand extends CommonCommands {
         Ticket ticket = c.get("ticket");
 
         this.eventBus.post(new NotificationEvent(NotificationReason.TELEPORT_TICKET, soul, ticket.getPlayerUniqueID(), ticket));
-        soul.teleport(ticket.getLocation());
+        soul.teleport(null); //todo
     }
 
     private void processList(final @NonNull CommandContext<@NonNull OnlineSoul> c) {

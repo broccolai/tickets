@@ -1,7 +1,7 @@
 package broccolai.tickets.bukkit.model.User;
 
-import broccolai.tickets.core.model.user.PlayerSoul;
-
+import broccolai.tickets.api.model.position.Position;
+import broccolai.tickets.api.model.user.PlayerSoul;
 import broccolai.tickets.core.utilities.TicketLocation;
 
 import io.papermc.lib.PaperLib;
@@ -41,7 +41,7 @@ public final class BukkitPlayerSoul implements PlayerSoul, BukkitOnlineSoul {
         return this.audience;
     }
 
-    @Override
+    //todo
     public @NonNull TicketLocation location() {
         Location location = this.player.getLocation();
         World world = location.getWorld();
@@ -50,7 +50,7 @@ public final class BukkitPlayerSoul implements PlayerSoul, BukkitOnlineSoul {
         return new TicketLocation(worldName, location.getX(), location.getY(), location.getZ());
     }
 
-    @Override
+    //todo
     public void teleport(final @NonNull TicketLocation location) {
         World world = Bukkit.getWorld(location.getWorld());
         Location bukkitLocation = new Location(world, location.getX(), location.getY(), location.getZ());
@@ -60,6 +60,16 @@ public final class BukkitPlayerSoul implements PlayerSoul, BukkitOnlineSoul {
     @Override
     public @NonNull CommandSender sender() {
         return this.player;
+    }
+
+    @Override
+    public @NonNull Position position() {
+        return null;
+    }
+
+    @Override
+    public void teleport(@NonNull final Position location) {
+
     }
 
 }
