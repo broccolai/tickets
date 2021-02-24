@@ -2,8 +2,8 @@ package broccolai.tickets.core.events.api;
 
 import broccolai.tickets.core.events.Event;
 import broccolai.tickets.core.interactions.NotificationReason;
+import broccolai.tickets.core.model.user.OnlineSoul;
 import broccolai.tickets.core.ticket.Ticket;
-import broccolai.tickets.core.user.Soul;
 import net.kyori.adventure.text.minimessage.Template;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -15,7 +15,7 @@ import java.util.UUID;
 public class NotificationEvent implements Event {
 
     private final NotificationReason reason;
-    private final Soul<?> sender;
+    private final OnlineSoul sender;
     private final UUID target;
     private final Ticket involvedTicket;
     private final Template[] templates;
@@ -28,7 +28,7 @@ public class NotificationEvent implements Event {
      */
     public NotificationEvent(
             final NotificationReason reason,
-            final @NonNull Soul<?> sender,
+            final @NonNull OnlineSoul sender,
             final @Nullable UUID target,
             final @NonNull Ticket involvedTicket
     ) {
@@ -38,7 +38,7 @@ public class NotificationEvent implements Event {
         this.involvedTicket = involvedTicket;
 
         Template[] extraTemplates = new Template[1];
-        extraTemplates[0] = Template.of("user", sender.getName());
+        extraTemplates[0] = Template.of("user", sender.username());
 
         this.templates = concat(extraTemplates, involvedTicket.templates());
     }
@@ -53,7 +53,7 @@ public class NotificationEvent implements Event {
     /**
      * @return Senders soul
      */
-    public Soul<?> getSender() {
+    public OnlineSoul getSender() {
         return sender;
     }
 
