@@ -5,7 +5,7 @@ import java.util.UUID;
 import net.kyori.adventure.audience.Audience;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-public final class ConsoleUserAudience implements UserAudience {
+public final class ConsoleSoul implements OnlineSoul {
 
     public static final @NonNull UUID UUID = new UUID(0, 0);
 
@@ -13,7 +13,7 @@ public final class ConsoleUserAudience implements UserAudience {
 
     private final Audience audience;
 
-    public ConsoleUserAudience(final @NonNull Audience audience) {
+    public ConsoleSoul(final @NonNull Audience audience) {
         this.audience = audience;
     }
 

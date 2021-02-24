@@ -267,7 +267,7 @@ public abstract class UserManager<C, P extends C, S extends PlayerSoul<C, P>> im
      */
     @Subscribe
     public void onTicketCreation(final @NonNull TicketCreationEvent e) {
-        this.names.add(e.getSoul().getName());
+        this.names.add(e.soul().username());
     }
 
     /**

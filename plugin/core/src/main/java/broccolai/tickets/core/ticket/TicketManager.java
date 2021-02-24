@@ -7,12 +7,13 @@ import broccolai.tickets.core.events.api.TicketConstructionEvent;
 import broccolai.tickets.core.events.api.TicketCreationEvent;
 import broccolai.tickets.core.exceptions.TooManyOpenTickets;
 import broccolai.tickets.core.message.Message;
-import broccolai.tickets.core.model.user.UserAudience;
+import broccolai.tickets.core.model.user.OnlineSoul;
+import broccolai.tickets.core.model.user.PlayerSoul;
+import broccolai.tickets.core.service.UserService;
 import broccolai.tickets.core.storage.SQLQueries;
 import broccolai.tickets.core.storage.TimeAmount;
 import broccolai.tickets.core.storage.mapper.TicketReducer;
 import broccolai.tickets.core.tasks.TaskManager;
-import broccolai.tickets.core.user.PlayerSoul;
 import broccolai.tickets.core.user.UserManager;
 import broccolai.tickets.core.utilities.TicketLocation;
 import com.google.common.cache.Cache;
@@ -41,6 +42,7 @@ public final class TicketManager implements EventListener {
 
     private final TicketsEventBus eventBus;
     private final UserManager<?, ?, ?> userManager;
+    private final UserService<?, ?> userService;
     private final Config config;
     private final Jdbi jdbi;
     private final TicketIdStorage idStorage;
@@ -58,12 +60,14 @@ public final class TicketManager implements EventListener {
     public TicketManager(
             final @NonNull TicketsEventBus eventBus,
             final @NonNull UserManager<?, ?, ?> userManager,
+            final @NonNull UserService<?, ?> userService,
             final @NonNull Config config,
             final @NonNull Jdbi jdbi,
             final @NonNull TaskManager taskManager
     ) {
         this.eventBus = eventBus;
         this.userManager = userManager;
+        this.userService = userService;
         this.config = config;
         this.jdbi = jdbi;
         this.idStorage = new TicketIdStorage(jdbi);
@@ -104,7 +108,7 @@ public final class TicketManager implements EventListener {
      * @param statuses Statuses to filter with
      * @return Optional ticket
      */
-    public @NonNull Optional<Ticket> getRecentTicket(final @NonNull UserAudience user, final @NonNull TicketStatus... statuses) {
+    public @NonNull Optional<Ticket> getRecentTicket(final @NonNull OnlineSoul user, final @NonNull TicketStatus... statuses) {
         try {
             int id = this.jdbi.withHandle(handle -> {
                 return handle.createQuery(SQLQueries.SELECT_HIGHEST_ID_WHERE.get())
@@ -387,9 +391,7 @@ public final class TicketManager implements EventListener {
     @Subscribe
     @PostOrder(1)
     public void onTicketConstructPredicates(final @NonNull TicketConstructionEvent e) {
-        PlayerSoul<?, ?> soul = e.getSoul();
-
-        if (this.countTickets(soul.getUniqueId(), TicketStatus.OPEN) > this.config.getTicketLimitOpen() + 1) {
+        if (this.countTickets(e.soul().uuid(), TicketStatus.OPEN) > this.config.getTicketLimitOpen() + 1) {
             e.cancel(new TooManyOpenTickets(config));
         }
     }
@@ -402,11 +404,11 @@ public final class TicketManager implements EventListener {
     @Subscribe
     @PostOrder(5)
     public void onTicketConstruct(final @NonNull TicketConstructionEvent e) {
-        PlayerSoul<?, ?> soul = e.getSoul();
+        PlayerSoul soul = e.soul();
         Message message = e.getMessage();
 
-        UUID uuid = soul.getUniqueId();
-        TicketLocation location = soul.currentLocation();
+        UUID uuid = soul.uuid();
+        TicketLocation location = soul.location();
 
         int id = this.insertTicket(uuid, location);
         Ticket ticket = new Ticket(userManager, id, uuid, location, TicketStatus.OPEN, null);

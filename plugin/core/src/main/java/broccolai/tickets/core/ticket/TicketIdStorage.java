@@ -71,7 +71,7 @@ public final class TicketIdStorage implements EventListener {
      */
     @Subscribe
     public void onCreate(final @NonNull TicketCreationEvent event) {
-        Ticket ticket = event.getTicket();
+        Ticket ticket = event.ticket();
         this.update(ticket.getId(), ticket.getPlayerUniqueID(), ticket.getStatus());
     }
 
