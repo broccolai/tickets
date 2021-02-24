@@ -2,7 +2,7 @@ package broccolai.tickets.core.commands.arguments;
 
 import broccolai.tickets.core.message.Message;
 import broccolai.tickets.core.message.MessageReason;
-import broccolai.tickets.core.model.user.UserAudience;
+import broccolai.tickets.core.model.user.OnlineSoul;
 import cloud.commandframework.arguments.CommandArgument;
 import cloud.commandframework.arguments.parser.ArgumentParseResult;
 import cloud.commandframework.arguments.parser.ArgumentParser;
@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 import java.util.Queue;
 import java.util.StringJoiner;
 
-public final class MessageArgument extends CommandArgument<UserAudience, Message> {
+public final class MessageArgument extends CommandArgument<OnlineSoul, Message> {
 
     private MessageArgument(final boolean required, final @NonNull String name) {
         super(required, name, new MessageParser(), Message.class);
@@ -30,11 +30,11 @@ public final class MessageArgument extends CommandArgument<UserAudience, Message
     }
 
 
-    private static final class MessageParser implements ArgumentParser<UserAudience, Message> {
+    private static final class MessageParser implements ArgumentParser<OnlineSoul, Message> {
 
         @Override
         public @NonNull ArgumentParseResult<Message> parse(
-                final @NonNull CommandContext<UserAudience> commandContext,
+                final @NonNull CommandContext<OnlineSoul> commandContext,
                 final @NonNull Queue<String> inputQueue
         ) {
             String input = inputQueue.peek();

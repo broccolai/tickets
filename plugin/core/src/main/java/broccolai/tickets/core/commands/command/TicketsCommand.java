@@ -8,13 +8,13 @@ import broccolai.tickets.core.events.TicketsEventBus;
 import broccolai.tickets.core.events.api.NotificationEvent;
 import broccolai.tickets.core.interactions.NotificationReason;
 import broccolai.tickets.core.locale.Message;
+import broccolai.tickets.core.model.user.PlayerSoul;
+import broccolai.tickets.core.model.user.OnlineSoul;
 import broccolai.tickets.core.storage.TimeAmount;
 import broccolai.tickets.core.ticket.Ticket;
 import broccolai.tickets.core.ticket.TicketManager;
 import broccolai.tickets.core.ticket.TicketStats;
 import broccolai.tickets.core.ticket.TicketStatus;
-import broccolai.tickets.core.user.PlayerSoul;
-import broccolai.tickets.core.user.Soul;
 import broccolai.tickets.core.user.User;
 import broccolai.tickets.core.user.UserManager;
 import broccolai.tickets.core.utilities.Constants;
@@ -37,10 +37,11 @@ import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.minimessage.Template;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-public final class TicketsCommand<C> extends CommonCommands<C> {
+public final class TicketsCommand extends CommonCommands {
 
     private final Config config;
     private final TicketsEventBus eventBus;
+    private final UserManager<?, ?, ?> userManager;
     private final TicketManager ticketManager;
 
     /**
@@ -54,19 +55,20 @@ public final class TicketsCommand<C> extends CommonCommands<C> {
     public TicketsCommand(
             final @NonNull Config config,
             final @NonNull TicketsEventBus eventBus,
-            final @NonNull UserManager<C, ?, ?> userManager,
+            final @NonNull UserManager<?, ?, ?> userManager,
             final @NonNull TicketManager ticketManager
     ) {
         this.config = config;
         this.eventBus = eventBus;
+        this.userManager = userManager;
         this.ticketManager = ticketManager;
     }
 
     @Override
     public void register(
-            @NonNull final CommandManager<@NonNull Soul<C>> manager
+            @NonNull final CommandManager<OnlineSoul> manager
     ) {
-        final Command.Builder<Soul<C>> builder = manager.commandBuilder("tickets", "tis");
+        final Command.Builder<OnlineSoul> builder = manager.commandBuilder("tickets", "tis");
 
         manager.command(builder.literal(
                 config.getAliasShow().getFirst(),
@@ -151,7 +153,7 @@ public final class TicketsCommand<C> extends CommonCommands<C> {
                 ArgumentDescription.of("Teleport to a tickets creation location"),
                 config.getAliasTeleport().getSecond()
         )
-                .senderType(userManager.getPlayerSoulClass())
+                .senderType(PlayerSoul.class)
                 .permission(Constants.STAFF_PERMISSION + ".teleport")
                 .argument(TargetArgument.of("target"))
                 .argument(TicketArgument.of(false, false, TicketStatus.OPEN, TicketStatus.PICKED, TicketStatus.CLOSED))
@@ -204,93 +206,93 @@ public final class TicketsCommand<C> extends CommonCommands<C> {
                 .build());
     }
 
-    private void processClaim(final @NonNull CommandContext<Soul<C>> c) {
-        Soul<C> soul = c.getSender();
+    private void processClaim(final @NonNull CommandContext<@NonNull OnlineSoul> c) {
+        OnlineSoul sender = c.getSender();
         Ticket ticket = c.get("ticket");
 
-        ticketManager.insertMessage(ticket.getId(), ticket.pick(soul.getUniqueId()));
-        this.eventBus.post(new NotificationEvent(NotificationReason.CLAIM_TICKET, soul, ticket.getPlayerUniqueID(), ticket));
+        ticketManager.insertMessage(ticket.getId(), ticket.pick(sender.uuid()));
+        this.eventBus.post(new NotificationEvent(NotificationReason.CLAIM_TICKET, sender, ticket.getPlayerUniqueID(), ticket));
         ticketManager.updateTicket(ticket);
     }
 
-    private void processAssign(final @NonNull CommandContext<Soul<C>> c) {
-        Soul<C> soul = c.getSender();
+    private void processAssign(final @NonNull CommandContext<@NonNull OnlineSoul> c) {
+        OnlineSoul sender = c.getSender();
         Ticket ticket = c.get("ticket");
         UUID staff = c.get("staff");
 
         ticketManager.insertMessage(ticket.getId(), ticket.pick(staff));
-        this.eventBus.post(new NotificationEvent(NotificationReason.ASSIGN_TICKET, soul, staff, ticket));
+        this.eventBus.post(new NotificationEvent(NotificationReason.ASSIGN_TICKET, sender, staff, ticket));
         ticketManager.updateTicket(ticket);
     }
 
-    private void processDone(final @NonNull CommandContext<Soul<C>> c) {
-        Soul<C> soul = c.getSender();
+    private void processDone(final @NonNull CommandContext<@NonNull OnlineSoul> c) {
+        OnlineSoul sender = c.getSender();
         Ticket ticket = c.get("ticket");
 
-        ticketManager.insertMessage(ticket.getId(), ticket.done(soul.getUniqueId()));
-        this.eventBus.post(new NotificationEvent(NotificationReason.DONE_TICKET, soul, ticket.getPlayerUniqueID(), ticket));
+        ticketManager.insertMessage(ticket.getId(), ticket.done(sender.uuid()));
+        this.eventBus.post(new NotificationEvent(NotificationReason.DONE_TICKET, sender, ticket.getPlayerUniqueID(), ticket));
         ticketManager.updateTicket(ticket);
     }
 
-    private void processUnclaim(final @NonNull CommandContext<Soul<C>> c) {
-        Soul<C> soul = c.getSender();
+    private void processUnclaim(final @NonNull CommandContext<@NonNull OnlineSoul> c) {
+        OnlineSoul sender = c.getSender();
         Ticket ticket = c.get("ticket");
 
-        ticketManager.insertMessage(ticket.getId(), ticket.yield(soul.getUniqueId()));
-        this.eventBus.post(new NotificationEvent(NotificationReason.UNCLAIM_TICKET, soul, ticket.getPlayerUniqueID(),
+        ticketManager.insertMessage(ticket.getId(), ticket.yield(sender.uuid()));
+        this.eventBus.post(new NotificationEvent(NotificationReason.UNCLAIM_TICKET, sender, ticket.getPlayerUniqueID(),
                 ticket
         ));
         ticketManager.updateTicket(ticket);
     }
 
-    private void processNote(final @NonNull CommandContext<Soul<C>> c) {
-        Soul<C> soul = c.getSender();
+    private void processNote(final @NonNull CommandContext<@NonNull OnlineSoul> c) {
+        OnlineSoul sender = c.getSender();
         Ticket ticket = c.get("ticket");
 
-        ticketManager.insertMessage(ticket.getId(), ticket.note(soul.getUniqueId(), c.get("message")));
-        this.eventBus.post(new NotificationEvent(NotificationReason.NOTE_TICKET, soul, ticket.getPlayerUniqueID(), ticket));
+        ticketManager.insertMessage(ticket.getId(), ticket.note(sender.uuid(), c.get("message")));
+        this.eventBus.post(new NotificationEvent(NotificationReason.NOTE_TICKET, sender, ticket.getPlayerUniqueID(), ticket));
         ticketManager.updateTicket(ticket);
     }
 
-    private void processReopen(final @NonNull CommandContext<Soul<C>> c) {
-        Soul<C> soul = c.getSender();
+    private void processReopen(final @NonNull CommandContext<@NonNull OnlineSoul> c) {
+        OnlineSoul sender = c.getSender();
         Ticket ticket = c.get("ticket");
 
-        ticketManager.insertMessage(ticket.getId(), ticket.reopen(soul.getUniqueId()));
-        this.eventBus.post(new NotificationEvent(NotificationReason.REOPEN_TICKET, soul, ticket.getPlayerUniqueID(), ticket));
+        ticketManager.insertMessage(ticket.getId(), ticket.reopen(sender.uuid()));
+        this.eventBus.post(new NotificationEvent(NotificationReason.REOPEN_TICKET, sender, ticket.getPlayerUniqueID(), ticket));
         ticketManager.updateTicket(ticket);
     }
 
-    private void processTeleport(final @NonNull CommandContext<Soul<C>> c) {
-        PlayerSoul<C, ?> soul = (PlayerSoul<C, ?>) c.getSender();
+    private void processTeleport(final @NonNull CommandContext<@NonNull OnlineSoul> c) {
+        PlayerSoul soul = (PlayerSoul) c.getSender();
         Ticket ticket = c.get("ticket");
 
         this.eventBus.post(new NotificationEvent(NotificationReason.TELEPORT_TICKET, soul, ticket.getPlayerUniqueID(), ticket));
         soul.teleport(ticket.getLocation());
     }
 
-    private void processList(final @NonNull CommandContext<Soul<C>> c) {
-        final Soul<C> soul = c.getSender();
+    private void processList(final @NonNull CommandContext<@NonNull OnlineSoul> c) {
+        final OnlineSoul sender = c.getSender();
         final User player = c.flags().getValue("player", null);
         final Boolean onlineOnly = c.flags().getValue("onlineOnly", false);
-        final TicketStatus[] statuses = this.statusesFromFlags(c.flags());
+        final TicketStatus[] statuses = TicketStatus.fromFlags(c.flags());
 
         if (player != null) {
             // todo
             Template template = Template.of("player", player.getName());
             Component title = Message.TITLE__SPECIFIC_TICKETS.use(template);
-            soul.sendMessage(title);
+            sender.sendMessage(title);
 
             this.ticketManager.getTickets(player.getUniqueId(), statuses).forEach(ticket -> {
                 Component list = Message.FORMAT__LIST.use(ticket.templates());
-                soul.sendMessage(list);
+                sender.sendMessage(list);
             });
 
             return;
         }
 
         Component title = Message.TITLE__ALL_TICKETS.use();
-        soul.sendMessage(title);
+        sender.sendMessage(title);
 
         // todo: ugly
         Set<Map.Entry<UUID, List<Ticket>>> unsortedTickets = Lists
@@ -311,17 +313,17 @@ public final class TicketsCommand<C> extends CommonCommands<C> {
             // todo
             Template template = Template.of("player", this.userManager.getName(uuid));
             Component listHeader = Message.FORMAT__LIST_HEADER.use(template);
-            soul.sendMessage(listHeader);
+            sender.sendMessage(listHeader);
 
             tickets.forEach(ticket -> {
                 Component list = Message.FORMAT__LIST.use(ticket.templates());
-                soul.sendMessage(list);
+                sender.sendMessage(list);
             });
         });
     }
 
-    private void processStatus(final @NonNull CommandContext<Soul<C>> c) {
-        Soul<C> soul = c.getSender();
+    private void processStatus(final @NonNull CommandContext<@NonNull OnlineSoul> c) {
+        OnlineSoul sender = c.getSender();
         User target = c.getOrDefault("target", null);
 
         TextComponent.Builder builder = Component.text();
@@ -352,24 +354,24 @@ public final class TicketsCommand<C> extends CommonCommands<C> {
             }
         });
 
-        soul.sendMessage(builder);
+        sender.sendMessage(builder);
     }
 
-    private void processHighscore(final @NonNull CommandContext<Soul<C>> c) {
-        Soul<C> soul = c.getSender();
+    private void processHighscore(final @NonNull CommandContext<@NonNull OnlineSoul> c) {
+        OnlineSoul sender = c.getSender();
         TimeAmount amount = c.<TimeAmount>getOptional("amount").orElse(TimeAmount.FOREVER);
 
         Map<UUID, Integer> highscores = this.ticketManager.getHighscores(amount);
 
         Component title = Message.TITLE__HIGHSCORES.use();
-        soul.sendMessage(title);
+        sender.sendMessage(title);
 
         highscores.forEach((uuid, number) -> {
             Component component = Message.FORMAT__HS.use(
                     Template.of("target", this.userManager.getName(uuid)),
                     Template.of("amount", number.toString())
             );
-            soul.sendMessage(component);
+            sender.sendMessage(component);
         });
     }
 

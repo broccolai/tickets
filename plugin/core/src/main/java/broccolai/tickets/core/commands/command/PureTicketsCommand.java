@@ -2,9 +2,9 @@ package broccolai.tickets.core.commands.command;
 
 import broccolai.tickets.core.PureTickets;
 import broccolai.tickets.core.locale.Message;
+import broccolai.tickets.core.model.user.OnlineSoul;
 import broccolai.tickets.core.storage.SQLQueries;
 import broccolai.tickets.core.user.PlayerSoul;
-import broccolai.tickets.core.user.Soul;
 import broccolai.tickets.core.user.UserSettings;
 import broccolai.tickets.core.utilities.Constants;
 import cloud.commandframework.Command;
@@ -18,9 +18,9 @@ import net.kyori.adventure.text.minimessage.Template;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.jdbi.v3.core.Jdbi;
 
-public final class PureTicketsCommand<C> {
+public final class PureTicketsCommand {
 
-    private final PureTickets<C, ?, ?> pureTickets;
+    private final PureTickets<?, ?, ?> pureTickets;
     private final Jdbi jdbi;
 
     /**
@@ -32,15 +32,15 @@ public final class PureTicketsCommand<C> {
      * @param jdbi                Jdbi instance
      */
     public PureTicketsCommand(
-            final @NonNull CommandManager<Soul<C>> manager,
-            final @NonNull PureTickets<C, ?, ?> pureTickets,
-            final @NonNull CommandConfirmationManager<Soul<C>> confirmationManager,
+            final @NonNull CommandManager<@NonNull OnlineSoul> manager,
+            final @NonNull PureTickets<?, ?, ?> pureTickets,
+            final @NonNull CommandConfirmationManager<@NonNull OnlineSoul> confirmationManager,
             final @NonNull Jdbi jdbi
     ) {
         this.pureTickets = pureTickets;
         this.jdbi = jdbi;
 
-        final Command.Builder<Soul<C>> builder = manager.commandBuilder("puretickets", "pt");
+        final Command.Builder<@NonNull OnlineSoul> builder = manager.commandBuilder("puretickets", "pt");
 
         manager.command(builder.literal("info")
                 .handler(this::processInfo));
@@ -64,13 +64,13 @@ public final class PureTicketsCommand<C> {
                 .handler(this::processPurge));
     }
 
-    private void processInfo(final @NonNull CommandContext<Soul<C>> c) {
+    private void processInfo(final @NonNull CommandContext<@NonNull OnlineSoul> c) {
         Component component = Component.text("PureTickets: ")
                 .append(Component.text(this.pureTickets.version()));
         c.getSender().sendMessage(component);
     }
 
-    private void processSettings(final @NonNull CommandContext<Soul<C>> c) {
+    private void processSettings(final @NonNull CommandContext<@NonNull OnlineSoul> c) {
         PlayerSoul<?, ?> soul = (PlayerSoul<?, ?>) c.getSender();
         UserSettings.Options setting = c.get("setting");
         Boolean value = c.get("value");
@@ -85,7 +85,7 @@ public final class PureTicketsCommand<C> {
         soul.sendMessage(component);
     }
 
-    private void processReload(final @NonNull CommandContext<Soul<C>> c) {
+    private void processReload(final @NonNull CommandContext<@NonNull OnlineSoul> c) {
         this.pureTickets.stop();
         this.pureTickets.start();
 
@@ -93,7 +93,7 @@ public final class PureTicketsCommand<C> {
         c.getSender().sendMessage(component);
     }
 
-    private void processPurge(final @NonNull CommandContext<Soul<C>> c) {
+    private void processPurge(final @NonNull CommandContext<@NonNull OnlineSoul> c) {
         this.jdbi.useHandle(handle -> {
             SQLQueries.PURGE_EVERYTHING.forEach(statement -> {
                 handle.createUpdate(statement).execute();

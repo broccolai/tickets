@@ -1,7 +1,7 @@
 package broccolai.tickets.core.commands.command;
 
 import broccolai.tickets.core.locale.Message;
-import broccolai.tickets.core.model.user.UserAudience;
+import broccolai.tickets.core.model.user.OnlineSoul;
 import broccolai.tickets.core.ticket.Ticket;
 import broccolai.tickets.core.ticket.TicketStatus;
 import net.kyori.adventure.text.Component;
@@ -12,7 +12,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 
 public abstract class CommonCommands implements BaseCommand {
 
-    protected final void processShow(final @NonNull UserAudience soul, final @NonNull Ticket ticket) {
+    protected final void processShow(final @NonNull OnlineSoul soul, final @NonNull Ticket ticket) {
         Template[] templates = ticket.templates();
 
         TextComponent.Builder show = Component.text()
@@ -31,7 +31,7 @@ public abstract class CommonCommands implements BaseCommand {
         soul.sendMessage(show);
     }
 
-    protected final void processLog(final @NonNull UserAudience soul, final @NonNull Ticket ticket) {
+    protected final void processLog(final @NonNull OnlineSoul soul, final @NonNull Ticket ticket) {
         TextComponent.Builder component = Component.text()
                 .append(Message.TITLE__TICKET_LOG.use(ticket.templates()));
 

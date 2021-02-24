@@ -1,7 +1,7 @@
 package broccolai.tickets.core.commands.arguments;
 
 import broccolai.tickets.core.exceptions.TicketNotFound;
-import broccolai.tickets.core.model.user.UserAudience;
+import broccolai.tickets.core.model.user.OnlineSoul;
 import broccolai.tickets.core.ticket.Ticket;
 import broccolai.tickets.core.ticket.TicketIdStorage;
 import broccolai.tickets.core.ticket.TicketManager;
@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.Queue;
 import java.util.UUID;
 
-public final class TicketArgument extends CommandArgument<UserAudience, Ticket> {
+public final class TicketArgument extends CommandArgument<OnlineSoul, Ticket> {
 
     private TicketArgument(final boolean requiresId, final boolean issuer, final @NonNull TicketStatus... statuses) {
         super(true, "ticket", new TicketParser(requiresId, issuer, statuses), Ticket.class);
@@ -42,7 +42,7 @@ public final class TicketArgument extends CommandArgument<UserAudience, Ticket> 
     }
 
 
-    private static final class TicketParser implements ArgumentParser<UserAudience, Ticket> {
+    private static final class TicketParser implements ArgumentParser<OnlineSoul, Ticket> {
 
         private final boolean requiresId;
         private final boolean issuer;
@@ -56,11 +56,11 @@ public final class TicketArgument extends CommandArgument<UserAudience, Ticket> 
 
         @Override
         public @NonNull ArgumentParseResult<Ticket> parse(
-                final @NonNull CommandContext<UserAudience> commandContext,
+                final @NonNull CommandContext<OnlineSoul> commandContext,
                 final @NonNull Queue<String> inputQueue
         ) {
             TicketManager ticketManager = commandContext.get("ticketManager");
-            UserAudience target;
+            OnlineSoul target;
 
             if (issuer) {
                 target = commandContext.getSender();
@@ -101,7 +101,7 @@ public final class TicketArgument extends CommandArgument<UserAudience, Ticket> 
 
         @Override
         public @NonNull List<String> suggestions(
-                final @NonNull CommandContext<UserAudience> commandContext,
+                final @NonNull CommandContext<OnlineSoul> commandContext,
                 final @NonNull String input
         ) {
             TicketIdStorage idStorage = commandContext.<TicketManager>get("ticketManager").getIdStorage();

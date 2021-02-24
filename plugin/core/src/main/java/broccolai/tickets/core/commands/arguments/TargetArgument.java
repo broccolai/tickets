@@ -1,6 +1,6 @@
 package broccolai.tickets.core.commands.arguments;
 
-import broccolai.tickets.core.user.Soul;
+import broccolai.tickets.core.model.user.OnlineSoul;
 import broccolai.tickets.core.user.User;
 import broccolai.tickets.core.user.UserManager;
 import cloud.commandframework.arguments.CommandArgument;
@@ -14,10 +14,10 @@ import java.util.List;
 import java.util.Queue;
 import java.util.UUID;
 
-public final class TargetArgument<C> extends CommandArgument<Soul<C>, User> {
+public final class TargetArgument extends CommandArgument<OnlineSoul, User> {
 
     private TargetArgument(final @NonNull String name) {
-        super(true, name, new TargetParser<>(), User.class);
+        super(true, name, new TargetParser(), User.class);
     }
 
     /**
@@ -27,15 +27,15 @@ public final class TargetArgument<C> extends CommandArgument<Soul<C>, User> {
      * @param <C>  Command sender type
      * @return Target argument
      */
-    public static <C> TargetArgument<C> of(final @NonNull String name) {
-        return new TargetArgument<>(name);
+    public static <C> TargetArgument of(final @NonNull String name) {
+        return new TargetArgument(name);
     }
 
-    private static final class TargetParser<C> implements ArgumentParser<Soul<C>, User> {
+    private static final class TargetParser implements ArgumentParser<OnlineSoul, User> {
 
         @Override
         public @NonNull ArgumentParseResult<@NonNull User> parse(
-                @NonNull final CommandContext<@NonNull Soul<C>> commandContext,
+                @NonNull final CommandContext<@NonNull OnlineSoul> commandContext,
                 @NonNull final Queue<@NonNull String> queue
         ) {
             String input = queue.peek();
@@ -47,7 +47,7 @@ public final class TargetArgument<C> extends CommandArgument<Soul<C>, User> {
                 ));
             }
 
-            UserManager<C, ?, ?> userManager = commandContext.get("userManager");
+            UserManager<?, ?, ?> userManager = commandContext.get("userManager");
             UUID uuid = userManager.getUniqueId(input);
             User user = userManager.getUser(uuid);
 
@@ -57,9 +57,9 @@ public final class TargetArgument<C> extends CommandArgument<Soul<C>, User> {
 
         @Override
         public @NonNull List<@NonNull String> suggestions(
-                @NonNull final CommandContext<Soul<C>> commandContext, @NonNull final String input
+                @NonNull final CommandContext<OnlineSoul> commandContext, @NonNull final String input
         ) {
-            UserManager<C, ?, ?> userManager = commandContext.get("userManager");
+            UserManager<?, ?, ?> userManager = commandContext.get("userManager");
 
             return userManager.getNames();
         }

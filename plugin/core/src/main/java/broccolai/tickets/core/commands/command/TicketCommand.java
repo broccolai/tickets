@@ -8,13 +8,12 @@ import broccolai.tickets.core.events.api.NotificationEvent;
 import broccolai.tickets.core.events.api.TicketConstructionEvent;
 import broccolai.tickets.core.exceptions.PureException;
 import broccolai.tickets.core.interactions.NotificationReason;
-import broccolai.tickets.core.model.user.PlayerUserAudience;
-import broccolai.tickets.core.model.user.UserAudience;
+import broccolai.tickets.core.model.user.PlayerSoul;
+import broccolai.tickets.core.model.user.OnlineSoul;
 import broccolai.tickets.core.service.MessageService;
 import broccolai.tickets.core.ticket.Ticket;
 import broccolai.tickets.core.ticket.TicketManager;
 import broccolai.tickets.core.ticket.TicketStatus;
-import broccolai.tickets.core.user.UserManager;
 import broccolai.tickets.core.utilities.Constants;
 import cloud.commandframework.ArgumentDescription;
 import cloud.commandframework.Command;
@@ -26,12 +25,11 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.util.List;
 
-public final class TicketCommand<C> extends CommonCommands {
+public final class TicketCommand extends CommonCommands {
 
     private final Config config;
     private final MessageService messageService;
     private final TicketsEventBus eventManager;
-    private final UserManager<C, ?, ?> userManager;
     private final TicketManager ticketManager;
 
     /**
@@ -39,29 +37,26 @@ public final class TicketCommand<C> extends CommonCommands {
      *
      * @param config        Config instance
      * @param eventManager  Event Manager
-     * @param userManager   User Manager
      * @param ticketManager Ticket Manager
      */
     public TicketCommand(
             final @NonNull Config config,
             final @NonNull MessageService messageService,
             final @NonNull TicketsEventBus eventManager,
-            final @NonNull UserManager<C, ?, ?> userManager,
             final @NonNull TicketManager ticketManager
     ) {
         this.config = config;
         this.messageService = messageService;
         this.eventManager = eventManager;
-        this.userManager = userManager;
         this.ticketManager = ticketManager;
     }
 
     @Override
     public void register(
-            @NonNull final CommandManager<@NonNull UserAudience> manager
+            @NonNull final CommandManager<@NonNull OnlineSoul> manager
     ) {
-        final Command.Builder<UserAudience> builder = manager.commandBuilder("ticket", "ti")
-                .senderType(PlayerUserAudience.class);
+        final Command.Builder<OnlineSoul> builder = manager.commandBuilder("ticket", "ti")
+                .senderType(PlayerSoul.class);
 
         manager.command(builder.literal(
                 config.getAliasCreate().getFirst(),
@@ -120,9 +115,9 @@ public final class TicketCommand<C> extends CommonCommands {
                 .handler(c -> processLog(c.getSender(), c.get("ticket"))));
     }
 
-    private void processCreate(final @NonNull CommandContext<UserAudience> c) {
-        PlayerUserAudience playerUser = (PlayerUserAudience) c.getSender();
-        TicketConstructionEvent constructionEvent = new TicketConstructionEvent(playerUser, c.get("message"));
+    private void processCreate(final @NonNull CommandContext<OnlineSoul> c) {
+        PlayerSoul soul = (PlayerSoul) c.getSender();
+        TicketConstructionEvent constructionEvent = new TicketConstructionEvent(soul, c.get("message"));
         this.eventManager.post(constructionEvent);
 
         constructionEvent.getException()
@@ -130,8 +125,8 @@ public final class TicketCommand<C> extends CommonCommands {
                 .ifPresent(soul::sendMessage);
     }
 
-    private void processUpdate(final @NonNull CommandContext<UserAudience> c) {
-        UserAudience soul = c.getSender();
+    private void processUpdate(final @NonNull CommandContext<OnlineSoul> c) {
+        OnlineSoul soul = c.getSender();
         Ticket ticket = c.get("ticket");
         broccolai.tickets.core.message.Message message = c.get("message");
 
@@ -141,8 +136,8 @@ public final class TicketCommand<C> extends CommonCommands {
         ticketManager.insertMessage(ticket.getId(), message);
     }
 
-    private void processClose(final @NonNull CommandContext<UserAudience> c) {
-        UserAudience soul = c.getSender();
+    private void processClose(final @NonNull CommandContext<OnlineSoul> c) {
+        OnlineSoul soul = c.getSender();
         Ticket ticket = c.get("ticket");
 
         ticketManager.insertMessage(ticket.getId(), ticket.close(soul.uuid()));
@@ -150,8 +145,8 @@ public final class TicketCommand<C> extends CommonCommands {
         this.eventManager.post(new NotificationEvent(NotificationReason.CLOSE_TICKET, soul, null, ticket));
     }
 
-    private void processList(final @NonNull CommandContext<UserAudience> c) {
-        UserAudience soul = c.getSender();
+    private void processList(final @NonNull CommandContext<OnlineSoul> c) {
+        OnlineSoul soul = c.getSender();
         TicketStatus status = c.flags().getValue("status", null);
         List<Ticket> tickets = this.ticketManager.getTickets(
                 soul.uuid(),
