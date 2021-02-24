@@ -1,7 +1,9 @@
 package broccolai.tickets.core.service;
 
-import broccolai.tickets.core.model.user.PlayerUserAudience;
-import broccolai.tickets.core.model.user.UserAudience;
+import broccolai.tickets.core.model.user.PlayerSoul;
+import broccolai.tickets.core.model.user.OnlineSoul;
+
+import broccolai.tickets.core.model.user.Soul;
 
 import java.util.UUID;
 
@@ -9,12 +11,14 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 
 public interface UserService<S, P extends S> {
 
-    @NonNull UserAudience wrap(@NonNull S sender);
+    @NonNull Soul wrap(@NonNull UUID uuid);
 
-    @NonNull PlayerUserAudience playerAudience(@NonNull P player);
+    @NonNull OnlineSoul wrap(@NonNull S sender);
+
+    @NonNull PlayerSoul player(@NonNull P player);
 
     @NonNull UUID uuid(@NonNull S sender);
 
-    @NonNull P player(@NonNull S sender);
+    @NonNull S sender(@NonNull UUID uuid);
 
 }

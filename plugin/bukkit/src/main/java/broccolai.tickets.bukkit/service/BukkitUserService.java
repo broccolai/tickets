@@ -1,10 +1,11 @@
 package broccolai.tickets.bukkit.service;
 
-import broccolai.tickets.bukkit.model.User.BukkitPlayerUserAudience;
-import broccolai.tickets.core.model.user.ConsoleUserAudience;
-import broccolai.tickets.core.model.user.PlayerUserAudience;
+import broccolai.tickets.bukkit.model.User.BukkitPlayerSoul;
+import broccolai.tickets.core.model.user.ConsoleSoul;
+import broccolai.tickets.core.model.user.PlayerSoul;
 import broccolai.tickets.core.service.impl.SimpleUserService;
 import net.kyori.adventure.platform.AudienceProvider;
+import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
@@ -19,22 +20,27 @@ public final class BukkitUserService extends SimpleUserService<CommandSender, Pl
     }
 
     @Override
-    public @NonNull PlayerUserAudience playerAudience(@NonNull final Player player) {
-        return new BukkitPlayerUserAudience(player, this.audienceProvider.player(player.getUniqueId()));
+    public @NonNull PlayerSoul player(@NonNull final Player player) {
+        return new BukkitPlayerSoul(player, this.audienceProvider.player(player.getUniqueId()));
     }
 
     @Override
     public @NonNull UUID uuid(@NonNull final CommandSender sender) {
         if (sender instanceof ConsoleCommandSender) {
-            return ConsoleUserAudience.UUID;
+            return ConsoleSoul.UUID;
         }
 
-        return this.player(sender).getUniqueId();
+        Player player = (Player) sender;
+        return player.getUniqueId();
     }
 
     @Override
-    public @NonNull Player player(@NonNull final CommandSender sender) {
-        return (Player) sender;
+    public @NonNull CommandSender sender(@NonNull final UUID uuid) {
+        if (uuid == ConsoleSoul.UUID) {
+            return Bukkit.getConsoleSender();
+        }
+
+        return Bukkit.getPlayer(uuid);
     }
 
 }
