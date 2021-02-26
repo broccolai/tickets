@@ -34,7 +34,7 @@ subprojects {
 
     dependencies {
         // Checker-qual annotations
-        compileOnlyApi("org.checkerframework:checker-qual:3.5.0")
+        compileOnlyApi("org.checkerframework", "checker-qual", Versions.CHECKER_QUAL)
     }
 
     tasks {

@@ -4,21 +4,21 @@ dependencies {
     api(project(":tickets-core"))
 
     // Spigot
-    compileOnly("org.spigotmc:spigot-api:1.16.1-R0.1-SNAPSHOT")
+    compileOnly("org.spigotmc", "spigot-api", Versions.SPIGOT)
 
     // Kyori/adventure platform
-    api("net.kyori:adventure-platform-bukkit:4.0.0-SNAPSHOT")
+    api("net.kyori", "adventure-platform-bukkit", Versions.KYORI_PLATFORM)
 
     // Cloud
-    api("cloud.commandframework:cloud-paper:1.4.0")
+    api("cloud.commandframework", "cloud-paper", Versions.CLOUD)
 
     // Paper lib for async tp
-    api("io.papermc:paperlib:1.0.5")
+    api("io.papermc", "paperlib", Versions.PAPER_LIB)
 }
 
 tasks {
     processResources {
-        filter<ReplaceTokens>("tokens" to mapOf("version" to project.version))
+        expand("version" to rootProject.version)
     }
 
     shadowJar {

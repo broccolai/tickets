@@ -1,6 +1,6 @@
 name : PureTickets
 main : broccolai.tickets.bukkit.BukkitPlatform
-version : @version@
+version : $version
 api-version : 1.13
 
 permissions :

@@ -2,38 +2,38 @@ dependencies {
     api(project(":tickets-api"))
 
     // Minecraft expectations
-    compileOnlyApi("com.google.guava:guava:21.0")
-    compileOnlyApi("com.google.code.gson:gson:2.8.0")
+    compileOnlyApi("com.google.guava", "guava", Versions.GUAVA)
+    compileOnlyApi("com.google.code.gson", "gson", Versions.GSON)
 
     // Kyori/event
-    api("net.kyori:event-api:4.0.0-SNAPSHOT")
-    api("net.kyori:event-method-asm:4.0.0-SNAPSHOT")
+    api("net.kyori", "event-api", Versions.EVENT)
+    api("net.kyori" ,"event-method-asm", Versions.EVENT)
 
     // Kyroi/Adventure
-    api("net.kyori:adventure-platform-api:4.0.0-SNAPSHOT")
-    api("net.kyori:adventure-text-minimessage:4.1.0-SNAPSHOT")
+    api("net.kyori", "adventure-platform-api", Versions.KYORI_PLATFORM)
+    api("net.kyori", "adventure-text-minimessage", Versions.MINI)
 
     // Jdbi
-    api("org.jdbi:jdbi3-core:3.16.0")
-    api("com.github.ben-manes.caffeine:caffeine:2.8.6")
+    api("org.jdbi", "jdbi3-core", Versions.JDBI)
+    api("com.github.ben-manes.caffeine", "caffeine", Versions.CAFFEINE)
 
     // Corn
-    api("broccolai.corn:corn-core:1.0.0")
+    api("broccolai.corn", "corn-core", Versions.CORN)
 
     // Command library
-    api("cloud.commandframework:cloud-core:1.4.0")
-    api("cloud.commandframework:cloud-minecraft-extras:1.4.0")
+    api("cloud.commandframework", "cloud-core", Versions.CLOUD)
+    api("cloud.commandframework", "cloud-minecraft-extras", Versions.CLOUD)
 
     // Http library
-    api("com.intellectualsites.http:HTTP4J:1.3-SNAPSHOT")
+    api("com.intellectualsites.http", "HTTP4J", Versions.HTTP4J)
 
     // Logging
-    api("org.slf4j:slf4j-simple:1.7.13")
+    api("org.slf4j", "slf4j-simple", Versions.SLF4J)
 
     // Flyway
-    implementation("com.zaxxer:HikariCP:3.4.5")
-    implementation("org.flywaydb:flyway-core:7.5.2")
+    implementation("com.zaxxer", "HikariCP", Versions.HIKARI)
+    implementation("org.flywaydb", "flyway-core", Versions.FLYWAY)
 
     // Guice
-    implementation("com.google.inject:guice:5.0.0-BETA-1")
+    implementation("com.google.inject", "guice", Versions.GUICE)
 }
