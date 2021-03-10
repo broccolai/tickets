@@ -11,11 +11,13 @@ public abstract class PureException extends RuntimeException {
 
     /**
      * Initialise a localised PureException
-     *
-     * @param component Component to send
      */
     public PureException(final @NonNull Component component) {
         this.component = component;
+    }
+
+    public PureException() {
+        this.component = Component.text("error");
     }
 
     /**
