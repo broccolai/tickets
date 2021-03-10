@@ -1,22 +1,22 @@
 package broccolai.tickets.api.model.position;
 
-import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 public final class Position {
 
-    private final @NonNull String world;
+    private final @Nullable String world;
     private final int x;
     private final int y;
     private final int z;
 
-    public Position(final @NonNull String world, final int x, final int y, final int z) {
+    public Position(final @Nullable String world, final int x, final int y, final int z) {
         this.world = world;
         this.x = x;
         this.y = y;
         this.z = z;
     }
 
-    public @NonNull String world() {
+    public @Nullable String world() {
         return this.world;
     }
 
