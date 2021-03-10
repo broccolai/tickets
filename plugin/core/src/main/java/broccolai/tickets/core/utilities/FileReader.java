@@ -14,12 +14,6 @@ public final class FileReader {
     private FileReader() {
     }
 
-    /**
-     * Load all content from a file
-     *
-     * @param file File path relative to plugin
-     * @return Files content
-     */
     public static @NonNull String fromPath(final @NonNull String file) {
         try (InputStream stream = PureTickets.class.getResourceAsStream(file);
              Reader reader = new InputStreamReader(stream)) {
