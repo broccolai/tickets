@@ -1,7 +1,7 @@
-import net.kyori.indra.IndraPublishingPlugin
+import com.github.jengelman.gradle.plugins.shadow.ShadowPlugin
 import net.kyori.indra.IndraCheckstylePlugin
 import net.kyori.indra.IndraPlugin
-import com.github.jengelman.gradle.plugins.shadow.ShadowPlugin
+import net.kyori.indra.IndraPublishingPlugin
 import net.kyori.indra.sonatypeSnapshots
 
 plugins {
@@ -38,9 +38,6 @@ subprojects {
     }
 
     tasks {
-        build {
-            dependsOn(named("shadowJar"))
-        }
 
         indra {
             gpl3OnlyLicense()
@@ -53,31 +50,6 @@ subprojects {
             github("broccolai", "tickets") {
                 ci = true
             }
-        }
-
-        shadowJar {
-            dependencies {
-                exclude(dependency("com.google.guava:guava:21.0"))
-            }
-
-            fun reloc(vararg deps: String) {
-                for (i in deps.indices step 2) {
-                    relocate(deps[i], project.group.toString() + ".lib." + deps[i + 1])
-                }
-            }
-
-            reloc(
-                    "cloud.commandframework", "cloud",
-                    "com.intellectualsites.http", "http",
-                    "io.leangen.geantyref", "geantyref",
-                    "io.papermc.lib", "paperlib",
-                    "broccolai.corn", "corn"
-            )
-
-
-            archiveFileName.set(project.name + ".jar")
-            mergeServiceFiles()
-            minimize()
         }
     }
 }

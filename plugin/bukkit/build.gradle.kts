@@ -1,5 +1,3 @@
-import org.apache.tools.ant.filters.ReplaceTokens
-
 dependencies {
     api(project(":tickets-core"))
 
@@ -17,6 +15,11 @@ dependencies {
 }
 
 tasks {
+
+    build {
+        dependsOn(named("shadowJar"))
+    }
+
     processResources {
         expand("version" to rootProject.version)
     }

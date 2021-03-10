@@ -7,7 +7,7 @@ dependencies {
 
     // Kyori/event
     api("net.kyori", "event-api", Versions.EVENT)
-    api("net.kyori" ,"event-method-asm", Versions.EVENT)
+    api("net.kyori", "event-method-asm", Versions.EVENT)
 
     // Kyroi/Adventure
     api("net.kyori", "adventure-platform-api", Versions.KYORI_PLATFORM)
@@ -31,9 +31,13 @@ dependencies {
     api("org.slf4j", "slf4j-simple", Versions.SLF4J)
 
     // Flyway
-    implementation("com.zaxxer", "HikariCP", Versions.HIKARI)
-    implementation("org.flywaydb", "flyway-core", Versions.FLYWAY)
+    api("com.zaxxer", "HikariCP", Versions.HIKARI)
+    api("org.flywaydb", "flyway-core", Versions.FLYWAY)
+    api("com.h2database", "h2", Versions.H2)
 
     // Guice
-    implementation("com.google.inject", "guice", Versions.GUICE)
+    api("com.google.inject", "guice", Versions.GUICE)
+
+    // Configurate
+    api("org.spongepowered", "configurate-yaml", "4.0.0")
 }

@@ -12,6 +12,7 @@ object Versions {
     const val HIKARI = "4.0.2"
     const val GUICE = "5.0.0-BETA-1"
     const val FLYWAY = "7.5.4"
+    const val H2 = "1.4.200"
     const val SLF4J = "1.7.13"
     const val HTTP4J = "1.3-SNAPSHOT"
     const val CAFFEINE = "2.9.0"
