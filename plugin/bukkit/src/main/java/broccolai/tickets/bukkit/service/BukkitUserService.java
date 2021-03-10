@@ -3,7 +3,7 @@ package broccolai.tickets.bukkit.service;
 import broccolai.corn.core.Lists;
 import broccolai.tickets.api.model.user.ConsoleSoul;
 import broccolai.tickets.api.model.user.PlayerSoul;
-import broccolai.tickets.bukkit.model.User.BukkitPlayerSoul;
+import broccolai.tickets.bukkit.model.BukkitPlayerSoul;
 import broccolai.tickets.core.service.user.SimpleUserService;
 
 import com.google.inject.Inject;

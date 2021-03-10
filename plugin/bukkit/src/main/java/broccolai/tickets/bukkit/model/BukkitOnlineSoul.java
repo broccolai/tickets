@@ -1,4 +1,4 @@
-package broccolai.tickets.bukkit.model.User;
+package broccolai.tickets.bukkit.model;
 
 import broccolai.tickets.api.model.user.OnlineSoul;
 import org.bukkit.command.CommandSender;

@@ -1,4 +1,4 @@
-package broccolai.tickets.bukkit.model.User;
+package broccolai.tickets.bukkit.model;
 
 import broccolai.tickets.api.model.position.Position;
 import broccolai.tickets.api.model.user.PlayerSoul;
