@@ -32,11 +32,12 @@ public final class BukkitPlatform extends JavaPlugin implements PluginPlatform {
     private @MonotonicNonNull PureTickets pureTickets;
 
     @Override
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     public void onEnable() {
         this.getDataFolder().mkdirs();
 
         Injector injector = Guice.createInjector(
-            new BukkitModule(this, this)
+                new BukkitModule(this, this)
         );
 
         this.pureTickets = injector.getInstance(PureTickets.class);

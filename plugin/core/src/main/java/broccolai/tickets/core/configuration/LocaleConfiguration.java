@@ -9,6 +9,7 @@ import org.spongepowered.configurate.objectmapping.ObjectMapper;
 import org.spongepowered.configurate.serialize.SerializationException;
 
 @ConfigSerializable
+@SuppressWarnings("CanBeFinal")
 public final class LocaleConfiguration {
 
     public LocaleEntry prefix = new LocaleEntry("<color:#f5a5a5><bold>T <dark_gray>»<reset>");

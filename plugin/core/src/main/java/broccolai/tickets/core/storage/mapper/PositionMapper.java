@@ -11,7 +11,7 @@ import java.sql.SQLException;
 public final class PositionMapper implements ColumnMapper<Position> {
 
     @Override
-    public Position map(final ResultSet r, final int columnNumber, final StatementContext ctx) throws SQLException {
+    public Position map(final ResultSet r, final int columnNumber, final StatementContext ctx) {
         throw new IllegalArgumentException();
     }
 

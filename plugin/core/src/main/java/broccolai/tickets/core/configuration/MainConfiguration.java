@@ -8,6 +8,7 @@ import org.spongepowered.configurate.objectmapping.ObjectMapper;
 import org.spongepowered.configurate.serialize.SerializationException;
 
 @ConfigSerializable
+@SuppressWarnings("CanBeFinal")
 public final class MainConfiguration {
 
     public StorageConfiguration storageConfiguration = new StorageConfiguration();

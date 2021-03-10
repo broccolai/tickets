@@ -11,6 +11,7 @@ import java.io.File;
 import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 
 @ConfigSerializable
+@SuppressWarnings("CanBeFinal")
 public final class StorageConfiguration {
 
     private final Type type = Type.H2;
@@ -21,6 +22,7 @@ public final class StorageConfiguration {
 
     private final String password = "********";
 
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     public HikariConfig asHikari(final @NonNull File folder) {
         HikariConfig config = new HikariConfig();
 
