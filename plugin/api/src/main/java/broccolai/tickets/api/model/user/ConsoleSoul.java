@@ -28,6 +28,11 @@ public final class ConsoleSoul implements OnlineSoul {
     }
 
     @Override
+    public boolean permission(final @NonNull String permission) {
+        return true;
+    }
+
+    @Override
     public @NonNull Audience audience() {
         return this.audience;
     }

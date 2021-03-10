@@ -5,7 +5,9 @@ import org.checkerframework.dataflow.qual.Pure;
 
 import java.util.UUID;
 
-public interface Soul{
+public interface Soul {
+
     @Pure
     @NonNull UUID uuid();
+
 }

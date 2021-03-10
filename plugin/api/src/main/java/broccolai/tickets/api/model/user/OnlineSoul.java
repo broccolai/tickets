@@ -17,6 +17,9 @@ public interface OnlineSoul extends Soul, Identified, Identity, ForwardingAudien
     @Pure
     @NonNull String username();
 
+    @Pure
+    boolean permission(@NonNull String permission);
+
     @Override
     default @NonNull Identity identity() {
         return this;
