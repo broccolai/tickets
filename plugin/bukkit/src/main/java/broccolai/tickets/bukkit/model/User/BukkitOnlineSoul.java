@@ -5,5 +5,7 @@ import org.bukkit.command.CommandSender;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 public interface BukkitOnlineSoul extends OnlineSoul {
+
     @NonNull CommandSender sender();
+
 }

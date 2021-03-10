@@ -2,12 +2,7 @@ package broccolai.tickets.bukkit.model.User;
 
 import broccolai.tickets.api.model.position.Position;
 import broccolai.tickets.api.model.user.PlayerSoul;
-import broccolai.tickets.core.utilities.TicketLocation;
-
 import io.papermc.lib.PaperLib;
-
-import java.util.UUID;
-
 import net.kyori.adventure.audience.Audience;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -15,6 +10,8 @@ import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.checkerframework.checker.nullness.qual.NonNull;
+
+import java.util.UUID;
 
 public final class BukkitPlayerSoul implements PlayerSoul, BukkitOnlineSoul {
 
@@ -37,24 +34,13 @@ public final class BukkitPlayerSoul implements PlayerSoul, BukkitOnlineSoul {
     }
 
     @Override
+    public boolean permission(final @NonNull String permission) {
+        return this.player.hasPermission(permission);
+    }
+
+    @Override
     public @NonNull Audience audience() {
         return this.audience;
-    }
-
-    //todo
-    public @NonNull TicketLocation location() {
-        Location location = this.player.getLocation();
-        World world = location.getWorld();
-        String worldName = world != null ? world.getName() : null;
-
-        return new TicketLocation(worldName, location.getX(), location.getY(), location.getZ());
-    }
-
-    //todo
-    public void teleport(final @NonNull TicketLocation location) {
-        World world = Bukkit.getWorld(location.getWorld());
-        Location bukkitLocation = new Location(world, location.getX(), location.getY(), location.getZ());
-        PaperLib.teleportAsync(this.player, bukkitLocation);
     }
 
     @Override
@@ -64,12 +50,18 @@ public final class BukkitPlayerSoul implements PlayerSoul, BukkitOnlineSoul {
 
     @Override
     public @NonNull Position position() {
-        return null;
+        Location location = this.player.getLocation();
+        World world = location.getWorld();
+        String worldName = world != null ? world.getName() : null;
+
+        return new Position(worldName, (int) location.getX(), (int) location.getY(), (int) location.getZ());
     }
 
     @Override
-    public void teleport(@NonNull final Position location) {
-
+    public void teleport(@NonNull final Position position) {
+        World world = position.world() != null ? Bukkit.getWorld(position.world()) : null;
+        Location bukkitLocation = new Location(world, position.x(), position.y(), position.z());
+        PaperLib.teleportAsync(this.player, bukkitLocation);
     }
 
 }
