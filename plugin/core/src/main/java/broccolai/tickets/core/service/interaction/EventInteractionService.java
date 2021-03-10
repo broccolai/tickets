@@ -9,8 +9,10 @@ import broccolai.tickets.api.service.event.EventService;
 import broccolai.tickets.api.service.interactions.InteractionService;
 import broccolai.tickets.api.service.ticket.TicketService;
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
+@Singleton
 public final class EventInteractionService implements InteractionService {
 
     private final EventService eventService;

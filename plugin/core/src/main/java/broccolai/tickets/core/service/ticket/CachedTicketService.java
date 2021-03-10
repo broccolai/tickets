@@ -13,6 +13,7 @@ import com.google.common.collect.Iterables;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.MultimapBuilder;
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.util.ArrayList;
@@ -25,6 +26,7 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.function.Predicate;
 
+@Singleton
 public final class CachedTicketService implements TicketService {
 
     private final StorageService storageService;

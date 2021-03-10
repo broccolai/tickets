@@ -4,6 +4,7 @@ import broccolai.tickets.api.model.ticket.Ticket;
 import broccolai.tickets.api.service.message.MessageService;
 import broccolai.tickets.core.configuration.LocaleConfiguration;
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.minimessage.Template;
@@ -11,6 +12,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.util.Collection;
 
+@Singleton
 public final class MiniMessageService implements MessageService {
 
     private final LocaleConfiguration locale;

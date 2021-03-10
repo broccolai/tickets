@@ -8,6 +8,8 @@ import broccolai.tickets.core.service.user.SimpleUserService;
 
 import com.google.inject.Inject;
 
+import com.google.inject.Singleton;
+
 import java.util.Collection;
 
 import net.kyori.adventure.platform.AudienceProvider;
@@ -19,6 +21,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.util.UUID;
 
+@Singleton
 public final class BukkitUserService extends SimpleUserService<CommandSender, Player> {
 
     @Inject

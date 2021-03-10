@@ -6,6 +6,7 @@ import broccolai.tickets.core.configuration.MainConfiguration;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import com.intellectualsites.http.EntityMapper;
 import com.intellectualsites.http.HttpClient;
 import com.intellectualsites.http.external.GsonMapper;
@@ -14,6 +15,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import java.util.Base64;
 import java.util.logging.Logger;
 
+@Singleton
 public final class HttpDiscordService implements DiscordService {
 
     private final HttpClient client;

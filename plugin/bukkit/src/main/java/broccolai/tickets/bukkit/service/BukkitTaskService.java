@@ -3,10 +3,12 @@ package broccolai.tickets.bukkit.service;
 import broccolai.tickets.api.model.task.Task;
 import broccolai.tickets.api.service.tasks.TaskService;
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
+@Singleton
 public final class BukkitTaskService implements TaskService {
 
     private final Plugin plugin;
