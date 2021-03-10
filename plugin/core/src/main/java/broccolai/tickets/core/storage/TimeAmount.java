@@ -21,6 +21,6 @@ public enum TimeAmount {
      * @return a long
      */
     public @Nullable Long getLength() {
-        return length;
+        return this.length;
     }
 }

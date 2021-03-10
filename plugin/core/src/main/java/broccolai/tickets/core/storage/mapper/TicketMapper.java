@@ -1,10 +1,11 @@
 package broccolai.tickets.core.storage.mapper;
 
-import broccolai.tickets.core.ticket.Ticket;
-import broccolai.tickets.core.ticket.TicketStatus;
-import broccolai.tickets.core.user.UserManager;
-import broccolai.tickets.core.utilities.TicketLocation;
-import org.checkerframework.checker.nullness.qual.NonNull;
+import broccolai.tickets.api.model.interaction.Action;
+import broccolai.tickets.api.model.interaction.MessageInteraction;
+import broccolai.tickets.api.model.position.Position;
+import broccolai.tickets.api.model.ticket.Ticket;
+import broccolai.tickets.api.model.ticket.TicketStatus;
+import broccolai.tickets.core.model.interaction.BasicMessageInteraction;
 import org.jdbi.v3.core.mapper.ColumnMapper;
 import org.jdbi.v3.core.mapper.EnumMapper;
 import org.jdbi.v3.core.mapper.RowMapper;
@@ -12,50 +13,33 @@ import org.jdbi.v3.core.statement.StatementContext;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 public final class TicketMapper implements RowMapper<Ticket> {
 
-    private final UserManager<?, ?, ?> userManager;
-
-    private ColumnMapper<UUID> uuidMapper;
-    private ColumnMapper<TicketLocation> locationMapper;
-    private ColumnMapper<TicketStatus> statusMapper;
-
-    /**
-     * Initialise the TicketMapper
-     *
-     * @param userManager User manager
-     */
-    public TicketMapper(final @NonNull UserManager<?, ?, ?> userManager) {
-        this.userManager = userManager;
-    }
-
     @Override
     public Ticket map(final ResultSet rs, final StatementContext ctx) throws SQLException {
-        this.registerMappers(ctx);
+        ColumnMapper<UUID> uuidMapper = ctx.findColumnMapperFor(UUID.class).orElseThrow(IllegalStateException::new);
+        ColumnMapper<Position> positionMapper = ctx.findColumnMapperFor(Position.class).orElseThrow(IllegalStateException::new);
+        ColumnMapper<LocalDateTime> timeMapper = ctx
+                .findColumnMapperFor(LocalDateTime.class)
+                .orElseThrow(IllegalStateException::new);
 
         int id = rs.getInt("id");
-        UUID creator = uuidMapper.map(rs, "uuid", ctx);
-        TicketLocation location = locationMapper.map(rs, "location", ctx);
-        TicketStatus status = statusMapper.map(rs, "status", ctx);
-        UUID assignee = uuidMapper.map(rs, "picker", ctx);
+        UUID player = uuidMapper.map(rs, "player", ctx);
+        Position position = positionMapper.map(rs, "position", ctx);
+        TicketStatus status = EnumMapper.byName(TicketStatus.class).map(rs, "status", ctx);
+        UUID picker = uuidMapper.map(rs, "picker", ctx);
 
-        return new Ticket(userManager, id, creator, location, status, assignee);
-    }
+        Action action = EnumMapper.byName(Action.class).map(rs, "action", ctx);
+        LocalDateTime time = timeMapper.map(rs, "time", ctx);
+        UUID sender = uuidMapper.map(rs, "sender", ctx);
+        String message = rs.getString("message");
 
-    private void registerMappers(final StatementContext ctx) {
-        if (uuidMapper == null) {
-            uuidMapper = ctx.findColumnMapperFor(UUID.class).orElseThrow(IllegalStateException::new);
-        }
+        MessageInteraction messageInteraction = new BasicMessageInteraction(action, time, sender, message);
 
-        if (locationMapper == null) {
-            locationMapper = ctx.findColumnMapperFor(TicketLocation.class).orElseThrow(IllegalStateException::new);
-        }
-
-        if (statusMapper == null) {
-            statusMapper = EnumMapper.byName(TicketStatus.class);
-        }
+        return new Ticket(id, player, position, status, messageInteraction, picker);
     }
 
 }
