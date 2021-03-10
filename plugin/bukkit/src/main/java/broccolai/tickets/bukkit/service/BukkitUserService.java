@@ -1,9 +1,15 @@
 package broccolai.tickets.bukkit.service;
 
+import broccolai.corn.core.Lists;
 import broccolai.tickets.api.model.user.ConsoleSoul;
 import broccolai.tickets.api.model.user.PlayerSoul;
 import broccolai.tickets.bukkit.model.User.BukkitPlayerSoul;
-import broccolai.tickets.core.service.impl.SimpleUserService;
+import broccolai.tickets.core.service.user.SimpleUserService;
+
+import com.google.inject.Inject;
+
+import java.util.Collection;
+
 import net.kyori.adventure.platform.AudienceProvider;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
@@ -15,6 +21,7 @@ import java.util.UUID;
 
 public final class BukkitUserService extends SimpleUserService<CommandSender, Player> {
 
+    @Inject
     public BukkitUserService(final @NonNull AudienceProvider audienceProvider) {
         super(audienceProvider);
     }
@@ -41,6 +48,11 @@ public final class BukkitUserService extends SimpleUserService<CommandSender, Pl
         }
 
         return Bukkit.getPlayer(uuid);
+    }
+
+    @Override
+    public @NonNull Collection<PlayerSoul> players() {
+        return Lists.map(Bukkit.getOnlinePlayers(), this::player);
     }
 
 }

@@ -1,16 +1,15 @@
-package broccolai.tickets.core.service.impl;
+package broccolai.tickets.core.service.user;
 
 import broccolai.tickets.api.model.user.ConsoleSoul;
 import broccolai.tickets.api.model.user.OnlineSoul;
 import broccolai.tickets.api.model.user.Soul;
-import broccolai.tickets.core.service.UserService;
+import broccolai.tickets.api.service.user.UserService;
+import net.kyori.adventure.platform.AudienceProvider;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
-
-import net.kyori.adventure.platform.AudienceProvider;
-import org.checkerframework.checker.nullness.qual.NonNull;
 
 public abstract class SimpleUserService<S, P extends S> implements UserService<S, P> {
 
