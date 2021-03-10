@@ -1,2 +1,3 @@
-INSERT INTO puretickets_ticket(id, uuid, status, picker, location)
-VALUES (:id, :uuid, :status, :picker, :location)
+INSERT INTO puretickets_ticket(`player`, `position`, `status`, `picker`)
+VALUES (:player, :position, :status, :picker);
+SELECT LAST_INSERT_ID();
