@@ -28,7 +28,7 @@ tasks {
         fun relocates(vararg dependencies: String) {
             dependencies.forEach {
                 val split = it.split('.')
-                val name = split.last();
+                val name = split.last()
                 relocate(it, "${rootProject.group}.dependencies.$name")
             }
         }
