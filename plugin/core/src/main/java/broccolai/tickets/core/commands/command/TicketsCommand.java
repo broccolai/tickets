@@ -1,33 +1,40 @@
 package broccolai.tickets.core.commands.command;
 
+import broccolai.tickets.api.model.ticket.Ticket;
 import broccolai.tickets.api.model.user.OnlineSoul;
+import broccolai.tickets.api.service.interactions.InteractionService;
+import broccolai.tickets.core.configuration.CommandsConfiguration;
+import broccolai.tickets.core.factory.CloudArgumentFactory;
+import broccolai.tickets.core.utilities.Constants;
+import cloud.commandframework.ArgumentDescription;
+import cloud.commandframework.Command;
 import cloud.commandframework.CommandManager;
+import cloud.commandframework.context.CommandContext;
+import com.google.inject.Inject;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 public final class TicketsCommand extends CommonCommands {
-//
-//    private final Config config;
-//    private final TicketsEventBus eventBus;
-//    private final UserManager<?, ?, ?> userManager;
-//    private final TicketManager ticketManager;
-//
-//    public TicketsCommand(
-//            final @NonNull Config config,
-//            final @NonNull TicketsEventBus eventBus,
-//            final @NonNull UserManager<?, ?, ?> userManager,
-//            final @NonNull TicketManager ticketManager
-//    ) {
-//        this.config = config;
-//        this.eventBus = eventBus;
-//        this.userManager = userManager;
-//        this.ticketManager = ticketManager;
-//    }
+
+    private final CommandsConfiguration.TicketsConfiguration config;
+    private final CloudArgumentFactory argumentFactory;
+    private final InteractionService interactionService;
+
+    @Inject
+    public TicketsCommand(
+            final CommandsConfiguration.@NonNull TicketsConfiguration config,
+            final @NonNull CloudArgumentFactory argumentFactory,
+            final @NonNull InteractionService interactionService
+    ) {
+        this.config = config;
+        this.argumentFactory = argumentFactory;
+        this.interactionService = interactionService;
+    }
 
     @Override
     public void register(
             @NonNull final CommandManager<OnlineSoul> manager
     ) {
-//        final Command.Builder<OnlineSoul> builder = manager.commandBuilder("tickets", "tis");
+        final Command.Builder<OnlineSoul> builder = manager.commandBuilder("tickets", "tis");
 //
 //        manager.command(builder.literal(
 //                config.getAliasShow().getFirst(),
@@ -39,16 +46,16 @@ public final class TicketsCommand extends CommonCommands {
 //                .argument(TicketArgument.of(false, false))
 //                .handler(c -> this.processShow(c.getSender(), c.get("ticket"))));
 //
-//        manager.command(builder.literal(
-//                config.getAliasClaim().getFirst(),
-//                ArgumentDescription.of("Claim a ticket"),
-//                config.getAliasClaim().getSecond()
-//        )
-//                .permission(Constants.STAFF_PERMISSION + ".pick")
-//                .argument(TargetArgument.of("target"))
-//                .argument(TicketArgument.of(false, false, TicketStatus.OPEN))
-//                .handler(this::processClaim)
-//                .build());
+        manager.command(builder.literal(
+                this.config.claim.main,
+                ArgumentDescription.of("Claim a ticket"),
+                this.config.claim.aliases
+        )
+                .permission(Constants.STAFF_PERMISSION + ".pick")
+                .argument(this.argumentFactory.target("target"))
+                .argument(this.argumentFactory.ticket("ticket"))
+                .handler(this::processClaim)
+                .build());
 //
 //        manager.command(builder.literal(
 //                config.getAliasAssign().getFirst(),
@@ -164,15 +171,13 @@ public final class TicketsCommand extends CommonCommands {
 //                .handler(this::processHighscore)
 //                .build());
     }
-//
-//    private void processClaim(final @NonNull CommandContext<@NonNull OnlineSoul> c) {
-//        OnlineSoul sender = c.getSender();
-//        Ticket ticket = c.get("ticket");
-//
-//        ticketManager.insertMessage(ticket.getId(), ticket.pick(sender.uuid()));
-//        this.eventBus.post(new NotificationEvent(NotificationReason.CLAIM_TICKET, sender, ticket.getPlayerUniqueID(), ticket));
-//        ticketManager.updateTicket(ticket);
-//    }
+
+    private void processClaim(final @NonNull CommandContext<@NonNull OnlineSoul> c) {
+        OnlineSoul sender = c.getSender();
+        Ticket ticket = c.get("ticket");
+
+        this.interactionService.pick(sender, ticket);
+    }
 //
 //    private void processAssign(final @NonNull CommandContext<@NonNull OnlineSoul> c) {
 //        OnlineSoul sender = c.getSender();

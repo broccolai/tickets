@@ -10,6 +10,12 @@ public interface MessageService {
 
     Component senderTicketCreation(@NonNull Ticket ticket);
 
+    Component senderTicketPick(@NonNull Ticket ticket);
+
+    Component targetTicketPick(@NonNull Ticket ticket);
+
+    Component staffTicketPick(@NonNull Ticket ticket);
+
     Component commandsTicketList(@NonNull Collection<@NonNull Ticket> tickets);
 
     Component taskReminder(int count);
