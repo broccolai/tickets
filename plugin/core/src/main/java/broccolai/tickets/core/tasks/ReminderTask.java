@@ -55,7 +55,7 @@ public final class ReminderTask implements Task {
 
     @Override
     public long repeat() {
-        return 10;
+        return 1000;
     }
 
 }
