@@ -74,16 +74,16 @@ public final class CachedTicketService implements TicketService {
             final @NonNull Soul soul,
             final @NonNull Set<TicketStatus> queries
     ) {
+        Set<TicketStatus> modifiableQueries = new HashSet<>(queries);
+
         if (this.lookups.containsKey(soul.uuid())) {
             Collection<TicketStatus> loaded = this.lookups.get(soul.uuid());
-            System.out.println("loaded + " + loaded.toString());
-            queries.removeAll(loaded);
+            modifiableQueries.removeAll(loaded);
         }
 
-        if (!queries.isEmpty()) {
-            System.out.println("is empty");
-            this.cache.putAll(this.storageService.tickets(soul, queries));
-            this.lookups.get(soul.uuid()).addAll(queries);
+        if (!modifiableQueries.isEmpty()) {
+            this.cache.putAll(this.storageService.tickets(soul, modifiableQueries));
+            this.lookups.get(soul.uuid()).addAll(modifiableQueries);
         }
 
         return this.filter(ticket -> ticket.player().equals(soul.uuid()) && queries.contains(ticket.status()));
