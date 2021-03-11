@@ -1,5 +1,20 @@
 package broccolai.tickets.api.model.user;
 
-public interface OfflineSoul extends Soul {
+import java.util.UUID;
+
+import org.checkerframework.checker.nullness.qual.NonNull;
+
+public final class OfflineSoul implements Soul {
+
+    private final UUID uuid;
+
+    public OfflineSoul(final @NonNull UUID uuid) {
+        this.uuid = uuid;
+    }
+
+    @Override
+    public @NonNull UUID uuid() {
+        return this.uuid;
+    }
 
 }

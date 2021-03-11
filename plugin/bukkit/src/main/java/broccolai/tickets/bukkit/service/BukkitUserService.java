@@ -2,7 +2,9 @@ package broccolai.tickets.bukkit.service;
 
 import broccolai.corn.core.Lists;
 import broccolai.tickets.api.model.user.ConsoleSoul;
+import broccolai.tickets.api.model.user.OfflineSoul;
 import broccolai.tickets.api.model.user.PlayerSoul;
+import broccolai.tickets.api.model.user.Soul;
 import broccolai.tickets.bukkit.model.BukkitPlayerSoul;
 import broccolai.tickets.core.service.user.SimpleUserService;
 
@@ -12,8 +14,13 @@ import com.google.inject.Singleton;
 
 import java.util.Collection;
 
+import java.util.Objects;
+
+import java.util.Optional;
+
 import net.kyori.adventure.platform.AudienceProvider;
 import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
@@ -30,7 +37,19 @@ public final class BukkitUserService extends SimpleUserService<CommandSender, Pl
     }
 
     @Override
-    public @NonNull PlayerSoul player(@NonNull final Player player) {
+    @SuppressWarnings("deprecation")
+    public @NonNull Soul wrap(final @NonNull String name) {
+        OfflinePlayer player = Bukkit.getOfflinePlayer(name);
+
+        if (!player.isOnline()) {
+            return new OfflineSoul(player.getUniqueId());
+        }
+
+        return this.player(Objects.requireNonNull(player.getPlayer()));
+    }
+
+    @Override
+    public @NonNull PlayerSoul player(final @NonNull Player player) {
         return new BukkitPlayerSoul(player, this.audienceProvider.player(player.getUniqueId()));
     }
 
@@ -45,12 +64,12 @@ public final class BukkitUserService extends SimpleUserService<CommandSender, Pl
     }
 
     @Override
-    public @NonNull CommandSender sender(@NonNull final UUID uuid) {
+    public @NonNull Optional<CommandSender> sender(@NonNull final UUID uuid) {
         if (uuid == ConsoleSoul.UUID) {
-            return Bukkit.getConsoleSender();
+            return Optional.of(Bukkit.getConsoleSender());
         }
 
-        return Bukkit.getPlayer(uuid);
+        return Optional.ofNullable(Bukkit.getPlayer(uuid));
     }
 
     @Override

@@ -1,6 +1,7 @@
 package broccolai.tickets.core.service.user;
 
 import broccolai.tickets.api.model.user.ConsoleSoul;
+import broccolai.tickets.api.model.user.OfflineSoul;
 import broccolai.tickets.api.model.user.OnlineSoul;
 import broccolai.tickets.api.model.user.Soul;
 import broccolai.tickets.api.service.user.UserService;
@@ -26,7 +27,7 @@ public abstract class SimpleUserService<S, P extends S> implements UserService<S
 
     @Override
     public final @NonNull Soul wrap(@NonNull final UUID uuid) {
-        return this.wrap(this.sender(uuid));
+        return this.sender(uuid).<Soul>map(this::wrap).orElse(new OfflineSoul(uuid));
     }
 
     @Override
