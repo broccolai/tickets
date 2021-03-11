@@ -45,7 +45,7 @@ public final class CachedTicketService implements TicketService {
             final @NonNull Position position,
             final @NonNull MessageInteraction interaction
     ) {
-        int id = this.storageService.create(soul, position);
+        int id = this.storageService.create(soul, position, interaction);
         return new Ticket(id, soul.uuid(), position, TicketStatus.OPEN, interaction, null);
     }
 
@@ -76,15 +76,17 @@ public final class CachedTicketService implements TicketService {
     ) {
         if (this.lookups.containsKey(soul.uuid())) {
             Collection<TicketStatus> loaded = this.lookups.get(soul.uuid());
+            System.out.println("loaded + " + loaded.toString());
             queries.removeAll(loaded);
         }
 
         if (!queries.isEmpty()) {
+            System.out.println("is empty");
             this.cache.putAll(this.storageService.tickets(soul, queries));
             this.lookups.get(soul.uuid()).addAll(queries);
         }
 
-        return this.filter(ticket -> ticket.player() == soul.uuid() && queries.contains(ticket.status()));
+        return this.filter(ticket -> ticket.player().equals(soul.uuid()) && queries.contains(ticket.status()));
     }
 
     @Override
@@ -96,7 +98,9 @@ public final class CachedTicketService implements TicketService {
         Collection<Ticket> tickets = new ArrayList<>();
 
         for (final Ticket ticket : this.cache.asMap().values()) {
+            System.out.println(ticket.id());
             if (predicate.test(ticket)) {
+                System.out.println("passed" + ticket.id());
                 tickets.add(ticket);
             }
         }

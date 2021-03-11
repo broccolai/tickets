@@ -5,7 +5,9 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 
 public enum SQLQueries {
     INSERT_TICKET,
-    SELECT_TICKET;
+    COUNT_TICKETS_STATUSES,
+    SELECT_TICKETS,
+    SELECT_TICKETS_SOUL_STATUSES;
 
     private final String query;
 

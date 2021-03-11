@@ -1,6 +1,7 @@
 package broccolai.tickets.core.service.storage;
 
 import broccolai.tickets.api.model.interaction.Interaction;
+import broccolai.tickets.api.model.interaction.MessageInteraction;
 import broccolai.tickets.api.model.position.Position;
 import broccolai.tickets.api.model.ticket.Ticket;
 import broccolai.tickets.api.model.ticket.TicketStatus;
@@ -21,17 +22,19 @@ import java.util.Map;
 
 import java.util.UUID;
 
+import java.util.stream.Collectors;
+
 import net.kyori.adventure.text.Component;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.flywaydb.core.Flyway;
 import org.jdbi.v3.core.Jdbi;
 
-import javax.sql.DataSource;
 import java.io.File;
 
 @Singleton
 public final class DatabaseStorageService implements StorageService {
 
+    private final HikariDataSource dataSource;
     private final Jdbi jdbi;
 
     @Inject
@@ -40,18 +43,18 @@ public final class DatabaseStorageService implements StorageService {
             final @NonNull ClassLoader classLoader,
             final @NonNull MainConfiguration mainConfiguration
     ) {
-        DataSource dataSource = new HikariDataSource(mainConfiguration.storageConfiguration.asHikari(folder));
+        this.dataSource = new HikariDataSource(mainConfiguration.storageConfiguration.asHikari(folder));
 
         Flyway.configure(classLoader)
                 .baselineVersion("0")
                 .baselineOnMigrate(true)
                 .locations("queries/migrations")
-                .dataSource(dataSource)
+                .dataSource(this.dataSource)
                 .validateOnMigrate(false)
                 .load()
                 .migrate();
 
-        this.jdbi = Jdbi.create(dataSource)
+        this.jdbi = Jdbi.create(this.dataSource)
             .registerColumnMapper(Component.class, new ComponentMapper())
             .registerColumnMapper(Position.class, new PositionMapper())
             .registerRowMapper(Interaction.class, new InteractionMapper())
@@ -59,7 +62,11 @@ public final class DatabaseStorageService implements StorageService {
     }
 
     @Override
-    public int create(@NonNull final Soul soul, @NonNull final Position position) {
+    public int create(
+            final @NonNull Soul soul,
+            final @NonNull Position position,
+            final @NonNull MessageInteraction messageInteraction
+    ) {
         return this.jdbi.withHandle(handle -> {
             String[] queries = SQLQueries.INSERT_TICKET.get();
 
@@ -70,19 +77,35 @@ public final class DatabaseStorageService implements StorageService {
                     .bind("picker", (UUID) null)
                     .execute();
 
-            return handle.createQuery(queries[1])
+            int id = handle.createQuery(queries[1])
                     .mapTo(Integer.class)
                     .findFirst()
                     .orElseThrow(IllegalStateException::new);
+
+            handle.createUpdate(queries[2])
+                    .bind("ticket", id)
+                    .bind("action", messageInteraction.action())
+                    .bind("time", messageInteraction.time())
+                    .bind("sender", messageInteraction.sender())
+                    .bind("message", messageInteraction.message())
+                    .execute();
+
+            return id;
         });
     }
 
     @Override
     public @NonNull Map<Integer, Ticket> tickets(
-            final @NonNull Collection<@NonNull Integer> id
+            final @NonNull Collection<@NonNull Integer> ids
     ) {
-        //todo
-        return null;
+        return this.jdbi.withHandle(handle -> {
+            String[] queries = SQLQueries.SELECT_TICKETS.get();
+
+            return handle.createQuery(queries[0])
+                    .bindList("ids", ids)
+                    .mapTo(Ticket.class)
+                    .collect(Collectors.toMap(Ticket::id, ticket -> ticket));
+        });
     }
 
     @Override
@@ -90,20 +113,38 @@ public final class DatabaseStorageService implements StorageService {
             final @NonNull Soul soul,
             final @NonNull Collection<TicketStatus> statuses
     ) {
-        //todo
-        return null;
+        return this.jdbi.withHandle(handle -> {
+            String[] queries = SQLQueries.SELECT_TICKETS_SOUL_STATUSES.get();
+
+            return handle.createQuery(queries[0])
+                    .bind("player", soul.uuid())
+                    .bindList("statuses", statuses)
+                    .mapTo(Ticket.class)
+                    .collect(Collectors.toMap(Ticket::id, ticket -> ticket));
+        });
     }
 
     @Override
     public int countTickets(final @NonNull Collection<TicketStatus> statuses) {
-        //todo
-        return 0;
+        return this.jdbi.withHandle(handle -> {
+            String[] queries = SQLQueries.COUNT_TICKETS_STATUSES.get();
+
+            return handle.createQuery(queries[0])
+                    .bindList("statuses", statuses)
+                    .mapTo(Integer.class)
+                    .first();
+        });
     }
 
     @Override
     public @NonNull Collection<Component> notifications(final @NonNull Soul soul) {
         //todo
         return null;
+    }
+
+    @Override
+    public void dispose() {
+        this.dataSource.close();
     }
 
 }
