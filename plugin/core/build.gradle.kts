@@ -40,4 +40,8 @@ dependencies {
 
     // Configurate
     api("org.spongepowered", "configurate-yaml", "4.0.0")
+
+    api("com.google.inject.extensions", "guice-assistedinject", Versions.GUICE) {
+        isTransitive = false
+    }
 }
