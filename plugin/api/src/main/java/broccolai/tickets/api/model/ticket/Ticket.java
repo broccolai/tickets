@@ -1,9 +1,10 @@
 package broccolai.tickets.api.model.ticket;
 
-import broccolai.tickets.api.model.interaction.Interaction;
+import broccolai.tickets.api.model.interaction.MessageInteraction;
 import broccolai.tickets.api.model.message.Templatable;
 import broccolai.tickets.api.model.position.Position;
 
+import java.util.Arrays;
 import java.util.List;
 
 import net.kyori.adventure.text.minimessage.Template;
@@ -19,7 +20,7 @@ public final class Ticket implements Templatable {
     private final UUID player;
     private final Position position;
     private TicketStatus status;
-    private Interaction message;
+    private MessageInteraction message;
     private @Nullable UUID picker;
 
     public Ticket(
@@ -27,7 +28,7 @@ public final class Ticket implements Templatable {
             final @NonNull UUID player,
             final @NonNull Position position,
             final @NonNull TicketStatus status,
-            final @NonNull Interaction message,
+            final @NonNull MessageInteraction message,
             final @Nullable UUID picker
     ) {
         this.id = id;
@@ -58,11 +59,11 @@ public final class Ticket implements Templatable {
         this.status = status;
     }
 
-    public @NonNull Interaction message() {
+    public @NonNull MessageInteraction message() {
         return this.message;
     }
 
-    public void message(final @NonNull Interaction message) {
+    public void message(final @NonNull MessageInteraction message) {
         this.message = message;
     }
 
@@ -76,8 +77,10 @@ public final class Ticket implements Templatable {
 
     @Override
     public List<Template> templates() {
-        //todo
-        return null;
+        return Arrays.asList(
+                Template.of("ticket", String.valueOf(this.id)),
+                Template.of("message", this.message.message())
+        );
     }
 
 }
