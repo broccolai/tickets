@@ -1,6 +1,7 @@
 package broccolai.tickets.api.service.storage;
 
 import broccolai.tickets.api.model.position.Position;
+import broccolai.tickets.api.model.service.Disposable;
 import broccolai.tickets.api.model.ticket.Ticket;
 import broccolai.tickets.api.model.ticket.TicketStatus;
 import broccolai.tickets.api.model.user.Soul;
@@ -10,7 +11,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import java.util.Collection;
 import java.util.Map;
 
-public interface StorageService {
+public interface StorageService extends Disposable {
 
     int create(@NonNull Soul soul, @NonNull Position position);
 

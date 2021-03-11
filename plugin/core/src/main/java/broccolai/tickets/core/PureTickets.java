@@ -4,6 +4,7 @@ import broccolai.tickets.api.model.event.Subscriber;
 import broccolai.tickets.api.model.task.Task;
 import broccolai.tickets.api.model.user.OnlineSoul;
 import broccolai.tickets.api.service.event.EventService;
+import broccolai.tickets.api.service.storage.StorageService;
 import broccolai.tickets.api.service.tasks.TaskService;
 import broccolai.tickets.core.commands.command.BaseCommand;
 import broccolai.tickets.core.inject.module.ConfigurationModule;
@@ -44,7 +45,7 @@ public final class PureTickets {
     }
 
     public void unload() {
-
+        this.injector.getInstance(StorageService.class).dispose();
     }
 
     public void subscribers(final @NonNull Class<? extends Subscriber>[] subscribers) {
