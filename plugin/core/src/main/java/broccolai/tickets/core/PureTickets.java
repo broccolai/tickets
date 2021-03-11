@@ -8,6 +8,7 @@ import broccolai.tickets.api.service.storage.StorageService;
 import broccolai.tickets.api.service.tasks.TaskService;
 import broccolai.tickets.core.commands.command.BaseCommand;
 import broccolai.tickets.core.inject.module.ConfigurationModule;
+import broccolai.tickets.core.inject.module.FactoryModule;
 import broccolai.tickets.core.inject.module.ServiceModule;
 import broccolai.tickets.core.tasks.ReminderTask;
 import broccolai.tickets.core.utilities.ArrayHelper;
@@ -34,7 +35,8 @@ public final class PureTickets {
     public void load() {
         this.injector = this.parentInjector.createChildInjector(
                 new ConfigurationModule(),
-                new ServiceModule()
+                new ServiceModule(),
+                new FactoryModule()
         );
 
         TaskService taskService = this.injector.getInstance(TaskService.class);
