@@ -14,11 +14,12 @@ CREATE TABLE IF NOT EXISTS puretickets_ticket
 
 CREATE TABLE IF NOT EXISTS puretickets_interaction
 (
+    `ticket` int NOT NULL,
     `action` varchar(36) NOT NULL,
     `time` DATETIME NOT NULL,
     `sender` varchar(36) NOT NULL,
     `message` varchar(255) NULl,
-    PRIMARY KEY(`action`, `time`)
+    PRIMARY KEY(`ticket`, `action`, `time`)
 );
 
 CREATE TABLE IF NOT EXISTS puretickets_notification
