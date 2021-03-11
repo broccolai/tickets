@@ -32,8 +32,10 @@ public final class MiniMessageService implements MessageService {
         TextComponent.Builder builder = Component.text()
                 .append(this.locale.title.yourTickets.use());
 
+        Template wrapper = Template.of("wrapper", this.locale.title.wrapper.use());
+
         tickets.forEach(ticket -> {
-            Component list = this.locale.format.list.use(ticket);
+            Component list = this.locale.format.list.use(wrapper, ticket);
             builder.append(Component.newline(), list);
         });
 
