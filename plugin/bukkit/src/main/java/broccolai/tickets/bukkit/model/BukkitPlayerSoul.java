@@ -1,41 +1,41 @@
 package broccolai.tickets.bukkit.model;
 
 import broccolai.tickets.api.model.position.Position;
+import broccolai.tickets.api.model.user.OnlineSoul;
 import broccolai.tickets.api.model.user.PlayerSoul;
 import io.papermc.lib.PaperLib;
 import net.kyori.adventure.audience.Audience;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
-import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.util.UUID;
 
-public final class BukkitPlayerSoul implements PlayerSoul, BukkitOnlineSoul {
+@SuppressWarnings("ConstantConditions")
+public final class BukkitPlayerSoul implements PlayerSoul, OnlineSoul {
 
-    private final Player player;
+    private final UUID uuid;
     private final Audience audience;
 
-    public BukkitPlayerSoul(final @NonNull Player player, final @NonNull Audience audience) {
-        this.player = player;
+    public BukkitPlayerSoul(final @NonNull UUID uuid, final @NonNull Audience audience) {
+        this.uuid = uuid;
         this.audience = audience;
     }
 
     @Override
     public @NonNull UUID uuid() {
-        return this.player.getUniqueId();
+        return this.uuid;
     }
 
     @Override
     public @NonNull String username() {
-        return this.player.getName();
+        return Bukkit.getPlayer(this.uuid).getName();
     }
 
     @Override
     public boolean permission(final @NonNull String permission) {
-        return this.player.hasPermission(permission);
+        return Bukkit.getPlayer(this.uuid).hasPermission(permission);
     }
 
     @Override
@@ -44,13 +44,8 @@ public final class BukkitPlayerSoul implements PlayerSoul, BukkitOnlineSoul {
     }
 
     @Override
-    public @NonNull CommandSender sender() {
-        return this.player;
-    }
-
-    @Override
     public @NonNull Position position() {
-        Location location = this.player.getLocation();
+        Location location = Bukkit.getPlayer(this.uuid).getLocation();
         World world = location.getWorld();
         String worldName = world != null ? world.getName() : null;
 
@@ -61,7 +56,7 @@ public final class BukkitPlayerSoul implements PlayerSoul, BukkitOnlineSoul {
     public void teleport(final @NonNull Position position) {
         World world = position.world() != null ? Bukkit.getWorld(position.world()) : null;
         Location bukkitLocation = new Location(world, position.x(), position.y(), position.z());
-        PaperLib.teleportAsync(this.player, bukkitLocation);
+        PaperLib.teleportAsync(Bukkit.getPlayer(this.uuid), bukkitLocation);
     }
 
 }

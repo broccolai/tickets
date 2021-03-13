@@ -14,7 +14,7 @@ import java.util.EnumSet;
 
 public final class ReminderTask implements Task {
 
-    private final UserService<?, ?> userService;
+    private final UserService userService;
     private final TicketService ticketService;
     private final MessageService messageService;
 

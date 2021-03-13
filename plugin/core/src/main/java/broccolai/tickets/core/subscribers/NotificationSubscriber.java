@@ -19,13 +19,13 @@ public final class NotificationSubscriber implements Subscriber {
 
     private static final Gson GSON = new GsonBuilder().create();
 
-    private final UserService<?, ?> userService;
+    private final UserService userService;
     private final MessageService messageService;
     private final DiscordService discordService;
 
     @Inject
     public NotificationSubscriber(
-            final @NonNull UserService<?, ?> userService,
+            final @NonNull UserService userService,
             final @NonNull MessageService messageService,
             final @NonNull DiscordService discordService
     ) {

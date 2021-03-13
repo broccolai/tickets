@@ -26,9 +26,9 @@ public final class TargetArgument extends CommandArgument<OnlineSoul, Soul> {
 
     private static final class TargetParser implements ArgumentParser<OnlineSoul, Soul> {
 
-        private final UserService<?, ?> userService;
+        private final UserService userService;
 
-        private TargetParser(final @NonNull UserService<?, ?> userService) {
+        private TargetParser(final @NonNull UserService userService) {
             this.userService = userService;
         }
 

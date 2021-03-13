@@ -20,7 +20,7 @@ import java.util.concurrent.TimeUnit;
 import net.kyori.adventure.audience.ForwardingAudience;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
-import org.bukkit.command.CommandSender;
+import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
@@ -58,11 +58,18 @@ public final class BukkitPlatform extends JavaPlugin implements PluginPlatform {
         this.pureTickets.unload();
     }
 
-    private CommandManager<OnlineSoul> commandManager(final @NonNull UserService<CommandSender, Player> userService) throws Exception {
+    private CommandManager<OnlineSoul> commandManager(final @NonNull UserService userService) throws Exception {
         CommandManager<@NonNull OnlineSoul> cloudManager = new PaperCommandManager<>(
                 this,
                 AsynchronousCommandExecutionCoordinator.<OnlineSoul>newBuilder().withAsynchronousParsing().build(),
-                userService::wrap,
+                sender -> {
+                    if (sender instanceof ConsoleCommandSender) {
+                        return userService.console();
+                    }
+
+                    Player player = (Player) sender;
+                    return userService.player(player.getUniqueId());
+                },
                 user -> Bukkit.getPlayer(user.uuid())
         );
 
