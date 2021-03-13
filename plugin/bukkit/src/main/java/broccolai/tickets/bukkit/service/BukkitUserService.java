@@ -54,7 +54,7 @@ public final class BukkitUserService extends SimpleUserService<CommandSender, Pl
     }
 
     @Override
-    public @NonNull UUID uuid(@NonNull final CommandSender sender) {
+    public @NonNull UUID uuid(final @NonNull CommandSender sender) {
         if (sender instanceof ConsoleCommandSender) {
             return ConsoleSoul.UUID;
         }
@@ -64,7 +64,7 @@ public final class BukkitUserService extends SimpleUserService<CommandSender, Pl
     }
 
     @Override
-    public @NonNull Optional<CommandSender> sender(@NonNull final UUID uuid) {
+    public @NonNull Optional<CommandSender> sender(final @NonNull UUID uuid) {
         if (uuid == ConsoleSoul.UUID) {
             return Optional.of(Bukkit.getConsoleSender());
         }

@@ -3,6 +3,7 @@ package broccolai.tickets.api.model.event.impl;
 import broccolai.tickets.api.model.event.NotificationEvent;
 import broccolai.tickets.api.model.event.SoulEvent;
 import broccolai.tickets.api.model.event.TicketEvent;
+import broccolai.tickets.api.model.message.TargetPair;
 import broccolai.tickets.api.model.ticket.Ticket;
 import broccolai.tickets.api.model.user.PlayerSoul;
 import broccolai.tickets.api.service.intergrations.DiscordService;
@@ -25,8 +26,6 @@ public final class TicketCreateEvent implements TicketEvent, SoulEvent, Notifica
 
     /**
      * Get the constructors soul
-     *
-     * @return Players soul
      */
     @Override
     public @NonNull PlayerSoul soul() {
@@ -35,8 +34,6 @@ public final class TicketCreateEvent implements TicketEvent, SoulEvent, Notifica
 
     /**
      * Get the created ticket
-     *
-     * @return Ticket object
      */
     @Override
     public @NonNull Ticket ticket() {
@@ -44,23 +41,23 @@ public final class TicketCreateEvent implements TicketEvent, SoulEvent, Notifica
     }
 
     @Override
-    public void sender(@NonNull final MessageService messageService) {
+    public void sender(final @NonNull MessageService messageService) {
         Component component = messageService.senderTicketCreation(this.ticket);
         this.soul.sendMessage(component);
     }
 
     @Override
-    public void target(@NonNull final MessageService messageService) {
+    public TargetPair target(final @NonNull MessageService messageService) {
+        return TargetPair.of(this.ticket.player(), messageService.targetTicketCreate(this.ticket));
+    }
+
+    @Override
+    public void staff(final @NonNull MessageService messageService) {
 
     }
 
     @Override
-    public void staff(@NonNull final MessageService messageService) {
-
-    }
-
-    @Override
-    public void discord(@NonNull final DiscordService discordService) {
+    public void discord(final @NonNull DiscordService discordService) {
 
     }
 

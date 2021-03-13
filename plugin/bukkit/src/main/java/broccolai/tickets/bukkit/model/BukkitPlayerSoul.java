@@ -58,7 +58,7 @@ public final class BukkitPlayerSoul implements PlayerSoul, BukkitOnlineSoul {
     }
 
     @Override
-    public void teleport(@NonNull final Position position) {
+    public void teleport(final @NonNull Position position) {
         World world = position.world() != null ? Bukkit.getWorld(position.world()) : null;
         Location bukkitLocation = new Location(world, position.x(), position.y(), position.z());
         PaperLib.teleportAsync(this.player, bukkitLocation);

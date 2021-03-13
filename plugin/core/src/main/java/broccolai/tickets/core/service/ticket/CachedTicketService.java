@@ -90,7 +90,7 @@ public final class CachedTicketService implements TicketService {
     }
 
     @Override
-    public int count(@NonNull final Set<TicketStatus> statuses) {
+    public int count(final @NonNull Set<TicketStatus> statuses) {
         return this.storageService.countTickets(statuses);
     }
 

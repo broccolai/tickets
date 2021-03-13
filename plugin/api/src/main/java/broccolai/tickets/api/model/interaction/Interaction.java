@@ -34,7 +34,7 @@ public abstract class Interaction implements Comparable<Interaction> {
     }
 
     @Override
-    public final int compareTo(@NonNull final Interaction interaction) {
+    public final int compareTo(final @NonNull Interaction interaction) {
         return this.time.compareTo(interaction.time);
     }
 

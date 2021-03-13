@@ -26,7 +26,7 @@ public abstract class SimpleUserService<S, P extends S> implements UserService<S
     }
 
     @Override
-    public final @NonNull Soul wrap(@NonNull final UUID uuid) {
+    public final @NonNull Soul wrap(final @NonNull UUID uuid) {
         return this.sender(uuid).<Soul>map(this::wrap).orElse(new OfflineSoul(uuid));
     }
 

@@ -39,7 +39,7 @@ public final class TicketCommand extends CommonCommands {
 
     @Override
     public void register(
-            @NonNull final CommandManager<@NonNull OnlineSoul> manager
+            final @NonNull CommandManager<@NonNull OnlineSoul> manager
     ) {
         final Command.Builder<OnlineSoul> builder = manager.commandBuilder("ticket", "ti")
                 .senderType(PlayerSoul.class);

@@ -14,6 +14,8 @@ public interface MessageService {
 
     Component targetTicketClaim(@NonNull Ticket ticket);
 
+    Component targetTicketCreate(@NonNull Ticket ticket);
+
     Component staffTicketClaim(@NonNull Ticket ticket);
 
     Component commandsTicketList(@NonNull Collection<@NonNull Ticket> tickets);

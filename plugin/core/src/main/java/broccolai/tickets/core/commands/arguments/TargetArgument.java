@@ -34,8 +34,8 @@ public final class TargetArgument extends CommandArgument<OnlineSoul, Soul> {
 
         @Override
         public @NonNull ArgumentParseResult<@NonNull Soul> parse(
-                @NonNull final CommandContext<@NonNull OnlineSoul> commandContext,
-                @NonNull final Queue<@NonNull String> queue
+                final @NonNull CommandContext<@NonNull OnlineSoul> commandContext,
+                final @NonNull Queue<@NonNull String> queue
         ) {
             String input = queue.peek();
 
@@ -52,7 +52,7 @@ public final class TargetArgument extends CommandArgument<OnlineSoul, Soul> {
 
         @Override
         public @NonNull List<@NonNull String> suggestions(
-                final @NonNull CommandContext<OnlineSoul> commandContext, @NonNull final String input
+                final @NonNull CommandContext<OnlineSoul> commandContext, final @NonNull String input
         ) {
             return Lists.map(this.userService.players(), PlayerSoul::username);
         }

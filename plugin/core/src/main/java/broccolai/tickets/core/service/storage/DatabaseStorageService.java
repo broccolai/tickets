@@ -137,7 +137,7 @@ public final class DatabaseStorageService implements StorageService {
     }
 
     @Override
-    public void saveInteractions(@NonNull final Collection<Interaction> interactions) {
+    public void saveInteractions(final @NonNull Collection<Interaction> interactions) {
 
     }
 

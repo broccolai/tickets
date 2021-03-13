@@ -32,7 +32,7 @@ public final class TicketsCommand extends CommonCommands {
 
     @Override
     public void register(
-            @NonNull final CommandManager<OnlineSoul> manager
+            final @NonNull CommandManager<OnlineSoul> manager
     ) {
         final Command.Builder<OnlineSoul> builder = manager.commandBuilder("tickets", "tis");
 //

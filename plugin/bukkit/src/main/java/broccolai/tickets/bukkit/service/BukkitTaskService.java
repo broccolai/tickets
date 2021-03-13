@@ -19,12 +19,12 @@ public final class BukkitTaskService implements TaskService {
     }
 
     @Override
-    public void async(@NonNull final Runnable runnable) {
+    public void async(final @NonNull Runnable runnable) {
         Bukkit.getScheduler().runTaskAsynchronously(this.plugin, runnable);
     }
 
     @Override
-    public void schedule(@NonNull final Task task) {
+    public void schedule(final @NonNull Task task) {
         Bukkit.getScheduler().runTaskTimerAsynchronously(this.plugin, task, task.delay(), task.repeat());
     }
 

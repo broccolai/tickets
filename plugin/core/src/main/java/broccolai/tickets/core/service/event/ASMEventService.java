@@ -25,7 +25,7 @@ public final class ASMEventService extends SimpleEventBus<Event> implements Even
     }
 
     @Override
-    public void register(@NonNull final Subscriber subscriber) {
+    public void register(final @NonNull Subscriber subscriber) {
         this.methodAdapter.register(subscriber);
     }
 
