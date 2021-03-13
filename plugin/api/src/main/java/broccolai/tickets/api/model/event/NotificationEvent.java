@@ -4,15 +4,24 @@ import broccolai.tickets.api.model.message.TargetPair;
 import broccolai.tickets.api.service.intergrations.DiscordService;
 import broccolai.tickets.api.service.message.MessageService;
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 public interface NotificationEvent extends Event {
 
-    void sender(@NonNull MessageService messageService);
+    default void sender(@NonNull MessageService messageService) {
 
-    TargetPair target(@NonNull MessageService messageService);
+    }
 
-    void staff(@NonNull MessageService messageService);
+    default @Nullable TargetPair target(@NonNull MessageService messageService) {
+        return null;
+    }
 
-    void discord(@NonNull DiscordService discordService);
+    default void staff(@NonNull MessageService messageService) {
+
+    }
+
+    default void discord(@NonNull DiscordService discordService) {
+
+    }
 
 }

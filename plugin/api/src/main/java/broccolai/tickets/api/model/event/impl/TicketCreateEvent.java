@@ -47,11 +47,6 @@ public final class TicketCreateEvent implements TicketEvent, SoulEvent, Notifica
     }
 
     @Override
-    public TargetPair target(final @NonNull MessageService messageService) {
-        return TargetPair.of(this.ticket.player(), messageService.targetTicketCreate(this.ticket));
-    }
-
-    @Override
     public void staff(final @NonNull MessageService messageService) {
 
     }
