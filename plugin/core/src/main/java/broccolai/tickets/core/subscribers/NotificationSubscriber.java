@@ -11,6 +11,7 @@ import broccolai.tickets.api.service.user.UserService;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.inject.Inject;
+import net.kyori.adventure.text.Component;
 import net.kyori.event.method.annotation.Subscribe;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
@@ -37,16 +38,40 @@ public final class NotificationSubscriber implements Subscriber {
     public void onNotificationEvent(final @NonNull NotificationEvent event) {
         event.sender(this.messageService);
 
+        this.handleTarget(event);
+        this.handleStaff(event);
+
+        event.discord(this.discordService);
+    }
+
+    private void handleTarget(final @NonNull NotificationEvent event) {
         TargetPair target = event.target(this.messageService);
+
+        if (target == null) {
+            return;
+        }
+
         Soul targetSoul = this.userService.wrap(target.uuid());
 
         if (targetSoul instanceof OnlineSoul) {
             OnlineSoul onlineSoul = (OnlineSoul) targetSoul;
             onlineSoul.sendMessage(target.component());
         }
+    }
 
-        event.staff(this.messageService);
-        event.discord(this.discordService);
+    private void handleStaff(final @NonNull NotificationEvent event) {
+        Component message = event.staff(this.messageService);
+
+        if (message == null) {
+            return;
+        }
+
+        //todo: send to console too
+        this.userService.players().forEach(soul -> {
+            if (soul.permission("tickets.staff.announce")) {
+                soul.sendMessage(message);
+            }
+        });
     }
 
 }

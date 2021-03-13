@@ -16,6 +16,8 @@ public interface MessageService {
 
     Component staffTicketClaim(@NonNull Ticket ticket);
 
+    Component staffTicketCreate(@NonNull Ticket ticket);
+
     Component commandsTicketList(@NonNull Collection<@NonNull Ticket> tickets);
 
     Component taskReminder(int count);

@@ -3,7 +3,6 @@ package broccolai.tickets.api.model.event.impl;
 import broccolai.tickets.api.model.event.NotificationEvent;
 import broccolai.tickets.api.model.event.SoulEvent;
 import broccolai.tickets.api.model.event.TicketEvent;
-import broccolai.tickets.api.model.message.TargetPair;
 import broccolai.tickets.api.model.ticket.Ticket;
 import broccolai.tickets.api.model.user.PlayerSoul;
 import broccolai.tickets.api.service.intergrations.DiscordService;
@@ -47,8 +46,8 @@ public final class TicketCreateEvent implements TicketEvent, SoulEvent, Notifica
     }
 
     @Override
-    public void staff(final @NonNull MessageService messageService) {
-
+    public Component staff(final @NonNull MessageService messageService) {
+        return messageService.staffTicketClaim(this.ticket);
     }
 
     @Override

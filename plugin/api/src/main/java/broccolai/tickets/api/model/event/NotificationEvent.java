@@ -3,6 +3,7 @@ package broccolai.tickets.api.model.event;
 import broccolai.tickets.api.model.message.TargetPair;
 import broccolai.tickets.api.service.intergrations.DiscordService;
 import broccolai.tickets.api.service.message.MessageService;
+import net.kyori.adventure.text.Component;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
@@ -16,8 +17,8 @@ public interface NotificationEvent extends Event {
         return null;
     }
 
-    default void staff(@NonNull MessageService messageService) {
-
+    default @Nullable Component staff(@NonNull MessageService messageService) {
+        return null;
     }
 
     default void discord(@NonNull DiscordService discordService) {

@@ -8,6 +8,7 @@ import broccolai.tickets.api.model.ticket.Ticket;
 import broccolai.tickets.api.model.user.OnlineSoul;
 import broccolai.tickets.api.service.intergrations.DiscordService;
 import broccolai.tickets.api.service.message.MessageService;
+import net.kyori.adventure.text.Component;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 public final class TicketClaimEvent implements TicketEvent, SoulEvent, NotificationEvent {
@@ -41,8 +42,8 @@ public final class TicketClaimEvent implements TicketEvent, SoulEvent, Notificat
     }
 
     @Override
-    public void staff(final @NonNull MessageService messageService) {
-        messageService.staffTicketClaim(this.ticket);
+    public Component staff(final @NonNull MessageService messageService) {
+        return messageService.staffTicketClaim(this.ticket);
     }
 
     @Override

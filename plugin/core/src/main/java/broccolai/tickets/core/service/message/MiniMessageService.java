@@ -43,6 +43,11 @@ public final class MiniMessageService implements MessageService {
     }
 
     @Override
+    public Component staffTicketCreate(@NonNull final Ticket ticket) {
+        return this.locale.announcement.create.use(ticket);
+    }
+
+    @Override
     public Component commandsTicketList(final @NonNull Collection<@NonNull Ticket> tickets) {
         TextComponent.Builder builder = Component.text()
                 .append(this.locale.title.yourTickets.use());
