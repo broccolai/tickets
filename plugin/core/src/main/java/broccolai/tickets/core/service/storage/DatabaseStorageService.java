@@ -13,6 +13,7 @@ import broccolai.tickets.core.storage.mapper.ComponentMapper;
 import broccolai.tickets.core.storage.mapper.InteractionMapper;
 import broccolai.tickets.core.storage.mapper.PositionMapper;
 import broccolai.tickets.core.storage.mapper.TicketMapper;
+import com.google.common.collect.Multimap;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.zaxxer.hikari.HikariDataSource;
@@ -28,6 +29,8 @@ import net.kyori.adventure.text.Component;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.flywaydb.core.Flyway;
 import org.jdbi.v3.core.Jdbi;
+import org.jdbi.v3.core.statement.Batch;
+import org.jdbi.v3.core.statement.PreparedBatch;
 
 import java.io.File;
 
@@ -137,8 +140,26 @@ public final class DatabaseStorageService implements StorageService {
     }
 
     @Override
-    public void saveInteractions(final @NonNull Collection<Interaction> interactions) {
+    public void saveInteractions(final @NonNull Multimap<Integer, Interaction> interactionMultimap) {
+        this.jdbi.useHandle(handle -> {
+            PreparedBatch batch = handle.prepareBatch(SQLQueries.INSERT_INTERACTION.get()[0]);
 
+            interactionMultimap.forEach((ticket, interaction) -> {
+                batch.bind("ticket", ticket)
+                        .bind("action", interaction.action())
+                        .bind("time", interaction.time())
+                        .bind("sender", interaction.sender());
+
+                if (interaction instanceof MessageInteraction) {
+                    MessageInteraction messageInteraction = (MessageInteraction) interaction;
+                    batch.bind("message", messageInteraction.message());
+                }
+
+                batch.add();
+            });
+
+            batch.execute();
+        });
     }
 
     @Override

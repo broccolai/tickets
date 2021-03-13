@@ -22,7 +22,7 @@ import java.time.LocalDateTime;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 @Singleton
-public final class EventInteractionService implements InteractionService {
+public final class EventInteractionService extends CachedInteractionService {
 
     private final EventService eventService;
     private final TicketService ticketService;
@@ -57,8 +57,8 @@ public final class EventInteractionService implements InteractionService {
 
     @Override
     public void claim(final @NonNull OnlineSoul soul, final @NonNull Ticket ticket) {
-        //todo need to save interactions
         Interaction interaction = new BasicInteraction(Action.CLAIM, LocalDateTime.now(), soul.uuid());
+        this.queue(interaction);
         //todo queue ticket saving
         ticket.status(TicketStatus.CLAIMED);
         ticket.claimer(soul.uuid());

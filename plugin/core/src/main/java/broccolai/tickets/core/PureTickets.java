@@ -11,6 +11,7 @@ import broccolai.tickets.core.inject.module.ConfigurationModule;
 import broccolai.tickets.core.inject.module.FactoryModule;
 import broccolai.tickets.core.inject.module.ServiceModule;
 import broccolai.tickets.core.tasks.ReminderTask;
+import broccolai.tickets.core.tasks.SaveTask;
 import broccolai.tickets.core.utilities.ArrayHelper;
 import cloud.commandframework.CommandManager;
 import com.google.inject.Inject;
@@ -21,7 +22,8 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 public final class PureTickets {
 
     private final Class<? extends Task>[] tasks = ArrayHelper.create(
-            ReminderTask.class
+            ReminderTask.class,
+            SaveTask.class
     );
 
     private final Injector parentInjector;

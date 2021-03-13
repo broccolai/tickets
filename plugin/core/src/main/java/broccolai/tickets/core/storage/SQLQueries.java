@@ -7,7 +7,8 @@ public enum SQLQueries {
     INSERT_TICKET,
     COUNT_TICKETS_STATUSES,
     SELECT_TICKETS,
-    SELECT_TICKETS_SOUL_STATUSES;
+    SELECT_TICKETS_SOUL_STATUSES,
+    INSERT_INTERACTION;
 
     private final String query;
 
