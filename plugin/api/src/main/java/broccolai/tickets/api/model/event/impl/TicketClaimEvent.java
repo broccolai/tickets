@@ -9,12 +9,12 @@ import broccolai.tickets.api.service.intergrations.DiscordService;
 import broccolai.tickets.api.service.message.MessageService;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-public final class TicketPickEvent implements TicketEvent, SoulEvent, NotificationEvent {
+public final class TicketClaimEvent implements TicketEvent, SoulEvent, NotificationEvent {
 
     private final OnlineSoul soul;
     private final Ticket ticket;
 
-    public TicketPickEvent(final @NonNull OnlineSoul soul, final @NonNull Ticket ticket) {
+    public TicketClaimEvent(final @NonNull OnlineSoul soul, final @NonNull Ticket ticket) {
         this.soul = soul;
         this.ticket = ticket;
     }
@@ -31,17 +31,17 @@ public final class TicketPickEvent implements TicketEvent, SoulEvent, Notificati
 
     @Override
     public void sender(@NonNull final MessageService messageService) {
-        this.soul.sendMessage(messageService.senderTicketPick(this.ticket));
+        this.soul.sendMessage(messageService.senderTicketClaim(this.ticket));
     }
 
     @Override
     public void target(@NonNull final MessageService messageService) {
-        messageService.targetTicketPick(this.ticket);
+        messageService.targetTicketClaim(this.ticket);
     }
 
     @Override
     public void staff(@NonNull final MessageService messageService) {
-        messageService.staffTicketPick(this.ticket);
+        messageService.staffTicketClaim(this.ticket);
     }
 
     @Override

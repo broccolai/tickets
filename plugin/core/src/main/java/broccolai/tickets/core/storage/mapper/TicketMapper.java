@@ -30,7 +30,7 @@ public final class TicketMapper implements RowMapper<Ticket> {
         UUID player = uuidMapper.map(rs, "player", ctx);
         Position position = positionMapper.map(rs, "position", ctx);
         TicketStatus status = EnumMapper.byName(TicketStatus.class).map(rs, "status", ctx);
-        UUID picker = uuidMapper.map(rs, "picker", ctx);
+        UUID claimer = uuidMapper.map(rs, "claimer", ctx);
 
         Action action = EnumMapper.byName(Action.class).map(rs, "action", ctx);
         LocalDateTime time = timeMapper.map(rs, "time", ctx);
@@ -39,7 +39,7 @@ public final class TicketMapper implements RowMapper<Ticket> {
 
         MessageInteraction messageInteraction = new BasicMessageInteraction(action, time, sender, message);
 
-        return new Ticket(id, player, position, status, messageInteraction, picker);
+        return new Ticket(id, player, position, status, messageInteraction, claimer);
     }
 
 }

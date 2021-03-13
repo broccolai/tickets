@@ -28,17 +28,17 @@ public final class MiniMessageService implements MessageService {
     }
 
     @Override
-    public Component senderTicketPick(@NonNull final Ticket ticket) {
+    public Component senderTicketClaim(@NonNull final Ticket ticket) {
         return this.locale.sender.claim.use(ticket);
     }
 
     @Override
-    public Component targetTicketPick(@NonNull final Ticket ticket) {
+    public Component targetTicketClaim(@NonNull final Ticket ticket) {
         return this.locale.notify.claim.use(ticket);
     }
 
     @Override
-    public Component staffTicketPick(@NonNull final Ticket ticket) {
+    public Component staffTicketClaim(@NonNull final Ticket ticket) {
         return this.locale.announcement.claim.use(ticket);
     }
 

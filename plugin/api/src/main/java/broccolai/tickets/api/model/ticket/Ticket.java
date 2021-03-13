@@ -21,7 +21,7 @@ public final class Ticket implements Templatable {
     private final Position position;
     private TicketStatus status;
     private MessageInteraction message;
-    private @Nullable UUID picker;
+    private @Nullable UUID claimer;
 
     public Ticket(
             final int id,
@@ -29,14 +29,14 @@ public final class Ticket implements Templatable {
             final @NonNull Position position,
             final @NonNull TicketStatus status,
             final @NonNull MessageInteraction message,
-            final @Nullable UUID picker
+            final @Nullable UUID claimer
     ) {
         this.id = id;
         this.player = player;
         this.position = position;
         this.status = status;
         this.message = message;
-        this.picker = picker;
+        this.claimer = claimer;
     }
 
     public int id() {
@@ -67,12 +67,12 @@ public final class Ticket implements Templatable {
         this.message = message;
     }
 
-    public @NonNull Optional<UUID> picker() {
-        return Optional.ofNullable(this.picker);
+    public @NonNull Optional<UUID> claimer() {
+        return Optional.ofNullable(this.claimer);
     }
 
-    public void picker(final @Nullable UUID picker) {
-        this.picker = picker;
+    public void claimer(final @Nullable UUID claimer) {
+        this.claimer = claimer;
     }
 
     @Override

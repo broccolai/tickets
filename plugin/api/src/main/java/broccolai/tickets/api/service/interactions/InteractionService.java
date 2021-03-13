@@ -10,6 +10,6 @@ public interface InteractionService {
 
     Ticket create(@NonNull PlayerSoul soul, @NonNull MessageInteraction interaction);
 
-    void pick(@NonNull OnlineSoul soul, @NonNull Ticket ticket);
+    void claim(@NonNull OnlineSoul soul, @NonNull Ticket ticket);
 
 }

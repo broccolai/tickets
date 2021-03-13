@@ -9,7 +9,7 @@ CREATE TABLE IF NOT EXISTS puretickets_ticket
     `player` varchar(36) NOT NULL,
     `position` varchar(255),
     `status` varchar(255) NOT NULl,
-    `picker` varchar(36) NULl
+    `claimer` varchar(36) NULl
 );
 
 CREATE TABLE IF NOT EXISTS puretickets_interaction

@@ -56,7 +56,7 @@ public final class LocaleConfiguration {
     @ConfigSerializable
     public static final class NotifyLocaleConfiguration {
 
-        public LocaleEntry claim = new LocaleEntry("<prefix> <user> has picked your ticket");
+        public LocaleEntry claim = new LocaleEntry("<prefix> <user> has claimed your ticket");
 
         public LocaleEntry unclaim = new LocaleEntry("<prefix> <user> has yielded your ticket");
 
@@ -121,9 +121,9 @@ public final class LocaleConfiguration {
 
         public LocaleEntry sender = new LocaleEntry("<aqua>Created: <white><date> by <player>");
 
-        public LocaleEntry picker = new LocaleEntry("<aqua>Picker: <white><pickerDate> by <picker>");
+        public LocaleEntry claimer = new LocaleEntry("<aqua>Claimer: <white><claimerDate> by <claimer>");
 
-        public LocaleEntry unpicked = new LocaleEntry("<aqua>Picker: <white>unclaimed");
+        public LocaleEntry unclaimed = new LocaleEntry("<aqua>Claimer: <white>unclaimed");
 
         public LocaleEntry message = new LocaleEntry("<aqua>Current Message: <white><message>");
 
@@ -148,7 +148,7 @@ public final class LocaleConfiguration {
 
         public LocaleEntry ticketOpen = new LocaleEntry("<prefix> This ticket is already open");
 
-        public LocaleEntry ticketPicked = new LocaleEntry("<prefix> This ticket is already picked");
+        public LocaleEntry ticketClaimed = new LocaleEntry("<prefix> This ticket is already claimed");
 
     }
 

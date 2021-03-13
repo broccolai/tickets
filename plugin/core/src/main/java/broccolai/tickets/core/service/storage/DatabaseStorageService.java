@@ -74,7 +74,7 @@ public final class DatabaseStorageService implements StorageService {
                     .bind("player", soul.uuid())
                     .bind("position", PositionMapper.valueOf(position))
                     .bind("status", TicketStatus.OPEN)
-                    .bind("picker", (UUID) null)
+                    .bind("claimer", (UUID) null)
                     .execute();
 
             int id = handle.createQuery(queries[1])
@@ -134,6 +134,11 @@ public final class DatabaseStorageService implements StorageService {
                     .mapTo(Integer.class)
                     .first();
         });
+    }
+
+    @Override
+    public void saveInteractions(@NonNull final Collection<Interaction> interactions) {
+
     }
 
     @Override

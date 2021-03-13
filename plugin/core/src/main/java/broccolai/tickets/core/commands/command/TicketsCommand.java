@@ -51,11 +51,12 @@ public final class TicketsCommand extends CommonCommands {
                 ArgumentDescription.of("Claim a ticket"),
                 this.config.claim.aliases
         )
-                .permission(Constants.STAFF_PERMISSION + ".pick")
+                .permission(Constants.STAFF_PERMISSION + ".claim")
                 .argument(this.argumentFactory.target("target"))
                 .argument(this.argumentFactory.ticket("ticket"))
                 .handler(this::processClaim)
-                .build());
+                .build()
+        );
 //
 //        manager.command(builder.literal(
 //                config.getAliasAssign().getFirst(),
@@ -176,7 +177,7 @@ public final class TicketsCommand extends CommonCommands {
         OnlineSoul sender = c.getSender();
         Ticket ticket = c.get("ticket");
 
-        this.interactionService.pick(sender, ticket);
+        this.interactionService.claim(sender, ticket);
     }
 //
 //    private void processAssign(final @NonNull CommandContext<@NonNull OnlineSoul> c) {

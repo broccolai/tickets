@@ -2,7 +2,7 @@ package broccolai.tickets.core.service.interaction;
 
 import broccolai.tickets.api.model.event.impl.TicketConstructionEvent;
 import broccolai.tickets.api.model.event.impl.TicketCreateEvent;
-import broccolai.tickets.api.model.event.impl.TicketPickEvent;
+import broccolai.tickets.api.model.event.impl.TicketClaimEvent;
 import broccolai.tickets.api.model.interaction.Action;
 import broccolai.tickets.api.model.interaction.Interaction;
 import broccolai.tickets.api.model.interaction.MessageInteraction;
@@ -56,14 +56,14 @@ public final class EventInteractionService implements InteractionService {
     }
 
     @Override
-    public void pick(final @NonNull OnlineSoul soul, final @NonNull Ticket ticket) {
+    public void claim(final @NonNull OnlineSoul soul, final @NonNull Ticket ticket) {
         //todo need to save interactions
         Interaction interaction = new BasicInteraction(Action.CLAIM, LocalDateTime.now(), soul.uuid());
         //todo queue ticket saving
-        ticket.status(TicketStatus.PICKED);
-        ticket.picker(soul.uuid());
+        ticket.status(TicketStatus.CLAIMED);
+        ticket.claimer(soul.uuid());
 
-        TicketPickEvent event = new TicketPickEvent(soul, ticket);
+        TicketClaimEvent event = new TicketClaimEvent(soul, ticket);
         this.eventService.post(event);
     }
 
