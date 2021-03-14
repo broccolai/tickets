@@ -69,18 +69,19 @@ public final class TicketsCommand extends CommonCommands {
 //                .argument(TicketArgument.of(false, false, TicketStatus.OPEN))
 //                .handler(this::processAssign)
 //                .build());
-//
-//        manager.command(builder.literal(
-//                config.getAliasDone().getFirst(),
-//                ArgumentDescription.of("Complete a ticket"),
-//                config.getAliasDone().getSecond()
-//        )
-//                .permission(Constants.STAFF_PERMISSION + ".done")
-//                .argument(TargetArgument.of("target"))
-//                .argument(TicketArgument.of(false, false, TicketStatus.OPEN, TicketStatus.PICKED))
-//                .handler(this::processDone)
-//                .build());
-//
+
+        manager.command(builder.literal(
+                this.config.complete.main,
+                ArgumentDescription.of("Complete a ticket"),
+                this.config.complete.aliases
+        )
+                .permission(Constants.STAFF_PERMISSION + ".complete")
+                .argument(this.argumentFactory.target("target"))
+                .argument(this.argumentFactory.ticket("ticket"))
+                .handler(this::processComplete)
+                .build()
+        );
+
 //        manager.command(builder.literal(
 //                config.getAliasUnclaim().getFirst(),
 //                ArgumentDescription.of("Unclaim a ticket"),
@@ -189,16 +190,14 @@ public final class TicketsCommand extends CommonCommands {
 //        this.eventBus.post(new NotificationEvent(NotificationReason.ASSIGN_TICKET, sender, staff, ticket));
 //        ticketManager.updateTicket(ticket);
 //    }
-//
-//    private void processDone(final @NonNull CommandContext<@NonNull OnlineSoul> c) {
-//        OnlineSoul sender = c.getSender();
-//        Ticket ticket = c.get("ticket");
-//
-//        ticketManager.insertMessage(ticket.getId(), ticket.done(sender.uuid()));
-//        this.eventBus.post(new NotificationEvent(NotificationReason.DONE_TICKET, sender, ticket.getPlayerUniqueID(), ticket));
-//        ticketManager.updateTicket(ticket);
-//    }
-//
+
+    private void processComplete(final @NonNull CommandContext<@NonNull OnlineSoul> c) {
+        OnlineSoul sender = c.getSender();
+        Ticket ticket = c.get("ticket");
+
+        this.interactionService.complete(sender, ticket);
+    }
+
 //    private void processUnclaim(final @NonNull CommandContext<@NonNull OnlineSoul> c) {
 //        OnlineSoul sender = c.getSender();
 //        Ticket ticket = c.get("ticket");

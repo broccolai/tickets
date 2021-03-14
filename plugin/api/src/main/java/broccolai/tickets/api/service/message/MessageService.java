@@ -10,13 +10,23 @@ public interface MessageService {
 
     Component senderTicketCreation(@NonNull Ticket ticket);
 
+    Component senderTicketClose(@NonNull Ticket ticket);
+
     Component senderTicketClaim(@NonNull Ticket ticket);
+
+    Component senderTicketComplete(@NonNull Ticket ticket);
 
     Component targetTicketClaim(@NonNull Ticket ticket);
 
-    Component staffTicketClaim(@NonNull Ticket ticket);
+    Component targetTicketComplete(@NonNull Ticket ticket);
 
     Component staffTicketCreate(@NonNull Ticket ticket);
+
+    Component staffTicketClose(@NonNull Ticket ticket);
+
+    Component staffTicketClaim(@NonNull Ticket ticket);
+
+    Component staffTicketComplete(@NonNull Ticket ticket);
 
     Component commandsTicketList(@NonNull Collection<@NonNull Ticket> tickets);
 

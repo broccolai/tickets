@@ -1,5 +1,7 @@
 package broccolai.tickets.core.service.interaction;
 
+import broccolai.tickets.api.model.event.impl.TicketCloseEvent;
+import broccolai.tickets.api.model.event.impl.TicketCompleteEvent;
 import broccolai.tickets.api.model.event.impl.TicketConstructionEvent;
 import broccolai.tickets.api.model.event.impl.TicketCreateEvent;
 import broccolai.tickets.api.model.event.impl.TicketClaimEvent;
@@ -55,6 +57,16 @@ public final class EventInteractionService extends CachedInteractionService {
     }
 
     @Override
+    public void close(@NonNull final PlayerSoul soul, @NonNull final Ticket ticket) {
+        Interaction interaction = new BasicInteraction(Action.CLOSE, LocalDateTime.now(), soul.uuid());
+        this.queue(ticket, interaction);
+        ticket.status(TicketStatus.CLOSED);
+
+        TicketCloseEvent event = new TicketCloseEvent(soul, ticket);
+        this.eventService.post(event);
+    }
+
+    @Override
     public void claim(final @NonNull OnlineSoul soul, final @NonNull Ticket ticket) {
         Interaction interaction = new BasicInteraction(Action.CLAIM, LocalDateTime.now(), soul.uuid());
         this.queue(ticket, interaction);
@@ -62,6 +74,17 @@ public final class EventInteractionService extends CachedInteractionService {
         ticket.claimer(soul.uuid());
 
         TicketClaimEvent event = new TicketClaimEvent(soul, ticket);
+        this.eventService.post(event);
+    }
+
+    @Override
+    public void complete(@NonNull final OnlineSoul soul, @NonNull final Ticket ticket) {
+        Interaction interaction = new BasicInteraction(Action.CLAIM, LocalDateTime.now(), soul.uuid());
+        this.queue(ticket, interaction);
+        ticket.status(TicketStatus.CLOSED);
+        ticket.claimer(soul.uuid());
+
+        TicketCompleteEvent event = new TicketCompleteEvent(soul, ticket);
         this.eventService.post(event);
     }
 

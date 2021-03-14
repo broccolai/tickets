@@ -12,7 +12,11 @@ public interface InteractionService {
 
     Ticket create(@NonNull PlayerSoul soul, @NonNull MessageInteraction interaction);
 
+    void close(@NonNull PlayerSoul soul, @NonNull Ticket ticket);
+
     void claim(@NonNull OnlineSoul soul, @NonNull Ticket ticket);
+
+    void complete(@NonNull OnlineSoul soul, @NonNull Ticket ticket);
 
     void queue(@NonNull Ticket ticket, @NonNull Interaction interaction);
 

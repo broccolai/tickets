@@ -8,6 +8,8 @@ import broccolai.tickets.api.service.interactions.InteractionService;
 import broccolai.tickets.api.service.message.MessageService;
 import broccolai.tickets.api.service.ticket.TicketService;
 import broccolai.tickets.core.commands.arguments.MessageArgument;
+import broccolai.tickets.core.configuration.CommandsConfiguration;
+import broccolai.tickets.core.factory.CloudArgumentFactory;
 import broccolai.tickets.core.utilities.Constants;
 import cloud.commandframework.ArgumentDescription;
 import cloud.commandframework.Command;
@@ -22,16 +24,22 @@ import java.util.Collection;
 
 public final class TicketCommand extends CommonCommands {
 
+    private final CommandsConfiguration.TicketConfiguration config;
+    private final CloudArgumentFactory argumentFactory;
     private final MessageService messageService;
     private final TicketService ticketService;
     private final InteractionService interactionService;
 
     @Inject
     public TicketCommand(
+            final CommandsConfiguration.@NonNull TicketConfiguration config,
+            final @NonNull CloudArgumentFactory argumentFactory,
             final @NonNull MessageService messageService,
             final @NonNull TicketService ticketService,
             final @NonNull InteractionService interactionService
     ) {
+        this.config = config;
+        this.argumentFactory = argumentFactory;
         this.messageService = messageService;
         this.ticketService = ticketService;
         this.interactionService = interactionService;
@@ -45,13 +53,14 @@ public final class TicketCommand extends CommonCommands {
                 .senderType(PlayerSoul.class);
 
         manager.command(builder.literal(
-                "create",
+                this.config.create.main,
                 ArgumentDescription.of("Create a ticket"),
-                "c"
+                this.config.create.aliases
         )
                 .permission(Constants.USER_PERMISSION + ".create")
                 .argument(MessageArgument.of("message"))
-                .handler(this::processCreate));
+                .handler(this::processCreate)
+        );
 //
 //        manager.command(builder.literal(
 //                config.getAliasUpdate().getFirst(),
@@ -62,26 +71,28 @@ public final class TicketCommand extends CommonCommands {
 //                .argument(TicketArgument.of(true, true, TicketStatus.OPEN, TicketStatus.PICKED))
 //                .argument(MessageArgument.of("message"))
 //                .handler(this::processUpdate));
-//
-//        manager.command(builder.literal(
-//                config.getAliasClose().getFirst(),
-//                ArgumentDescription.of("Close a ticket"),
-//                config.getAliasClose().getSecond()
-//        )
-//                .permission(Constants.USER_PERMISSION + ".close")
-//                .argument(TicketArgument.of(false, true, TicketStatus.OPEN, TicketStatus.PICKED))
-//                .handler(this::processClose));
 
         manager.command(builder.literal(
-                "list",
+                this.config.close.main,
+                ArgumentDescription.of("Close a ticket"),
+                this.config.close.aliases
+        )
+                .permission(Constants.USER_PERMISSION + ".close")
+                .argument(this.argumentFactory.ticket("ticket"))
+                .handler(this::processClose)
+        );
+
+        manager.command(builder.literal(
+                this.config.list.main,
                 ArgumentDescription.of("List tickets"),
-                "l"
+                this.config.list.aliases
         )
                 .permission(Constants.USER_PERMISSION + ".list")
                 .flag(manager.flagBuilder("status")
                         .withArgument(EnumArgument.of(TicketStatus.class, "status")))
-                .handler(this::processList));
-//
+                .handler(this::processList)
+        );
+
 //        manager.command(builder.literal(
 //                config.getAliasShow().getFirst(),
 //                ArgumentDescription.of("Show a ticket"),
@@ -116,15 +127,13 @@ public final class TicketCommand extends CommonCommands {
 //        ticketManager.updateTicket(ticket);
 //        ticketManager.insertMessage(ticket.getId(), message);
 //    }
-//
-//    private void processClose(final @NonNull CommandContext<OnlineSoul> c) {
-//        OnlineSoul soul = c.getSender();
-//        Ticket ticket = c.get("ticket");
-//
-//        ticketManager.insertMessage(ticket.getId(), ticket.close(soul.uuid()));
-//        ticketManager.updateTicket(ticket);
-//        this.eventManager.post(new NotificationEvent(NotificationReason.CLOSE_TICKET, soul, null, ticket));
-//    }
+
+    private void processClose(final @NonNull CommandContext<OnlineSoul> c) {
+        PlayerSoul soul = (PlayerSoul) c.getSender();
+        Ticket ticket = c.get("ticket");
+
+        this.interactionService.close(soul, ticket);
+    }
 
     private void processList(final @NonNull CommandContext<OnlineSoul> c) {
         OnlineSoul soul = c.getSender();

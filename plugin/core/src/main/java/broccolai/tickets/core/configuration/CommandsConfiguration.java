@@ -16,12 +16,18 @@ public final class CommandsConfiguration {
 
         public AliasConfiguration create = new AliasConfiguration("create", "c");
 
+        public AliasConfiguration close = new AliasConfiguration("close", "cl");
+
+        public AliasConfiguration list = new AliasConfiguration("list", "l");
+
     }
 
     @ConfigSerializable
     public static final class TicketsConfiguration {
 
         public AliasConfiguration claim = new AliasConfiguration("claim", "c");
+
+        public AliasConfiguration complete = new AliasConfiguration("done", "d");
 
     }
 
