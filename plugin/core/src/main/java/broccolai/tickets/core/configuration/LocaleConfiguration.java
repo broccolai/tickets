@@ -43,7 +43,7 @@ public final class LocaleConfiguration {
 
         public LocaleEntry assign = new LocaleEntry("<prefix> Ticket <ticket> assigned to <target>");
 
-        public LocaleEntry done = new LocaleEntry("<prefix> Ticket <ticket> completed");
+        public LocaleEntry complete = new LocaleEntry("<prefix> Ticket <ticket> completed");
 
         public LocaleEntry reopen = new LocaleEntry("<prefix> Ticket <ticket> completed");
 
@@ -62,7 +62,7 @@ public final class LocaleConfiguration {
 
         public LocaleEntry assign = new LocaleEntry("<prefix> <user> has assigned you to ticket <id>");
 
-        public LocaleEntry done = new LocaleEntry("<prefix> <user> has completed your ticket");
+        public LocaleEntry complete = new LocaleEntry("<prefix> <user> has completed your ticket");
 
         public LocaleEntry reopen = new LocaleEntry("<prefix> <user> has reopened your ticket");
 
@@ -85,7 +85,7 @@ public final class LocaleConfiguration {
 
         public LocaleEntry assign = new LocaleEntry("<prefix> <user> assigned ticket <ticket><white> to <target>");
 
-        public LocaleEntry done = new LocaleEntry("<prefix> <user> completed ticket <ticket>");
+        public LocaleEntry complete = new LocaleEntry("<prefix> <user> completed ticket <ticket>");
 
         public LocaleEntry reopen = new LocaleEntry("<prefix> <user> reopened ticket <ticket>");
 
