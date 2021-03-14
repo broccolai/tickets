@@ -5,9 +5,8 @@ import broccolai.tickets.api.model.interaction.MessageInteraction;
 import broccolai.tickets.api.model.ticket.Ticket;
 import broccolai.tickets.api.model.user.OnlineSoul;
 import broccolai.tickets.api.model.user.PlayerSoul;
+import com.google.common.collect.Multimap;
 import org.checkerframework.checker.nullness.qual.NonNull;
-
-import java.util.Collection;
 
 public interface InteractionService {
 
@@ -15,8 +14,8 @@ public interface InteractionService {
 
     void claim(@NonNull OnlineSoul soul, @NonNull Ticket ticket);
 
-    void queue(@NonNull Interaction interaction);
+    void queue(@NonNull Ticket ticket, @NonNull Interaction interaction);
 
-    Collection<Interaction> queued();
+    Multimap<Integer, Interaction> queued();
 
 }

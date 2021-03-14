@@ -23,4 +23,8 @@ public interface TicketService {
 
     int count(@NonNull Set<TicketStatus> statuses);
 
+    void queue(@NonNull Ticket ticket);
+
+    Collection<Ticket> queued();
+
 }

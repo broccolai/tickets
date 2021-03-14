@@ -11,7 +11,6 @@ import broccolai.tickets.api.model.ticket.TicketStatus;
 import broccolai.tickets.api.model.user.OnlineSoul;
 import broccolai.tickets.api.model.user.PlayerSoul;
 import broccolai.tickets.api.service.event.EventService;
-import broccolai.tickets.api.service.interactions.InteractionService;
 import broccolai.tickets.api.service.ticket.TicketService;
 import broccolai.tickets.core.model.interaction.BasicInteraction;
 import com.google.inject.Inject;
@@ -58,8 +57,7 @@ public final class EventInteractionService extends CachedInteractionService {
     @Override
     public void claim(final @NonNull OnlineSoul soul, final @NonNull Ticket ticket) {
         Interaction interaction = new BasicInteraction(Action.CLAIM, LocalDateTime.now(), soul.uuid());
-        this.queue(interaction);
-        //todo queue ticket saving
+        this.queue(ticket, interaction);
         ticket.status(TicketStatus.CLAIMED);
         ticket.claimer(soul.uuid());
 

@@ -29,7 +29,6 @@ import net.kyori.adventure.text.Component;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.flywaydb.core.Flyway;
 import org.jdbi.v3.core.Jdbi;
-import org.jdbi.v3.core.statement.Batch;
 import org.jdbi.v3.core.statement.PreparedBatch;
 
 import java.io.File;
@@ -124,6 +123,22 @@ public final class DatabaseStorageService implements StorageService {
                     .bindList("statuses", statuses)
                     .mapTo(Ticket.class)
                     .collect(Collectors.toMap(Ticket::id, ticket -> ticket));
+        });
+    }
+
+    @Override
+    public void updateTickets(@NonNull final Collection<Ticket> tickets) {
+        this.jdbi.useHandle(handle -> {
+            PreparedBatch batch = handle.prepareBatch(SQLQueries.UPDATE_TICKET.get()[0]);
+
+            for (final Ticket ticket : tickets) {
+                batch.bind("id", ticket.id())
+                        .bind("status", ticket.status())
+                        .bind("claimer", ticket.claimer())
+                        .add();
+            }
+
+            batch.execute();
         });
     }
 

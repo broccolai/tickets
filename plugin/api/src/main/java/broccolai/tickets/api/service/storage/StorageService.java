@@ -22,6 +22,8 @@ public interface StorageService extends Disposable {
 
     @NonNull Map<Integer, Ticket> tickets(@NonNull Soul soul, @NonNull Collection<TicketStatus> statuses);
 
+    void updateTickets(@NonNull Collection<Ticket> tickets);
+
     int countTickets(@NonNull Collection<TicketStatus> statuses);
 
     void saveInteractions(@NonNull Multimap<Integer, Interaction> interactions);

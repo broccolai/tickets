@@ -4,10 +4,9 @@ import broccolai.tickets.api.model.interaction.Interaction;
 import broccolai.tickets.api.model.task.Task;
 import broccolai.tickets.api.service.interactions.InteractionService;
 import broccolai.tickets.api.service.storage.StorageService;
+import com.google.common.collect.Multimap;
 import com.google.inject.Inject;
 import org.checkerframework.checker.nullness.qual.NonNull;
-
-import java.util.Collection;
 
 //todo: run at server stop
 public final class SaveTask implements Task {
@@ -26,13 +25,13 @@ public final class SaveTask implements Task {
 
     @Override
     public void run() {
-        Collection<Interaction> interactions = this.interactionService.queued();
+        Multimap<Integer, Interaction> interactions = this.interactionService.queued();
 
-        if (interactions.isEmpty()) {
-            return;
+        if (!interactions.isEmpty()) {
+            this.storageService.saveInteractions(interactions);
         }
 
-        this.storageService.saveInteractions(interactions);
+
     }
 
     @Override

@@ -32,6 +32,7 @@ public final class CachedTicketService implements TicketService {
     private final StorageService storageService;
 
     private final Cache<Integer, Ticket> cache = Caffeine.newBuilder().build();
+    private final Set<Ticket> queued = new HashSet<>();
     private final Multimap<UUID, TicketStatus> lookups = MultimapBuilder.hashKeys().enumSetValues(TicketStatus.class).build();
 
     @Inject
@@ -94,13 +95,23 @@ public final class CachedTicketService implements TicketService {
         return this.storageService.countTickets(statuses);
     }
 
+    @Override
+    public void queue(@NonNull final Ticket ticket) {
+        this.queued.add(ticket);
+    }
+
+    @Override
+    public Collection<Ticket> queued() {
+        Collection<Ticket> queued = new ArrayList<>(this.queued);
+        this.queued.clear();
+        return queued;
+    }
+
     private @NonNull Collection<@NonNull Ticket> filter(final @NonNull Predicate<@NonNull Ticket> predicate) {
         Collection<Ticket> tickets = new ArrayList<>();
 
         for (final Ticket ticket : this.cache.asMap().values()) {
-            System.out.println(ticket.id());
             if (predicate.test(ticket)) {
-                System.out.println("passed" + ticket.id());
                 tickets.add(ticket);
             }
         }
