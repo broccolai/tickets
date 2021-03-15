@@ -1,4 +1,6 @@
 dependencies {
+    compileOnlyApi("com.google.guava", "guava", Versions.GUAVA)
+
     api("cloud.commandframework", "cloud-core", Versions.CLOUD)
     api("net.kyori", "event-api", Versions.EVENT)
     api("net.kyori", "adventure-api", Versions.ADVENTURE)

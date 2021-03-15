@@ -23,6 +23,7 @@ subprojects {
     }
 
     repositories {
+        mavenLocal()
         mavenCentral()
         sonatypeSnapshots()
 

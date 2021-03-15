@@ -6,7 +6,7 @@ import broccolai.tickets.api.service.intergrations.DiscordService;
 import broccolai.tickets.api.service.message.MessageService;
 import broccolai.tickets.api.service.storage.StorageService;
 import broccolai.tickets.api.service.ticket.TicketService;
-import broccolai.tickets.core.service.event.ASMEventService;
+import broccolai.tickets.core.service.event.KyoriEventService;
 import broccolai.tickets.core.service.interaction.EventInteractionService;
 import broccolai.tickets.core.service.intergrations.HttpDiscordService;
 import broccolai.tickets.core.service.message.MiniMessageService;
@@ -21,7 +21,7 @@ public final class ServiceModule extends AbstractModule {
         this.bind(StorageService.class).to(DatabaseStorageService.class);
         this.bind(TicketService.class).to(CachedTicketService.class);
         this.bind(MessageService.class).to(MiniMessageService.class);
-        this.bind(EventService.class).to(ASMEventService.class);
+        this.bind(EventService.class).to(KyoriEventService.class);
         this.bind(InteractionService.class).to(EventInteractionService.class);
         this.bind(DiscordService.class).to(HttpDiscordService.class);
     }

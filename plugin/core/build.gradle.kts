@@ -2,12 +2,7 @@ dependencies {
     api(project(":tickets-api"))
 
     // Minecraft expectations
-    compileOnlyApi("com.google.guava", "guava", Versions.GUAVA)
     compileOnlyApi("com.google.code.gson", "gson", Versions.GSON)
-
-    // Kyori/event
-    api("net.kyori", "event-api", Versions.EVENT)
-    api("net.kyori", "event-method-asm", Versions.EVENT)
 
     // Kyroi/Adventure
     api("net.kyori", "adventure-platform-api", Versions.KYORI_PLATFORM)
