@@ -23,7 +23,6 @@ subprojects {
     }
 
     repositories {
-        mavenLocal()
         mavenCentral()
         sonatypeSnapshots()
 
@@ -31,6 +30,7 @@ subprojects {
         maven("https://mvn.intellectualsites.com/content/repositories/snapshots")
         maven("https://papermc.io/repo/repository/maven-public/")
         maven("https://repo.broccol.ai")
+        maven("https://repo.broccol.ai/snapshots")
     }
 
     dependencies {
