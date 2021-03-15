@@ -19,6 +19,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Optional;
@@ -32,7 +33,6 @@ public final class CachedTicketService implements TicketService {
     private final StorageService storageService;
 
     private final Cache<Integer, Ticket> cache = Caffeine.newBuilder().build();
-    private final Set<Ticket> queued = new HashSet<>();
     private final Multimap<UUID, TicketStatus> lookups = MultimapBuilder.hashKeys().enumSetValues(TicketStatus.class).build();
 
     @Inject
@@ -58,7 +58,7 @@ public final class CachedTicketService implements TicketService {
     @Override
     public @NonNull Collection<@NonNull Ticket> get(final @NonNull Collection<Integer> queries) {
         Collection<Integer> ids = new HashSet<>(queries);
-        Map<Integer, Ticket> tickets = this.cache.getAllPresent(ids);
+        Map<Integer, Ticket> tickets = new HashMap<>(this.cache.getAllPresent(ids));
         ids.removeAll(tickets.keySet());
 
         if (ids.size() != 0) {
