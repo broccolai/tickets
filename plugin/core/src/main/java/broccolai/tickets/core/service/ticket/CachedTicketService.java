@@ -95,17 +95,6 @@ public final class CachedTicketService implements TicketService {
         return this.storageService.countTickets(statuses);
     }
 
-    @Override
-    public void queue(@NonNull final Ticket ticket) {
-        this.queued.add(ticket);
-    }
-
-    @Override
-    public Collection<Ticket> queued() {
-        Collection<Ticket> queued = new ArrayList<>(this.queued);
-        this.queued.clear();
-        return queued;
-    }
 
     private @NonNull Collection<@NonNull Ticket> filter(final @NonNull Predicate<@NonNull Ticket> predicate) {
         Collection<Ticket> tickets = new ArrayList<>();

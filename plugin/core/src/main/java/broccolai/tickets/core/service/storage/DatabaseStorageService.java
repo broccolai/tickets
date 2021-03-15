@@ -14,6 +14,7 @@ import broccolai.tickets.core.storage.mapper.InteractionMapper;
 import broccolai.tickets.core.storage.mapper.PositionMapper;
 import broccolai.tickets.core.storage.mapper.TicketMapper;
 import com.google.common.collect.Multimap;
+import com.google.common.collect.MultimapBuilder;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.zaxxer.hikari.HikariDataSource;
@@ -35,6 +36,8 @@ import java.io.File;
 
 @Singleton
 public final class DatabaseStorageService implements StorageService {
+
+    private final Multimap<Ticket, Interaction> queue = MultimapBuilder.hashKeys().hashSetValues().build();
 
     private final HikariDataSource dataSource;
     private final Jdbi jdbi;
@@ -155,7 +158,7 @@ public final class DatabaseStorageService implements StorageService {
     }
 
     @Override
-    public void saveInteractions(final @NonNull Multimap<Integer, Interaction> interactionMultimap) {
+    public void saveInteractions(final @NonNull Multimap<Ticket, Interaction> interactionMultimap) {
         this.jdbi.useHandle(handle -> {
             PreparedBatch batch = handle.prepareBatch(SQLQueries.INSERT_INTERACTION.get()[0]);
 
@@ -184,7 +187,20 @@ public final class DatabaseStorageService implements StorageService {
     }
 
     @Override
+    public void queue(@NonNull final Ticket ticket, @NonNull final Interaction interaction) {
+        this.queue.put(ticket, interaction);
+    }
+
+    @Override
+    public void clear() {
+        this.updateTickets(this.queue.keys());
+        this.saveInteractions(this.queue);
+        this.queue.clear();
+    }
+
+    @Override
     public void dispose() {
+        this.clear();
         this.dataSource.close();
     }
 

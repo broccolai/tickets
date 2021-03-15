@@ -14,6 +14,8 @@ import broccolai.tickets.api.model.ticket.TicketStatus;
 import broccolai.tickets.api.model.user.OnlineSoul;
 import broccolai.tickets.api.model.user.PlayerSoul;
 import broccolai.tickets.api.service.event.EventService;
+import broccolai.tickets.api.service.interactions.InteractionService;
+import broccolai.tickets.api.service.storage.StorageService;
 import broccolai.tickets.api.service.ticket.TicketService;
 import broccolai.tickets.core.model.interaction.BasicInteraction;
 import com.google.inject.Inject;
@@ -24,16 +26,19 @@ import java.time.LocalDateTime;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 @Singleton
-public final class EventInteractionService extends CachedInteractionService {
+public final class EventInteractionService implements InteractionService {
 
+    private final StorageService storageService;
     private final EventService eventService;
     private final TicketService ticketService;
 
     @Inject
     public EventInteractionService(
+            final @NonNull StorageService storageService,
             final @NonNull EventService eventService,
             final @NonNull TicketService ticketService
     ) {
+        this.storageService = storageService;
         this.eventService = eventService;
         this.ticketService = ticketService;
     }
@@ -63,10 +68,9 @@ public final class EventInteractionService extends CachedInteractionService {
             final @NonNull Ticket ticket,
             final @NonNull MessageInteraction interaction
     ) {
-        this.queue(ticket, interaction);
         ticket.message(interaction);
-        this.ticketService.queue(ticket);
 
+        this.storageService.queue(ticket, interaction);
         TicketUpdateEvent event = new TicketUpdateEvent(soul, ticket);
         this.eventService.post(event);
     }
@@ -74,9 +78,9 @@ public final class EventInteractionService extends CachedInteractionService {
     @Override
     public void close(@NonNull final PlayerSoul soul, @NonNull final Ticket ticket) {
         Interaction interaction = new BasicInteraction(Action.CLOSE, LocalDateTime.now(), soul.uuid());
-        this.queue(ticket, interaction);
         ticket.status(TicketStatus.CLOSED);
 
+        this.storageService.queue(ticket, interaction);
         TicketCloseEvent event = new TicketCloseEvent(soul, ticket);
         this.eventService.post(event);
     }
@@ -84,10 +88,10 @@ public final class EventInteractionService extends CachedInteractionService {
     @Override
     public void claim(final @NonNull OnlineSoul soul, final @NonNull Ticket ticket) {
         Interaction interaction = new BasicInteraction(Action.CLAIM, LocalDateTime.now(), soul.uuid());
-        this.queue(ticket, interaction);
         ticket.status(TicketStatus.CLAIMED);
         ticket.claimer(soul.uuid());
 
+        this.storageService.queue(ticket, interaction);
         TicketClaimEvent event = new TicketClaimEvent(soul, ticket);
         this.eventService.post(event);
     }
@@ -95,10 +99,10 @@ public final class EventInteractionService extends CachedInteractionService {
     @Override
     public void complete(final @NonNull OnlineSoul soul, final @NonNull Ticket ticket) {
         Interaction interaction = new BasicInteraction(Action.CLAIM, LocalDateTime.now(), soul.uuid());
-        this.queue(ticket, interaction);
         ticket.status(TicketStatus.CLOSED);
         ticket.claimer(soul.uuid());
 
+        this.storageService.queue(ticket, interaction);
         TicketCompleteEvent event = new TicketCompleteEvent(soul, ticket);
         this.eventService.post(event);
     }

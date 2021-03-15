@@ -1,37 +1,24 @@
 package broccolai.tickets.core.tasks;
 
-import broccolai.tickets.api.model.interaction.Interaction;
 import broccolai.tickets.api.model.task.Task;
-import broccolai.tickets.api.service.interactions.InteractionService;
 import broccolai.tickets.api.service.storage.StorageService;
-import com.google.common.collect.Multimap;
 import com.google.inject.Inject;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-//todo: run at server stop
 public final class SaveTask implements Task {
 
     private final StorageService storageService;
-    private final InteractionService interactionService;
 
     @Inject
     public SaveTask(
-            final @NonNull StorageService storageService,
-            final @NonNull InteractionService interactionService
+            final @NonNull StorageService storageService
     ) {
         this.storageService = storageService;
-        this.interactionService = interactionService;
     }
 
     @Override
     public void run() {
-        Multimap<Integer, Interaction> interactions = this.interactionService.queued();
-
-        if (!interactions.isEmpty()) {
-            this.storageService.saveInteractions(interactions);
-        }
-
-
+        this.storageService.clear();
     }
 
     @Override
