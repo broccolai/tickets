@@ -163,7 +163,7 @@ public final class DatabaseStorageService implements StorageService {
             PreparedBatch batch = handle.prepareBatch(SQLQueries.INSERT_INTERACTION.get()[0]);
 
             interactionMultimap.forEach((ticket, interaction) -> {
-                batch.bind("ticket", ticket)
+                batch.bind("ticket", ticket.id())
                         .bind("action", interaction.action())
                         .bind("time", interaction.time())
                         .bind("sender", interaction.sender());
