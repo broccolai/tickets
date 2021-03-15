@@ -33,6 +33,14 @@ public final class MiniMessageService implements MessageService {
     }
 
     @Override
+    public Component senderTicketReopen(@NonNull final Ticket ticket) {
+        return this.locale.sender.reopen.use(
+                this.prefix,
+                ticket
+        );
+    }
+
+    @Override
     public Component senderTicketUpdate(@NonNull final Ticket ticket) {
         return this.locale.sender.update.use(
                 this.prefix,
@@ -57,8 +65,32 @@ public final class MiniMessageService implements MessageService {
     }
 
     @Override
+    public Component senderTicketUnclaim(@NonNull final Ticket ticket) {
+        return this.locale.sender.unclaim.use(
+                this.prefix,
+                ticket
+        );
+    }
+
+    @Override
+    public Component senderTicketAssign(@NonNull final Ticket ticket) {
+        return this.locale.sender.assign.use(
+                this.prefix,
+                ticket
+        );
+    }
+
+    @Override
     public Component senderTicketComplete(@NonNull final Ticket ticket) {
         return this.locale.sender.complete.use(
+                this.prefix,
+                ticket
+        );
+    }
+
+    @Override
+    public Component senderTicketNote(@NonNull final Ticket ticket) {
+        return this.locale.sender.note.use(
                 this.prefix,
                 ticket
         );
@@ -73,8 +105,32 @@ public final class MiniMessageService implements MessageService {
     }
 
     @Override
+    public Component targetTicketReopen(@NonNull final Ticket ticket) {
+        return this.locale.notify.reopen.use(
+                this.prefix,
+                ticket
+        );
+    }
+
+    @Override
+    public Component targetTicketUnclaim(@NonNull final Ticket ticket) {
+        return this.locale.notify.unclaim.use(
+                this.prefix,
+                ticket
+        );
+    }
+
+    @Override
     public Component targetTicketComplete(@NonNull final Ticket ticket) {
         return this.locale.notify.complete.use(
+                this.prefix,
+                ticket
+        );
+    }
+
+    @Override
+    public Component targetTicketNote(@NonNull final Ticket ticket) {
+        return this.locale.notify.note.use(
                 this.prefix,
                 ticket
         );
@@ -89,6 +145,22 @@ public final class MiniMessageService implements MessageService {
     }
 
     @Override
+    public Component staffTicketUnclaim(@NonNull final Ticket ticket) {
+        return this.locale.announcement.unclaim.use(
+                this.prefix,
+                ticket
+        );
+    }
+
+    @Override
+    public Component staffTicketAssign(@NonNull final Ticket ticket) {
+        return this.locale.announcement.assign.use(
+                this.prefix,
+                ticket
+        );
+    }
+
+    @Override
     public Component staffTicketComplete(@NonNull final Ticket ticket) {
         return this.locale.announcement.complete.use(
                 this.prefix,
@@ -97,8 +169,24 @@ public final class MiniMessageService implements MessageService {
     }
 
     @Override
+    public Component staffTicketNote(@NonNull final Ticket ticket) {
+        return this.locale.announcement.note.use(
+                this.prefix,
+                ticket
+        );
+    }
+
+    @Override
     public Component staffTicketCreate(@NonNull final Ticket ticket) {
         return this.locale.announcement.create.use(
+                this.prefix,
+                ticket
+        );
+    }
+
+    @Override
+    public Component staffTicketReopen(@NonNull final Ticket ticket) {
+        return this.locale.announcement.reopen.use(
                 this.prefix,
                 ticket
         );

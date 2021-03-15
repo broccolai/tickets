@@ -1,10 +1,14 @@
 package broccolai.tickets.core.service.interaction;
 
+import broccolai.tickets.api.model.event.impl.TicketAssignEvent;
 import broccolai.tickets.api.model.event.impl.TicketCloseEvent;
 import broccolai.tickets.api.model.event.impl.TicketCompleteEvent;
 import broccolai.tickets.api.model.event.impl.TicketConstructionEvent;
 import broccolai.tickets.api.model.event.impl.TicketCreateEvent;
 import broccolai.tickets.api.model.event.impl.TicketClaimEvent;
+import broccolai.tickets.api.model.event.impl.TicketNoteEvent;
+import broccolai.tickets.api.model.event.impl.TicketReopenEvent;
+import broccolai.tickets.api.model.event.impl.TicketUnclaimEvent;
 import broccolai.tickets.api.model.event.impl.TicketUpdateEvent;
 import broccolai.tickets.api.model.interaction.Action;
 import broccolai.tickets.api.model.interaction.Interaction;
@@ -13,6 +17,7 @@ import broccolai.tickets.api.model.ticket.Ticket;
 import broccolai.tickets.api.model.ticket.TicketStatus;
 import broccolai.tickets.api.model.user.OnlineSoul;
 import broccolai.tickets.api.model.user.PlayerSoul;
+import broccolai.tickets.api.model.user.Soul;
 import broccolai.tickets.api.service.event.EventService;
 import broccolai.tickets.api.service.interactions.InteractionService;
 import broccolai.tickets.api.service.storage.StorageService;
@@ -104,6 +109,47 @@ public final class EventInteractionService implements InteractionService {
 
         this.storageService.queue(ticket, interaction);
         TicketCompleteEvent event = new TicketCompleteEvent(soul, ticket);
+        this.eventService.post(event);
+    }
+
+    @Override
+    public void assign(@NonNull final OnlineSoul soul, @NonNull final Soul target, @NonNull final Ticket ticket) {
+        Interaction interaction = new BasicInteraction(Action.ASSIGN, LocalDateTime.now(), soul.uuid());
+        ticket.status(TicketStatus.CLAIMED);
+        ticket.claimer(soul.uuid());
+
+        this.storageService.queue(ticket, interaction);
+        TicketAssignEvent event = new TicketAssignEvent(soul, target, ticket);
+        this.eventService.post(event);
+    }
+
+    @Override
+    public void unclaim(@NonNull final OnlineSoul soul, @NonNull final Ticket ticket) {
+        Interaction interaction = new BasicInteraction(Action.UNCLAIM, LocalDateTime.now(), soul.uuid());
+        ticket.status(TicketStatus.OPEN);
+        ticket.claimer(null);
+
+        this.storageService.queue(ticket, interaction);
+        TicketUnclaimEvent event = new TicketUnclaimEvent(soul, ticket);
+        this.eventService.post(event);
+    }
+
+    @Override
+    public void reopen(@NonNull final OnlineSoul soul, @NonNull final Ticket ticket) {
+        Interaction interaction = new BasicInteraction(Action.REOPEN, LocalDateTime.now(), soul.uuid());
+        ticket.status(TicketStatus.OPEN);
+
+        this.storageService.queue(ticket, interaction);
+        TicketReopenEvent event = new TicketReopenEvent(soul, ticket);
+        this.eventService.post(event);
+    }
+
+    @Override
+    public void note(@NonNull final OnlineSoul soul, @NonNull final Ticket ticket, @NonNull final MessageInteraction message) {
+        Interaction interaction = new BasicInteraction(Action.NOTE, LocalDateTime.now(), soul.uuid());
+
+        this.storageService.queue(ticket, interaction);
+        TicketNoteEvent event = new TicketNoteEvent(soul, ticket);
         this.eventService.post(event);
     }
 

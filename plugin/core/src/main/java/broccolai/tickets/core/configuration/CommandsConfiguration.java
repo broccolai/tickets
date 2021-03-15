@@ -31,6 +31,16 @@ public final class CommandsConfiguration {
 
         public AliasConfiguration complete = new AliasConfiguration("done", "d");
 
+        public AliasConfiguration assign = new AliasConfiguration("assign", "a");
+
+        public AliasConfiguration unclaim = new AliasConfiguration("unclaim", "u");
+
+        public AliasConfiguration reopen = new AliasConfiguration("reopen", "r");
+
+        public AliasConfiguration teleport = new AliasConfiguration("teleport", "tp");
+
+        public AliasConfiguration note = new AliasConfiguration("note", "n");
+
     }
 
     @ConfigSerializable

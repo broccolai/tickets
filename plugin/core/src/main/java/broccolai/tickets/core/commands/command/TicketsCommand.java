@@ -2,6 +2,8 @@ package broccolai.tickets.core.commands.command;
 
 import broccolai.tickets.api.model.ticket.Ticket;
 import broccolai.tickets.api.model.user.OnlineSoul;
+import broccolai.tickets.api.model.user.PlayerSoul;
+import broccolai.tickets.api.model.user.Soul;
 import broccolai.tickets.api.service.interactions.InteractionService;
 import broccolai.tickets.core.commands.arguments.TicketParserMode;
 import broccolai.tickets.core.configuration.CommandsConfiguration;
@@ -10,6 +12,7 @@ import broccolai.tickets.core.utilities.Constants;
 import cloud.commandframework.ArgumentDescription;
 import cloud.commandframework.Command;
 import cloud.commandframework.CommandManager;
+import cloud.commandframework.arguments.standard.StringArgument;
 import cloud.commandframework.context.CommandContext;
 import com.google.inject.Inject;
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -57,18 +60,18 @@ public final class TicketsCommand extends CommonCommands {
                 .handler(this::processClaim)
                 .build()
         );
-//
-//        manager.command(builder.literal(
-//                config.getAliasAssign().getFirst(),
-//                ArgumentDescription.of("Assign a ticket"),
-//                config.getAliasAssign().getSecond()
-//        )
-//                .permission(Constants.STAFF_PERMISSION + ".assign")
-//                .argument(TargetArgument.of("staff"))
-//                .argument(TargetArgument.of("target"))
-//                .argument(TicketArgument.of(false, false, TicketStatus.OPEN))
-//                .handler(this::processAssign)
-//                .build());
+
+        manager.command(builder.literal(
+                this.config.assign.main,
+                ArgumentDescription.of("Assign a ticket"),
+                this.config.assign.aliases
+        )
+                .permission(Constants.STAFF_PERMISSION + ".assign")
+                .argument(this.argumentFactory.target("target"))
+                .argument(this.argumentFactory.ticket("ticket", TicketParserMode.ANY))
+                .handler(this::processAssign)
+                .build()
+        );
 
         manager.command(builder.literal(
                 this.config.complete.main,
@@ -81,52 +84,52 @@ public final class TicketsCommand extends CommonCommands {
                 .build()
         );
 
-//        manager.command(builder.literal(
-//                config.getAliasUnclaim().getFirst(),
-//                ArgumentDescription.of("Unclaim a ticket"),
-//                config.getAliasUnclaim().getSecond()
-//        )
-//                .permission(Constants.STAFF_PERMISSION + ".yield")
-//                .argument(TargetArgument.of("target"))
-//                .argument(TicketArgument.of(false, false, TicketStatus.PICKED))
-//                .handler(this::processUnclaim)
-//                .build());
-//
-//        manager.command(builder.literal(
-//                config.getAliasNote().getFirst(),
-//                ArgumentDescription.of("Add a note to a ticket"),
-//                config.getAliasNote().getSecond()
-//        )
-//                .permission(Constants.STAFF_PERMISSION + ".note")
-//                .argument(TargetArgument.of("target"))
-//                .argument(TicketArgument.of(true, false))
-//                .argument(StringArgument.of("message"))
-//                .handler(this::processNote)
-//                .build());
-//
-//        manager.command(builder.literal(
-//                config.getAliasReopen().getFirst(),
-//                ArgumentDescription.of("Reopen a ticket"),
-//                config.getAliasReopen().getSecond()
-//        )
-//                .permission(Constants.STAFF_PERMISSION + ".reopen")
-//                .argument(TargetArgument.of("target"))
-//                .argument(TicketArgument.of(false, false, TicketStatus.CLOSED))
-//                .handler(this::processReopen)
-//                .build());
-//
-//        manager.command(builder.literal(
-//                config.getAliasTeleport().getFirst(),
-//                ArgumentDescription.of("Teleport to a tickets creation location"),
-//                config.getAliasTeleport().getSecond()
-//        )
-//                .senderType(PlayerSoul.class)
-//                .permission(Constants.STAFF_PERMISSION + ".teleport")
-//                .argument(TargetArgument.of("target"))
-//                .argument(TicketArgument.of(false, false, TicketStatus.OPEN, TicketStatus.PICKED, TicketStatus.CLOSED))
-//                .handler(this::processTeleport)
-//                .build());
-//
+        manager.command(builder.literal(
+                this.config.unclaim.main,
+                ArgumentDescription.of("Unclaim a ticket"),
+                this.config.unclaim.aliases
+        )
+                .permission(Constants.STAFF_PERMISSION + ".yield")
+                .argument(this.argumentFactory.ticket("target", TicketParserMode.ANY))
+                .handler(this::processUnclaim)
+                .build()
+        );
+
+        manager.command(builder.literal(
+                this.config.note.main,
+                ArgumentDescription.of("Add a note to a ticket"),
+                this.config.note.aliases
+        )
+                .permission(Constants.STAFF_PERMISSION + ".note")
+                .argument(this.argumentFactory.ticket("ticket", TicketParserMode.ANY))
+                .argument(StringArgument.of("message"))
+                .handler(this::processNote)
+                .build()
+        );
+
+        manager.command(builder.literal(
+                this.config.reopen.main,
+                ArgumentDescription.of("Reopen a ticket"),
+                this.config.reopen.aliases
+        )
+                .permission(Constants.STAFF_PERMISSION + ".reopen")
+                .argument(this.argumentFactory.ticket("ticket", TicketParserMode.ANY))
+                .handler(this::processReopen)
+                .build()
+        );
+
+        manager.command(builder.literal(
+                this.config.teleport.main,
+                ArgumentDescription.of("Teleport to a tickets creation location"),
+                this.config.teleport.aliases
+        )
+                .senderType(PlayerSoul.class)
+                .permission(Constants.STAFF_PERMISSION + ".teleport")
+                .argument(this.argumentFactory.ticket("ticket", TicketParserMode.ANY))
+                .handler(this::processTeleport)
+                .build()
+        );
+
 //        manager.command(builder.literal(
 //                config.getAliasLog().getFirst(),
 //                ArgumentDescription.of("View a tickets log"),
@@ -179,16 +182,14 @@ public final class TicketsCommand extends CommonCommands {
 
         this.interactionService.claim(sender, ticket);
     }
-//
-//    private void processAssign(final @NonNull CommandContext<@NonNull OnlineSoul> c) {
-//        OnlineSoul sender = c.getSender();
-//        Ticket ticket = c.get("ticket");
-//        UUID staff = c.get("staff");
-//
-//        ticketManager.insertMessage(ticket.getId(), ticket.pick(staff));
-//        this.eventBus.post(new NotificationEvent(NotificationReason.ASSIGN_TICKET, sender, staff, ticket));
-//        ticketManager.updateTicket(ticket);
-//    }
+
+    private void processAssign(final @NonNull CommandContext<@NonNull OnlineSoul> c) {
+        OnlineSoul sender = c.getSender();
+        Ticket ticket = c.get("ticket");
+        Soul target = c.get("target");
+
+        this.interactionService.assign(sender, target, ticket);
+    }
 
     private void processComplete(final @NonNull CommandContext<@NonNull OnlineSoul> c) {
         OnlineSoul sender = c.getSender();
@@ -197,42 +198,33 @@ public final class TicketsCommand extends CommonCommands {
         this.interactionService.complete(sender, ticket);
     }
 
-//    private void processUnclaim(final @NonNull CommandContext<@NonNull OnlineSoul> c) {
-//        OnlineSoul sender = c.getSender();
-//        Ticket ticket = c.get("ticket");
-//
-//        ticketManager.insertMessage(ticket.getId(), ticket.yield(sender.uuid()));
-//        this.eventBus.post(new NotificationEvent(NotificationReason.UNCLAIM_TICKET, sender, ticket.getPlayerUniqueID(),
-//                ticket
-//        ));
-//        ticketManager.updateTicket(ticket);
-//    }
-//
-//    private void processNote(final @NonNull CommandContext<@NonNull OnlineSoul> c) {
-//        OnlineSoul sender = c.getSender();
-//        Ticket ticket = c.get("ticket");
-//
-//        ticketManager.insertMessage(ticket.getId(), ticket.note(sender.uuid(), c.get("message")));
-//        this.eventBus.post(new NotificationEvent(NotificationReason.NOTE_TICKET, sender, ticket.getPlayerUniqueID(), ticket));
-//        ticketManager.updateTicket(ticket);
-//    }
-//
-//    private void processReopen(final @NonNull CommandContext<@NonNull OnlineSoul> c) {
-//        OnlineSoul sender = c.getSender();
-//        Ticket ticket = c.get("ticket");
-//
-//        ticketManager.insertMessage(ticket.getId(), ticket.reopen(sender.uuid()));
-//        this.eventBus.post(new NotificationEvent(NotificationReason.REOPEN_TICKET, sender, ticket.getPlayerUniqueID(), ticket));
-//        ticketManager.updateTicket(ticket);
-//    }
-//
-//    private void processTeleport(final @NonNull CommandContext<@NonNull OnlineSoul> c) {
-//        PlayerSoul soul = (PlayerSoul) c.getSender();
-//        Ticket ticket = c.get("ticket");
-//
-//        this.eventBus.post(new NotificationEvent(NotificationReason.TELEPORT_TICKET, soul, ticket.getPlayerUniqueID(), ticket));
-//        soul.teleport(null); //todo
-//    }
+    private void processUnclaim(final @NonNull CommandContext<@NonNull OnlineSoul> c) {
+        OnlineSoul sender = c.getSender();
+        Ticket ticket = c.get("ticket");
+
+        this.interactionService.unclaim(sender, ticket);
+    }
+
+    private void processNote(final @NonNull CommandContext<@NonNull OnlineSoul> c) {
+        OnlineSoul sender = c.getSender();
+        Ticket ticket = c.get("ticket");
+
+        this.interactionService.unclaim(sender, ticket);
+    }
+
+    private void processReopen(final @NonNull CommandContext<@NonNull OnlineSoul> c) {
+        OnlineSoul sender = c.getSender();
+        Ticket ticket = c.get("ticket");
+
+        this.interactionService.reopen(sender, ticket);
+    }
+
+    private void processTeleport(final @NonNull CommandContext<@NonNull OnlineSoul> c) {
+        PlayerSoul soul = (PlayerSoul) c.getSender();
+        Ticket ticket = c.get("ticket");
+
+        soul.teleport(ticket.position());
+    }
 //
 //    private void processList(final @NonNull CommandContext<@NonNull OnlineSoul> c) {
 //        final OnlineSoul sender = c.getSender();

@@ -5,5 +5,8 @@ public enum Action {
     NOTE,
     CLAIM,
     CLOSE,
-    COMPLETE
+    COMPLETE,
+    ASSIGN,
+    UNCLAIM,
+    REOPEN,
 }
