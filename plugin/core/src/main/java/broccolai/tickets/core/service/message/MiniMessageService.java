@@ -28,6 +28,11 @@ public final class MiniMessageService implements MessageService {
     }
 
     @Override
+    public Component senderTicketUpdate(@NonNull final Ticket ticket) {
+        return this.locale.sender.update.use(ticket);
+    }
+
+    @Override
     public Component senderTicketClose(@NonNull final Ticket ticket) {
         return this.locale.sender.close.use(ticket);
     }
@@ -65,6 +70,11 @@ public final class MiniMessageService implements MessageService {
     @Override
     public Component staffTicketCreate(@NonNull final Ticket ticket) {
         return this.locale.announcement.create.use(ticket);
+    }
+
+    @Override
+    public Component staffTicketUpdate(@NonNull final Ticket ticket) {
+        return this.locale.announcement.update.use(ticket);
     }
 
     @Override

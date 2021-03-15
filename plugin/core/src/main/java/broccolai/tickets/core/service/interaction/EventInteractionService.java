@@ -5,6 +5,7 @@ import broccolai.tickets.api.model.event.impl.TicketCompleteEvent;
 import broccolai.tickets.api.model.event.impl.TicketConstructionEvent;
 import broccolai.tickets.api.model.event.impl.TicketCreateEvent;
 import broccolai.tickets.api.model.event.impl.TicketClaimEvent;
+import broccolai.tickets.api.model.event.impl.TicketUpdateEvent;
 import broccolai.tickets.api.model.interaction.Action;
 import broccolai.tickets.api.model.interaction.Interaction;
 import broccolai.tickets.api.model.interaction.MessageInteraction;
@@ -57,6 +58,20 @@ public final class EventInteractionService extends CachedInteractionService {
     }
 
     @Override
+    public void update(
+            final @NonNull PlayerSoul soul,
+            final @NonNull Ticket ticket,
+            final @NonNull MessageInteraction interaction
+    ) {
+        this.queue(ticket, interaction);
+        ticket.message(interaction);
+        this.ticketService.queue(ticket);
+
+        TicketUpdateEvent event = new TicketUpdateEvent(soul, ticket);
+        this.eventService.post(event);
+    }
+
+    @Override
     public void close(@NonNull final PlayerSoul soul, @NonNull final Ticket ticket) {
         Interaction interaction = new BasicInteraction(Action.CLOSE, LocalDateTime.now(), soul.uuid());
         this.queue(ticket, interaction);
@@ -78,7 +93,7 @@ public final class EventInteractionService extends CachedInteractionService {
     }
 
     @Override
-    public void complete(@NonNull final OnlineSoul soul, @NonNull final Ticket ticket) {
+    public void complete(final @NonNull OnlineSoul soul, final @NonNull Ticket ticket) {
         Interaction interaction = new BasicInteraction(Action.CLAIM, LocalDateTime.now(), soul.uuid());
         this.queue(ticket, interaction);
         ticket.status(TicketStatus.CLOSED);

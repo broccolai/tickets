@@ -12,6 +12,8 @@ public interface InteractionService {
 
     Ticket create(@NonNull PlayerSoul soul, @NonNull MessageInteraction interaction);
 
+    void update(@NonNull PlayerSoul soul, @NonNull Ticket ticket, @NonNull MessageInteraction interaction);
+
     void close(@NonNull PlayerSoul soul, @NonNull Ticket ticket);
 
     void claim(@NonNull OnlineSoul soul, @NonNull Ticket ticket);

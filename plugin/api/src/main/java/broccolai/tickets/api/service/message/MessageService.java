@@ -10,6 +10,8 @@ public interface MessageService {
 
     Component senderTicketCreation(@NonNull Ticket ticket);
 
+    Component senderTicketUpdate(@NonNull Ticket ticket);
+
     Component senderTicketClose(@NonNull Ticket ticket);
 
     Component senderTicketClaim(@NonNull Ticket ticket);
@@ -21,6 +23,8 @@ public interface MessageService {
     Component targetTicketComplete(@NonNull Ticket ticket);
 
     Component staffTicketCreate(@NonNull Ticket ticket);
+
+    Component staffTicketUpdate(@NonNull Ticket ticket);
 
     Component staffTicketClose(@NonNull Ticket ticket);
 

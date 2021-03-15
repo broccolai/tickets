@@ -16,6 +16,8 @@ public final class CommandsConfiguration {
 
         public AliasConfiguration create = new AliasConfiguration("create", "c");
 
+        public AliasConfiguration update = new AliasConfiguration("update", "u");
+
         public AliasConfiguration close = new AliasConfiguration("close", "cl");
 
         public AliasConfiguration list = new AliasConfiguration("list", "l");

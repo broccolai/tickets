@@ -1,5 +1,6 @@
 package broccolai.tickets.core.commands.command;
 
+import broccolai.tickets.api.model.interaction.MessageInteraction;
 import broccolai.tickets.api.model.ticket.Ticket;
 import broccolai.tickets.api.model.ticket.TicketStatus;
 import broccolai.tickets.api.model.user.OnlineSoul;
@@ -61,16 +62,17 @@ public final class TicketCommand extends CommonCommands {
                 .argument(MessageArgument.of("message"))
                 .handler(this::processCreate)
         );
-//
-//        manager.command(builder.literal(
-//                config.getAliasUpdate().getFirst(),
-//                ArgumentDescription.of("Update a ticket"),
-//                config.getAliasUpdate().getSecond()
-//        )
-//                .permission(Constants.USER_PERMISSION + ".update")
-//                .argument(TicketArgument.of(true, true, TicketStatus.OPEN, TicketStatus.PICKED))
-//                .argument(MessageArgument.of("message"))
-//                .handler(this::processUpdate));
+
+        manager.command(builder.literal(
+                this.config.update.main,
+                ArgumentDescription.of("Update a ticket"),
+                this.config.update.aliases
+        )
+                .permission(Constants.USER_PERMISSION + ".update")
+                .argument(this.argumentFactory.ticket("ticket"))
+                .argument(MessageArgument.of("message"))
+                .handler(this::processUpdate)
+        );
 
         manager.command(builder.literal(
                 this.config.close.main,
@@ -117,16 +119,13 @@ public final class TicketCommand extends CommonCommands {
         this.interactionService.create(soul, c.get("message"));
     }
 
-//    private void processUpdate(final @NonNull CommandContext<OnlineSoul> c) {
-//        OnlineSoul soul = c.getSender();
-//        Ticket ticket = c.get("ticket");
-//        broccolai.tickets.core.message.Message message = c.get("message");
-//
-//        ticket.update(message);
-//        this.eventManager.post(new NotificationEvent(NotificationReason.UPDATE_TICKET, soul, null, ticket));
-//        ticketManager.updateTicket(ticket);
-//        ticketManager.insertMessage(ticket.getId(), message);
-//    }
+    private void processUpdate(final @NonNull CommandContext<OnlineSoul> c) {
+        PlayerSoul soul = (PlayerSoul) c.getSender();
+        Ticket ticket = c.get("ticket");
+        MessageInteraction message = c.get("message");
+
+        this.interactionService.update(soul, ticket, message);
+    }
 
     private void processClose(final @NonNull CommandContext<OnlineSoul> c) {
         PlayerSoul soul = (PlayerSoul) c.getSender();
