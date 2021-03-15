@@ -16,70 +16,108 @@ import java.util.Collection;
 public final class MiniMessageService implements MessageService {
 
     private final LocaleConfiguration locale;
+    private final Template prefix;
 
     @Inject
     public MiniMessageService(final @NonNull LocaleConfiguration locale) {
         this.locale = locale;
+        this.prefix = Template.of("prefix", this.locale.prefix.use());
     }
 
     @Override
     public Component senderTicketCreation(final @NonNull Ticket ticket) {
-        return this.locale.sender.create.use(ticket);
+        return this.locale.sender.create.use(
+                this.prefix,
+                ticket
+        );
     }
 
     @Override
     public Component senderTicketUpdate(@NonNull final Ticket ticket) {
-        return this.locale.sender.update.use(ticket);
+        return this.locale.sender.update.use(
+                this.prefix,
+                ticket
+        );
     }
 
     @Override
     public Component senderTicketClose(@NonNull final Ticket ticket) {
-        return this.locale.sender.close.use(ticket);
+        return this.locale.sender.close.use(
+                this.prefix,
+                ticket
+        );
     }
 
     @Override
     public Component senderTicketClaim(final @NonNull Ticket ticket) {
-        return this.locale.sender.claim.use(ticket);
+        return this.locale.sender.claim.use(
+                this.prefix,
+                ticket
+        );
     }
 
     @Override
     public Component senderTicketComplete(@NonNull final Ticket ticket) {
-        return this.locale.sender.complete.use(ticket);
+        return this.locale.sender.complete.use(
+                this.prefix,
+                ticket
+        );
     }
 
     @Override
     public Component targetTicketClaim(final @NonNull Ticket ticket) {
-        return this.locale.notify.claim.use(ticket);
+        return this.locale.notify.claim.use(
+                this.prefix,
+                ticket
+        );
     }
 
     @Override
     public Component targetTicketComplete(@NonNull final Ticket ticket) {
-        return this.locale.notify.complete.use(ticket);
+        return this.locale.notify.complete.use(
+                this.prefix,
+                ticket
+        );
     }
 
     @Override
     public Component staffTicketClaim(final @NonNull Ticket ticket) {
-        return this.locale.announcement.claim.use(ticket);
+        return this.locale.announcement.claim.use(
+                this.prefix,
+                ticket
+        );
     }
 
     @Override
     public Component staffTicketComplete(@NonNull final Ticket ticket) {
-        return this.locale.announcement.complete.use(ticket);
+        return this.locale.announcement.complete.use(
+                this.prefix,
+                ticket
+        );
     }
 
     @Override
     public Component staffTicketCreate(@NonNull final Ticket ticket) {
-        return this.locale.announcement.create.use(ticket);
+        return this.locale.announcement.create.use(
+                this.prefix,
+                ticket
+        );
     }
 
     @Override
     public Component staffTicketUpdate(@NonNull final Ticket ticket) {
-        return this.locale.announcement.update.use(ticket);
+        return this.locale.announcement.update.use(
+                this.prefix,
+                ticket
+        );
     }
 
     @Override
     public Component staffTicketClose(@NonNull final Ticket ticket) {
-        return this.locale.announcement.close.use(ticket);
+        return this.locale.announcement.close.use(
+                this.prefix,
+                ticket
+        );
     }
 
     @Override
