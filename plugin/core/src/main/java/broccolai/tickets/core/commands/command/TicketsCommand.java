@@ -3,6 +3,7 @@ package broccolai.tickets.core.commands.command;
 import broccolai.tickets.api.model.ticket.Ticket;
 import broccolai.tickets.api.model.user.OnlineSoul;
 import broccolai.tickets.api.service.interactions.InteractionService;
+import broccolai.tickets.core.commands.arguments.TicketParserMode;
 import broccolai.tickets.core.configuration.CommandsConfiguration;
 import broccolai.tickets.core.factory.CloudArgumentFactory;
 import broccolai.tickets.core.utilities.Constants;
@@ -52,7 +53,7 @@ public final class TicketsCommand extends CommonCommands {
                 this.config.claim.aliases
         )
                 .permission(Constants.STAFF_PERMISSION + ".claim")
-                .argument(this.argumentFactory.ticket("ticket"))
+                .argument(this.argumentFactory.ticket("ticket", TicketParserMode.ANY))
                 .handler(this::processClaim)
                 .build()
         );
@@ -75,8 +76,7 @@ public final class TicketsCommand extends CommonCommands {
                 this.config.complete.aliases
         )
                 .permission(Constants.STAFF_PERMISSION + ".complete")
-                .argument(this.argumentFactory.target("target"))
-                .argument(this.argumentFactory.ticket("ticket"))
+                .argument(this.argumentFactory.ticket("ticket", TicketParserMode.ANY))
                 .handler(this::processComplete)
                 .build()
         );

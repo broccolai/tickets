@@ -9,6 +9,7 @@ import broccolai.tickets.api.service.interactions.InteractionService;
 import broccolai.tickets.api.service.message.MessageService;
 import broccolai.tickets.api.service.ticket.TicketService;
 import broccolai.tickets.core.commands.arguments.MessageArgument;
+import broccolai.tickets.core.commands.arguments.TicketParserMode;
 import broccolai.tickets.core.configuration.CommandsConfiguration;
 import broccolai.tickets.core.factory.CloudArgumentFactory;
 import broccolai.tickets.core.utilities.Constants;
@@ -69,7 +70,7 @@ public final class TicketCommand extends CommonCommands {
                 this.config.update.aliases
         )
                 .permission(Constants.USER_PERMISSION + ".update")
-                .argument(this.argumentFactory.ticket("ticket"))
+                .argument(this.argumentFactory.ticket("ticket", TicketParserMode.SENDERS))
                 .argument(MessageArgument.of("message"))
                 .handler(this::processUpdate)
         );
@@ -80,7 +81,7 @@ public final class TicketCommand extends CommonCommands {
                 this.config.close.aliases
         )
                 .permission(Constants.USER_PERMISSION + ".close")
-                .argument(this.argumentFactory.ticket("ticket"))
+                .argument(this.argumentFactory.ticket("ticket", TicketParserMode.SENDERS))
                 .handler(this::processClose)
         );
 

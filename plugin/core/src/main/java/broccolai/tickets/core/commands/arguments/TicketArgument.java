@@ -32,21 +32,22 @@ public final class TicketArgument extends CommandArgument<OnlineSoul, Ticket> {
     public TicketArgument(
             final @NonNull UserService userService,
             final @NonNull TicketService ticketService,
-            final @Assisted("name") @NonNull String name
+            final @Assisted("name") @NonNull String name,
+            final @Assisted("mode") @NonNull TicketParserMode mode
     ) {
-        super(true, name, new TicketParser(userService, ticketService, ParserMode.TARGET), Ticket.class);
+        super(true, name, new TicketParser(userService, ticketService, mode), Ticket.class);
     }
 
     private static final class TicketParser implements ArgumentParser<OnlineSoul, Ticket> {
 
         private final UserService userService;
         private final TicketService ticketService;
-        private final ParserMode parserMode;
+        private final TicketParserMode parserMode;
 
         private TicketParser(
                 final @NonNull UserService userService,
                 final @NonNull TicketService ticketService,
-                final @NonNull ParserMode parserMode
+                final @NonNull TicketParserMode parserMode
         ) {
             this.userService = userService;
             this.ticketService = ticketService;
@@ -55,6 +56,55 @@ public final class TicketArgument extends CommandArgument<OnlineSoul, Ticket> {
 
         @Override
         public @NonNull ArgumentParseResult<Ticket> parse(
+                final @NonNull CommandContext<OnlineSoul> commandContext,
+                final @NonNull Queue<String> inputQueue
+        ) {
+            switch (this.parserMode) {
+                case ANY: return this.any(commandContext, inputQueue);
+                case SENDERS: return this.senders(commandContext, inputQueue);
+                default: throw new IllegalStateException();
+            }
+        }
+
+        @Override
+        public @NonNull List<String> suggestions(
+                final @NonNull CommandContext<OnlineSoul> commandContext,
+                final @NonNull String input
+        ) {
+            if (this.parserMode == TicketParserMode.SENDERS) {
+                return this.playerNames(commandContext.getSender());
+            }
+
+            int current = commandContext.getRawInput().size() - 3;
+
+            if (current == 0) {
+                return Lists.map(this.userService.players(), PlayerSoul::username);
+            }
+
+            String firstArgument = commandContext.getRawInput().get(2);
+            Integer id = Numbers.valueOrNull(firstArgument, Integer::parseInt);
+
+            if (id != null) {
+                return new ArrayList<>();
+            }
+
+            Soul target = this.userService.wrap(firstArgument);
+
+            return this.playerNames(target);
+        }
+
+        private List<String> playerNames(final @NonNull Soul target) {
+            return Lists.map(this.ticketService.get(target, EnumSet.allOf(TicketStatus.class)), ticket -> {
+                return String.valueOf(ticket.id());
+            });
+        }
+
+        @Override
+        public int getRequestedArgumentCount() {
+            return 2;
+        }
+
+        private ArgumentParseResult<Ticket> any(
                 final @NonNull CommandContext<OnlineSoul> commandContext,
                 final @NonNull Queue<String> inputQueue
         ) {
@@ -70,9 +120,7 @@ public final class TicketArgument extends CommandArgument<OnlineSoul, Ticket> {
             Integer value = Numbers.valueOrNull(input, Integer::parseInt);
             inputQueue.remove();
 
-            if (value != null) {
-                inputQueue.poll();
-            } else {
+            if (value == null) {
                 input = inputQueue.poll();
 
                 if (input == null || input.isEmpty()) {
@@ -103,52 +151,32 @@ public final class TicketArgument extends CommandArgument<OnlineSoul, Ticket> {
 
             Ticket ticket = potentialTicket.get();
 
-            //todo: parser mode for this
-//            if (!ticket.player().equals(target.uuid())) {
-//                return ArgumentParseResult.failure(new NoInputProvidedException(
-//                        TicketParser.class,
-//                        commandContext
-//                ));
-//            }
-
-            inputQueue.remove();
             return ArgumentParseResult.success(ticket);
         }
 
-        @Override
-        public @NonNull List<String> suggestions(
+        private ArgumentParseResult<Ticket> senders(
                 final @NonNull CommandContext<OnlineSoul> commandContext,
-                final @NonNull String input
+                final @NonNull Queue<String> inputQueue
         ) {
-            int current = commandContext.getRawInput().size() - 3;
+            ArgumentParseResult<Ticket> result = this.any(commandContext, inputQueue);
+            Optional<Ticket> potentialTicket = result.getParsedValue();
 
-            if (current == 0) {
-                return Lists.map(this.userService.players(), PlayerSoul::username);
+            if (!potentialTicket.isPresent()) {
+                return result;
             }
 
-            String firstArgument = commandContext.getRawInput().get(2);
-            Integer id = Numbers.valueOrNull(firstArgument, Integer::parseInt);
+            Ticket ticket = potentialTicket.get();
 
-            if (id != null) {
-                return new ArrayList<>();
+            if (!ticket.player().equals(commandContext.getSender().uuid())) {
+                return ArgumentParseResult.failure(new NoInputProvidedException(
+                        TicketParser.class,
+                        commandContext
+                ));
             }
 
-            Soul target = this.userService.wrap(firstArgument);
-
-            return Lists.map(this.ticketService.get(target, EnumSet.allOf(TicketStatus.class)), ticket -> {
-                return String.valueOf(ticket.id());
-            });
+            return result;
         }
 
-        @Override
-        public int getRequestedArgumentCount() {
-            return 2;
-        }
-
-    }
-
-    enum ParserMode {
-        TARGET
     }
 
 }
