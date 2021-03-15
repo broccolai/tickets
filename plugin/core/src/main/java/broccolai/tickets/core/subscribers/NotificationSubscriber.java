@@ -5,6 +5,7 @@ import broccolai.tickets.api.model.event.Subscriber;
 import broccolai.tickets.api.model.message.TargetPair;
 import broccolai.tickets.api.model.user.OnlineSoul;
 import broccolai.tickets.api.model.user.Soul;
+import broccolai.tickets.api.service.event.EventService;
 import broccolai.tickets.api.service.intergrations.DiscordService;
 import broccolai.tickets.api.service.message.MessageService;
 import broccolai.tickets.api.service.user.UserService;
@@ -12,7 +13,6 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.inject.Inject;
 import net.kyori.adventure.text.Component;
-import net.kyori.event.method.annotation.Subscribe;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 public final class NotificationSubscriber implements Subscriber {
@@ -34,7 +34,11 @@ public final class NotificationSubscriber implements Subscriber {
         this.discordService = discordService;
     }
 
-    @Subscribe
+    @Override
+    public void register(final @NonNull EventService eventService) {
+        eventService.register(NotificationEvent.class, this::onNotificationEvent);
+    }
+
     public void onNotificationEvent(final @NonNull NotificationEvent event) {
         event.sender(this.messageService);
 

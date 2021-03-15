@@ -56,7 +56,7 @@ public final class PureTickets {
         EventService eventService = this.injector.getInstance(EventService.class);
 
         for (final Class<? extends Subscriber> subscriber : subscribers) {
-            eventService.register(this.injector.getInstance(subscriber));
+            this.injector.getInstance(subscriber).register(eventService);
         }
     }
 

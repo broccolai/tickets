@@ -20,5 +20,5 @@ object Versions {
     const val ADVENTURE = "4.5.1"
     const val KYORI_PLATFORM = "4.0.0-SNAPSHOT"
     const val MINI = "4.1.0-SNAPSHOT"
-    const val EVENT = "4.0.0-SNAPSHOT"
+    const val EVENT = "5.0.0-SNAPSHOT"
 }
