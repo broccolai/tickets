@@ -52,7 +52,6 @@ public final class TicketsCommand extends CommonCommands {
                 this.config.claim.aliases
         )
                 .permission(Constants.STAFF_PERMISSION + ".claim")
-                .argument(this.argumentFactory.target("target"))
                 .argument(this.argumentFactory.ticket("ticket"))
                 .handler(this::processClaim)
                 .build()
