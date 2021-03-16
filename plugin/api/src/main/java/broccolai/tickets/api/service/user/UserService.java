@@ -19,4 +19,6 @@ public interface UserService {
 
     @NonNull Collection<PlayerSoul> players();
 
+    @NonNull String name(@NonNull UUID uuid);
+
 }

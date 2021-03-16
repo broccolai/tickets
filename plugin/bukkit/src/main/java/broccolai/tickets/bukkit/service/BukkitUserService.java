@@ -37,6 +37,11 @@ public final class BukkitUserService extends SimpleUserService {
         return players;
     }
 
+    @Override
+    public @NonNull String name(@NonNull final UUID uuid) {
+        return Bukkit.getOfflinePlayer(uuid).getName();
+    }
+
     @SuppressWarnings("deprecation")
     @Override
     public @NonNull UUID uuidFromName(@NonNull final String name) {
