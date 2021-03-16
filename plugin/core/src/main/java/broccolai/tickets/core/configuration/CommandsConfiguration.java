@@ -27,6 +27,8 @@ public final class CommandsConfiguration {
     @ConfigSerializable
     public static final class TicketsConfiguration {
 
+        public AliasConfiguration show = new AliasConfiguration("show", "s");
+
         public AliasConfiguration claim = new AliasConfiguration("claim", "c");
 
         public AliasConfiguration complete = new AliasConfiguration("done", "d");

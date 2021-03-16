@@ -5,6 +5,7 @@ import broccolai.tickets.api.model.user.OnlineSoul;
 import broccolai.tickets.api.model.user.PlayerSoul;
 import broccolai.tickets.api.model.user.Soul;
 import broccolai.tickets.api.service.interactions.InteractionService;
+import broccolai.tickets.api.service.user.UserService;
 import broccolai.tickets.core.commands.arguments.TicketParserMode;
 import broccolai.tickets.core.configuration.CommandsConfiguration;
 import broccolai.tickets.core.factory.CloudArgumentFactory;
@@ -27,8 +28,10 @@ public final class TicketsCommand extends CommonCommands {
     public TicketsCommand(
             final CommandsConfiguration.@NonNull TicketsConfiguration config,
             final @NonNull CloudArgumentFactory argumentFactory,
+            final @NonNull UserService userService,
             final @NonNull InteractionService interactionService
     ) {
+        super(userService);
         this.config = config;
         this.argumentFactory = argumentFactory;
         this.interactionService = interactionService;
@@ -39,17 +42,17 @@ public final class TicketsCommand extends CommonCommands {
             final @NonNull CommandManager<OnlineSoul> manager
     ) {
         final Command.Builder<OnlineSoul> builder = manager.commandBuilder("tickets", "tis");
-//
-//        manager.command(builder.literal(
-//                config.getAliasShow().getFirst(),
-//                ArgumentDescription.of("Show a ticket"),
-//                config.getAliasShow().getSecond()
-//        )
-//                .permission(Constants.STAFF_PERMISSION + ".show")
-//                .argument(TargetArgument.of("target"))
-//                .argument(TicketArgument.of(false, false))
-//                .handler(c -> this.processShow(c.getSender(), c.get("ticket"))));
-//
+
+        manager.command(builder.literal(
+                this.config.show.main,
+                ArgumentDescription.of("Show a ticket"),
+                this.config.show.aliases
+        )
+                .permission(Constants.STAFF_PERMISSION + ".show")
+                .argument(this.argumentFactory.ticket("ticket", TicketParserMode.ANY))
+                .handler(c -> this.processShow(c.getSender(), c.get("ticket")))
+        );
+
         manager.command(builder.literal(
                 this.config.claim.main,
                 ArgumentDescription.of("Claim a ticket"),

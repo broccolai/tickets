@@ -1,28 +1,44 @@
 package broccolai.tickets.core.commands.command;
 
+import broccolai.tickets.api.model.position.Position;
 import broccolai.tickets.api.model.ticket.Ticket;
 import broccolai.tickets.api.model.user.OnlineSoul;
+import broccolai.tickets.api.service.user.UserService;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.format.TextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 public abstract class CommonCommands implements BaseCommand {
 
+    private final UserService userService;
+
+    public CommonCommands(final @NonNull UserService userService) {
+        this.userService = userService;
+    }
+
     protected final void processShow(final @NonNull OnlineSoul soul, final @NonNull Ticket ticket) {
-//        Template[] templates = ticket.templates();
-//
-//        TextComponent.Builder show = Component.text()
-//                .append(
-//                        Message.SHOW__SENDER.use(templates),
-//                        Message.SHOW__MESSAGE.use(templates),
-//                        Message.SHOW__LOCATION.use(templates)
-//                );
-//
-//        if (ticket.getStatus() != TicketStatus.PICKED) {
-//            show.append(Message.SHOW__UNPICKED.use(templates));
-//        } else {
-//            show.append(Message.SHOW__PICKER.use(templates));
-//        }
-//
-//        soul.sendMessage(show);
+
+        TextComponent.Builder component = Component.text();
+
+        component.append(
+                Component.text("Ticket ", TextColor.color(0xf5a5a5)),
+                Component.text("#" + ticket.id(), ticket.status().color(), TextDecoration.BOLD),
+                Component.newline()
+        );
+
+        Position position = ticket.position();
+
+        component.append(
+                Component.text("[" + ticket.status().name() + "]"),
+                Component.text(" "),
+                Component.text("[" + this.userService.name(ticket.player()) + "]"),
+                Component.text(" "),
+                Component.text("[" + position.x() + ", " + position.y() + ", " + position.z() + "]")
+        );
+
+        soul.sendMessage(component);
     }
 
     protected final void processLog(final @NonNull OnlineSoul soul, final @NonNull Ticket ticket) {
