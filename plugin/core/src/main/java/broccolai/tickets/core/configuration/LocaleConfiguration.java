@@ -108,7 +108,7 @@ public final class LocaleConfiguration {
 
         public LocaleEntry ticketStatus = new LocaleEntry("<wrapper><aqua>TICKET STATUS<wrapper>");
 
-        public LocaleEntry showTicket = new LocaleEntry("<wrapper><aqua>TICKET <ticket><wrapper>");
+        public LocaleEntry showTicket = new LocaleEntry("<wrapper><color:f5a5a5>Ticket <ticket><wrapper>");
 
         public LocaleEntry ticketLog = new LocaleEntry("<wrapper><aqua>TICKET LOG <ticket><wrapper>");
 
@@ -119,15 +119,17 @@ public final class LocaleConfiguration {
     @ConfigSerializable
     public static final class ShowLocaleConfiguration {
 
-        public LocaleEntry sender = new LocaleEntry("<aqua>Created: <white><date> by <player>");
+        public LocaleEntry status = new LocaleEntry("<white>Status<dark_gray>: <white><status>");
 
-        public LocaleEntry claimer = new LocaleEntry("<aqua>Claimer: <white><claimerDate> by <claimer>");
+        public LocaleEntry player = new LocaleEntry("<white>Created<dark_gray>: <white><player>");
 
-        public LocaleEntry unclaimed = new LocaleEntry("<aqua>Claimer: <white>unclaimed");
+        public LocaleEntry position = new LocaleEntry("<white>Position<dark_gray>: <white><position>");
 
-        public LocaleEntry message = new LocaleEntry("<aqua>Current Message: <white><message>");
+        public LocaleEntry claimed = new LocaleEntry("<white>Claimer<dark_gray>: <white><claimer>");
 
-        public LocaleEntry location = new LocaleEntry("<aqua>Location: <white>X <x>, Y <y>, Z <z> in <world>");
+        public LocaleEntry unclaimed = new LocaleEntry("<white>Claimer<dark_gray>: <white>NONE");
+
+        public LocaleEntry message = new LocaleEntry("<white>Message<dark_gray>: <white><message>");
 
     }
 

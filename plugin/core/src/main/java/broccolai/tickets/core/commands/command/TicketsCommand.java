@@ -5,7 +5,7 @@ import broccolai.tickets.api.model.user.OnlineSoul;
 import broccolai.tickets.api.model.user.PlayerSoul;
 import broccolai.tickets.api.model.user.Soul;
 import broccolai.tickets.api.service.interactions.InteractionService;
-import broccolai.tickets.api.service.user.UserService;
+import broccolai.tickets.api.service.message.MessageService;
 import broccolai.tickets.core.commands.arguments.TicketParserMode;
 import broccolai.tickets.core.configuration.CommandsConfiguration;
 import broccolai.tickets.core.factory.CloudArgumentFactory;
@@ -28,10 +28,10 @@ public final class TicketsCommand extends CommonCommands {
     public TicketsCommand(
             final CommandsConfiguration.@NonNull TicketsConfiguration config,
             final @NonNull CloudArgumentFactory argumentFactory,
-            final @NonNull UserService userService,
+            final @NonNull MessageService messageService,
             final @NonNull InteractionService interactionService
     ) {
-        super(userService);
+        super(messageService);
         this.config = config;
         this.argumentFactory = argumentFactory;
         this.interactionService = interactionService;

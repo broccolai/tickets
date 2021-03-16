@@ -56,6 +56,8 @@ public interface MessageService {
 
     Component commandsTicketList(@NonNull Collection<@NonNull Ticket> tickets);
 
+    Component showTicket(@NonNull Ticket ticket);
+
     Component taskReminder(int count);
 
 }
