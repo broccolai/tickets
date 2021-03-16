@@ -1,20 +1,14 @@
 package broccolai.tickets.api.model.ticket;
 
 import broccolai.tickets.api.model.interaction.MessageInteraction;
-import broccolai.tickets.api.model.message.Templatable;
 import broccolai.tickets.api.model.position.Position;
-
-import java.util.Arrays;
-import java.util.List;
-
-import net.kyori.adventure.text.minimessage.Template;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.util.Optional;
 import java.util.UUID;
 
-public final class Ticket implements Templatable {
+public final class Ticket {
 
     private final int id;
     private final UUID player;
@@ -73,14 +67,6 @@ public final class Ticket implements Templatable {
 
     public void claimer(final @Nullable UUID claimer) {
         this.claimer = claimer;
-    }
-
-    @Override
-    public List<Template> templates() {
-        return Arrays.asList(
-                Template.of("ticket", String.valueOf(this.id)),
-                Template.of("message", this.message.message())
-        );
     }
 
 }
