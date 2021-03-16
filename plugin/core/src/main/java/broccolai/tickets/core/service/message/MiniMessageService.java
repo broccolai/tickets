@@ -225,7 +225,10 @@ public final class MiniMessageService implements MessageService {
 
     @Override
     public Component taskReminder(final int count) {
-        return this.locale.format.reminder.use(Template.of("amount", String.valueOf(count)));
+        return this.locale.format.reminder.use(
+                this.prefix,
+                Template.of("amount", String.valueOf(count))
+        );
     }
 
 }
