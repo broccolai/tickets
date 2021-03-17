@@ -9,7 +9,7 @@ import java.util.UUID;
 
 public interface TemplateService {
 
-    List<Template> user(@NonNull UUID uuid);
+    List<Template> player(@NonNull UUID uuid);
 
     List<Template> ticket(@NonNull Ticket ticket);
 

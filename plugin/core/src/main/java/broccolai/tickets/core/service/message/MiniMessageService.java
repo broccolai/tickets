@@ -258,7 +258,7 @@ public final class MiniMessageService implements MessageService {
             builder.append(Component.newline(), list);
         });
 
-        return builder.build();
+        return this.padComponent(builder.build());
     }
 
     @Override
@@ -269,7 +269,8 @@ public final class MiniMessageService implements MessageService {
                 .append(this.locale.title.allTickets.use(Collections.singletonList(wrapper)));
 
         map.forEach((uuid, tickets) -> {
-            this.locale.format.listHeader.use(this.templateService.user(uuid));
+            builder.append(Component.newline());
+            builder.append(this.locale.format.listHeader.use(this.templateService.player(uuid)));
 
             for (final Ticket ticket : tickets) {
                 List<Template> templates = new ArrayList<>(this.templateService.ticket(ticket));
@@ -280,23 +281,24 @@ public final class MiniMessageService implements MessageService {
             }
         });
 
-        return builder.build();
+        return this.padComponent(builder.build());
     }
 
     @Override
     public Component showTicket(@NonNull final Ticket ticket) {
         List<Template> templates = new ArrayList<>();
         templates.add(this.prefix);
+        templates.add(Template.of("wrapper", this.locale.title.wrapper.use()));
         templates.addAll(this.templateService.ticket(ticket));
 
-        return Component.join(
+        return this.padComponent(Component.join(
                 Component.newline(),
                 this.locale.title.showTicket.use(templates),
                 this.locale.show.status.use(templates),
                 this.locale.show.player.use(templates),
                 this.locale.show.position.use(templates),
                 this.locale.show.message.use(templates)
-        );
+        ));
     }
 
     @Override
@@ -306,6 +308,14 @@ public final class MiniMessageService implements MessageService {
         templates.add(Template.of("amount", String.valueOf(count)));
 
         return this.locale.format.reminder.use(templates);
+    }
+
+    private Component padComponent(final @NonNull Component component) {
+        return TextComponent.ofChildren(
+                Component.newline(),
+                component,
+                Component.newline()
+        );
     }
 
 }
