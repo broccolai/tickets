@@ -9,6 +9,7 @@ import broccolai.tickets.api.service.storage.StorageService;
 import broccolai.tickets.api.service.ticket.TicketService;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
+import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.MultimapBuilder;
@@ -83,11 +84,11 @@ public final class CachedTicketService implements TicketService {
         }
 
         if (!modifiableQueries.isEmpty()) {
-            this.cache.putAll(this.storageService.tickets(soul, modifiableQueries));
+            this.cache.putAll(this.storageService.findTickets(soul, modifiableQueries));
             this.lookups.get(soul.uuid()).addAll(modifiableQueries);
         }
 
-        return this.filter(ticket -> ticket.player().equals(soul.uuid()) && queries.contains(ticket.status()));
+        return this.filter(ticket -> ticket.player().equals(soul.uuid()) && queries.contains(ticket.status())).get(soul.uuid());
     }
 
     @Override
@@ -95,17 +96,16 @@ public final class CachedTicketService implements TicketService {
         return this.storageService.countTickets(statuses);
     }
 
-
-    private @NonNull Collection<@NonNull Ticket> filter(final @NonNull Predicate<@NonNull Ticket> predicate) {
-        Collection<Ticket> tickets = new ArrayList<>();
+    private @NonNull Map<@NonNull UUID, @NonNull Collection<@NonNull Ticket>> filter(final @NonNull Predicate<@NonNull Ticket> predicate) {
+        Multimap<UUID, Ticket> tickets = HashMultimap.create();
 
         for (final Ticket ticket : this.cache.asMap().values()) {
             if (predicate.test(ticket)) {
-                tickets.add(ticket);
+                tickets.put(ticket.player(), ticket);
             }
         }
 
-        return tickets;
+        return tickets.asMap();
     }
 
 }

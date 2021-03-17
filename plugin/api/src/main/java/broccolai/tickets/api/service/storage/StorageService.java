@@ -20,7 +20,9 @@ public interface StorageService extends Disposable {
 
     @NonNull Map<Integer, Ticket> tickets(@NonNull Collection<@NonNull Integer> ids);
 
-    @NonNull Map<Integer, Ticket> tickets(@NonNull Soul soul, @NonNull Collection<TicketStatus> statuses);
+    @NonNull Map<Integer, Ticket> findTickets(@NonNull Collection<TicketStatus> statuses);
+
+    @NonNull Map<Integer, Ticket> findTickets(@NonNull Soul soul, @NonNull Collection<TicketStatus> statuses);
 
     void updateTickets(@NonNull Collection<Ticket> tickets);
 

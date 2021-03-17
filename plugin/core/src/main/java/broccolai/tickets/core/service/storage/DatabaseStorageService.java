@@ -114,7 +114,19 @@ public final class DatabaseStorageService implements StorageService {
     }
 
     @Override
-    public @NonNull Map<Integer, Ticket> tickets(
+    public @NonNull Map<Integer, Ticket> findTickets(@NonNull final Collection<TicketStatus> statuses) {
+        return this.jdbi.withHandle(handle -> {
+            String[] queries = SQLQueries.SELECT_TICKETS_STATUSES.get();
+
+            return handle.createQuery(queries[0])
+                    .bindList("statuses", statuses)
+                    .mapTo(Ticket.class)
+                    .collect(Collectors.toMap(Ticket::id, ticket -> ticket));
+        });
+    }
+
+    @Override
+    public @NonNull Map<Integer, Ticket> findTickets(
             final @NonNull Soul soul,
             final @NonNull Collection<TicketStatus> statuses
     ) {
