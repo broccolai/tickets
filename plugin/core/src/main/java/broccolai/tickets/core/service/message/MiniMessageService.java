@@ -262,6 +262,28 @@ public final class MiniMessageService implements MessageService {
     }
 
     @Override
+    public Component commandsTicketsList(@NonNull final Map<@NonNull UUID, @NonNull Collection<@NonNull Ticket>> map) {
+        Template wrapper = Template.of("wrapper", this.locale.title.wrapper.use());
+
+        TextComponent.Builder builder = Component.text()
+                .append(this.locale.title.allTickets.use(Collections.singletonList(wrapper)));
+
+        map.forEach((uuid, tickets) -> {
+            this.locale.format.listHeader.use(this.templateService.user(uuid));
+
+            for (final Ticket ticket : tickets) {
+                List<Template> templates = new ArrayList<>(this.templateService.ticket(ticket));
+                templates.add(this.prefix);
+
+                Component list = this.locale.format.list.use(templates);
+                builder.append(Component.newline(), list);
+            }
+        });
+
+        return builder.build();
+    }
+
+    @Override
     public Component showTicket(@NonNull final Ticket ticket) {
         List<Template> templates = new ArrayList<>();
         templates.add(this.prefix);

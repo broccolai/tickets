@@ -1,11 +1,13 @@
 package broccolai.tickets.core.commands.command;
 
 import broccolai.tickets.api.model.ticket.Ticket;
+import broccolai.tickets.api.model.ticket.TicketStatus;
 import broccolai.tickets.api.model.user.OnlineSoul;
 import broccolai.tickets.api.model.user.PlayerSoul;
 import broccolai.tickets.api.model.user.Soul;
 import broccolai.tickets.api.service.interactions.InteractionService;
 import broccolai.tickets.api.service.message.MessageService;
+import broccolai.tickets.api.service.ticket.TicketService;
 import broccolai.tickets.core.commands.arguments.TicketParserMode;
 import broccolai.tickets.core.configuration.CommandsConfiguration;
 import broccolai.tickets.core.factory.CloudArgumentFactory;
@@ -13,15 +15,26 @@ import broccolai.tickets.core.utilities.Constants;
 import cloud.commandframework.ArgumentDescription;
 import cloud.commandframework.Command;
 import cloud.commandframework.CommandManager;
+import cloud.commandframework.arguments.standard.EnumArgument;
 import cloud.commandframework.arguments.standard.StringArgument;
 import cloud.commandframework.context.CommandContext;
 import com.google.inject.Inject;
+import net.kyori.adventure.text.Component;
 import org.checkerframework.checker.nullness.qual.NonNull;
+
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.UUID;
 
 public final class TicketsCommand extends CommonCommands {
 
     private final CommandsConfiguration.TicketsConfiguration config;
     private final CloudArgumentFactory argumentFactory;
+    private final MessageService messageService;
+    private final TicketService ticketService;
     private final InteractionService interactionService;
 
     @Inject
@@ -29,11 +42,14 @@ public final class TicketsCommand extends CommonCommands {
             final CommandsConfiguration.@NonNull TicketsConfiguration config,
             final @NonNull CloudArgumentFactory argumentFactory,
             final @NonNull MessageService messageService,
+            final @NonNull TicketService ticketService,
             final @NonNull InteractionService interactionService
     ) {
         super(messageService);
         this.config = config;
         this.argumentFactory = argumentFactory;
+        this.messageService = messageService;
+        this.ticketService = ticketService;
         this.interactionService = interactionService;
     }
 
@@ -143,32 +159,23 @@ public final class TicketsCommand extends CommonCommands {
 //                .argument(TicketArgument.of(false, false, TicketStatus.OPEN, TicketStatus.PICKED, TicketStatus.CLOSED))
 //                .handler(c -> processLog(c.getSender(), c.get("ticket")))
 //                .build());
-//
-//        manager.command(builder.literal(
-//                config.getAliasList().getFirst(),
-//                ArgumentDescription.of("List tickets"),
-//                config.getAliasList().getSecond()
-//        )
-//                .permission(Constants.STAFF_PERMISSION + ".list")
-//                .flag(manager.flagBuilder("status")
-//                        .withArgument(EnumArgument.of(TicketStatus.class, "status")))
-//                .flag(manager.flagBuilder("player")
-//                        .withArgument(TargetArgument.of("player")))
-//                .flag(manager.flagBuilder("onlineOnly")
-//                        .withArgument(BooleanArgument.of("onlineOnly")))
-//                .handler(this::processList));
-//
-//        manager.command(builder.literal(
-//                config.getAliasStatus().getFirst(),
-//                ArgumentDescription.of("View amount of tickets in"),
-//                config.getAliasStatus().getSecond()
-//        )
-//                .permission(Constants.STAFF_PERMISSION + ".status")
-//                .argument(TargetArgument.of("target"))
-//                .handler(this::processStatus)
-//                .build());
-//
-//        manager.command(builder.literal(
+
+        manager.command(builder.literal(
+                this.config.list.main,
+                ArgumentDescription.of("List tickets"),
+                this.config.list.aliases
+        )
+                .permission(Constants.STAFF_PERMISSION + ".list")
+                .flag(manager.flagBuilder("status")
+                        .withArgument(EnumArgument.of(TicketStatus.class, "status"))
+                )
+                .flag(manager.flagBuilder("player")
+                        .withArgument(this.argumentFactory.target("target"))
+                )
+                .handler(this::processList)
+        );
+
+        //        manager.command(builder.literal(
 //                config.getAliasHighscore().getFirst(),
 //                ArgumentDescription.of("View highscores of ticket completions"),
 //                config.getAliasHighscore().getSecond()
@@ -228,93 +235,23 @@ public final class TicketsCommand extends CommonCommands {
 
         soul.teleport(ticket.position());
     }
-//
-//    private void processList(final @NonNull CommandContext<@NonNull OnlineSoul> c) {
-//        final OnlineSoul sender = c.getSender();
-//        final User player = c.flags().getValue("player", null);
-//        final Boolean onlineOnly = c.flags().getValue("onlineOnly", false);
-//        final TicketStatus[] statuses = TicketStatus.fromFlags(c.flags());
-//
-//        if (player != null) {
-//            // todo
-//            Template template = Template.of("player", player.getName());
-//            Component title = Message.TITLE__SPECIFIC_TICKETS.use(template);
-//            sender.sendMessage(title);
-//
-//            this.ticketManager.getTickets(player.getUniqueId(), statuses).forEach(ticket -> {
-//                Component list = Message.FORMAT__LIST.use(ticket.templates());
-//                sender.sendMessage(list);
-//            });
-//
-//            return;
-//        }
-//
-//        Component title = Message.TITLE__ALL_TICKETS.use();
-//        sender.sendMessage(title);
-//
-//        // todo: ugly
-//        Set<Map.Entry<UUID, List<Ticket>>> unsortedTickets = Lists
-//                .group(this.ticketManager.getTickets(statuses), Ticket::getPlayerUniqueID)
-//                .entrySet();
-//        List<Map.Entry<UUID, List<Ticket>>> sortedTickets = new ArrayList<>(unsortedTickets);
-//        sortedTickets.sort((t1, t2) -> {
-//            Integer boxed = t1.getValue().get(0).getId();
-//            return boxed.compareTo(t2.getValue().get(0).getId());
-//        });
-//
-//        ImmutableMap.copyOf(sortedTickets).forEach((uuid, tickets) -> {
-//            //noinspection ConstantConditions
-//            if (onlineOnly && !this.userManager.isOnline(uuid)) {
-//                return;
-//            }
-//
-//            // todo
-//            Template template = Template.of("player", this.userManager.getName(uuid));
-//            Component listHeader = Message.FORMAT__LIST_HEADER.use(template);
-//            sender.sendMessage(listHeader);
-//
-//            tickets.forEach(ticket -> {
-//                Component list = Message.FORMAT__LIST.use(ticket.templates());
-//                sender.sendMessage(list);
-//            });
-//        });
-//    }
-//
-//    private void processStatus(final @NonNull CommandContext<@NonNull OnlineSoul> c) {
-//        OnlineSoul sender = c.getSender();
-//        User target = c.getOrDefault("target", null);
-//
-//        TextComponent.Builder builder = Component.text();
-//        TicketStats data;
-//        if (target != null) {
-//            // todo
-//            Template playerTemplate = Template.of("player", target.getName());
-//            Component title = Message.TITLE__SPECIFIC_TICKETS.use(playerTemplate);
-//
-//            data = this.ticketManager.getStats(target.getUniqueId());
-//            builder.append(title);
-//        } else {
-//            Component title = Message.TITLE__TICKET_STATUS.use();
-//
-//            data = this.ticketManager.getStats();
-//            builder.append(title);
-//        }
-//
-//        Message key = Message.FORMAT__STATUS;
-//        data.forEach((status, amount) -> {
-//            if (amount != 0) {
-//                Component component = key.use(
-//                        Template.of("amount", String.valueOf(amount)),
-//                        Template.of("status", status.name().toLowerCase())
-//                );
-//
-//                builder.append(Component.empty(), component);
-//            }
-//        });
-//
-//        sender.sendMessage(builder);
-//    }
-//
+
+    private void processList(final @NonNull CommandContext<@NonNull OnlineSoul> c) {
+        OnlineSoul soul = c.getSender();
+        Optional<Soul> target = c.flags().getValue("player");
+        Set<TicketStatus> statuses = TicketStatus.from(c.flags());
+
+        Map<UUID, Collection<Ticket>> tickets = target.map(value -> {
+            return Collections.singletonMap(value.uuid(), this.ticketService.get(
+                    value,
+                    statuses
+            ));
+        }).orElse(this.ticketService.get(statuses));
+
+        Component component = this.messageService.commandsTicketsList(tickets);
+        soul.sendMessage(component);
+    }
+
 //    private void processHighscore(final @NonNull CommandContext<@NonNull OnlineSoul> c) {
 //        OnlineSoul sender = c.getSender();
 //        TimeAmount amount = c.<TimeAmount>getOptional("amount").orElse(TimeAmount.FOREVER);

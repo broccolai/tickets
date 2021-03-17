@@ -5,6 +5,8 @@ import net.kyori.adventure.text.Component;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.util.Collection;
+import java.util.Map;
+import java.util.UUID;
 
 public interface MessageService {
 
@@ -55,6 +57,8 @@ public interface MessageService {
     Component staffTicketNote(@NonNull Ticket ticket);
 
     Component commandsTicketList(@NonNull Collection<@NonNull Ticket> tickets);
+
+    Component commandsTicketsList(@NonNull Map<@NonNull UUID, @NonNull Collection<@NonNull Ticket>> tickets);
 
     Component showTicket(@NonNull Ticket ticket);
 

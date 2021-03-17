@@ -43,6 +43,8 @@ public final class CommandsConfiguration {
 
         public AliasConfiguration note = new AliasConfiguration("note", "n");
 
+        public AliasConfiguration list = new AliasConfiguration("list", "l");
+
     }
 
     @ConfigSerializable

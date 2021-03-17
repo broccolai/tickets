@@ -72,6 +72,24 @@ public final class CachedTicketService implements TicketService {
     }
 
     @Override
+    public @NonNull Map<@NonNull UUID, @NonNull Collection<@NonNull Ticket>> get(@NonNull final Set<TicketStatus> queries) {
+        Set<TicketStatus> modifiableQueries = new HashSet<>(queries);
+
+        for (final TicketStatus query : queries) {
+            if (!this.lookups.containsEntry(null, query)) {
+                modifiableQueries.add(query);
+            }
+        }
+
+        if (!modifiableQueries.isEmpty()) {
+            this.cache.putAll(this.storageService.findTickets(modifiableQueries));
+            this.lookups.get(null).addAll(modifiableQueries);
+        }
+
+        return this.filter(ticket -> queries.contains(ticket.status()));
+    }
+
+    @Override
     public @NonNull Collection<@NonNull Ticket> get(
             final @NonNull Soul soul,
             final @NonNull Set<TicketStatus> queries
