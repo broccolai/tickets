@@ -5,7 +5,7 @@ import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.Template;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-import java.util.Collection;
+import java.util.List;
 
 public final class LocaleEntry {
 
@@ -21,7 +21,7 @@ public final class LocaleEntry {
         return MINI.parse(this.serialised);
     }
 
-    public @NonNull Component use(final @NonNull Collection<Template> templates) {
+    public @NonNull Component use(final @NonNull List<Template> templates) {
         return MINI.parse(this.serialised, templates);
     }
 
