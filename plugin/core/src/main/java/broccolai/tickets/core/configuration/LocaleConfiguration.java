@@ -56,40 +56,40 @@ public final class LocaleConfiguration {
     @ConfigSerializable
     public static final class NotifyLocaleConfiguration {
 
-        public LocaleEntry claim = new LocaleEntry("<prefix> <user> has claimed your ticket");
+        public LocaleEntry claim = new LocaleEntry("<prefix> <player> has claimed your ticket");
 
-        public LocaleEntry unclaim = new LocaleEntry("<prefix> <user> has yielded your ticket");
+        public LocaleEntry unclaim = new LocaleEntry("<prefix> <player> has yielded your ticket");
 
-        public LocaleEntry assign = new LocaleEntry("<prefix> <user> has assigned you to ticket <id>");
+        public LocaleEntry assign = new LocaleEntry("<prefix> <player> has assigned you to ticket <id>");
 
-        public LocaleEntry complete = new LocaleEntry("<prefix> <user> has completed your ticket");
+        public LocaleEntry complete = new LocaleEntry("<prefix> <player> has completed your ticket");
 
-        public LocaleEntry reopen = new LocaleEntry("<prefix> <user> has reopened your ticket");
+        public LocaleEntry reopen = new LocaleEntry("<prefix> <player> has reopened your ticket");
 
-        public LocaleEntry note = new LocaleEntry("<prefix> <user> has added a note to your ticket <note>");
+        public LocaleEntry note = new LocaleEntry("<prefix> <player> has added a note to your ticket <note>");
 
     }
 
     @ConfigSerializable
     public static final class AnnouncementLocaleConfiguration {
 
-        public LocaleEntry create = new LocaleEntry("<prefix> <user> opened a new ticket <ticket><white> - <message>");
+        public LocaleEntry create = new LocaleEntry("<prefix> <player> opened a new ticket <ticket><white> - <message>");
 
-        public LocaleEntry update = new LocaleEntry("<prefix> <user> updated ticket <ticket><white> - <message>");
+        public LocaleEntry update = new LocaleEntry("<prefix> <player> updated ticket <ticket><white> - <message>");
 
-        public LocaleEntry close = new LocaleEntry("<prefix> <user> closed their ticket <ticket>");
+        public LocaleEntry close = new LocaleEntry("<prefix> <player> closed their ticket <ticket>");
 
-        public LocaleEntry claim = new LocaleEntry("<prefix> <user> claimed ticket <ticket>");
+        public LocaleEntry claim = new LocaleEntry("<prefix> <player> claimed ticket <ticket>");
 
-        public LocaleEntry unclaim = new LocaleEntry("<prefix> <user> unclaimed ticket <ticket>");
+        public LocaleEntry unclaim = new LocaleEntry("<prefix> <player> unclaimed ticket <ticket>");
 
-        public LocaleEntry assign = new LocaleEntry("<prefix> <user> assigned ticket <ticket><white> to <target>");
+        public LocaleEntry assign = new LocaleEntry("<prefix> <player> assigned ticket <ticket><white> to <target>");
 
-        public LocaleEntry complete = new LocaleEntry("<prefix> <user> completed ticket <ticket>");
+        public LocaleEntry complete = new LocaleEntry("<prefix> <player> completed ticket <ticket>");
 
-        public LocaleEntry reopen = new LocaleEntry("<prefix> <user> reopened ticket <ticket>");
+        public LocaleEntry reopen = new LocaleEntry("<prefix> <player> reopened ticket <ticket>");
 
-        public LocaleEntry note = new LocaleEntry("<prefix> <user> added a note to ticket <ticket><white> - <note>");
+        public LocaleEntry note = new LocaleEntry("<prefix> <player> added a note to ticket <ticket><white> - <note>");
 
     }
 
@@ -98,38 +98,28 @@ public final class LocaleConfiguration {
 
         public LocaleEntry wrapper = new LocaleEntry(" <dark_gray><bold><strikethrough>====<reset> ");
 
-        public LocaleEntry specificTickets = new LocaleEntry("<wrapper><aqua>ALL TICKETS <white>FOR <player><wrapper>");
+        public LocaleEntry allTickets = new LocaleEntry("<wrapper><color:#f5a5a5>Tickets<wrapper>");
 
-        public LocaleEntry allTickets = new LocaleEntry("<wrapper><aqua>ALL TICKETS<wrapper>");
+        public LocaleEntry yourTickets = new LocaleEntry("<wrapper><color:#f5a5a5>Tickets<wrapper>");
 
-        public LocaleEntry yourTickets = new LocaleEntry("<wrapper><aqua>YOUR TICKETS<wrapper>");
-
-        public LocaleEntry specificStatus = new LocaleEntry("<wrapper><aqua>TICKET TICKETS <white>FOR <player><wrapper>");
-
-        public LocaleEntry ticketStatus = new LocaleEntry("<wrapper><aqua>TICKET STATUS<wrapper>");
-
-        public LocaleEntry showTicket = new LocaleEntry("<wrapper><color:f5a5a5>Ticket <ticket><wrapper>");
-
-        public LocaleEntry ticketLog = new LocaleEntry("<wrapper><aqua>TICKET LOG <ticket><wrapper>");
-
-        public LocaleEntry highscore = new LocaleEntry("<wrapper><aqua>HIGH SCORES<wrapper>");
+        public LocaleEntry showTicket = new LocaleEntry("<wrapper><color:#f5a5a5>Ticket <ticket><wrapper>");
 
     }
 
     @ConfigSerializable
     public static final class ShowLocaleConfiguration {
 
-        public LocaleEntry status = new LocaleEntry("<white>Status<dark_gray>: <white><status>");
+        public LocaleEntry status = new LocaleEntry("<white>Status<dark_gray>: <yellow><status>");
 
-        public LocaleEntry player = new LocaleEntry("<white>Created<dark_gray>: <white><player>");
+        public LocaleEntry player = new LocaleEntry("<white>Created<dark_gray>: <yellow><player>");
 
-        public LocaleEntry position = new LocaleEntry("<white>Position<dark_gray>: <white><position>");
+        public LocaleEntry position = new LocaleEntry("<white>Position<dark_gray>: <yellow><position>");
 
-        public LocaleEntry claimed = new LocaleEntry("<white>Claimer<dark_gray>: <white><claimer>");
+        public LocaleEntry claimed = new LocaleEntry("<white>Claimer<dark_gray>: <yellow><claimer>");
 
-        public LocaleEntry unclaimed = new LocaleEntry("<white>Claimer<dark_gray>: <white>NONE");
+        public LocaleEntry unclaimed = new LocaleEntry("<white>Claimer<dark_gray>: <yellow>NONE");
 
-        public LocaleEntry message = new LocaleEntry("<white>Message<dark_gray>: <white><message>");
+        public LocaleEntry message = new LocaleEntry("<white>Message<dark_gray>: <yellow><message>");
 
     }
 
