@@ -4,10 +4,13 @@ import broccolai.tickets.api.model.ticket.Ticket;
 import net.kyori.adventure.text.minimessage.Template;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-import java.util.Collection;
+import java.util.List;
+import java.util.UUID;
 
 public interface TemplateService {
 
-    Collection<Template> ticket(@NonNull Ticket ticket);
+    List<Template> user(@NonNull UUID uuid);
+
+    List<Template> ticket(@NonNull Ticket ticket);
 
 }
