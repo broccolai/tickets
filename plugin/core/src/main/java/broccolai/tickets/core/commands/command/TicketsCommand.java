@@ -1,5 +1,7 @@
 package broccolai.tickets.core.commands.command;
 
+import broccolai.tickets.api.model.interaction.Action;
+import broccolai.tickets.api.model.interaction.MessageInteraction;
 import broccolai.tickets.api.model.ticket.Ticket;
 import broccolai.tickets.api.model.ticket.TicketStatus;
 import broccolai.tickets.api.model.user.OnlineSoul;
@@ -11,6 +13,7 @@ import broccolai.tickets.api.service.ticket.TicketService;
 import broccolai.tickets.core.commands.arguments.TicketParserMode;
 import broccolai.tickets.core.configuration.CommandsConfiguration;
 import broccolai.tickets.core.factory.CloudArgumentFactory;
+import broccolai.tickets.core.model.interaction.BasicMessageInteraction;
 import broccolai.tickets.core.utilities.Constants;
 import cloud.commandframework.ArgumentDescription;
 import cloud.commandframework.Command;
@@ -22,6 +25,7 @@ import com.google.inject.Inject;
 import net.kyori.adventure.text.Component;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
@@ -121,7 +125,7 @@ public final class TicketsCommand extends CommonCommands {
         )
                 .permission(Constants.STAFF_PERMISSION + ".note")
                 .argument(this.argumentFactory.ticket("ticket", TicketParserMode.ANY))
-                .argument(StringArgument.of("message"))
+                .argument(StringArgument.of("message", StringArgument.StringMode.GREEDY))
                 .handler(this::processNote)
                 .build()
         );
@@ -218,8 +222,10 @@ public final class TicketsCommand extends CommonCommands {
     private void processNote(final @NonNull CommandContext<@NonNull OnlineSoul> c) {
         OnlineSoul sender = c.getSender();
         Ticket ticket = c.get("ticket");
+        String message = c.get("message");
+        MessageInteraction interaction = new BasicMessageInteraction(Action.NOTE, LocalDateTime.now(), sender.uuid(), message);
 
-        this.interactionService.unclaim(sender, ticket);
+        this.interactionService.note(sender, ticket, interaction);
     }
 
     private void processReopen(final @NonNull CommandContext<@NonNull OnlineSoul> c) {

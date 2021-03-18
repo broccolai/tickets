@@ -16,13 +16,15 @@ public final class TicketNoteEvent implements TicketEvent, SoulEvent, Notificati
 
     private final OnlineSoul soul;
     private final Ticket ticket;
+    private final String note;
 
     /**
      * Initialise the note event
      */
-    public TicketNoteEvent(final @NonNull OnlineSoul soul, final @NonNull Ticket ticket) {
+    public TicketNoteEvent(final @NonNull OnlineSoul soul, final @NonNull Ticket ticket, final @NonNull String note) {
         this.soul = soul;
         this.ticket = ticket;
+        this.note = note;
     }
 
     /**
@@ -41,6 +43,10 @@ public final class TicketNoteEvent implements TicketEvent, SoulEvent, Notificati
         return this.ticket;
     }
 
+    public @NonNull String note() {
+        return this.note;
+    }
+
     @Override
     public void sender(final @NonNull MessageService messageService) {
         Component component = messageService.senderTicketNote(this.ticket);
@@ -49,12 +55,12 @@ public final class TicketNoteEvent implements TicketEvent, SoulEvent, Notificati
 
     @Override
     public @NotNull TargetPair target(@NonNull final MessageService messageService) {
-        return TargetPair.of(this.ticket.player(), messageService.staffTicketNote(this.ticket));
+        return TargetPair.of(this.ticket.player(), messageService.targetTicketNote(this.ticket));
     }
 
     @Override
     public Component staff(final @NonNull MessageService messageService) {
-        return messageService.staffTicketNote(this.ticket);
+        return messageService.staffTicketNote(this.ticket, this.note);
     }
 
     @Override

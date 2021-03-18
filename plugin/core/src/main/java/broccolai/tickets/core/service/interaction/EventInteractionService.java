@@ -149,7 +149,7 @@ public final class EventInteractionService implements InteractionService {
         Interaction interaction = new BasicInteraction(Action.NOTE, LocalDateTime.now(), soul.uuid());
 
         this.storageService.queue(ticket, interaction);
-        TicketNoteEvent event = new TicketNoteEvent(soul, ticket);
+        TicketNoteEvent event = new TicketNoteEvent(soul, ticket, message.message());
         this.eventService.post(event);
     }
 
