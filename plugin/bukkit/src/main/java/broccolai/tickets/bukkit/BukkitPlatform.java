@@ -4,8 +4,6 @@ import broccolai.tickets.api.model.user.OnlineSoul;
 import broccolai.tickets.api.service.user.UserService;
 import broccolai.tickets.bukkit.inject.BukkitModule;
 import broccolai.tickets.core.PureTickets;
-import broccolai.tickets.core.configuration.CommandsConfiguration;
-import broccolai.tickets.core.configuration.MainConfiguration;
 import broccolai.tickets.core.inject.platform.PluginPlatform;
 import cloud.commandframework.CommandManager;
 import cloud.commandframework.execution.AsynchronousCommandExecutionCoordinator;
@@ -41,10 +39,7 @@ public final class BukkitPlatform extends JavaPlugin implements PluginPlatform {
         this.pureTickets.load();
 
         try {
-            CommandManager<OnlineSoul> commandManager = this.commandManager(
-                    injector.getInstance(MainConfiguration.class).commandsConfiguration,
-                    injector.getInstance(UserService.class)
-            );
+            CommandManager<OnlineSoul> commandManager = this.commandManager(injector.getInstance(UserService.class));
             this.pureTickets.commands(commandManager, COMMANDS);
         } catch (Exception e) {
             e.printStackTrace();
@@ -58,10 +53,7 @@ public final class BukkitPlatform extends JavaPlugin implements PluginPlatform {
         this.pureTickets.unload();
     }
 
-    private CommandManager<OnlineSoul> commandManager(
-            final @NonNull CommandsConfiguration commandsConfiguration,
-            final @NonNull UserService userService
-    ) throws Exception {
+    private CommandManager<OnlineSoul> commandManager(final @NonNull UserService userService) throws Exception {
         PaperCommandManager<@NonNull OnlineSoul> cloudManager = new PaperCommandManager<>(
                 this,
                 AsynchronousCommandExecutionCoordinator.<OnlineSoul>newBuilder().withAsynchronousParsing().build(),
@@ -77,9 +69,6 @@ public final class BukkitPlatform extends JavaPlugin implements PluginPlatform {
         );
 
         cloudManager.registerAsynchronousCompletions();
-        if (commandsConfiguration.brigadier) {
-            cloudManager.registerBrigadier();
-        }
 
         new MinecraftExceptionHandler<@NonNull OnlineSoul>()
                 .withDefaultHandlers()

@@ -2,14 +2,10 @@ package broccolai.tickets.core.configuration;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.spongepowered.configurate.objectmapping.ConfigSerializable;
-import org.spongepowered.configurate.objectmapping.meta.Comment;
 import org.spongepowered.configurate.objectmapping.meta.Setting;
 
 @ConfigSerializable
 public final class CommandsConfiguration {
-
-    @Comment("if brigadier is enabled, aliases on subcommands will not be applied")
-    public boolean brigadier = true;
 
     public TicketConfiguration ticket = new TicketConfiguration();
 
