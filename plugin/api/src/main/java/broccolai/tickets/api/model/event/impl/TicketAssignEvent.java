@@ -3,6 +3,7 @@ package broccolai.tickets.api.model.event.impl;
 import broccolai.tickets.api.model.event.NotificationEvent;
 import broccolai.tickets.api.model.event.SoulEvent;
 import broccolai.tickets.api.model.event.TicketEvent;
+import broccolai.tickets.api.model.message.TargetPair;
 import broccolai.tickets.api.model.ticket.Ticket;
 import broccolai.tickets.api.model.user.OnlineSoul;
 import broccolai.tickets.api.model.user.Soul;
@@ -10,6 +11,7 @@ import broccolai.tickets.api.service.message.MessageService;
 import net.kyori.adventure.text.Component;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jetbrains.annotations.NotNull;
 
 public final class TicketAssignEvent implements TicketEvent, SoulEvent, NotificationEvent {
 
@@ -39,12 +41,17 @@ public final class TicketAssignEvent implements TicketEvent, SoulEvent, Notifica
 
     @Override
     public void sender(@NonNull final MessageService messageService) {
-        this.soul.sendMessage(messageService.senderTicketAssign(this.ticket));
+        this.soul.sendMessage(messageService.senderTicketAssign(this.ticket, this.target));
+    }
+
+    @Override
+    public @NotNull TargetPair target(@NonNull final MessageService messageService) {
+        return TargetPair.of(this.ticket.player(), messageService.targetTicketClaim(this.ticket));
     }
 
     @Override
     public @Nullable Component staff(@NonNull final MessageService messageService) {
-        return messageService.staffTicketUnclaim(this.ticket);
+        return messageService.staffTicketAssign(this.ticket);
     }
 
 }
