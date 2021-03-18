@@ -47,7 +47,7 @@ public final class PureTicketsCommand implements BaseCommand {
     private void processHighscore(final @NonNull CommandContext<@NonNull OnlineSoul> c) {
         OnlineSoul sender = c.getSender();
 
-        ChronoUnit amount = c.<ChronoUnit>getOptional("amount").orElse(ChronoUnit.FOREVER);
+        ChronoUnit amount = c.<ChronoUnit>getOptional("amount").orElse(ChronoUnit.YEARS);
 
         Map<UUID, Integer> highscores = this.storageService.highscores(amount);
         Component component = this.messageService.commandsHighscore(highscores);
