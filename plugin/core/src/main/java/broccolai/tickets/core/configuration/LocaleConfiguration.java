@@ -104,6 +104,8 @@ public final class LocaleConfiguration {
 
         public LocaleEntry showTicket = new LocaleEntry("<wrapper><color:#f5a5a5>Ticket <ticket><wrapper>");
 
+        public LocaleEntry highscores = new LocaleEntry("<wrapper><color:#f5a5a5>Highscores<wrapper>");
+
     }
 
     @ConfigSerializable

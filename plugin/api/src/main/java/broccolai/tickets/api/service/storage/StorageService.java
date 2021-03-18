@@ -11,8 +11,10 @@ import com.google.common.collect.Multimap;
 import net.kyori.adventure.text.Component;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
+import java.time.temporal.ChronoUnit;
 import java.util.Collection;
 import java.util.Map;
+import java.util.UUID;
 
 public interface StorageService extends Disposable {
 
@@ -31,6 +33,8 @@ public interface StorageService extends Disposable {
     void saveInteractions(@NonNull Multimap<Ticket, Interaction> interactions);
 
     @NonNull Collection<Component> notifications(@NonNull Soul soul);
+
+    Map<UUID, Integer> highscores(@NonNull ChronoUnit chronoUnit);
 
     void queue(@NonNull Ticket ticket, @NonNull Interaction interaction);
 

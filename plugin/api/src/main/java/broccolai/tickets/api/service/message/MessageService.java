@@ -69,11 +69,21 @@ public interface MessageService {
 
     Component staffTicketNote(@NonNull Ticket ticket, @NonNull String note);
 
+    //
+    // Commands
+    //
+
     Component commandsTicketList(@NonNull Collection<@NonNull Ticket> tickets);
 
     Component commandsTicketsList(@NonNull Map<@NonNull UUID, @NonNull Collection<@NonNull Ticket>> tickets);
 
     Component commandsTeleport(@NonNull Ticket ticket);
+
+    Component commandsHighscore(@NonNull Map<UUID, Integer> ranks);
+
+    //
+    // Random
+    //
 
     Component showTicket(@NonNull Ticket ticket);
 

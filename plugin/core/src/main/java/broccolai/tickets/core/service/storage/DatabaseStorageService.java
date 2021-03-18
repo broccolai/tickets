@@ -19,7 +19,10 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.zaxxer.hikari.HikariDataSource;
 
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Map;
 
 import java.util.UUID;
@@ -198,6 +201,22 @@ public final class DatabaseStorageService implements StorageService {
     public @NonNull Collection<Component> notifications(final @NonNull Soul soul) {
         //todo
         return null;
+    }
+
+    @Override
+    public Map<UUID, Integer> highscores(final @NonNull ChronoUnit chronoUnit) {
+        return this.jdbi.withHandle(handle -> {
+            return handle.createQuery(SQLQueries.HIGHSCORES.get()[0])
+                    .bind("date", LocalDateTime.now().minus(1, chronoUnit))
+                    .reduceRows(new HashMap<>(), (map, rowView) -> {
+                        map.put(
+                                rowView.getColumn("picker", UUID.class),
+                                rowView.getColumn("num", Integer.class)
+                        );
+
+                        return map;
+                    });
+        });
     }
 
     @Override

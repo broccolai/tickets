@@ -10,7 +10,8 @@ public enum SQLQueries {
     SELECT_TICKETS,
     SELECT_TICKETS_STATUSES,
     SELECT_TICKETS_SOUL_STATUSES,
-    INSERT_INTERACTION;
+    INSERT_INTERACTION,
+    HIGHSCORES;
 
     private final String query;
 

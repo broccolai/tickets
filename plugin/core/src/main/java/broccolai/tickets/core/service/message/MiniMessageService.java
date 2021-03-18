@@ -1,5 +1,6 @@
 package broccolai.tickets.core.service.message;
 
+import broccolai.corn.core.Lists;
 import broccolai.tickets.api.model.ticket.Ticket;
 import broccolai.tickets.api.model.user.Soul;
 import broccolai.tickets.api.service.message.MessageService;
@@ -302,6 +303,26 @@ public final class MiniMessageService implements MessageService {
         templates.addAll(this.templateService.ticket(ticket));
 
         return this.locale.sender.teleport.use(templates);
+    }
+
+    @Override
+    public Component commandsHighscore(@NonNull final Map<UUID, Integer> ranks) {
+        Template wrapper = Template.of("wrapper", this.locale.title.wrapper.use());
+
+        TextComponent.Builder builder = Component.text()
+                .append(this.locale.title.highscores.use(Collections.singletonList(wrapper)), Component.newline());
+
+        List<Component> entries = Lists.map(ranks.entrySet(), (entry) -> {
+            List<Template> templates = new ArrayList<>(this.templateService.player("player", entry.getKey()));
+            templates.add(Template.of("amount", entry.getValue().toString()));
+
+            return this.locale.format.hs.use(templates);
+        });
+
+        return builder.append(Component.join(
+                Component.newline(),
+                entries
+        )).build();
     }
 
     @Override

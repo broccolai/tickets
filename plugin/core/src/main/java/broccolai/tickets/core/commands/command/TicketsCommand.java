@@ -183,15 +183,7 @@ public final class TicketsCommand extends CommonCommands {
                 .handler(this::processList)
         );
 
-        //        manager.command(builder.literal(
-//                config.getAliasHighscore().getFirst(),
-//                ArgumentDescription.of("View highscores of ticket completions"),
-//                config.getAliasHighscore().getSecond()
-//        )
-//                .permission(Constants.STAFF_PERMISSION + ".highscore")
-//                .argument(EnumArgument.optional(TimeAmount.class, "amount"))
-//                .handler(this::processHighscore)
-//                .build());
+
     }
 
     private void processClaim(final @NonNull CommandContext<@NonNull OnlineSoul> c) {
@@ -263,24 +255,5 @@ public final class TicketsCommand extends CommonCommands {
         Component component = this.messageService.commandsTicketsList(tickets);
         soul.sendMessage(component);
     }
-
-//    private void processHighscore(final @NonNull CommandContext<@NonNull OnlineSoul> c) {
-//        OnlineSoul sender = c.getSender();
-//        TimeAmount amount = c.<TimeAmount>getOptional("amount").orElse(TimeAmount.FOREVER);
-//
-//        Map<UUID, Integer> highscores = this.ticketManager.getHighscores(amount);
-//
-//        Component title = Message.TITLE__HIGHSCORES.use();
-//        sender.sendMessage(title);
-//
-//        highscores.forEach((uuid, number) -> {
-//            Component component = Message.FORMAT__HS.use(
-//                    Template.of("target", this.userManager.getName(uuid)),
-//                    Template.of("amount", number.toString())
-//            );
-//            sender.sendMessage(component);
-//        });
-//    }
-
 
 }
