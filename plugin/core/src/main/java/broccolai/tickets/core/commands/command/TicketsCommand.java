@@ -9,6 +9,7 @@ import broccolai.tickets.api.model.user.PlayerSoul;
 import broccolai.tickets.api.model.user.Soul;
 import broccolai.tickets.api.service.interactions.InteractionService;
 import broccolai.tickets.api.service.message.MessageService;
+import broccolai.tickets.api.service.tasks.TaskService;
 import broccolai.tickets.api.service.ticket.TicketService;
 import broccolai.tickets.core.commands.arguments.TicketParserMode;
 import broccolai.tickets.core.configuration.CommandsConfiguration;
@@ -40,6 +41,7 @@ public final class TicketsCommand extends CommonCommands {
     private final MessageService messageService;
     private final TicketService ticketService;
     private final InteractionService interactionService;
+    private final TaskService taskService;
 
     @Inject
     public TicketsCommand(
@@ -47,7 +49,8 @@ public final class TicketsCommand extends CommonCommands {
             final @NonNull CloudArgumentFactory argumentFactory,
             final @NonNull MessageService messageService,
             final @NonNull TicketService ticketService,
-            final @NonNull InteractionService interactionService
+            final @NonNull InteractionService interactionService,
+            final @NonNull TaskService taskService
     ) {
         super(messageService);
         this.config = config;
@@ -55,6 +58,7 @@ public final class TicketsCommand extends CommonCommands {
         this.messageService = messageService;
         this.ticketService = ticketService;
         this.interactionService = interactionService;
+        this.taskService = taskService;
     }
 
     @Override
@@ -113,7 +117,7 @@ public final class TicketsCommand extends CommonCommands {
                 this.config.unclaim.aliases
         )
                 .permission(Constants.STAFF_PERMISSION + ".yield")
-                .argument(this.argumentFactory.ticket("target", TicketParserMode.ANY, 0))
+                .argument(this.argumentFactory.ticket("ticket", TicketParserMode.ANY, 0))
                 .handler(this::processUnclaim)
                 .build()
         );
@@ -239,7 +243,7 @@ public final class TicketsCommand extends CommonCommands {
         PlayerSoul soul = (PlayerSoul) c.getSender();
         Ticket ticket = c.get("ticket");
 
-        soul.teleport(ticket.position());
+        soul.teleport(this.taskService, ticket.position());
         Component component = this.messageService.commandsTeleport(ticket);
         soul.sendMessage(component);
     }

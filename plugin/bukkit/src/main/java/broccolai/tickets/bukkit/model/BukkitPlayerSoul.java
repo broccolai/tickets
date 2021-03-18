@@ -3,6 +3,7 @@ package broccolai.tickets.bukkit.model;
 import broccolai.tickets.api.model.position.Position;
 import broccolai.tickets.api.model.user.OnlineSoul;
 import broccolai.tickets.api.model.user.PlayerSoul;
+import broccolai.tickets.api.service.tasks.TaskService;
 import io.papermc.lib.PaperLib;
 import net.kyori.adventure.audience.Audience;
 import org.bukkit.Bukkit;
@@ -53,10 +54,13 @@ public final class BukkitPlayerSoul implements PlayerSoul, OnlineSoul {
     }
 
     @Override
-    public void teleport(final @NonNull Position position) {
+    public void teleport(final @NonNull TaskService taskService, final @NonNull Position position) {
         World world = position.world() != null ? Bukkit.getWorld(position.world()) : null;
         Location bukkitLocation = new Location(world, position.x(), position.y(), position.z());
-        PaperLib.teleportAsync(Bukkit.getPlayer(this.uuid), bukkitLocation);
+
+        taskService.sync(() -> {
+            PaperLib.teleportAsync(Bukkit.getPlayer(this.uuid), bukkitLocation);
+        });
     }
 
 }
