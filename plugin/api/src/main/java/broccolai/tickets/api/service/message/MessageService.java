@@ -11,6 +11,10 @@ import java.util.UUID;
 
 public interface MessageService {
 
+    //
+    // Sender
+    //
+
     Component senderTicketCreation(@NonNull Ticket ticket);
 
     Component senderTicketReopen(@NonNull Ticket ticket);
@@ -29,6 +33,10 @@ public interface MessageService {
 
     Component senderTicketNote(@NonNull Ticket ticket);
 
+    //
+    // Target
+    //
+
     Component targetTicketClaim(@NonNull Ticket ticket);
 
     Component targetTicketReopen(@NonNull Ticket ticket);
@@ -38,6 +46,10 @@ public interface MessageService {
     Component targetTicketComplete(@NonNull Ticket ticket);
 
     Component targetTicketNote(@NonNull Ticket ticket);
+
+    //
+    // Staff
+    //
 
     Component staffTicketCreate(@NonNull Ticket ticket);
 
