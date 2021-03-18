@@ -11,9 +11,6 @@ public final class TicketConstructionEvent extends AbstractCancellable implement
     private final PlayerSoul soul;
     private final MessageInteraction message;
 
-    /**
-     * Initialise the construction event
-     */
     public TicketConstructionEvent(final @NonNull PlayerSoul soul, final @NonNull MessageInteraction message) {
         this.soul = soul;
         this.message = message;
@@ -24,9 +21,6 @@ public final class TicketConstructionEvent extends AbstractCancellable implement
         return this.soul;
     }
 
-    /**
-     * Get the constructed tickets message
-     */
     public @NonNull MessageInteraction interaction() {
         return this.message;
     }

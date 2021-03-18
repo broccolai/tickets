@@ -1,8 +1,6 @@
 package broccolai.tickets.api.model.event.impl;
 
-import broccolai.tickets.api.model.event.NotificationEvent;
-import broccolai.tickets.api.model.event.SoulEvent;
-import broccolai.tickets.api.model.event.TicketEvent;
+import broccolai.tickets.api.model.event.notification.TicketsCommandEvent;
 import broccolai.tickets.api.model.message.TargetPair;
 import broccolai.tickets.api.model.ticket.Ticket;
 import broccolai.tickets.api.model.user.OnlineSoul;
@@ -12,35 +10,13 @@ import net.kyori.adventure.text.Component;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.jetbrains.annotations.NotNull;
 
-public final class TicketNoteEvent implements TicketEvent, SoulEvent, NotificationEvent {
+public final class TicketNoteEvent extends TicketsCommandEvent {
 
-    private final OnlineSoul soul;
-    private final Ticket ticket;
     private final String note;
 
-    /**
-     * Initialise the note event
-     */
     public TicketNoteEvent(final @NonNull OnlineSoul soul, final @NonNull Ticket ticket, final @NonNull String note) {
-        this.soul = soul;
-        this.ticket = ticket;
+        super(soul, ticket);
         this.note = note;
-    }
-
-    /**
-     * Get the noters soul
-     */
-    @Override
-    public @NonNull OnlineSoul soul() {
-        return this.soul;
-    }
-
-    /**
-     * Get the created ticket
-     */
-    @Override
-    public @NonNull Ticket ticket() {
-        return this.ticket;
     }
 
     public @NonNull String note() {

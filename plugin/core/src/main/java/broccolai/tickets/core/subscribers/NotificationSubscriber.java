@@ -1,7 +1,10 @@
 package broccolai.tickets.core.subscribers;
 
-import broccolai.tickets.api.model.event.NotificationEvent;
+import broccolai.tickets.api.model.event.SoulEvent;
 import broccolai.tickets.api.model.event.Subscriber;
+import broccolai.tickets.api.model.event.notification.SenderNotificationEvent;
+import broccolai.tickets.api.model.event.notification.StaffNotificationEvent;
+import broccolai.tickets.api.model.event.notification.TargetNotificationEvent;
 import broccolai.tickets.api.model.message.TargetPair;
 import broccolai.tickets.api.model.user.OnlineSoul;
 import broccolai.tickets.api.model.user.Soul;
@@ -14,6 +17,7 @@ import com.google.gson.GsonBuilder;
 import com.google.inject.Inject;
 import net.kyori.adventure.text.Component;
 import org.checkerframework.checker.nullness.qual.NonNull;
+import java.util.UUID;
 
 public final class NotificationSubscriber implements Subscriber {
 
@@ -36,19 +40,16 @@ public final class NotificationSubscriber implements Subscriber {
 
     @Override
     public void register(final @NonNull EventService eventService) {
-        eventService.register(NotificationEvent.class, this::onNotificationEvent);
+        eventService.register(SenderNotificationEvent.class, this::onSenderNotification);
+        eventService.register(TargetNotificationEvent.class, this::onTargetNotification);
+        eventService.register(StaffNotificationEvent.class, this::onStaffNotification);
     }
 
-    public void onNotificationEvent(final @NonNull NotificationEvent event) {
+    public void onSenderNotification(final @NonNull SenderNotificationEvent event) {
         event.sender(this.messageService);
-
-        this.handleTarget(event);
-        this.handleStaff(event);
-
-        event.discord(this.discordService);
     }
 
-    private void handleTarget(final @NonNull NotificationEvent event) {
+    public void onTargetNotification(final @NonNull TargetNotificationEvent event) {
         TargetPair target = event.target(this.messageService);
 
         if (target == null) {
@@ -63,19 +64,27 @@ public final class NotificationSubscriber implements Subscriber {
         }
     }
 
-    private void handleStaff(final @NonNull NotificationEvent event) {
+    public void onStaffNotification(final @NonNull StaffNotificationEvent event) {
         Component message = event.staff(this.messageService);
 
         if (message == null) {
             return;
         }
 
+        final UUID ignore;
+
+        if (event instanceof SoulEvent) {
+            SoulEvent soulEvent = (SoulEvent) event;
+            ignore = soulEvent.soul().uuid();
+        } else {
+            ignore = null;
+        }
+
         //todo: send to console too
         this.userService.players().forEach(soul -> {
-            if (soul.permission("tickets.staff.announce")) {
+            if (soul.permission("tickets.staff.announce") && !soul.uuid().equals(ignore)) {
                 soul.sendMessage(message);
             }
         });
     }
-
 }
