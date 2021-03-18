@@ -15,6 +15,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -254,7 +255,10 @@ public final class MiniMessageService implements MessageService {
         TextComponent.Builder builder = Component.text()
                 .append(this.locale.title.yourTickets.use(Collections.singletonList(wrapper)));
 
-        tickets.forEach(ticket -> {
+        List<Ticket> sortedTickets = new ArrayList<>(tickets);
+        sortedTickets.sort(Comparator.comparingInt(Ticket::id));
+
+        sortedTickets.forEach(ticket -> {
             List<Template> templates = new ArrayList<>(this.templateService.ticket(ticket));
             templates.add(this.prefix);
 
@@ -276,7 +280,10 @@ public final class MiniMessageService implements MessageService {
             builder.append(Component.newline());
             builder.append(this.locale.format.listHeader.use(this.templateService.player("player", uuid)));
 
-            for (final Ticket ticket : tickets) {
+            List<Ticket> sortedTickets = new ArrayList<>(tickets);
+            sortedTickets.sort(Comparator.comparingInt(Ticket::id));
+
+            for (final Ticket ticket : sortedTickets) {
                 List<Template> templates = new ArrayList<>(this.templateService.ticket(ticket));
                 templates.add(this.prefix);
 
