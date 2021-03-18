@@ -1,6 +1,7 @@
 package broccolai.tickets.api.service.message;
 
 import broccolai.tickets.api.model.ticket.Ticket;
+import broccolai.tickets.api.model.user.Soul;
 import net.kyori.adventure.text.Component;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
@@ -22,7 +23,7 @@ public interface MessageService {
 
     Component senderTicketUnclaim(@NonNull Ticket ticket);
 
-    Component senderTicketAssign(@NonNull Ticket ticket);
+    Component senderTicketAssign(@NonNull Ticket ticket, @NonNull Soul target);
 
     Component senderTicketComplete(@NonNull Ticket ticket);
 
@@ -54,7 +55,7 @@ public interface MessageService {
 
     Component staffTicketComplete(@NonNull Ticket ticket);
 
-    Component staffTicketNote(@NonNull Ticket ticket);
+    Component staffTicketNote(@NonNull Ticket ticket, @NonNull String note);
 
     Component commandsTicketList(@NonNull Collection<@NonNull Ticket> tickets);
 

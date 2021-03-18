@@ -1,6 +1,7 @@
 package broccolai.tickets.core.service.message;
 
 import broccolai.tickets.api.model.ticket.Ticket;
+import broccolai.tickets.api.model.user.Soul;
 import broccolai.tickets.api.service.message.MessageService;
 import broccolai.tickets.api.service.template.TemplateService;
 import broccolai.tickets.core.configuration.LocaleConfiguration;
@@ -91,10 +92,11 @@ public final class MiniMessageService implements MessageService {
     }
 
     @Override
-    public Component senderTicketAssign(@NonNull final Ticket ticket) {
+    public Component senderTicketAssign(@NonNull final Ticket ticket, final @NonNull Soul target) {
         List<Template> templates = new ArrayList<>();
         templates.add(this.prefix);
         templates.addAll(this.templateService.ticket(ticket));
+        templates.addAll(this.templateService.player("target", target.uuid()));
 
         return this.locale.sender.assign.use(templates);
     }
@@ -199,9 +201,10 @@ public final class MiniMessageService implements MessageService {
     }
 
     @Override
-    public Component staffTicketNote(@NonNull final Ticket ticket) {
+    public Component staffTicketNote(@NonNull final Ticket ticket, final @NonNull String note) {
         List<Template> templates = new ArrayList<>();
         templates.add(this.prefix);
+        templates.add(Template.of("note", note));
         templates.addAll(this.templateService.ticket(ticket));
 
         return this.locale.announcement.note.use(templates);
@@ -270,7 +273,7 @@ public final class MiniMessageService implements MessageService {
 
         map.forEach((uuid, tickets) -> {
             builder.append(Component.newline());
-            builder.append(this.locale.format.listHeader.use(this.templateService.player(uuid)));
+            builder.append(this.locale.format.listHeader.use(this.templateService.player("player", uuid)));
 
             for (final Ticket ticket : tickets) {
                 List<Template> templates = new ArrayList<>(this.templateService.ticket(ticket));

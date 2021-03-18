@@ -27,17 +27,20 @@ public final class MiniTemplateService implements TemplateService {
     }
 
     @Override
-    public List<Template> player(@NonNull final UUID uuid) {
+    public List<Template> player(
+            final @NonNull String prefix,
+            final @NonNull UUID uuid
+    ) {
         String name = this.userService.name(uuid);
         return Arrays.asList(
-                Template.of("player", this.userComponent(name, uuid)),
-                Template.of("name", name),
-                Template.of("uuid", uuid.toString())
+                Template.of(prefix, this.userComponent(name, uuid)),
+                Template.of(prefix + "_name", name),
+                Template.of(prefix + "_uuid", uuid.toString())
         );
     }
 
     @Override
-    public List<Template> ticket(@NonNull final Ticket ticket) {
+    public List<Template> ticket(final @NonNull Ticket ticket) {
         String name = this.userService.name(ticket.player());
         return Arrays.asList(
                 Template.of("ticket", Component.text('#', NamedTextColor.DARK_GRAY).append(Component.text(
