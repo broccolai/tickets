@@ -17,7 +17,6 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -64,11 +63,10 @@ public final class CachedTicketService implements TicketService {
 
         if (ids.size() != 0) {
             Map<Integer, Ticket> uncached = this.storageService.tickets(ids);
-            this.cache.putAll(uncached);
-            tickets.putAll(uncached);
+            this.putAllNotPresent(uncached);
         }
 
-        return new ArrayList<>(tickets.values());
+        return this.cache.getAllPresent(queries).values();
     }
 
     @Override
@@ -82,7 +80,7 @@ public final class CachedTicketService implements TicketService {
         }
 
         if (!modifiableQueries.isEmpty()) {
-            this.cache.putAll(this.storageService.findTickets(modifiableQueries));
+            this.putAllNotPresent(this.storageService.findTickets(modifiableQueries));
             this.lookups.get(null).addAll(modifiableQueries);
         }
 
@@ -102,7 +100,7 @@ public final class CachedTicketService implements TicketService {
         }
 
         if (!modifiableQueries.isEmpty()) {
-            this.cache.putAll(this.storageService.findTickets(soul, modifiableQueries));
+            this.putAllNotPresent(this.storageService.findTickets(soul, modifiableQueries));
             this.lookups.get(soul.uuid()).addAll(modifiableQueries);
         }
 
@@ -112,6 +110,16 @@ public final class CachedTicketService implements TicketService {
     @Override
     public int count(final @NonNull Set<TicketStatus> statuses) {
         return this.storageService.countTickets(statuses);
+    }
+
+    private void putAllNotPresent(final @NonNull Map<Integer, Ticket> toAdd) {
+        toAdd.forEach((id, ticket) -> {
+            Ticket current = this.cache.getIfPresent(id);
+
+            if (current == null) {
+                this.cache.put(id, ticket);
+            }
+        });
     }
 
     private @NonNull Map<@NonNull UUID, @NonNull Collection<@NonNull Ticket>> filter(final @NonNull Predicate<@NonNull Ticket> predicate) {
