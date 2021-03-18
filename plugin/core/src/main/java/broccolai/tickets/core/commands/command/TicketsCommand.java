@@ -240,6 +240,8 @@ public final class TicketsCommand extends CommonCommands {
         Ticket ticket = c.get("ticket");
 
         soul.teleport(ticket.position());
+        Component component = this.messageService.commandsTeleport(ticket);
+        soul.sendMessage(component);
     }
 
     private void processList(final @NonNull CommandContext<@NonNull OnlineSoul> c) {

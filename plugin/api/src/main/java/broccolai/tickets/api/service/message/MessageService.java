@@ -60,6 +60,8 @@ public interface MessageService {
 
     Component commandsTicketsList(@NonNull Map<@NonNull UUID, @NonNull Collection<@NonNull Ticket>> tickets);
 
+    Component commandsTeleport(@NonNull Ticket ticket);
+
     Component showTicket(@NonNull Ticket ticket);
 
     Component taskReminder(int count);

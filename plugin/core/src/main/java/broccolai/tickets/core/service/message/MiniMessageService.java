@@ -285,6 +285,11 @@ public final class MiniMessageService implements MessageService {
     }
 
     @Override
+    public Component commandsTeleport(@NonNull final Ticket ticket) {
+        return this.locale.sender.teleport.use();
+    }
+
+    @Override
     public Component showTicket(@NonNull final Ticket ticket) {
         List<Template> templates = new ArrayList<>();
         templates.add(this.prefix);
