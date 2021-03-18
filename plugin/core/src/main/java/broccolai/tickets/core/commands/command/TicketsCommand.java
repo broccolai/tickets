@@ -69,7 +69,7 @@ public final class TicketsCommand extends CommonCommands {
                 this.config.show.aliases
         )
                 .permission(Constants.STAFF_PERMISSION + ".show")
-                .argument(this.argumentFactory.ticket("ticket", TicketParserMode.ANY))
+                .argument(this.argumentFactory.ticket("ticket", TicketParserMode.ANY, 0))
                 .handler(c -> this.processShow(c.getSender(), c.get("ticket")))
         );
 
@@ -79,7 +79,7 @@ public final class TicketsCommand extends CommonCommands {
                 this.config.claim.aliases
         )
                 .permission(Constants.STAFF_PERMISSION + ".claim")
-                .argument(this.argumentFactory.ticket("ticket", TicketParserMode.ANY))
+                .argument(this.argumentFactory.ticket("ticket", TicketParserMode.ANY, 0))
                 .handler(this::processClaim)
                 .build()
         );
@@ -91,7 +91,7 @@ public final class TicketsCommand extends CommonCommands {
         )
                 .permission(Constants.STAFF_PERMISSION + ".assign")
                 .argument(this.argumentFactory.target("target"))
-                .argument(this.argumentFactory.ticket("ticket", TicketParserMode.ANY))
+                .argument(this.argumentFactory.ticket("ticket", TicketParserMode.ANY, 1))
                 .handler(this::processAssign)
                 .build()
         );
@@ -102,7 +102,7 @@ public final class TicketsCommand extends CommonCommands {
                 this.config.complete.aliases
         )
                 .permission(Constants.STAFF_PERMISSION + ".complete")
-                .argument(this.argumentFactory.ticket("ticket", TicketParserMode.ANY))
+                .argument(this.argumentFactory.ticket("ticket", TicketParserMode.ANY, 0))
                 .handler(this::processComplete)
                 .build()
         );
@@ -113,7 +113,7 @@ public final class TicketsCommand extends CommonCommands {
                 this.config.unclaim.aliases
         )
                 .permission(Constants.STAFF_PERMISSION + ".yield")
-                .argument(this.argumentFactory.ticket("target", TicketParserMode.ANY))
+                .argument(this.argumentFactory.ticket("target", TicketParserMode.ANY, 0))
                 .handler(this::processUnclaim)
                 .build()
         );
@@ -124,7 +124,7 @@ public final class TicketsCommand extends CommonCommands {
                 this.config.note.aliases
         )
                 .permission(Constants.STAFF_PERMISSION + ".note")
-                .argument(this.argumentFactory.ticket("ticket", TicketParserMode.ANY))
+                .argument(this.argumentFactory.ticket("ticket", TicketParserMode.ANY, 0))
                 .argument(StringArgument.of("message", StringArgument.StringMode.GREEDY))
                 .handler(this::processNote)
                 .build()
@@ -136,7 +136,7 @@ public final class TicketsCommand extends CommonCommands {
                 this.config.reopen.aliases
         )
                 .permission(Constants.STAFF_PERMISSION + ".reopen")
-                .argument(this.argumentFactory.ticket("ticket", TicketParserMode.ANY))
+                .argument(this.argumentFactory.ticket("ticket", TicketParserMode.ANY, 0))
                 .handler(this::processReopen)
                 .build()
         );
@@ -148,7 +148,7 @@ public final class TicketsCommand extends CommonCommands {
         )
                 .senderType(PlayerSoul.class)
                 .permission(Constants.STAFF_PERMISSION + ".teleport")
-                .argument(this.argumentFactory.ticket("ticket", TicketParserMode.ANY))
+                .argument(this.argumentFactory.ticket("ticket", TicketParserMode.ANY, 0))
                 .handler(this::processTeleport)
                 .build()
         );

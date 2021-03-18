@@ -71,7 +71,7 @@ public final class TicketCommand extends CommonCommands {
                 this.config.update.aliases
         )
                 .permission(Constants.USER_PERMISSION + ".update")
-                .argument(this.argumentFactory.ticket("ticket", TicketParserMode.SENDERS))
+                .argument(this.argumentFactory.ticket("ticket", TicketParserMode.SENDERS, 0))
                 .argument(MessageArgument.of("message"))
                 .handler(this::processUpdate)
         );
@@ -82,7 +82,7 @@ public final class TicketCommand extends CommonCommands {
                 this.config.close.aliases
         )
                 .permission(Constants.USER_PERMISSION + ".close")
-                .argument(this.argumentFactory.ticket("ticket", TicketParserMode.SENDERS))
+                .argument(this.argumentFactory.ticket("ticket", TicketParserMode.SENDERS, 0))
                 .handler(this::processClose)
         );
 

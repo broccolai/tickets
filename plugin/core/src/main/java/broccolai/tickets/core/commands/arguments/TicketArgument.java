@@ -33,9 +33,10 @@ public final class TicketArgument extends CommandArgument<OnlineSoul, Ticket> {
             final @NonNull UserService userService,
             final @NonNull TicketService ticketService,
             final @Assisted("name") @NonNull String name,
-            final @Assisted("mode") @NonNull TicketParserMode mode
+            final @Assisted("mode") @NonNull TicketParserMode mode,
+            final @Assisted("padding") int padding
     ) {
-        super(true, name, new TicketParser(userService, ticketService, mode), Ticket.class);
+        super(true, name, new TicketParser(userService, ticketService, mode, padding), Ticket.class);
     }
 
     private static final class TicketParser implements ArgumentParser<OnlineSoul, Ticket> {
@@ -43,15 +44,18 @@ public final class TicketArgument extends CommandArgument<OnlineSoul, Ticket> {
         private final UserService userService;
         private final TicketService ticketService;
         private final TicketParserMode parserMode;
+        private final int padding;
 
         private TicketParser(
                 final @NonNull UserService userService,
                 final @NonNull TicketService ticketService,
-                final @NonNull TicketParserMode parserMode
+                final @NonNull TicketParserMode parserMode,
+                final int padding
         ) {
             this.userService = userService;
             this.ticketService = ticketService;
             this.parserMode = parserMode;
+            this.padding = padding;
         }
 
         @Override
@@ -72,10 +76,10 @@ public final class TicketArgument extends CommandArgument<OnlineSoul, Ticket> {
                 final @NonNull String input
         ) {
             if (this.parserMode == TicketParserMode.SENDERS) {
-                return this.playerNames(commandContext.getSender());
+                return this.ticketIds(commandContext.getSender());
             }
 
-            int current = commandContext.getRawInput().size() - 3;
+            int current = commandContext.getRawInput().size() - 3 - this.padding;
 
             if (current == 0) {
                 return Lists.map(this.userService.players(), PlayerSoul::username);
@@ -90,10 +94,10 @@ public final class TicketArgument extends CommandArgument<OnlineSoul, Ticket> {
 
             Soul target = this.userService.wrap(firstArgument);
 
-            return this.playerNames(target);
+            return this.ticketIds(target);
         }
 
-        private List<String> playerNames(final @NonNull Soul target) {
+        private List<String> ticketIds(final @NonNull Soul target) {
             return Lists.map(this.ticketService.get(target, EnumSet.allOf(TicketStatus.class)), ticket -> {
                 return String.valueOf(ticket.id());
             });

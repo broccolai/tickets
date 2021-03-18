@@ -14,7 +14,8 @@ public interface CloudArgumentFactory {
 
     @NonNull TicketArgument ticket(
             @Assisted("name") @NonNull String name,
-            @Assisted("mode") @NonNull TicketParserMode mode
+            @Assisted("mode") @NonNull TicketParserMode mode,
+            @Assisted("padding") int padding
     );
 
 }
