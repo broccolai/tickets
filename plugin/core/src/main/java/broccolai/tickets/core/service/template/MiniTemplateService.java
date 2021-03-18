@@ -7,8 +7,10 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.minimessage.Template;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
@@ -44,13 +46,13 @@ public final class MiniTemplateService implements TemplateService {
         String name = this.userService.name(ticket.player());
         return Arrays.asList(
                 Template.of("ticket", Component.text('#', NamedTextColor.DARK_GRAY).append(Component.text(
-                        ticket.id(), ticket.status().color()
+                        ticket.id(), ticket.status().color(), TextDecoration.BOLD
                 )).hoverEvent(HoverEvent.showText(Component.join(
                         Component.newline(),
                         Component.text("id: " + ticket.id()),
                         Component.text("player: " + name),
                         Component.text("status: " + ticket.status().name())
-                )))),
+                ))).clickEvent(ClickEvent.runCommand("/tickets show " + ticket.id()))),
                 Template.of("status", ticket.status().name()),
                 Template.of("player", this.userComponent(name, ticket.player())),
                 Template.of("position", TextComponent.ofChildren(
