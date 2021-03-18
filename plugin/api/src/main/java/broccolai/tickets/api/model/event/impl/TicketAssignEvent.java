@@ -21,7 +21,7 @@ public final class TicketAssignEvent extends TicketsCommandEvent {
         this.target = target;
     }
 
-    public Soul target() {
+    public Soul targetSoul() {
         return this.target;
     }
 
