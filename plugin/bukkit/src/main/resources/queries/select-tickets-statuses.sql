@@ -1,6 +1,8 @@
-SELECT t.`id`, t.`player`, t.`position`, t.`status`, t.`claimer`,
-       i.`action`, max(i.`time`) AS `time`, i.`sender`, i.`message`
+SELECT t.*, i.*
 FROM puretickets_ticket as t
-         JOIN puretickets_interaction as i ON t.id = i.ticket
-WHERE t.status IN (<statuses>)
-GROUP BY t.id;
+         LEFT JOIN puretickets_interaction as i
+                   ON (t.id = i.ticket) AND i.action = 'MESSAGE'
+WHERE i.time = (
+    SELECT max(time) FROM puretickets_interaction as i2 WHERE i2.ticket = t.id AND i2.action = 'MESSAGE'
+)
+AND t.status IN (<statuses>)
