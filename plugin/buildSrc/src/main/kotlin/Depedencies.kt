@@ -10,7 +10,7 @@ object Versions {
     const val CORN = "2.1.0"
     const val CLOUD = "1.4.0"
     const val HIKARI = "4.0.2"
-    const val GUICE = "5.0.0-BETA-1"
+    const val GUICE = "5.0.1"
     const val FLYWAY = "7.5.4"
     const val H2 = "1.4.200"
     const val SLF4J = "1.7.13"
