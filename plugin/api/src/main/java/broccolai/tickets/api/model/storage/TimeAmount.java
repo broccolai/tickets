@@ -1,4 +1,4 @@
-package broccolai.tickets.core.storage;
+package broccolai.tickets.api.model.storage;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
 
