@@ -156,9 +156,10 @@ public final class MiniMessageService implements MessageService {
     }
 
     @Override
-    public Component targetTicketNote(@NonNull final Ticket ticket) {
+    public Component targetTicketNote(@NonNull final Ticket ticket, final @NonNull String note) {
         List<Template> templates = new ArrayList<>();
         templates.add(this.prefix);
+        templates.add(Template.of("note", note));
         templates.addAll(this.templateService.ticket(ticket));
 
         return this.locale.notify.note.use(templates);

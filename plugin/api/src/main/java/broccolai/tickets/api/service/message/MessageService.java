@@ -45,7 +45,7 @@ public interface MessageService {
 
     Component targetTicketComplete(@NonNull Ticket ticket);
 
-    Component targetTicketNote(@NonNull Ticket ticket);
+    Component targetTicketNote(@NonNull Ticket ticket, @NonNull String note);
 
     //
     // Staff
