@@ -30,7 +30,7 @@ public final class PureTicketsCommand implements BaseCommand {
 
     @Override
     public void register(final @NonNull CommandManager<OnlineSoul> manager) {
-        final Command.Builder<OnlineSoul> builder = manager.commandBuilder("tickets", "tis");
+        final Command.Builder<OnlineSoul> builder = manager.commandBuilder("puretickets");
 
         manager.command(builder.literal(
                 "highscore",
