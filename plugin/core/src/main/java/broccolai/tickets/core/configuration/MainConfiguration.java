@@ -15,6 +15,8 @@ public final class MainConfiguration {
 
     public DiscordConfiguration discordConfiguration = new DiscordConfiguration();
 
+    public CommandsConfiguration commandsConfiguration = new CommandsConfiguration();
+
     public AdvancedConfiguration advancedConfiguration = new AdvancedConfiguration();
 
     //region Configurate
