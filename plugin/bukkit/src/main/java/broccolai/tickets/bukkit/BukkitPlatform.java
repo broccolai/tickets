@@ -4,21 +4,18 @@ import broccolai.tickets.api.model.user.OnlineSoul;
 import broccolai.tickets.api.service.user.UserService;
 import broccolai.tickets.bukkit.inject.BukkitModule;
 import broccolai.tickets.core.PureTickets;
+import broccolai.tickets.core.configuration.CommandsConfiguration;
+import broccolai.tickets.core.configuration.MainConfiguration;
 import broccolai.tickets.core.inject.platform.PluginPlatform;
 import cloud.commandframework.CommandManager;
 import cloud.commandframework.execution.AsynchronousCommandExecutionCoordinator;
-import cloud.commandframework.extra.confirmation.CommandConfirmationManager;
 import cloud.commandframework.minecraft.extras.MinecraftExceptionHandler;
 
 import cloud.commandframework.paper.PaperCommandManager;
 
 import com.google.inject.Guice;
 import com.google.inject.Injector;
-
-import java.util.concurrent.TimeUnit;
-
 import net.kyori.adventure.audience.ForwardingAudience;
-import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
@@ -44,7 +41,10 @@ public final class BukkitPlatform extends JavaPlugin implements PluginPlatform {
         this.pureTickets.load();
 
         try {
-            CommandManager<OnlineSoul> commandManager = this.commandManager(injector.getInstance(UserService.class));
+            CommandManager<OnlineSoul> commandManager = this.commandManager(
+                    injector.getInstance(MainConfiguration.class).commandsConfiguration,
+                    injector.getInstance(UserService.class)
+            );
             this.pureTickets.commands(commandManager, COMMANDS);
         } catch (Exception e) {
             e.printStackTrace();
@@ -58,8 +58,11 @@ public final class BukkitPlatform extends JavaPlugin implements PluginPlatform {
         this.pureTickets.unload();
     }
 
-    private CommandManager<OnlineSoul> commandManager(final @NonNull UserService userService) throws Exception {
-        CommandManager<@NonNull OnlineSoul> cloudManager = new PaperCommandManager<>(
+    private CommandManager<OnlineSoul> commandManager(
+            final @NonNull CommandsConfiguration commandsConfiguration,
+            final @NonNull UserService userService
+    ) throws Exception {
+        PaperCommandManager<@NonNull OnlineSoul> cloudManager = new PaperCommandManager<>(
                 this,
                 AsynchronousCommandExecutionCoordinator.<OnlineSoul>newBuilder().withAsynchronousParsing().build(),
                 sender -> {
@@ -73,16 +76,10 @@ public final class BukkitPlatform extends JavaPlugin implements PluginPlatform {
                 user -> Bukkit.getPlayer(user.uuid())
         );
 
-        CommandConfirmationManager<@NonNull OnlineSoul> confirmationManager = new CommandConfirmationManager<>(
-                30L,
-                TimeUnit.SECONDS,
-                context -> context.getCommandContext()
-                        .getSender()
-                        .sendMessage(Component.text("Confirmation required! run /puretickets confirm")),
-                sender -> sender.sendMessage(Component.text("You don't have any pending commands"))
-        );
-
-        confirmationManager.registerConfirmationProcessor(cloudManager);
+        cloudManager.registerAsynchronousCompletions();
+        if (commandsConfiguration.brigadier) {
+            cloudManager.registerBrigadier();
+        }
 
         new MinecraftExceptionHandler<@NonNull OnlineSoul>()
                 .withDefaultHandlers()
