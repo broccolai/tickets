@@ -47,7 +47,7 @@ public final class TicketCreateEvent implements TicketEvent, SoulEvent, Notifica
 
     @Override
     public Component staff(final @NonNull MessageService messageService) {
-        return messageService.staffTicketClaim(this.ticket);
+        return messageService.staffTicketCreate(this.ticket);
     }
 
     @Override

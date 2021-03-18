@@ -43,7 +43,7 @@ public final class TicketReopenEvent implements TicketEvent, SoulEvent, Notifica
 
     @Override
     public Component staff(final @NonNull MessageService messageService) {
-        return messageService.staffTicketUnclaim(this.ticket);
+        return messageService.staffTicketReopen(this.ticket);
     }
 
     @Override

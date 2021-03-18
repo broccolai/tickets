@@ -3,6 +3,7 @@ package broccolai.tickets.api.model.event.impl;
 import broccolai.tickets.api.model.event.NotificationEvent;
 import broccolai.tickets.api.model.event.SoulEvent;
 import broccolai.tickets.api.model.event.TicketEvent;
+import broccolai.tickets.api.model.message.TargetPair;
 import broccolai.tickets.api.model.ticket.Ticket;
 import broccolai.tickets.api.model.user.OnlineSoul;
 import broccolai.tickets.api.service.message.MessageService;
@@ -33,6 +34,11 @@ public final class TicketCompleteEvent implements TicketEvent, SoulEvent, Notifi
     @Override
     public void sender(@NonNull final MessageService messageService) {
         this.soul.sendMessage(messageService.senderTicketComplete(this.ticket));
+    }
+
+    @Override
+    public @NonNull TargetPair target(@NonNull final MessageService messageService) {
+        return TargetPair.of(this.ticket.player(), messageService.targetTicketComplete(this.ticket));
     }
 
     @Override
