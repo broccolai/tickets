@@ -2,6 +2,7 @@ package broccolai.tickets.core.subscribers;
 
 import broccolai.tickets.api.model.event.SoulEvent;
 import broccolai.tickets.api.model.event.Subscriber;
+import broccolai.tickets.api.model.event.notification.DiscordNotificationEvent;
 import broccolai.tickets.api.model.event.notification.SenderNotificationEvent;
 import broccolai.tickets.api.model.event.notification.StaffNotificationEvent;
 import broccolai.tickets.api.model.event.notification.TargetNotificationEvent;
@@ -12,16 +13,12 @@ import broccolai.tickets.api.service.event.EventService;
 import broccolai.tickets.api.service.intergrations.DiscordService;
 import broccolai.tickets.api.service.message.MessageService;
 import broccolai.tickets.api.service.user.UserService;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.inject.Inject;
 import net.kyori.adventure.text.Component;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import java.util.UUID;
 
 public final class NotificationSubscriber implements Subscriber {
-
-    private static final Gson GSON = new GsonBuilder().create();
 
     private final UserService userService;
     private final MessageService messageService;
@@ -43,6 +40,7 @@ public final class NotificationSubscriber implements Subscriber {
         eventService.register(SenderNotificationEvent.class, this::onSenderNotification);
         eventService.register(TargetNotificationEvent.class, this::onTargetNotification);
         eventService.register(StaffNotificationEvent.class, this::onStaffNotification);
+        eventService.register(DiscordNotificationEvent.class, this::onDiscordNotification);
     }
 
     public void onSenderNotification(final @NonNull SenderNotificationEvent event) {
@@ -80,11 +78,16 @@ public final class NotificationSubscriber implements Subscriber {
             ignore = null;
         }
 
-        //todo: send to console too
         this.userService.players().forEach(soul -> {
             if (soul.permission("tickets.staff.announce") && !soul.uuid().equals(ignore)) {
                 soul.sendMessage(message);
             }
         });
+
+        this.userService.console().sendMessage(message);
+    }
+
+    public void onDiscordNotification(final @NonNull DiscordNotificationEvent event) {
+        this.discordService.announce(event.discord(this.userService));
     }
 }
