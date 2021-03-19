@@ -17,6 +17,7 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -104,7 +105,10 @@ public final class CachedTicketService implements TicketService {
             this.lookups.get(soul.uuid()).addAll(modifiableQueries);
         }
 
-        return this.filter(ticket -> ticket.player().equals(soul.uuid()) && queries.contains(ticket.status())).get(soul.uuid());
+        return this.filter(ticket -> ticket.player().equals(soul.uuid()) && queries.contains(ticket.status())).getOrDefault(
+                soul.uuid(),
+                new ArrayList<>()
+        );
     }
 
     @Override
