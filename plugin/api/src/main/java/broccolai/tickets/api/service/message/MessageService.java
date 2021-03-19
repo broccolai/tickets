@@ -85,6 +85,22 @@ public interface MessageService {
     Component commandsLog(@NonNull Collection<Interaction> interactions);
 
     //
+    // Exception
+    //
+
+    Component exceptionTicketOpen();
+
+    Component exceptionTicketClaimed();
+
+    Component exceptionTicketClosed();
+
+    Component exceptionTicketNotFound();
+
+    Component exceptionNoPermission();
+
+    Component exceptionWrongSender(@NonNull Class<?> sender);
+
+    //
     // Random
     //
 

@@ -19,6 +19,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -357,6 +358,37 @@ public final class MiniMessageService implements MessageService {
                 Component.newline(),
                 entries
         )).build();
+    }
+
+    @Override
+    public Component exceptionTicketOpen() {
+        return this.locale.exception.ticketOpen.use(Collections.singletonList(this.prefix));
+    }
+
+    @Override
+    public Component exceptionTicketClaimed() {
+        return this.locale.exception.ticketClaimed.use(Collections.singletonList(this.prefix));
+    }
+
+    @Override
+    public Component exceptionTicketClosed() {
+        return this.locale.exception.ticketClosed.use(Collections.singletonList(this.prefix));
+    }
+
+    @Override
+    public Component exceptionTicketNotFound() {
+        return this.locale.exception.ticketNotFound.use(Collections.singletonList(this.prefix));
+    }
+
+    @Override
+    public Component exceptionNoPermission() {
+        return this.locale.exception.noPermission.use(Collections.singletonList(this.prefix));
+    }
+
+    @Override
+    public Component exceptionWrongSender(@NonNull final Class<?> sender) {
+        Template template = Template.of("sender", sender.getSimpleName());
+        return this.locale.exception.invalidSender.use(Arrays.asList(this.prefix, template));
     }
 
     @Override

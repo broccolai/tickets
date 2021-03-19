@@ -1,11 +1,14 @@
 package broccolai.tickets.bukkit;
 
 import broccolai.tickets.api.model.user.OnlineSoul;
+import broccolai.tickets.api.service.message.MessageService;
 import broccolai.tickets.api.service.user.UserService;
 import broccolai.tickets.bukkit.inject.BukkitModule;
 import broccolai.tickets.core.PureTickets;
+import broccolai.tickets.core.exceptions.PureException;
 import broccolai.tickets.core.inject.platform.PluginPlatform;
 import cloud.commandframework.CommandManager;
+import cloud.commandframework.exceptions.InvalidCommandSenderException;
 import cloud.commandframework.execution.AsynchronousCommandExecutionCoordinator;
 import cloud.commandframework.minecraft.extras.MinecraftExceptionHandler;
 
@@ -39,7 +42,10 @@ public final class BukkitPlatform extends JavaPlugin implements PluginPlatform {
         injector = this.pureTickets.load();
 
         try {
-            CommandManager<OnlineSoul> commandManager = this.commandManager(injector.getInstance(UserService.class));
+            CommandManager<OnlineSoul> commandManager = this.commandManager(
+                    injector.getInstance(UserService.class),
+                    injector.getInstance(MessageService.class)
+            );
             this.pureTickets.commands(commandManager, COMMANDS);
         } catch (Exception e) {
             e.printStackTrace();
@@ -53,7 +59,10 @@ public final class BukkitPlatform extends JavaPlugin implements PluginPlatform {
         this.pureTickets.unload();
     }
 
-    private CommandManager<OnlineSoul> commandManager(final @NonNull UserService userService) throws Exception {
+    private CommandManager<OnlineSoul> commandManager(
+            final @NonNull UserService userService,
+            final @NonNull MessageService messageService
+    ) throws Exception {
         PaperCommandManager<@NonNull OnlineSoul> cloudManager = new PaperCommandManager<>(
                 this,
                 AsynchronousCommandExecutionCoordinator.<OnlineSoul>newBuilder().withAsynchronousParsing().build(),
@@ -72,6 +81,31 @@ public final class BukkitPlatform extends JavaPlugin implements PluginPlatform {
 
         new MinecraftExceptionHandler<@NonNull OnlineSoul>()
                 .withDefaultHandlers()
+                .withHandler(MinecraftExceptionHandler.ExceptionType.INVALID_SENDER, (ex) -> {
+                    InvalidCommandSenderException icse = (InvalidCommandSenderException) ex;
+                    return messageService.exceptionWrongSender(icse.getRequiredSender());
+                })
+                .withHandler(MinecraftExceptionHandler.ExceptionType.NO_PERMISSION, (ex) -> messageService.exceptionNoPermission())
+                .withHandler(MinecraftExceptionHandler.ExceptionType.ARGUMENT_PARSING, (ex) -> {
+                    Throwable cause = ex.getCause();
+
+                    if (!(cause instanceof PureException)) {
+                        return MinecraftExceptionHandler.DEFAULT_ARGUMENT_PARSING_FUNCTION.apply(ex);
+                    }
+
+                    PureException pureException = (PureException) cause;
+                    return pureException.message(messageService);
+                })
+                .withHandler(MinecraftExceptionHandler.ExceptionType.COMMAND_EXECUTION, (ex) -> {
+                    Throwable cause = ex.getCause();
+
+                    if (!(cause instanceof PureException)) {
+                        return MinecraftExceptionHandler.DEFAULT_COMMAND_EXECUTION_FUNCTION.apply(ex);
+                    }
+
+                    PureException pureException = (PureException) cause;
+                    return pureException.message(messageService);
+                })
                 .apply(cloudManager, ForwardingAudience.Single::audience);
 
         return cloudManager;
