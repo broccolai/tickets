@@ -6,6 +6,8 @@ import broccolai.tickets.api.model.user.PlayerSoul;
 import broccolai.tickets.api.service.message.MessageService;
 import broccolai.tickets.api.service.ticket.TicketService;
 import broccolai.tickets.api.service.user.UserService;
+import broccolai.tickets.core.configuration.MainConfiguration;
+import broccolai.tickets.core.configuration.TasksConfiguration;
 import broccolai.tickets.core.utilities.Constants;
 import com.google.inject.Inject;
 import net.kyori.adventure.text.Component;
@@ -14,16 +16,19 @@ import java.util.EnumSet;
 
 public final class ReminderTask implements Task {
 
+    private final TasksConfiguration.ReminderTaskConfiguration config;
     private final UserService userService;
     private final TicketService ticketService;
     private final MessageService messageService;
 
     @Inject
     public ReminderTask(
+            final @NonNull MainConfiguration mainConfiguration,
             final @NonNull UserService userService,
             final @NonNull TicketService ticketService,
             final @NonNull MessageService messageService
     ) {
+        this.config = mainConfiguration.tasksConfiguration.reminder;
         this.userService = userService;
         this.ticketService = ticketService;
         this.messageService = messageService;
@@ -50,12 +55,12 @@ public final class ReminderTask implements Task {
 
     @Override
     public long delay() {
-        return 10;
+        return (long) this.config.delay * 60 * 20;
     }
 
     @Override
     public long repeat() {
-        return 1000;
+        return (long) this.config.repeat * 60 * 20;
     }
 
 }

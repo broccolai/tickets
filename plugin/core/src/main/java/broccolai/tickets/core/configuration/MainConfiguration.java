@@ -17,6 +17,8 @@ public final class MainConfiguration {
 
     public CommandsConfiguration commandsConfiguration = new CommandsConfiguration();
 
+    public TasksConfiguration tasksConfiguration = new TasksConfiguration();
+
     public AdvancedConfiguration advancedConfiguration = new AdvancedConfiguration();
 
     //region Configurate
