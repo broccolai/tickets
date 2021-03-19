@@ -24,6 +24,7 @@ import net.kyori.adventure.text.Component;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.util.Collection;
+import java.util.EnumSet;
 
 public final class TicketCommand extends CommonCommands {
 
@@ -73,7 +74,11 @@ public final class TicketCommand extends CommonCommands {
                 this.config.update.aliases
         )
                 .permission(Constants.USER_PERMISSION + ".update")
-                .argument(this.argumentFactory.ticket("ticket", TicketParserMode.SENDERS, 0))
+                .argument(this.argumentFactory.ticket(
+                        "ticket", TicketParserMode.SENDERS,
+                        EnumSet.of(TicketStatus.OPEN, TicketStatus.CLAIMED),
+                        0
+                ))
                 .argument(MessageArgument.of("message"))
                 .handler(this::processUpdate)
         );
@@ -84,7 +89,12 @@ public final class TicketCommand extends CommonCommands {
                 this.config.close.aliases
         )
                 .permission(Constants.USER_PERMISSION + ".close")
-                .argument(this.argumentFactory.ticket("ticket", TicketParserMode.SENDERS, 0))
+                .argument(this.argumentFactory.ticket(
+                        "ticket",
+                        TicketParserMode.SENDERS,
+                        EnumSet.of(TicketStatus.OPEN, TicketStatus.CLAIMED),
+                        0
+                ))
                 .handler(this::processClose)
         );
 
@@ -105,7 +115,7 @@ public final class TicketCommand extends CommonCommands {
                 this.config.show.aliases
         )
                 .permission(Constants.USER_PERMISSION + ".show")
-                .argument(this.argumentFactory.ticket("ticket", TicketParserMode.SENDERS, 0))
+                .argument(this.argumentFactory.ticket("ticket", TicketParserMode.SENDERS, EnumSet.allOf(TicketStatus.class), 0))
                 .handler(c -> processShow(c.getSender(), c.get("ticket")))
         );
 
@@ -115,7 +125,7 @@ public final class TicketCommand extends CommonCommands {
                 this.config.log.aliases
         )
                 .permission(Constants.USER_PERMISSION + ".log")
-                .argument(this.argumentFactory.ticket("ticket", TicketParserMode.SENDERS, 0))
+                .argument(this.argumentFactory.ticket("ticket", TicketParserMode.SENDERS, EnumSet.allOf(TicketStatus.class), 0))
                 .handler(c -> processLog(c.getSender(), c.get("ticket")))
         );
     }

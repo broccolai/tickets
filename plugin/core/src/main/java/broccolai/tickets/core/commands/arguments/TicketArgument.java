@@ -22,10 +22,10 @@ import com.google.inject.assistedinject.Assisted;
 import java.util.ArrayList;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-import java.util.EnumSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Queue;
+import java.util.Set;
 
 public final class TicketArgument extends CommandArgument<OnlineSoul, Ticket> {
 
@@ -35,9 +35,10 @@ public final class TicketArgument extends CommandArgument<OnlineSoul, Ticket> {
             final @NonNull TicketService ticketService,
             final @Assisted("name") @NonNull String name,
             final @Assisted("mode") @NonNull TicketParserMode mode,
+            final @Assisted("suggestions") @NonNull Set<TicketStatus> suggestions,
             final @Assisted("padding") int padding
     ) {
-        super(true, name, new TicketParser(userService, ticketService, mode, padding), Ticket.class);
+        super(true, name, new TicketParser(userService, ticketService, mode, suggestions, padding), Ticket.class);
     }
 
     public static final class TicketParser implements ArgumentParser<OnlineSoul, Ticket> {
@@ -45,17 +46,20 @@ public final class TicketArgument extends CommandArgument<OnlineSoul, Ticket> {
         private final UserService userService;
         private final TicketService ticketService;
         private final TicketParserMode parserMode;
+        private final Set<TicketStatus> suggestions;
         private final int padding;
 
         private TicketParser(
                 final @NonNull UserService userService,
                 final @NonNull TicketService ticketService,
                 final @NonNull TicketParserMode parserMode,
+                final @NonNull Set<TicketStatus> suggestions,
                 final int padding
         ) {
             this.userService = userService;
             this.ticketService = ticketService;
             this.parserMode = parserMode;
+            this.suggestions = suggestions;
             this.padding = padding;
         }
 
@@ -99,7 +103,7 @@ public final class TicketArgument extends CommandArgument<OnlineSoul, Ticket> {
         }
 
         private List<String> ticketIds(final @NonNull Soul target) {
-            return Lists.map(this.ticketService.get(target, EnumSet.allOf(TicketStatus.class)), ticket -> {
+            return Lists.map(this.ticketService.get(target, this.suggestions), ticket -> {
                 return String.valueOf(ticket.id());
             });
         }

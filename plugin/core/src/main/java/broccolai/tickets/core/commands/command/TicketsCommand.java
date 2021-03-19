@@ -30,6 +30,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.EnumSet;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -75,7 +76,7 @@ public final class TicketsCommand extends CommonCommands {
                 this.config.show.aliases
         )
                 .permission(Constants.STAFF_PERMISSION + ".show")
-                .argument(this.argumentFactory.ticket("ticket", TicketParserMode.ANY, 0))
+                .argument(this.argumentFactory.ticket("ticket", TicketParserMode.ANY, EnumSet.allOf(TicketStatus.class), 0))
                 .handler(c -> this.processShow(c.getSender(), c.get("ticket")))
         );
 
@@ -85,7 +86,7 @@ public final class TicketsCommand extends CommonCommands {
                 this.config.claim.aliases
         )
                 .permission(Constants.STAFF_PERMISSION + ".claim")
-                .argument(this.argumentFactory.ticket("ticket", TicketParserMode.ANY, 0))
+                .argument(this.argumentFactory.ticket("ticket", TicketParserMode.ANY, EnumSet.of(TicketStatus.OPEN), 0))
                 .handler(this::processClaim)
                 .build()
         );
@@ -97,7 +98,7 @@ public final class TicketsCommand extends CommonCommands {
         )
                 .permission(Constants.STAFF_PERMISSION + ".assign")
                 .argument(this.argumentFactory.target("target"))
-                .argument(this.argumentFactory.ticket("ticket", TicketParserMode.ANY, 1))
+                .argument(this.argumentFactory.ticket("ticket", TicketParserMode.ANY, EnumSet.of(TicketStatus.OPEN), 1))
                 .handler(this::processAssign)
                 .build()
         );
@@ -108,7 +109,12 @@ public final class TicketsCommand extends CommonCommands {
                 this.config.complete.aliases
         )
                 .permission(Constants.STAFF_PERMISSION + ".complete")
-                .argument(this.argumentFactory.ticket("ticket", TicketParserMode.ANY, 0))
+                .argument(this.argumentFactory.ticket(
+                        "ticket",
+                        TicketParserMode.ANY,
+                        EnumSet.of(TicketStatus.CLAIMED),
+                        0
+                ))
                 .handler(this::processComplete)
                 .build()
         );
@@ -119,7 +125,12 @@ public final class TicketsCommand extends CommonCommands {
                 this.config.unclaim.aliases
         )
                 .permission(Constants.STAFF_PERMISSION + ".yield")
-                .argument(this.argumentFactory.ticket("ticket", TicketParserMode.ANY, 0))
+                .argument(this.argumentFactory.ticket(
+                        "ticket",
+                        TicketParserMode.ANY,
+                        EnumSet.of(TicketStatus.OPEN, TicketStatus.CLAIMED),
+                        0
+                ))
                 .handler(this::processUnclaim)
                 .build()
         );
@@ -130,7 +141,7 @@ public final class TicketsCommand extends CommonCommands {
                 this.config.note.aliases
         )
                 .permission(Constants.STAFF_PERMISSION + ".note")
-                .argument(this.argumentFactory.ticket("ticket", TicketParserMode.ANY, 0))
+                .argument(this.argumentFactory.ticket("ticket", TicketParserMode.ANY, EnumSet.allOf(TicketStatus.class), 0))
                 .argument(StringArgument.of("message", StringArgument.StringMode.GREEDY))
                 .handler(this::processNote)
                 .build()
@@ -142,7 +153,7 @@ public final class TicketsCommand extends CommonCommands {
                 this.config.reopen.aliases
         )
                 .permission(Constants.STAFF_PERMISSION + ".reopen")
-                .argument(this.argumentFactory.ticket("ticket", TicketParserMode.ANY, 0))
+                .argument(this.argumentFactory.ticket("ticket", TicketParserMode.ANY, EnumSet.of(TicketStatus.CLOSED), 0))
                 .handler(this::processReopen)
                 .build()
         );
@@ -154,7 +165,7 @@ public final class TicketsCommand extends CommonCommands {
         )
                 .senderType(PlayerSoul.class)
                 .permission(Constants.STAFF_PERMISSION + ".teleport")
-                .argument(this.argumentFactory.ticket("ticket", TicketParserMode.ANY, 0))
+                .argument(this.argumentFactory.ticket("ticket", TicketParserMode.ANY,  EnumSet.allOf(TicketStatus.class), 0))
                 .handler(this::processTeleport)
                 .build()
         );
@@ -165,7 +176,7 @@ public final class TicketsCommand extends CommonCommands {
                 this.config.log.aliases
         )
                 .permission(Constants.STAFF_PERMISSION + ".log")
-                .argument(this.argumentFactory.ticket("ticket", TicketParserMode.ANY, 0))
+                .argument(this.argumentFactory.ticket("ticket", TicketParserMode.ANY, EnumSet.allOf(TicketStatus.class), 0))
                 .handler(c -> processLog(c.getSender(), c.get("ticket")))
                 .build()
         );
