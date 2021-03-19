@@ -128,21 +128,17 @@ public final class LocaleConfiguration {
     @ConfigSerializable
     public static final class ExceptionLocaleConfiguration {
 
-        public LocaleEntry noPermission = new LocaleEntry("<prefix> You do not have permission for this command");
+        public LocaleEntry noPermission = new LocaleEntry("<prefix> <color:#ff1744>You do not have permission for this command");
 
-        public LocaleEntry invalidSender = new LocaleEntry("<prefix> This command must be executed by <sender>");
+        public LocaleEntry invalidSender = new LocaleEntry("<prefix> <color:#ff1744>This command must be executed by <sender>");
 
-        public LocaleEntry ticketNotFound = new LocaleEntry("<prefix> Ticket could not be found");
+        public LocaleEntry ticketNotFound = new LocaleEntry("<prefix> <color:#ff1744>Ticket could not be found");
 
-        public LocaleEntry invalidSettingType = new LocaleEntry("<prefix> Invalid setting type");
+        public LocaleEntry ticketClosed = new LocaleEntry("<prefix> <color:#ff1744>This ticket is closed");
 
-        public LocaleEntry tooManyOpenTickets = new LocaleEntry("<prefix> You have too many open tickets, the limit is <limit>");
+        public LocaleEntry ticketOpen = new LocaleEntry("<prefix> <color:#ff1744>This ticket is already open");
 
-        public LocaleEntry ticketClosed = new LocaleEntry("<prefix> This ticket is closed");
-
-        public LocaleEntry ticketOpen = new LocaleEntry("<prefix> This ticket is already open");
-
-        public LocaleEntry ticketClaimed = new LocaleEntry("<prefix> This ticket is already claimed");
+        public LocaleEntry ticketClaimed = new LocaleEntry("<prefix> <color:#ff1744>This ticket is already claimed");
 
     }
 
