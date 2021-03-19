@@ -25,7 +25,7 @@ public final class InteractionMapper implements RowMapper<Interaction> {
                 .orElseThrow(IllegalStateException::new);
 
         Action action = actionMapper.map(rs, "action", ctx);
-        LocalDateTime date = dateMapper.map(rs, "date", ctx);
+        LocalDateTime date = dateMapper.map(rs, "time", ctx);
         UUID sender = uuidMapper.map(rs, "sender", ctx);
         String message = rs.getString("message");
 
