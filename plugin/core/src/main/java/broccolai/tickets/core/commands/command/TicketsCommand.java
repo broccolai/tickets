@@ -9,6 +9,7 @@ import broccolai.tickets.api.model.user.PlayerSoul;
 import broccolai.tickets.api.model.user.Soul;
 import broccolai.tickets.api.service.interactions.InteractionService;
 import broccolai.tickets.api.service.message.MessageService;
+import broccolai.tickets.api.service.storage.StorageService;
 import broccolai.tickets.api.service.tasks.TaskService;
 import broccolai.tickets.api.service.ticket.TicketService;
 import broccolai.tickets.core.commands.arguments.TicketParserMode;
@@ -48,11 +49,12 @@ public final class TicketsCommand extends CommonCommands {
             final CommandsConfiguration.@NonNull TicketsConfiguration config,
             final @NonNull CloudArgumentFactory argumentFactory,
             final @NonNull MessageService messageService,
+            final @NonNull StorageService storageService,
             final @NonNull TicketService ticketService,
             final @NonNull InteractionService interactionService,
             final @NonNull TaskService taskService
     ) {
-        super(messageService);
+        super(messageService, storageService);
         this.config = config;
         this.argumentFactory = argumentFactory;
         this.messageService = messageService;
@@ -157,16 +159,16 @@ public final class TicketsCommand extends CommonCommands {
                 .build()
         );
 
-//        manager.command(builder.literal(
-//                config.getAliasLog().getFirst(),
-//                ArgumentDescription.of("View a tickets log"),
-//                config.getAliasLog().getSecond()
-//        )
-//                .permission(Constants.STAFF_PERMISSION + ".log")
-//                .argument(TargetArgument.of("target"))
-//                .argument(TicketArgument.of(false, false, TicketStatus.OPEN, TicketStatus.PICKED, TicketStatus.CLOSED))
-//                .handler(c -> processLog(c.getSender(), c.get("ticket")))
-//                .build());
+        manager.command(builder.literal(
+                this.config.log.main,
+                ArgumentDescription.of("View a tickets log"),
+                this.config.log.aliases
+        )
+                .permission(Constants.STAFF_PERMISSION + ".log")
+                .argument(this.argumentFactory.ticket("ticket", TicketParserMode.ANY, 0))
+                .handler(c -> processLog(c.getSender(), c.get("ticket")))
+                .build()
+        );
 
         manager.command(builder.literal(
                 this.config.list.main,

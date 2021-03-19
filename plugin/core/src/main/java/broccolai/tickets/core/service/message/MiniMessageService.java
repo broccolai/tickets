@@ -1,6 +1,8 @@
 package broccolai.tickets.core.service.message;
 
 import broccolai.corn.core.Lists;
+import broccolai.tickets.api.model.interaction.Interaction;
+import broccolai.tickets.api.model.interaction.MessageInteraction;
 import broccolai.tickets.api.model.ticket.Ticket;
 import broccolai.tickets.api.model.user.Soul;
 import broccolai.tickets.api.service.message.MessageService;
@@ -10,9 +12,12 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.minimessage.Template;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
+import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -317,6 +322,35 @@ public final class MiniMessageService implements MessageService {
             templates.add(Template.of("amount", entry.getValue().toString()));
 
             return this.locale.format.hs.use(templates);
+        });
+
+        return builder.append(Component.join(
+                Component.newline(),
+                entries
+        )).build();
+    }
+
+    @Override
+    public Component commandsLog(@NonNull final Collection<Interaction> interactions) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM);
+        Template wrapper = Template.of("wrapper", this.locale.title.wrapper.use());
+
+        TextComponent.Builder builder = Component.text()
+                .append(this.locale.title.highscores.use(Collections.singletonList(wrapper)), Component.newline());
+
+        List<Component> entries = Lists.map(interactions, (interaction) -> {
+            List<Template> templates = new ArrayList<>(this.templateService.player("player", interaction.sender()));
+            templates.add(Template.of("action", interaction.action().name()));
+
+            Component hoverComponent = Component.text("Time: " + formatter.format(interaction.time()));
+            hoverComponent = hoverComponent.append(Component.newline());
+
+            if (interaction instanceof MessageInteraction) {
+                MessageInteraction messageInteraction = (MessageInteraction) interaction;
+                hoverComponent = hoverComponent.append(Component.text("Message: " + messageInteraction.message()));
+            }
+
+            return this.locale.format.log.use(templates).hoverEvent(HoverEvent.showText(hoverComponent));
         });
 
         return builder.append(Component.join(

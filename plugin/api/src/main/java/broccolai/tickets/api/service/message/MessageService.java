@@ -1,5 +1,6 @@
 package broccolai.tickets.api.service.message;
 
+import broccolai.tickets.api.model.interaction.Interaction;
 import broccolai.tickets.api.model.ticket.Ticket;
 import broccolai.tickets.api.model.user.Soul;
 import net.kyori.adventure.text.Component;
@@ -80,6 +81,8 @@ public interface MessageService {
     Component commandsTeleport(@NonNull Ticket ticket);
 
     Component commandsHighscore(@NonNull Map<UUID, Integer> ranks);
+
+    Component commandsLog(@NonNull Collection<Interaction> interactions);
 
     //
     // Random

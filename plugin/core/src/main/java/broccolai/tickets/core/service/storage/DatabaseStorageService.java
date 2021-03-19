@@ -198,6 +198,16 @@ public final class DatabaseStorageService implements StorageService {
     }
 
     @Override
+    public Collection<Interaction> interactions(@NonNull final Ticket ticket) {
+        return this.jdbi.withHandle(handle -> {
+            return handle.createQuery(SQLQueries.SELECT_INTERACTIONS.get()[0])
+                    .bind("ticket", ticket.id())
+                    .mapTo(Interaction.class)
+                    .list();
+        });
+    }
+
+    @Override
     public @NonNull Collection<Component> notifications(final @NonNull Soul soul) {
         //todo
         return null;

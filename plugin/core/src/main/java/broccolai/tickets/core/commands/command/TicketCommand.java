@@ -7,6 +7,7 @@ import broccolai.tickets.api.model.user.OnlineSoul;
 import broccolai.tickets.api.model.user.PlayerSoul;
 import broccolai.tickets.api.service.interactions.InteractionService;
 import broccolai.tickets.api.service.message.MessageService;
+import broccolai.tickets.api.service.storage.StorageService;
 import broccolai.tickets.api.service.ticket.TicketService;
 import broccolai.tickets.core.commands.arguments.MessageArgument;
 import broccolai.tickets.core.commands.arguments.TicketParserMode;
@@ -37,10 +38,11 @@ public final class TicketCommand extends CommonCommands {
             final CommandsConfiguration.@NonNull TicketConfiguration config,
             final @NonNull CloudArgumentFactory argumentFactory,
             final @NonNull MessageService messageService,
+            final @NonNull StorageService storageService,
             final @NonNull TicketService ticketService,
             final @NonNull InteractionService interactionService
     ) {
-        super(messageService);
+        super(messageService, storageService);
         this.config = config;
         this.argumentFactory = argumentFactory;
         this.messageService = messageService;
@@ -97,23 +99,25 @@ public final class TicketCommand extends CommonCommands {
                 .handler(this::processList)
         );
 
-//        manager.command(builder.literal(
-//                config.getAliasShow().getFirst(),
-//                ArgumentDescription.of("Show a ticket"),
-//                config.getAliasShow().getSecond()
-//        )
-//                .permission(Constants.USER_PERMISSION + ".show")
-//                .argument(TicketArgument.of(false, true))
-//                .handler(c -> processShow(c.getSender(), c.get("ticket"))));
-//
-//        manager.command(builder.literal(
-//                config.getAliasLog().getFirst(),
-//                ArgumentDescription.of("View a tickets log"),
-//                config.getAliasLog().getSecond()
-//        )
-//                .permission(Constants.USER_PERMISSION + ".log")
-//                .argument(TicketArgument.of(false, true))
-//                .handler(c -> processLog(c.getSender(), c.get("ticket"))));
+        manager.command(builder.literal(
+                this.config.show.main,
+                ArgumentDescription.of("Show a ticket"),
+                this.config.show.aliases
+        )
+                .permission(Constants.USER_PERMISSION + ".show")
+                .argument(this.argumentFactory.ticket("ticket", TicketParserMode.SENDERS, 0))
+                .handler(c -> processShow(c.getSender(), c.get("ticket")))
+        );
+
+        manager.command(builder.literal(
+                this.config.log.main,
+                ArgumentDescription.of("View a tickets log"),
+                this.config.log.aliases
+        )
+                .permission(Constants.USER_PERMISSION + ".log")
+                .argument(this.argumentFactory.ticket("ticket", TicketParserMode.SENDERS, 0))
+                .handler(c -> processLog(c.getSender(), c.get("ticket")))
+        );
     }
 
     private void processCreate(final @NonNull CommandContext<OnlineSoul> c) {

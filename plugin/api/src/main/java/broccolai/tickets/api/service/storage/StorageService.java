@@ -32,6 +32,8 @@ public interface StorageService extends Disposable {
 
     void saveInteractions(@NonNull Multimap<Ticket, Interaction> interactions);
 
+    Collection<Interaction> interactions(@NonNull Ticket ticket);
+
     @NonNull Collection<Component> notifications(@NonNull Soul soul);
 
     Map<UUID, Integer> highscores(@NonNull ChronoUnit chronoUnit);
