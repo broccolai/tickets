@@ -1,5 +1,6 @@
 package broccolai.tickets.bukkit;
 
+import broccolai.tickets.api.model.user.ConsoleSoul;
 import broccolai.tickets.api.model.user.OnlineSoul;
 import broccolai.tickets.api.service.message.MessageService;
 import broccolai.tickets.api.service.user.UserService;
@@ -74,7 +75,13 @@ public final class BukkitPlatform extends JavaPlugin implements PluginPlatform {
                     Player player = (Player) sender;
                     return userService.player(player.getUniqueId());
                 },
-                user -> Bukkit.getPlayer(user.uuid())
+                user -> {
+                    if (user.uuid().equals(ConsoleSoul.UUID)) {
+                        return Bukkit.getConsoleSender();
+                    } else {
+                        return Bukkit.getPlayer(user.uuid());
+                    }
+                }
         );
 
         cloudManager.registerAsynchronousCompletions();
