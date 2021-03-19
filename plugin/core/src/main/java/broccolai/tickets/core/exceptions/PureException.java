@@ -1,30 +1,17 @@
 package broccolai.tickets.core.exceptions;
 
+import broccolai.tickets.api.service.message.MessageService;
 import net.kyori.adventure.text.Component;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-public abstract class PureException extends RuntimeException {
+public interface PureException {
 
-    private static final long serialVersionUID = -1L;
+    @NonNull Component message(@NonNull MessageService messageService);
 
-    private final Component component;
+    abstract class Abstract extends RuntimeException implements PureException {
 
-    /**
-     * Initialise a localised PureException
-     */
-    public PureException(final @NonNull Component component) {
-        this.component = component;
-    }
+        private static final long serialVersionUID = -1L;
 
-    public PureException() {
-        this.component = Component.text("error");
-    }
-
-    /**
-     * @return Get component
-     */
-    public final @NonNull Component getComponent() {
-        return this.component;
     }
 
 }
