@@ -1,42 +1,41 @@
 package broccolai.tickets.core.commands.arguments;
 
-import broccolai.tickets.core.user.Soul;
-import broccolai.tickets.core.user.User;
-import broccolai.tickets.core.user.UserManager;
+import broccolai.corn.core.Lists;
+import broccolai.tickets.api.model.user.OnlineSoul;
+import broccolai.tickets.api.model.user.PlayerSoul;
+import broccolai.tickets.api.model.user.Soul;
+import broccolai.tickets.api.service.user.UserService;
 import cloud.commandframework.arguments.CommandArgument;
 import cloud.commandframework.arguments.parser.ArgumentParseResult;
 import cloud.commandframework.arguments.parser.ArgumentParser;
 import cloud.commandframework.context.CommandContext;
 import cloud.commandframework.exceptions.parsing.NoInputProvidedException;
+import com.google.inject.Inject;
+import com.google.inject.assistedinject.Assisted;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.util.List;
 import java.util.Queue;
-import java.util.UUID;
 
-public final class TargetArgument<C> extends CommandArgument<Soul<C>, User> {
+public final class TargetArgument extends CommandArgument<OnlineSoul, Soul> {
 
-    private TargetArgument(final @NonNull String name) {
-        super(true, name, new TargetParser<>(), User.class);
+    @Inject
+    public TargetArgument(final @NonNull UserService userService, final @Assisted("name") @NonNull String name) {
+        super(true, name, new TargetParser(userService), Soul.class);
     }
 
-    /**
-     * Create target argument
-     *
-     * @param name Arguments name
-     * @param <C>  Command sender type
-     * @return Target argument
-     */
-    public static <C> TargetArgument<C> of(final @NonNull String name) {
-        return new TargetArgument<>(name);
-    }
+    private static final class TargetParser implements ArgumentParser<OnlineSoul, Soul> {
 
-    private static final class TargetParser<C> implements ArgumentParser<Soul<C>, User> {
+        private final UserService userService;
+
+        private TargetParser(final @NonNull UserService userService) {
+            this.userService = userService;
+        }
 
         @Override
-        public @NonNull ArgumentParseResult<@NonNull User> parse(
-                @NonNull final CommandContext<@NonNull Soul<C>> commandContext,
-                @NonNull final Queue<@NonNull String> queue
+        public @NonNull ArgumentParseResult<@NonNull Soul> parse(
+                final @NonNull CommandContext<@NonNull OnlineSoul> commandContext,
+                final @NonNull Queue<@NonNull String> queue
         ) {
             String input = queue.peek();
 
@@ -47,21 +46,15 @@ public final class TargetArgument<C> extends CommandArgument<Soul<C>, User> {
                 ));
             }
 
-            UserManager<C, ?, ?> userManager = commandContext.get("userManager");
-            UUID uuid = userManager.getUniqueId(input);
-            User user = userManager.getUser(uuid);
-
             queue.remove();
-            return ArgumentParseResult.success(user);
+            return ArgumentParseResult.success(this.userService.wrap(input));
         }
 
         @Override
         public @NonNull List<@NonNull String> suggestions(
-                @NonNull final CommandContext<Soul<C>> commandContext, @NonNull final String input
+                final @NonNull CommandContext<OnlineSoul> commandContext, final @NonNull String input
         ) {
-            UserManager<C, ?, ?> userManager = commandContext.get("userManager");
-
-            return userManager.getNames();
+            return Lists.map(this.userService.players(), PlayerSoul::username);
         }
 
     }

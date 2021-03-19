@@ -1,47 +1,66 @@
 package broccolai.tickets.core.tasks;
 
-import broccolai.tickets.core.locale.Message;
-import broccolai.tickets.core.ticket.TicketManager;
-import broccolai.tickets.core.ticket.TicketStatus;
-import broccolai.tickets.core.user.PlayerSoul;
-import broccolai.tickets.core.user.UserManager;
+import broccolai.tickets.api.model.task.Task;
+import broccolai.tickets.api.model.ticket.TicketStatus;
+import broccolai.tickets.api.model.user.PlayerSoul;
+import broccolai.tickets.api.service.message.MessageService;
+import broccolai.tickets.api.service.ticket.TicketService;
+import broccolai.tickets.api.service.user.UserService;
+import broccolai.tickets.core.configuration.MainConfiguration;
+import broccolai.tickets.core.configuration.TasksConfiguration;
 import broccolai.tickets.core.utilities.Constants;
+import com.google.inject.Inject;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.minimessage.Template;
 import org.checkerframework.checker.nullness.qual.NonNull;
+import java.util.EnumSet;
 
-public final class ReminderTask implements Runnable {
+public final class ReminderTask implements Task {
 
-    private final UserManager<?, ?, ?> userManager;
-    private final TicketManager ticketManager;
+    private final TasksConfiguration.ReminderTaskConfiguration config;
+    private final UserService userService;
+    private final TicketService ticketService;
+    private final MessageService messageService;
 
-    /**
-     * Create a reminder task
-     *
-     * @param userManager   User manager
-     * @param ticketManager Ticket manager
-     */
-    public ReminderTask(final @NonNull UserManager<?, ?, ?> userManager, final @NonNull TicketManager ticketManager) {
-        this.userManager = userManager;
-        this.ticketManager = ticketManager;
+    @Inject
+    public ReminderTask(
+            final @NonNull MainConfiguration mainConfiguration,
+            final @NonNull UserService userService,
+            final @NonNull TicketService ticketService,
+            final @NonNull MessageService messageService
+    ) {
+        this.config = mainConfiguration.tasksConfiguration.reminder;
+        this.userService = userService;
+        this.ticketService = ticketService;
+        this.messageService = messageService;
     }
 
     @Override
     public void run() {
-        int amount = ticketManager.countTickets(TicketStatus.OPEN);
+        int tickets = this.ticketService.count(EnumSet.of(TicketStatus.OPEN, TicketStatus.CLAIMED));
 
-        if (amount == 0) {
+        if (tickets == 0) {
             return;
         }
 
-        for (PlayerSoul<?, ?> soul : userManager.getAllOnlinePlayer()) {
-            if (!soul.hasPermission(Constants.STAFF_PERMISSION + ".remind")) {
+        Component component = this.messageService.taskReminder(tickets);
+
+        for (PlayerSoul soul : this.userService.players()) {
+            if (!soul.permission(Constants.STAFF_PERMISSION + ".remind")) {
                 continue;
             }
 
-            Component component = Message.FORMAT__REMINDER.use(Template.of("amount", String.valueOf(amount)));
             soul.sendMessage(component);
         }
+    }
+
+    @Override
+    public long delay() {
+        return (long) this.config.delay * 60 * 20;
+    }
+
+    @Override
+    public long repeat() {
+        return (long) this.config.repeat * 60 * 20;
     }
 
 }

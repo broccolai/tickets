@@ -1,165 +1,164 @@
 package broccolai.tickets.core.commands.command;
 
+import broccolai.tickets.api.model.interaction.MessageInteraction;
+import broccolai.tickets.api.model.ticket.Ticket;
+import broccolai.tickets.api.model.ticket.TicketStatus;
+import broccolai.tickets.api.model.user.OnlineSoul;
+import broccolai.tickets.api.model.user.PlayerSoul;
+import broccolai.tickets.api.service.interactions.InteractionService;
+import broccolai.tickets.api.service.message.MessageService;
+import broccolai.tickets.api.service.storage.StorageService;
+import broccolai.tickets.api.service.ticket.TicketService;
 import broccolai.tickets.core.commands.arguments.MessageArgument;
-import broccolai.tickets.core.commands.arguments.TicketArgument;
-import broccolai.tickets.core.configuration.Config;
-import broccolai.tickets.core.events.TicketsEventBus;
-import broccolai.tickets.core.events.api.NotificationEvent;
-import broccolai.tickets.core.events.api.TicketConstructionEvent;
-import broccolai.tickets.core.exceptions.PureException;
-import broccolai.tickets.core.interactions.NotificationReason;
-import broccolai.tickets.core.locale.Message;
-import broccolai.tickets.core.ticket.Ticket;
-import broccolai.tickets.core.ticket.TicketManager;
-import broccolai.tickets.core.ticket.TicketStatus;
-import broccolai.tickets.core.user.PlayerSoul;
-import broccolai.tickets.core.user.Soul;
-import broccolai.tickets.core.user.UserManager;
+import broccolai.tickets.core.commands.arguments.TicketParserMode;
+import broccolai.tickets.core.configuration.CommandsConfiguration;
+import broccolai.tickets.core.factory.CloudArgumentFactory;
 import broccolai.tickets.core.utilities.Constants;
+import cloud.commandframework.ArgumentDescription;
 import cloud.commandframework.Command;
 import cloud.commandframework.CommandManager;
-import cloud.commandframework.Description;
 import cloud.commandframework.arguments.standard.EnumArgument;
 import cloud.commandframework.context.CommandContext;
+import com.google.inject.Inject;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.TextComponent;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-import java.util.List;
+import java.util.Collection;
+import java.util.EnumSet;
 
-public final class TicketCommand<C> extends BaseCommand<C> {
+public final class TicketCommand extends CommonCommands {
 
-    private final TicketsEventBus eventManager;
-    private final TicketManager ticketManager;
+    private final CommandsConfiguration.TicketConfiguration config;
+    private final CloudArgumentFactory argumentFactory;
+    private final MessageService messageService;
+    private final TicketService ticketService;
+    private final InteractionService interactionService;
 
-    /**
-     * Create a new Ticket Command
-     *
-     * @param manager       Command Manager
-     * @param config        Config instance
-     * @param eventManager  Event Manager
-     * @param userManager   User Manager
-     * @param ticketManager Ticket Manager
-     */
+    @Inject
     public TicketCommand(
-            final @NonNull CommandManager<Soul<C>> manager,
-            final @NonNull Config config,
-            final @NonNull TicketsEventBus eventManager,
-            final @NonNull UserManager<C, ?, ?> userManager,
-            final @NonNull TicketManager ticketManager
+            final CommandsConfiguration.@NonNull TicketConfiguration config,
+            final @NonNull CloudArgumentFactory argumentFactory,
+            final @NonNull MessageService messageService,
+            final @NonNull StorageService storageService,
+            final @NonNull TicketService ticketService,
+            final @NonNull InteractionService interactionService
     ) {
-        super(userManager);
-        this.eventManager = eventManager;
-        this.ticketManager = ticketManager;
+        super(messageService, storageService);
+        this.config = config;
+        this.argumentFactory = argumentFactory;
+        this.messageService = messageService;
+        this.ticketService = ticketService;
+        this.interactionService = interactionService;
+    }
 
-        final Command.Builder<Soul<C>> builder = manager.commandBuilder("ticket", "ti")
-                .senderType(userManager.getPlayerSoulClass());
+    @Override
+    public void register(
+            final @NonNull CommandManager<@NonNull OnlineSoul> manager
+    ) {
+        final Command.Builder<OnlineSoul> builder = manager.commandBuilder("ticket", "ti")
+                .senderType(PlayerSoul.class);
 
         manager.command(builder.literal(
-                config.getAliasCreate().getFirst(),
-                Description.of("Create a ticket"),
-                config.getAliasCreate().getSecond()
+                this.config.create.main,
+                ArgumentDescription.of("Create a ticket"),
+                this.config.create.aliases
         )
                 .permission(Constants.USER_PERMISSION + ".create")
                 .argument(MessageArgument.of("message"))
-                .handler(this::processCreate));
+                .handler(this::processCreate)
+        );
 
         manager.command(builder.literal(
-                config.getAliasUpdate().getFirst(),
-                Description.of("Update a ticket"),
-                config.getAliasUpdate().getSecond()
+                this.config.update.main,
+                ArgumentDescription.of("Update a ticket"),
+                this.config.update.aliases
         )
                 .permission(Constants.USER_PERMISSION + ".update")
-                .argument(TicketArgument.of(true, true, TicketStatus.OPEN, TicketStatus.PICKED))
+                .argument(this.argumentFactory.ticket(
+                        "ticket", TicketParserMode.SENDERS,
+                        EnumSet.of(TicketStatus.OPEN, TicketStatus.CLAIMED),
+                        0
+                ))
                 .argument(MessageArgument.of("message"))
-                .handler(this::processUpdate));
+                .handler(this::processUpdate)
+        );
 
         manager.command(builder.literal(
-                config.getAliasClose().getFirst(),
-                Description.of("Close a ticket"),
-                config.getAliasClose().getSecond()
+                this.config.close.main,
+                ArgumentDescription.of("Close a ticket"),
+                this.config.close.aliases
         )
                 .permission(Constants.USER_PERMISSION + ".close")
-                .argument(TicketArgument.of(false, true, TicketStatus.OPEN, TicketStatus.PICKED))
-                .handler(this::processClose));
+                .argument(this.argumentFactory.ticket(
+                        "ticket",
+                        TicketParserMode.SENDERS,
+                        EnumSet.of(TicketStatus.OPEN, TicketStatus.CLAIMED),
+                        0
+                ))
+                .handler(this::processClose)
+        );
 
         manager.command(builder.literal(
-                config.getAliasList().getFirst(),
-                Description.of("List tickets"),
-                config.getAliasList().getSecond()
+                this.config.list.main,
+                ArgumentDescription.of("List tickets"),
+                this.config.list.aliases
         )
                 .permission(Constants.USER_PERMISSION + ".list")
                 .flag(manager.flagBuilder("status")
                         .withArgument(EnumArgument.of(TicketStatus.class, "status")))
-                .handler(this::processList));
-
-        manager.command(builder.literal(
-                config.getAliasShow().getFirst(),
-                Description.of("Show a ticket"),
-                config.getAliasShow().getSecond()
-        )
-                .permission(Constants.USER_PERMISSION + ".show")
-                .argument(TicketArgument.of(false, true))
-                .handler(c -> processShow(c.getSender(), c.get("ticket"))));
-
-        manager.command(builder.literal(
-                config.getAliasLog().getFirst(),
-                Description.of("View a tickets log"),
-                config.getAliasLog().getSecond()
-        )
-                .permission(Constants.USER_PERMISSION + ".log")
-                .argument(TicketArgument.of(false, true))
-                .handler(c -> processLog(c.getSender(), c.get("ticket"))));
-    }
-
-    private void processCreate(final @NonNull CommandContext<Soul<C>> c) {
-        PlayerSoul<C, ?> soul = (PlayerSoul<C, ?>) c.getSender();
-        TicketConstructionEvent constructionEvent = new TicketConstructionEvent(soul, c.get("message"));
-        this.eventManager.post(constructionEvent);
-
-        constructionEvent.getException()
-                .map(PureException::getComponent)
-                .ifPresent(soul::sendActionBar);
-    }
-
-    private void processUpdate(final @NonNull CommandContext<Soul<C>> c) {
-        Soul<C> soul = c.getSender();
-        Ticket ticket = c.get("ticket");
-        broccolai.tickets.core.message.Message message = c.get("message");
-
-        ticket.update(message);
-        this.eventManager.post(new NotificationEvent(NotificationReason.UPDATE_TICKET, soul, null, ticket));
-        ticketManager.updateTicket(ticket);
-        ticketManager.insertMessage(ticket.getId(), message);
-    }
-
-    private void processClose(final @NonNull CommandContext<Soul<C>> c) {
-        Soul<C> soul = c.getSender();
-        Ticket ticket = c.get("ticket");
-
-        ticketManager.insertMessage(ticket.getId(), ticket.close(soul.getUniqueId()));
-        ticketManager.updateTicket(ticket);
-        this.eventManager.post(new NotificationEvent(NotificationReason.CLOSE_TICKET, soul, null, ticket));
-    }
-
-    private void processList(final @NonNull CommandContext<Soul<C>> c) {
-        Soul<C> soul = c.getSender();
-        TicketStatus status = c.flags().getValue("status", null);
-        List<Ticket> tickets = ticketManager.getTickets(
-                soul.getUniqueId(),
-                status != null ? status : TicketStatus.OPEN,
-                TicketStatus.PICKED
+                .handler(this::processList)
         );
 
-        TextComponent.Builder builder = Component.text()
-                .append(Message.TITLE__YOUR_TICKETS.use());
+        manager.command(builder.literal(
+                this.config.show.main,
+                ArgumentDescription.of("Show a ticket"),
+                this.config.show.aliases
+        )
+                .permission(Constants.USER_PERMISSION + ".show")
+                .argument(this.argumentFactory.ticket("ticket", TicketParserMode.SENDERS, EnumSet.allOf(TicketStatus.class), 0))
+                .handler(c -> processShow(c.getSender(), c.get("ticket")))
+        );
 
-        tickets.forEach(ticket -> {
-            Component list = Message.FORMAT__LIST.use(ticket.templates());
-            builder.append(Component.newline(), list);
-        });
+        manager.command(builder.literal(
+                this.config.log.main,
+                ArgumentDescription.of("View a tickets log"),
+                this.config.log.aliases
+        )
+                .permission(Constants.USER_PERMISSION + ".log")
+                .argument(this.argumentFactory.ticket("ticket", TicketParserMode.SENDERS, EnumSet.allOf(TicketStatus.class), 0))
+                .handler(c -> processLog(c.getSender(), c.get("ticket")))
+        );
+    }
 
-        soul.sendMessage(builder);
+    private void processCreate(final @NonNull CommandContext<OnlineSoul> c) {
+        PlayerSoul soul = (PlayerSoul) c.getSender();
+        this.interactionService.create(soul, c.get("message"));
+    }
+
+    private void processUpdate(final @NonNull CommandContext<OnlineSoul> c) {
+        PlayerSoul soul = (PlayerSoul) c.getSender();
+        Ticket ticket = c.get("ticket");
+        MessageInteraction message = c.get("message");
+
+        this.interactionService.update(soul, ticket, message);
+    }
+
+    private void processClose(final @NonNull CommandContext<OnlineSoul> c) {
+        PlayerSoul soul = (PlayerSoul) c.getSender();
+        Ticket ticket = c.get("ticket");
+
+        this.interactionService.close(soul, ticket);
+    }
+
+    private void processList(final @NonNull CommandContext<OnlineSoul> c) {
+        OnlineSoul soul = c.getSender();
+        Collection<Ticket> tickets = this.ticketService.get(
+                soul,
+                TicketStatus.from(c.flags())
+        );
+
+        Component component = this.messageService.commandsTicketList(tickets);
+        soul.sendMessage(component);
     }
 
 }

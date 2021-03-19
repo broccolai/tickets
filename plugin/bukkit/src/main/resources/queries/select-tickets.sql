@@ -1,13 +1,8 @@
-SELECT id,
-       uuid,
-       status,
-       picker,
-       location,
-       ticket,
-       reason,
-       data,
-       sender, date
-FROM puretickets_ticket
-    LEFT JOIN puretickets_message
-ON puretickets_ticket.id = puretickets_message.ticket
-WHERE puretickets_ticket.id IN (<ids>);
+SELECT t.*, i.*
+FROM puretickets_ticket as t
+         LEFT JOIN puretickets_interaction as i
+                   ON (t.id = i.ticket) AND i.action = 'MESSAGE'
+WHERE i.time = (
+    SELECT max(time) FROM puretickets_interaction as i2 WHERE i2.ticket = t.id AND i2.action = 'MESSAGE'
+)
+AND t.id IN (<ids>)

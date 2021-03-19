@@ -1,16 +1,16 @@
 package broccolai.tickets.core.exceptions;
 
-import broccolai.tickets.core.locale.Message;
+import broccolai.tickets.api.service.message.MessageService;
+import net.kyori.adventure.text.Component;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
-public final class TicketClosed extends PureException {
+public final class TicketClosed extends PureException.Abstract {
 
     private static final long serialVersionUID = -1L;
 
-    /**
-     * Exception for when a ticket is already closed
-     */
-    public TicketClosed() {
-        super(Message.EXCEPTION__TICKET_CLOSED.use());
+    @Override
+    public @NonNull Component message(@NonNull final MessageService messageService) {
+        return messageService.exceptionTicketClosed();
     }
 
 }

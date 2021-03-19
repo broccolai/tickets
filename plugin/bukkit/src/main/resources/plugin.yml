@@ -1,6 +1,6 @@
 name : PureTickets
 main : broccolai.tickets.bukkit.BukkitPlatform
-version : @version@
+version : $version
 api-version : 1.13
 
 permissions :
@@ -11,7 +11,6 @@ permissions :
       tickets.user : true
       tickets.user.create : true
       tickets.user.update : true
-      tickets.user.settings : true
       tickets.user.close : true
       tickets.user.show : true
       tickets.user.list : true
@@ -22,9 +21,6 @@ permissions :
   tickets.user.update :
     default : true
     description : Allows a user to update a ticket
-  tickets.user.settings :
-    default : true
-    description : Allows a user to manage their personal settings
   tickets.user.close :
     default : true
     description : Allows a user to close a ticket
@@ -53,7 +49,6 @@ permissions :
       tickets.staff.list : true
       tickets.staff.announce : true
       tickets.staff.remind : true
-      tickets.staff.reload : false
       tickets.staff.highscore : true
   tickets.staff.show :
     default : op
@@ -88,12 +83,6 @@ permissions :
   tickets.staff.remind :
     default : op
     description : Allows a user to view the ticket reminder message
-  tickets.staff.reload :
-    default : op
-    description : Allows a user to reload parts of tickets
-  tickets.staff.purge :
-    default : op
-    description : Allows a user to purge EVERYTHING and reload tickets
   tickets.staff.highscore :
     default : op
     description : Allows a user to view highscores of ticket completions

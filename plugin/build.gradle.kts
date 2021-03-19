@@ -1,127 +1,61 @@
 import com.github.jengelman.gradle.plugins.shadow.ShadowPlugin
+import net.kyori.indra.IndraCheckstylePlugin
+import net.kyori.indra.IndraPlugin
+import net.kyori.indra.IndraPublishingPlugin
+import net.kyori.indra.sonatypeSnapshots
 
 plugins {
-    id("java")
-    id("java-library")
-    id("checkstyle")
-    id("idea")
+    id("net.kyori.indra") version "1.3.1"
+    id("net.kyori.indra.publishing") version "1.3.1"
+    id("net.kyori.indra.checkstyle") version "1.3.1"
     id("com.github.johnrengelman.shadow") version "6.1.0"
 }
 
-version = "4.0.0"
-
-allprojects {
-    group = "broccolai.tickets"
-    version = rootProject.version
-
-    repositories {
-        mavenLocal()
-        mavenCentral()
-
-        maven {
-            name = "Spigot repository"
-            url = uri("https://hub.spigotmc.org/nexus/content/repositories/snapshots/")
-        }
-
-        maven {
-            name = "Sonatype public"
-            url = uri("https://oss.sonatype.org/content/repositories/public/")
-        }
-
-        maven {
-            name = "Sonatype Snapshots"
-            url = uri("https://oss.sonatype.org/content/repositories/snapshots/")
-        }
-
-        maven {
-            name = "Intellectual Sites"
-            url = uri("https://mvn.intellectualsites.com/content/repositories/snapshots")
-        }
-
-        maven {
-            name = "papermc"
-            url = uri("https://papermc.io/repo/repository/maven-public/")
-        }
-
-        maven {
-            name = "broccolai"
-            url = uri("https://repo.broccol.ai")
-        }
-    }
-
-}
+group = "broccolai.tickets"
+version = "5.0.0-BETA-1"
 
 subprojects {
     apply {
-        plugin<JavaPlugin>()
-        plugin<JavaLibraryPlugin>()
         plugin<ShadowPlugin>()
-        plugin<CheckstylePlugin>()
-        plugin<IdeaPlugin>()
+        plugin<IndraPlugin>()
+        plugin<IndraCheckstylePlugin>()
+        plugin<IndraPublishingPlugin>()
+    }
+
+    repositories {
+        mavenCentral()
+        sonatypeSnapshots()
+
+        maven("https://hub.spigotmc.org/nexus/content/repositories/snapshots/")
+        maven("https://mvn.intellectualsites.com/content/repositories/snapshots")
+        maven("https://papermc.io/repo/repository/maven-public/")
+        maven("https://repo.broccol.ai")
+        maven("https://repo.broccol.ai/snapshots")
     }
 
     dependencies {
-        // Checkstyle
-        checkstyle("ca.stellardrift:stylecheck:0.1-SNAPSHOT")
-
         // Checker-qual annotations
-        compileOnlyApi("org.checkerframework:checker-qual:3.5.0")
-    }
-
-    configure<JavaPluginConvention> {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = sourceCompatibility
+        compileOnlyApi("org.checkerframework", "checker-qual", Versions.CHECKER_QUAL)
     }
 
     tasks {
-        compileJava {
-            options.apply {
-                isFork = true
-                compilerArgs.add("-Xlint:all")
-                compilerArgs.add("-parameters")
+
+        indra {
+            gpl3OnlyLicense()
+            publishReleasesTo("broccolai", "https://repo.broccol.ai/releases")
+
+            javaVersions {
+                target.set(8)
+            }
+
+            github("broccolai", "tickets") {
+                ci = true
             }
         }
 
-        build {
-            dependsOn(named("shadowJar"))
+        processResources {
+            expand("version" to rootProject.version)
         }
 
-        checkstyle {
-            val configRoot = File(rootProject.projectDir, ".checkstyle")
-            toolVersion = "8.34"
-            configDirectory.set(configRoot)
-            configProperties["basedir"] = configRoot.absolutePath
-        }
     }
-}
-
-tasks {
-    shadowJar {
-        dependencies {
-            exclude(dependency("com.google.guava:guava:21.0"))
-        }
-
-        fun reloc(vararg deps: String) {
-            for (i in deps.indices step 2) {
-                relocate(deps[i], project.group.toString() + ".lib." + deps[i + 1])
-            }
-        }
-
-        reloc(
-                "cloud.commandframework", "cloud",
-                "com.intellectualsites.http", "http",
-                "io.leangen.geantyref", "geantyref",
-                "io.papermc.lib", "paperlib",
-                "broccolai.corn", "corn"
-        )
-
-
-        archiveFileName.set(project.name + ".jar")
-        mergeServiceFiles()
-        minimize()
-    }
-}
-
-if (file("$rootDir/local.gradle").exists()) {
-    apply(from = "$rootDir/local.gradle")
 }

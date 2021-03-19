@@ -1,132 +1,180 @@
 package broccolai.tickets.core.commands.arguments;
 
+import broccolai.corn.core.Lists;
+import broccolai.corn.core.Numbers;
+import broccolai.tickets.api.model.ticket.Ticket;
+import broccolai.tickets.api.model.ticket.TicketStatus;
+import broccolai.tickets.api.model.user.OnlineSoul;
+import broccolai.tickets.api.model.user.PlayerSoul;
+import broccolai.tickets.api.model.user.Soul;
+import broccolai.tickets.api.service.ticket.TicketService;
+import broccolai.tickets.api.service.user.UserService;
 import broccolai.tickets.core.exceptions.TicketNotFound;
-import broccolai.tickets.core.ticket.Ticket;
-import broccolai.tickets.core.ticket.TicketIdStorage;
-import broccolai.tickets.core.ticket.TicketManager;
-import broccolai.tickets.core.ticket.TicketStatus;
-import broccolai.tickets.core.user.Soul;
-import broccolai.tickets.core.user.User;
 import cloud.commandframework.arguments.CommandArgument;
 import cloud.commandframework.arguments.parser.ArgumentParseResult;
 import cloud.commandframework.arguments.parser.ArgumentParser;
-import cloud.commandframework.arguments.standard.IntegerArgument;
 import cloud.commandframework.context.CommandContext;
-import org.checkerframework.checker.nullness.qual.NonNull;
+import cloud.commandframework.exceptions.parsing.NoInputProvidedException;
+import com.google.inject.Inject;
+
+import com.google.inject.assistedinject.Assisted;
 
 import java.util.ArrayList;
+import org.checkerframework.checker.nullness.qual.NonNull;
+
 import java.util.List;
+import java.util.Optional;
 import java.util.Queue;
-import java.util.UUID;
+import java.util.Set;
 
-public final class TicketArgument<C> extends CommandArgument<Soul<C>, Ticket> {
+public final class TicketArgument extends CommandArgument<OnlineSoul, Ticket> {
 
-    private TicketArgument(final boolean requiresId, final boolean issuer, final @NonNull TicketStatus... statuses) {
-        super(true, "ticket", new TicketParser<>(requiresId, issuer, statuses), Ticket.class);
-    }
-
-    /**
-     * Create a new required command argument
-     *
-     * @param requiresId Should require an id
-     * @param issuer     Parse from the sender
-     * @param statuses   Applicable ticket statuses
-     * @param <C>        Command Sender type
-     * @return Constructed ticket argument
-     */
-    public static <C> @NonNull TicketArgument<C> of(
-            final boolean requiresId,
-            final boolean issuer,
-            final @NonNull TicketStatus... statuses
+    @Inject
+    public TicketArgument(
+            final @NonNull UserService userService,
+            final @NonNull TicketService ticketService,
+            final @Assisted("name") @NonNull String name,
+            final @Assisted("mode") @NonNull TicketParserMode mode,
+            final @Assisted("suggestions") @NonNull Set<TicketStatus> suggestions,
+            final @Assisted("padding") int padding
     ) {
-        return new TicketArgument<>(requiresId, issuer, statuses);
+        super(true, name, new TicketParser(userService, ticketService, mode, suggestions, padding), Ticket.class);
     }
 
+    public static final class TicketParser implements ArgumentParser<OnlineSoul, Ticket> {
 
-    private static final class TicketParser<C> implements ArgumentParser<Soul<C>, Ticket> {
+        private final UserService userService;
+        private final TicketService ticketService;
+        private final TicketParserMode parserMode;
+        private final Set<TicketStatus> suggestions;
+        private final int padding;
 
-        private final boolean requiresId;
-        private final boolean issuer;
-        private final @NonNull TicketStatus[] statuses;
-
-        private TicketParser(final boolean requiresId, final boolean issuer, final @NonNull TicketStatus[] statuses) {
-            this.requiresId = requiresId;
-            this.issuer = issuer;
-            this.statuses = statuses;
+        private TicketParser(
+                final @NonNull UserService userService,
+                final @NonNull TicketService ticketService,
+                final @NonNull TicketParserMode parserMode,
+                final @NonNull Set<TicketStatus> suggestions,
+                final int padding
+        ) {
+            this.userService = userService;
+            this.ticketService = ticketService;
+            this.parserMode = parserMode;
+            this.suggestions = suggestions;
+            this.padding = padding;
         }
 
         @Override
         public @NonNull ArgumentParseResult<Ticket> parse(
-                final @NonNull CommandContext<Soul<C>> commandContext,
+                final @NonNull CommandContext<OnlineSoul> commandContext,
                 final @NonNull Queue<String> inputQueue
         ) {
-            TicketManager ticketManager = commandContext.get("ticketManager");
-            User target;
-
-            if (issuer) {
-                target = commandContext.getSender().asUser();
-            } else {
-                target = commandContext.get("target");
+            switch (this.parserMode) {
+                case ANY: return this.any(commandContext, inputQueue);
+                case SENDERS: return this.senders(commandContext, inputQueue);
+                default: throw new IllegalStateException();
             }
-
-            String input = inputQueue.peek();
-            Ticket ticket;
-
-            if (requiresId || input != null) {
-                try {
-                    @SuppressWarnings("ConstantConditions") final int inputId = Integer.parseInt(input);
-                    ticket = ticketManager.getTicket(inputId).orElse(null);
-
-                    if (ticket != null && !ticket.getPlayer().equals(target)) {
-                        ticket = null;
-                    }
-                } catch (NumberFormatException e) {
-                    return ArgumentParseResult.failure(new IntegerArgument.IntegerParseException(
-                            input,
-                            0,
-                            Integer.MAX_VALUE,
-                            commandContext
-                    ));
-                }
-            } else {
-                ticket = ticketManager.getRecentTicket(target, statuses).orElse(null);
-            }
-
-            if (ticket == null) {
-                return ArgumentParseResult.failure(new TicketNotFound());
-            }
-
-            inputQueue.remove();
-            return ArgumentParseResult.success(ticket);
         }
 
         @Override
         public @NonNull List<String> suggestions(
-                final @NonNull CommandContext<Soul<C>> commandContext,
+                final @NonNull CommandContext<OnlineSoul> commandContext,
                 final @NonNull String input
         ) {
-            TicketIdStorage idStorage = commandContext.<TicketManager>get("ticketManager").getIdStorage();
+            if (this.parserMode == TicketParserMode.SENDERS) {
+                return this.ticketIds(commandContext.getSender());
+            }
 
-            try {
-                UUID uuid;
+            int current = commandContext.getRawInput().size() - 3 - this.padding;
 
-                if (issuer) {
-                    uuid = commandContext.getSender().getUniqueId();
-                } else {
-                    User user = commandContext.get("target");
-                    uuid = user.getUniqueId();
-                }
+            if (current == 0) {
+                return Lists.map(this.userService.players(), PlayerSoul::username);
+            }
 
-                List<String> ids = new ArrayList<>();
+            String firstArgument = commandContext.getRawInput().get(2);
+            Integer id = Numbers.valueOrNull(firstArgument, Integer::parseInt);
 
-                for (final Integer id : idStorage.getIds(uuid, statuses)) {
-                    ids.add(id.toString());
-                }
-
-                return ids;
-            } catch (final Exception e) {
+            if (id != null) {
                 return new ArrayList<>();
             }
+
+            Soul target = this.userService.wrap(firstArgument);
+
+            return this.ticketIds(target);
+        }
+
+        private List<String> ticketIds(final @NonNull Soul target) {
+            return Lists.map(this.ticketService.get(target, this.suggestions), ticket -> {
+                return String.valueOf(ticket.id());
+            });
+        }
+
+        @Override
+        public int getRequestedArgumentCount() {
+            return 2;
+        }
+
+        private ArgumentParseResult<Ticket> any(
+                final @NonNull CommandContext<OnlineSoul> commandContext,
+                final @NonNull Queue<String> inputQueue
+        ) {
+            String input = inputQueue.peek();
+
+            if (input == null || input.isEmpty()) {
+                return ArgumentParseResult.failure(new NoInputProvidedException(
+                        TicketParser.class,
+                        commandContext
+                ));
+            }
+
+            Integer value = Numbers.valueOrNull(input, Integer::parseInt);
+            inputQueue.remove();
+
+            if (value == null) {
+                input = inputQueue.poll();
+
+                if (input == null || input.isEmpty()) {
+                    return ArgumentParseResult.failure(new NoInputProvidedException(
+                            TicketParser.class,
+                            commandContext
+                    ));
+                }
+
+                try {
+                    value = Integer.parseInt(input);
+                } catch (Exception e) {
+                    return ArgumentParseResult.failure(new TicketNotFound());
+                }
+            }
+
+            Optional<Ticket> potentialTicket = this.ticketService.get(value);
+
+            if (!potentialTicket.isPresent()) {
+                return ArgumentParseResult.failure(new TicketNotFound());
+            }
+
+            Ticket ticket = potentialTicket.get();
+
+            return ArgumentParseResult.success(ticket);
+        }
+
+        private ArgumentParseResult<Ticket> senders(
+                final @NonNull CommandContext<OnlineSoul> commandContext,
+                final @NonNull Queue<String> inputQueue
+        ) {
+            ArgumentParseResult<Ticket> result = this.any(commandContext, inputQueue);
+            Optional<Ticket> potentialTicket = result.getParsedValue();
+
+            if (!potentialTicket.isPresent()) {
+                return result;
+            }
+
+            Ticket ticket = potentialTicket.get();
+
+            if (!ticket.player().equals(commandContext.getSender().uuid())) {
+                return ArgumentParseResult.failure(new TicketNotFound());
+            }
+
+            return result;
         }
 
     }

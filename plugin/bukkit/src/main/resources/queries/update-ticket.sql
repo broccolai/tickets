@@ -1,4 +1,3 @@
 UPDATE puretickets_ticket
-SET status = :status,
-    picker = :picker
+SET `status` = :status, claimer = :claimer
 WHERE id = :id
