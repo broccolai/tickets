@@ -22,6 +22,8 @@ import broccolai.tickets.api.service.event.EventService;
 import broccolai.tickets.api.service.interactions.InteractionService;
 import broccolai.tickets.api.service.storage.StorageService;
 import broccolai.tickets.api.service.ticket.TicketService;
+import broccolai.tickets.core.exceptions.TicketClosed;
+import broccolai.tickets.core.exceptions.TicketOpen;
 import broccolai.tickets.core.model.interaction.BasicInteraction;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -73,6 +75,8 @@ public final class EventInteractionService implements InteractionService {
             final @NonNull Ticket ticket,
             final @NonNull MessageInteraction interaction
     ) {
+        this.requireOpen(ticket);
+
         ticket.message(interaction);
 
         this.storageService.queue(ticket, interaction);
@@ -82,6 +86,8 @@ public final class EventInteractionService implements InteractionService {
 
     @Override
     public void close(@NonNull final PlayerSoul soul, @NonNull final Ticket ticket) {
+        this.requireOpen(ticket);
+
         Interaction interaction = new BasicInteraction(Action.CLOSE, LocalDateTime.now(), soul.uuid());
         ticket.status(TicketStatus.CLOSED);
 
@@ -92,6 +98,8 @@ public final class EventInteractionService implements InteractionService {
 
     @Override
     public void claim(final @NonNull OnlineSoul soul, final @NonNull Ticket ticket) {
+        this.requireOpen(ticket);
+
         Interaction interaction = new BasicInteraction(Action.CLAIM, LocalDateTime.now(), soul.uuid());
         ticket.status(TicketStatus.CLAIMED);
         ticket.claimer(soul.uuid());
@@ -103,6 +111,8 @@ public final class EventInteractionService implements InteractionService {
 
     @Override
     public void complete(final @NonNull OnlineSoul soul, final @NonNull Ticket ticket) {
+        this.requireOpen(ticket);
+
         Interaction interaction = new BasicInteraction(Action.CLAIM, LocalDateTime.now(), soul.uuid());
         ticket.status(TicketStatus.CLOSED);
         ticket.claimer(soul.uuid());
@@ -114,6 +124,8 @@ public final class EventInteractionService implements InteractionService {
 
     @Override
     public void assign(@NonNull final OnlineSoul soul, @NonNull final Soul target, @NonNull final Ticket ticket) {
+        this.requireOpen(ticket);
+
         Interaction interaction = new BasicInteraction(Action.ASSIGN, LocalDateTime.now(), soul.uuid());
         ticket.status(TicketStatus.CLAIMED);
         ticket.claimer(soul.uuid());
@@ -125,6 +137,8 @@ public final class EventInteractionService implements InteractionService {
 
     @Override
     public void unclaim(@NonNull final OnlineSoul soul, @NonNull final Ticket ticket) {
+        this.requireOpen(ticket);
+
         Interaction interaction = new BasicInteraction(Action.UNCLAIM, LocalDateTime.now(), soul.uuid());
         ticket.status(TicketStatus.OPEN);
         ticket.claimer(null);
@@ -136,6 +150,8 @@ public final class EventInteractionService implements InteractionService {
 
     @Override
     public void reopen(@NonNull final OnlineSoul soul, @NonNull final Ticket ticket) {
+        this.requireClosed(ticket);
+
         Interaction interaction = new BasicInteraction(Action.REOPEN, LocalDateTime.now(), soul.uuid());
         ticket.status(TicketStatus.OPEN);
 
@@ -151,6 +167,18 @@ public final class EventInteractionService implements InteractionService {
         this.storageService.queue(ticket, interaction);
         TicketNoteEvent event = new TicketNoteEvent(soul, ticket, message.message());
         this.eventService.post(event);
+    }
+
+    private void requireOpen(final @NonNull Ticket ticket) {
+        if (ticket.status() == TicketStatus.CLOSED) {
+            throw new TicketClosed();
+        }
+    }
+
+    private void requireClosed(final @NonNull Ticket ticket) {
+        if (ticket.status() != TicketStatus.CLOSED) {
+            throw new TicketOpen();
+        }
     }
 
 }

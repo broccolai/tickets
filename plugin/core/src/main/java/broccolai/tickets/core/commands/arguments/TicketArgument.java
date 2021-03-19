@@ -9,6 +9,7 @@ import broccolai.tickets.api.model.user.PlayerSoul;
 import broccolai.tickets.api.model.user.Soul;
 import broccolai.tickets.api.service.ticket.TicketService;
 import broccolai.tickets.api.service.user.UserService;
+import broccolai.tickets.core.exceptions.TicketNotFound;
 import cloud.commandframework.arguments.CommandArgument;
 import cloud.commandframework.arguments.parser.ArgumentParseResult;
 import cloud.commandframework.arguments.parser.ArgumentParser;
@@ -39,7 +40,7 @@ public final class TicketArgument extends CommandArgument<OnlineSoul, Ticket> {
         super(true, name, new TicketParser(userService, ticketService, mode, padding), Ticket.class);
     }
 
-    private static final class TicketParser implements ArgumentParser<OnlineSoul, Ticket> {
+    public static final class TicketParser implements ArgumentParser<OnlineSoul, Ticket> {
 
         private final UserService userService;
         private final TicketService ticketService;
@@ -137,20 +138,14 @@ public final class TicketArgument extends CommandArgument<OnlineSoul, Ticket> {
                 try {
                     value = Integer.parseInt(input);
                 } catch (Exception e) {
-                    return ArgumentParseResult.failure(new NoInputProvidedException(
-                            TicketParser.class,
-                            commandContext
-                    ));
+                    return ArgumentParseResult.failure(new TicketNotFound());
                 }
             }
 
             Optional<Ticket> potentialTicket = this.ticketService.get(value);
 
             if (!potentialTicket.isPresent()) {
-                return ArgumentParseResult.failure(new NoInputProvidedException(
-                        TicketParser.class,
-                        commandContext
-                ));
+                return ArgumentParseResult.failure(new TicketNotFound());
             }
 
             Ticket ticket = potentialTicket.get();
@@ -172,10 +167,7 @@ public final class TicketArgument extends CommandArgument<OnlineSoul, Ticket> {
             Ticket ticket = potentialTicket.get();
 
             if (!ticket.player().equals(commandContext.getSender().uuid())) {
-                return ArgumentParseResult.failure(new NoInputProvidedException(
-                        TicketParser.class,
-                        commandContext
-                ));
+                return ArgumentParseResult.failure(new TicketNotFound());
             }
 
             return result;
