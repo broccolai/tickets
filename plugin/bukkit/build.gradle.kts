@@ -20,10 +20,6 @@ tasks {
         dependsOn(named("shadowJar"))
     }
 
-    processResources {
-        expand("version" to rootProject.version)
-    }
-
     shadowJar {
         fun relocates(vararg dependencies: String) {
             dependencies.forEach {

@@ -12,7 +12,7 @@ plugins {
 }
 
 group = "broccolai.tickets"
-version = rootProject.version
+version = "5.0.0-SNAPSHOT"
 
 subprojects {
     apply {
@@ -52,5 +52,10 @@ subprojects {
                 ci = true
             }
         }
+
+        processResources {
+            expand("version" to rootProject.version)
+        }
+
     }
 }
