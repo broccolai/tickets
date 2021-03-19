@@ -36,7 +36,7 @@ public final class BukkitPlatform extends JavaPlugin implements PluginPlatform {
         );
 
         this.pureTickets = injector.getInstance(PureTickets.class);
-        this.pureTickets.load();
+        injector = this.pureTickets.load();
 
         try {
             CommandManager<OnlineSoul> commandManager = this.commandManager(injector.getInstance(UserService.class));

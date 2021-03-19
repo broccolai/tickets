@@ -34,7 +34,7 @@ public final class PureTickets {
         this.parentInjector = parentInjector;
     }
 
-    public void load() {
+    public Injector load() {
         this.injector = this.parentInjector.createChildInjector(
                 new ConfigurationModule(),
                 new ServiceModule(),
@@ -46,6 +46,8 @@ public final class PureTickets {
         for (final Class<? extends Task> task : this.tasks) {
             taskService.schedule(this.injector.getInstance(task));
         }
+
+        return this.injector;
     }
 
     public void unload() {
