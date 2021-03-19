@@ -153,13 +153,11 @@ public final class LocaleConfiguration {
 
         public LocaleEntry listHeader = new LocaleEntry("<green><player>");
 
-        public LocaleEntry log = new LocaleEntry("<white><bold><reason> <dark_gray>@ <white><date><dark_gray>");
+        public LocaleEntry log = new LocaleEntry("<yellow><bold><action> - <white><player>");
 
         public LocaleEntry status = new LocaleEntry("<amount> <status>");
 
         public LocaleEntry hs = new LocaleEntry("<green><target> <dark_gray>- <white><bold><amount>");
-
-        public LocaleEntry settingUpdate = new LocaleEntry("<white>Setting <green><setting> <white>is now <status>");
 
         public LocaleEntry reminder = new LocaleEntry("<prefix> There are <amount> ticket(s) currently open");
 

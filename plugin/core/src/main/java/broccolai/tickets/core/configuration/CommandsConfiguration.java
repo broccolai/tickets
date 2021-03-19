@@ -16,11 +16,15 @@ public final class CommandsConfiguration {
 
         public AliasConfiguration create = new AliasConfiguration("create", "c");
 
+        public AliasConfiguration show = new AliasConfiguration("show", "s");
+
         public AliasConfiguration update = new AliasConfiguration("update", "u");
 
         public AliasConfiguration close = new AliasConfiguration("close", "cl");
 
         public AliasConfiguration list = new AliasConfiguration("list", "l");
+
+        public AliasConfiguration log = new AliasConfiguration("log");
 
     }
 
@@ -38,6 +42,8 @@ public final class CommandsConfiguration {
         public AliasConfiguration unclaim = new AliasConfiguration("unclaim", "u");
 
         public AliasConfiguration reopen = new AliasConfiguration("reopen", "r");
+
+        public AliasConfiguration log = new AliasConfiguration("log");
 
         public AliasConfiguration teleport = new AliasConfiguration("teleport", "tp");
 
