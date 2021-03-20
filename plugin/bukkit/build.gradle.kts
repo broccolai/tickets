@@ -54,7 +54,8 @@ tasks {
                 "org.spongepowered",
                 "org.h2",
                 "org.flywaydb",
-                "com.google",
+                "com.google.inject",
+                "com.google.j2objc",
                 "com.zaxxer"
         )
 
