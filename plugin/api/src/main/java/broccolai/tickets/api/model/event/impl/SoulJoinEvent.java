@@ -8,9 +8,6 @@ public final class SoulJoinEvent implements SoulEvent {
 
     private final PlayerSoul soul;
 
-    /**
-     * Initialise AsyncSoulJoinEvent
-     */
     public SoulJoinEvent(final @NonNull PlayerSoul soul) {
         this.soul = soul;
     }

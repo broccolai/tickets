@@ -209,8 +209,30 @@ public final class DatabaseStorageService implements StorageService {
 
     @Override
     public @NonNull Collection<Component> notifications(final @NonNull Soul soul) {
-        //todo
-        return null;
+        return this.jdbi.withHandle(handle -> {
+            String[] queries = SQLQueries.NOTIFICATIONS.get();
+
+            Collection<Component> components = handle.createQuery(queries[0])
+                        .bind("uuid", soul.uuid())
+                        .mapTo(Component.class)
+                        .list();
+
+            handle.createUpdate(queries[1])
+                    .bind("uuid", soul.uuid())
+                    .execute();
+
+            return components;
+        });
+    }
+
+    @Override
+    public void saveNotification(final @NonNull Soul soul, final @NonNull Component component) {
+        this.jdbi.useHandle(handle -> {
+            handle.createUpdate(SQLQueries.INSERT_NOTIFICATION.get()[0])
+                    .bind("uuid", soul.uuid())
+                    .bind("message", ComponentMapper.MINI.serialize(component))
+                    .execute();
+        });
     }
 
     @Override

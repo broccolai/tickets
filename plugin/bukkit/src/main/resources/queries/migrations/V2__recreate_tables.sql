@@ -25,12 +25,5 @@ CREATE TABLE IF NOT EXISTS puretickets_interaction
 CREATE TABLE IF NOT EXISTS puretickets_notification
 (
     `uuid` varchar(36) NOT NULL,
-    `message` varchar(255) NOT NULL,
-    `replacements` varchar(255) NOT NULL
-);
-
-CREATE TABLE IF NOT EXISTS puretickets_settings
-(
-    `uuid` varchar(36) NOT NULL,
-    `announcements` BOOLEAN NOT NULL
+    `message` varchar(255) NOT NULL
 );
