@@ -5,9 +5,11 @@ import broccolai.tickets.api.model.user.OnlineSoul;
 import broccolai.tickets.api.service.message.MessageService;
 import broccolai.tickets.api.service.user.UserService;
 import broccolai.tickets.bukkit.inject.BukkitModule;
+import broccolai.tickets.bukkit.listeners.PlayerJoinListener;
 import broccolai.tickets.core.PureTickets;
 import broccolai.tickets.core.exceptions.PureException;
 import broccolai.tickets.core.inject.platform.PluginPlatform;
+import broccolai.tickets.core.utilities.ArrayHelper;
 import cloud.commandframework.CommandManager;
 import cloud.commandframework.exceptions.InvalidCommandSenderException;
 import cloud.commandframework.execution.AsynchronousCommandExecutionCoordinator;
@@ -21,12 +23,17 @@ import net.kyori.adventure.audience.ForwardingAudience;
 import org.bukkit.Bukkit;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 @SuppressWarnings("unused")
 public final class BukkitPlatform extends JavaPlugin implements PluginPlatform {
+
+    private static final Class<? extends Listener>[] LISTENERS = ArrayHelper.create(
+            PlayerJoinListener.class
+    );
 
     private @MonotonicNonNull PureTickets pureTickets;
 
@@ -53,6 +60,11 @@ public final class BukkitPlatform extends JavaPlugin implements PluginPlatform {
         }
 
         this.pureTickets.subscribers(SUBSCRIBERS);
+
+        for (final Class<? extends Listener> listenerClass : LISTENERS) {
+            Listener listener = injector.getInstance(listenerClass);
+            this.getServer().getPluginManager().registerEvents(listener, this);
+        }
     }
 
     @Override
