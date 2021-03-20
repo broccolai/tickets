@@ -66,7 +66,7 @@ public final class BungeeListener implements PluginMessageListener {
             throw new RuntimeException(e);
         }
 
-        Optional<Ticket> potentialTicket = ticketService.get(id);
+        Optional<Ticket> potentialTicket = this.ticketService.get(id);
 
         if (!potentialTicket.isPresent()) {
             return;
@@ -74,7 +74,7 @@ public final class BungeeListener implements PluginMessageListener {
 
         Ticket ticket = potentialTicket.get();
 
-        Component component = messageService.staffTicketCreate(ticket);
+        Component component = this.messageService.staffTicketCreate(ticket);
 
         this.userService.players().forEach(soul -> {
             if (soul.permission("tickets.staff.announce")) {
