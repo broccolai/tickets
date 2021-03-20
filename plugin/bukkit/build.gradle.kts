@@ -47,10 +47,15 @@ tasks {
                 "io.leangen.geantyref",
                 "io.papermc.lib",
                 "cloud.commandframework",
-                "net.kyori.adventure",
-                "net.kyori.event",
-                "net.kyori.examination",
-                "broccolai.corn"
+                "net.kyori",
+                "broccolai.corn",
+                "org.yaml",
+                "org.aopalliance",
+                "org.spongepowered",
+                "org.h2",
+                "org.flywaydb",
+                "com.google",
+                "com.zaxxer"
         )
 
         archiveClassifier.set(null as String?)
