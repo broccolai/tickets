@@ -10,11 +10,11 @@ import java.sql.SQLException;
 
 public final class ComponentMapper implements ColumnMapper<Component> {
 
-    private static final MiniMessage MINI = MiniMessage.get();
+    public static final MiniMessage MINI = MiniMessage.get();
 
     @Override
-    public Component map(final ResultSet r, final int columnNumber, final StatementContext ctx) {
-        throw new IllegalArgumentException();
+    public Component map(final ResultSet r, final int columnNumber, final StatementContext ctx) throws SQLException {
+        return MINI.deserialize(r.getString(columnNumber));
     }
 
     @Override
