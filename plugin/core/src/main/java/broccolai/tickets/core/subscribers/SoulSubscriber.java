@@ -48,7 +48,10 @@ public final class SoulSubscriber implements Subscriber {
 
         if (soul.permission(Constants.STAFF_PERMISSION + ".announce")) {
             int tickets = this.ticketService.count(EnumSet.of(TicketStatus.OPEN, TicketStatus.CLAIMED));
-            soul.sendMessage(this.messageService.taskReminder(tickets));
+
+            if (tickets != 0) {
+                soul.sendMessage(this.messageService.taskReminder(tickets));
+            }
         }
     }
 
