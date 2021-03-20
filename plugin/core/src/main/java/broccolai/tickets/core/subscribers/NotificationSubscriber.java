@@ -12,6 +12,7 @@ import broccolai.tickets.api.model.user.Soul;
 import broccolai.tickets.api.service.event.EventService;
 import broccolai.tickets.api.service.intergrations.DiscordService;
 import broccolai.tickets.api.service.message.MessageService;
+import broccolai.tickets.api.service.storage.StorageService;
 import broccolai.tickets.api.service.user.UserService;
 import com.google.inject.Inject;
 import net.kyori.adventure.text.Component;
@@ -23,16 +24,19 @@ public final class NotificationSubscriber implements Subscriber {
     private final UserService userService;
     private final MessageService messageService;
     private final DiscordService discordService;
+    private final StorageService storageService;
 
     @Inject
     public NotificationSubscriber(
             final @NonNull UserService userService,
             final @NonNull MessageService messageService,
-            final @NonNull DiscordService discordService
+            final @NonNull DiscordService discordService,
+            final @NonNull StorageService storageService
     ) {
         this.userService = userService;
         this.messageService = messageService;
         this.discordService = discordService;
+        this.storageService = storageService;
     }
 
     @Override
@@ -59,7 +63,10 @@ public final class NotificationSubscriber implements Subscriber {
         if (targetSoul instanceof OnlineSoul) {
             OnlineSoul onlineSoul = (OnlineSoul) targetSoul;
             onlineSoul.sendMessage(target.component());
+            return;
         }
+
+        this.storageService.saveNotification(targetSoul, target.component());
     }
 
     public void onStaffNotification(final @NonNull StaffNotificationEvent event) {
