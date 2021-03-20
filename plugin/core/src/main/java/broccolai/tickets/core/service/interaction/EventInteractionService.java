@@ -125,7 +125,7 @@ public final class EventInteractionService implements InteractionService {
     public void complete(final @NonNull OnlineSoul soul, final @NonNull Ticket ticket) {
         this.requireOpen(ticket);
 
-        Interaction interaction = new BasicInteraction(Action.CLAIM, LocalDateTime.now(), soul.uuid());
+        Interaction interaction = new BasicInteraction(Action.COMPLETE, LocalDateTime.now(), soul.uuid());
         ticket.status(TicketStatus.CLOSED);
         ticket.claimer(soul.uuid());
 
