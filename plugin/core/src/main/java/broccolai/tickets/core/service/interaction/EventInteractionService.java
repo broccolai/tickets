@@ -22,13 +22,16 @@ import broccolai.tickets.api.service.event.EventService;
 import broccolai.tickets.api.service.interactions.InteractionService;
 import broccolai.tickets.api.service.storage.StorageService;
 import broccolai.tickets.api.service.ticket.TicketService;
+import broccolai.tickets.core.configuration.MainConfiguration;
 import broccolai.tickets.core.exceptions.TicketClosed;
 import broccolai.tickets.core.exceptions.TicketOpen;
+import broccolai.tickets.core.exceptions.TooManyOpenTickets;
 import broccolai.tickets.core.model.interaction.BasicInteraction;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 import java.time.LocalDateTime;
+import java.util.EnumSet;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
@@ -38,9 +41,11 @@ public final class EventInteractionService implements InteractionService {
     private final StorageService storageService;
     private final EventService eventService;
     private final TicketService ticketService;
+    private final int openTicketLimit;
 
     @Inject
     public EventInteractionService(
+            final @NonNull MainConfiguration mainConfiguration,
             final @NonNull StorageService storageService,
             final @NonNull EventService eventService,
             final @NonNull TicketService ticketService
@@ -48,6 +53,7 @@ public final class EventInteractionService implements InteractionService {
         this.storageService = storageService;
         this.eventService = eventService;
         this.ticketService = ticketService;
+        this.openTicketLimit = mainConfiguration.advancedConfiguration.openTicketLimit;
     }
 
     @Override
@@ -60,6 +66,12 @@ public final class EventInteractionService implements InteractionService {
 
         if (constructionEvent.cancelled()) {
             return null;
+        }
+
+        int currentOpen = this.ticketService.get(soul, EnumSet.of(TicketStatus.OPEN)).size();
+
+        if (currentOpen >= this.openTicketLimit) {
+            throw new TooManyOpenTickets();
         }
 
         Ticket ticket = this.ticketService.create(soul, soul.position(), interaction);

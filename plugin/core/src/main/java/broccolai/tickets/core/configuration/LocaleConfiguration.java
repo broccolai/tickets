@@ -140,6 +140,8 @@ public final class LocaleConfiguration {
 
         public LocaleEntry ticketClaimed = new LocaleEntry("<prefix> <color:#ff1744>This ticket is already claimed");
 
+        public LocaleEntry tooManyTicketsOpen = new LocaleEntry("<prefix> <color:#ff1744>You already have too many open tickets");
+
     }
 
     @ConfigSerializable

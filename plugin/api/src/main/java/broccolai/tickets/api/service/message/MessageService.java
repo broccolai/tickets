@@ -96,6 +96,8 @@ public interface MessageService {
 
     Component exceptionTicketNotFound();
 
+    Component exceptionTooManyTicketsOpen();
+
     Component exceptionNoPermission();
 
     Component exceptionWrongSender(@NonNull Class<?> sender);

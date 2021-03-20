@@ -8,4 +8,6 @@ public final class AdvancedConfiguration {
 
     public String api = "https://tickets.broccol.ai";
 
+    public int openTicketLimit = 5;
+
 }

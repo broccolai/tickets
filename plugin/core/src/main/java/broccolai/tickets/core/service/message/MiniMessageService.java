@@ -381,6 +381,11 @@ public final class MiniMessageService implements MessageService {
     }
 
     @Override
+    public Component exceptionTooManyTicketsOpen() {
+        return this.locale.exception.tooManyTicketsOpen.use(Collections.singletonList(this.prefix));
+    }
+
+    @Override
     public Component exceptionNoPermission() {
         return this.locale.exception.noPermission.use(Collections.singletonList(this.prefix));
     }
