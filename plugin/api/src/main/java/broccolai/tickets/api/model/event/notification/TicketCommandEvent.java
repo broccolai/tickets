@@ -41,7 +41,7 @@ public abstract class TicketCommandEvent implements SenderNotificationEvent, Sta
         JsonObject json = new JsonObject();
 
         json.add("ticket", JsonUtility.ticket(userService, this.ticket));
-        json.add("author", JsonUtility.user(userService, this.soul));
+        json.add("author", JsonUtility.user(this.soul));
         json.addProperty("action", this.notificationReason.name());
 
         return json;

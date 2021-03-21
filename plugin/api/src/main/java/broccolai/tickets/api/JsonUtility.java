@@ -1,7 +1,6 @@
 package broccolai.tickets.api;
 
 import broccolai.tickets.api.model.ticket.Ticket;
-import broccolai.tickets.api.model.user.OnlineSoul;
 import broccolai.tickets.api.model.user.Soul;
 import broccolai.tickets.api.service.user.UserService;
 import com.google.gson.JsonObject;
@@ -34,17 +33,11 @@ public final class JsonUtility {
         return json;
     }
 
-    public static JsonObject user(final @NonNull UserService userService, final @NonNull Soul soul) {
+    public static JsonObject user(final @NonNull Soul soul) {
         JsonObject json = new JsonObject();
 
         json.addProperty("uuid", soul.uuid().toString());
-
-        if (soul instanceof OnlineSoul) {
-            OnlineSoul onlineSoul = (OnlineSoul) soul;
-            json.addProperty("name", onlineSoul.username());
-        } else {
-            json.addProperty("name", userService.name(soul.uuid()));
-        }
+        json.addProperty("name", soul.username());
 
         return json;
     }
