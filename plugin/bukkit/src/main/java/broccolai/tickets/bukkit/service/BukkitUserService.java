@@ -2,7 +2,9 @@ package broccolai.tickets.bukkit.service;
 
 import broccolai.tickets.api.model.user.ConsoleSoul;
 import broccolai.tickets.api.model.user.PlayerSoul;
+import broccolai.tickets.api.model.user.Soul;
 import broccolai.tickets.bukkit.model.BukkitConsoleSoul;
+import broccolai.tickets.bukkit.model.BukkitOfflineSoul;
 import broccolai.tickets.bukkit.model.BukkitPlayerSoul;
 import broccolai.tickets.core.service.user.SimpleUserService;
 import com.google.inject.Inject;
@@ -10,6 +12,7 @@ import com.google.inject.Singleton;
 import java.util.ArrayList;
 import net.kyori.adventure.platform.AudienceProvider;
 import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import java.util.Collection;
@@ -43,6 +46,12 @@ public final class BukkitUserService extends SimpleUserService {
         }
 
         return new BukkitPlayerSoul(player, this.audienceProvider.player(uuid));
+    }
+
+    @Override
+    public @NonNull Soul offlinePlayer(@NonNull final UUID uuid) {
+        OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(uuid);
+        return new BukkitOfflineSoul(offlinePlayer);
     }
 
     @Override

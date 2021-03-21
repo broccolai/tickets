@@ -1,7 +1,6 @@
 package broccolai.tickets.core.service.user;
 
 import broccolai.tickets.api.model.user.ConsoleSoul;
-import broccolai.tickets.api.model.user.OfflineSoul;
 import broccolai.tickets.api.model.user.Soul;
 import broccolai.tickets.api.service.user.UserService;
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -21,7 +20,7 @@ public abstract class SimpleUserService implements UserService {
             return this.player(uuid);
         }
 
-        return new OfflineSoul(uuid);
+        return this.offlinePlayer(uuid);
     }
 
     @Override

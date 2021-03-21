@@ -14,6 +14,7 @@ public interface OnlineSoul extends Soul, Identified, Identity, ForwardingAudien
     @Pure
     @NonNull UUID uuid();
 
+    @Override
     @Pure
     @NonNull String username();
 
@@ -23,11 +24,6 @@ public interface OnlineSoul extends Soul, Identified, Identity, ForwardingAudien
     @Override
     default @NonNull Identity identity() {
         return this;
-    }
-
-    @SuppressWarnings("unchecked")
-    default <A extends OnlineSoul> @NonNull A cast() {
-        return (A) this;
     }
 
 }

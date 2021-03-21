@@ -17,6 +17,8 @@ public interface UserService {
 
     @NonNull PlayerSoul player(@NonNull UUID uuid);
 
+    @NonNull Soul offlinePlayer(@NonNull UUID uuid);
+
     @NonNull Collection<PlayerSoul> players();
 
     @NonNull String name(@NonNull UUID uuid);
