@@ -11,16 +11,16 @@ import java.io.File;
 import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 
 @ConfigSerializable
-@SuppressWarnings("CanBeFinal")
+@SuppressWarnings({"FieldCanBeLocal", "FieldMayBeFinal", "CanBeFinal"})
 public final class StorageConfiguration {
 
-    private final Type type = Type.H2;
+    private Type type = Type.H2;
 
-    private final String url = "jdbc:mysql://localhost:3306/tickets";
+    private String url = "jdbc:mysql://localhost:3306/tickets";
 
-    private final String username = "username";
+    private String username = "username";
 
-    private final String password = "********";
+    private String password = "********";
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
     public HikariConfig asHikari(final @NonNull File folder) {

@@ -5,6 +5,7 @@ import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 import org.spongepowered.configurate.objectmapping.meta.Setting;
 
 @ConfigSerializable
+@SuppressWarnings("CanBeFinal")
 public final class CommandsConfiguration {
 
     public TicketConfiguration ticket = new TicketConfiguration();
@@ -53,6 +54,7 @@ public final class CommandsConfiguration {
 
     }
 
+    @SuppressWarnings("unused")
     @ConfigSerializable
     public static final class AliasConfiguration {
 
