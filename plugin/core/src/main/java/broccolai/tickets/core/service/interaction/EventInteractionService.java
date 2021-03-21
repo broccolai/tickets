@@ -197,7 +197,7 @@ public final class EventInteractionService implements InteractionService {
     private void requireOpenAndUnclaimed(final @NonNull Ticket ticket) {
         this.requireOpen(ticket);
 
-        if (ticket.status() == TicketStatus.OPEN) {
+        if (ticket.status() == TicketStatus.CLAIMED) {
             throw new TicketClaimed();
         }
     }
