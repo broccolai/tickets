@@ -23,6 +23,7 @@ import broccolai.tickets.api.service.interactions.InteractionService;
 import broccolai.tickets.api.service.storage.StorageService;
 import broccolai.tickets.api.service.ticket.TicketService;
 import broccolai.tickets.core.configuration.MainConfiguration;
+import broccolai.tickets.core.exceptions.TicketClaimed;
 import broccolai.tickets.core.exceptions.TicketClosed;
 import broccolai.tickets.core.exceptions.TicketOpen;
 import broccolai.tickets.core.exceptions.TooManyOpenTickets;
@@ -110,7 +111,7 @@ public final class EventInteractionService implements InteractionService {
 
     @Override
     public void claim(final @NonNull OnlineSoul soul, final @NonNull Ticket ticket) {
-        this.requireOpen(ticket);
+        this.requireOpenAndUnclaimed(ticket);
 
         Interaction interaction = new BasicInteraction(Action.CLAIM, LocalDateTime.now(), soul.uuid());
         ticket.status(TicketStatus.CLAIMED);
@@ -136,7 +137,7 @@ public final class EventInteractionService implements InteractionService {
 
     @Override
     public void assign(@NonNull final OnlineSoul soul, @NonNull final Soul target, @NonNull final Ticket ticket) {
-        this.requireOpen(ticket);
+        this.requireOpenAndUnclaimed(ticket);
 
         Interaction interaction = new BasicInteraction(Action.ASSIGN, LocalDateTime.now(), soul.uuid());
         ticket.status(TicketStatus.CLAIMED);
@@ -190,6 +191,14 @@ public final class EventInteractionService implements InteractionService {
     private void requireClosed(final @NonNull Ticket ticket) {
         if (ticket.status() != TicketStatus.CLOSED) {
             throw new TicketOpen();
+        }
+    }
+
+    private void requireOpenAndUnclaimed(final @NonNull Ticket ticket) {
+        this.requireOpen(ticket);
+
+        if (ticket.status() == TicketStatus.OPEN) {
+            throw new TicketClaimed();
         }
     }
 
