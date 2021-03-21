@@ -59,9 +59,7 @@ public final class BukkitPlayerSoul implements PlayerSoul, BukkitOnlineSoul {
         World world = position.world() != null ? Bukkit.getWorld(position.world()) : null;
         Location bukkitLocation = new Location(world, position.x(), position.y(), position.z());
 
-        taskService.sync(() -> {
-            PaperLib.teleportAsync(this.player, bukkitLocation);
-        });
+        taskService.sync(() -> PaperLib.teleportAsync(this.player, bukkitLocation));
     }
 
     @Override

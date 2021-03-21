@@ -103,9 +103,7 @@ public final class TicketArgument extends CommandArgument<OnlineSoul, Ticket> {
         }
 
         private List<String> ticketIds(final @NonNull Soul target) {
-            return Lists.map(this.ticketService.get(target, this.suggestions), ticket -> {
-                return String.valueOf(ticket.id());
-            });
+            return Lists.map(this.ticketService.get(target, this.suggestions), ticket -> String.valueOf(ticket.id()));
         }
 
         @Override
@@ -148,7 +146,7 @@ public final class TicketArgument extends CommandArgument<OnlineSoul, Ticket> {
 
             Optional<Ticket> potentialTicket = this.ticketService.get(value);
 
-            if (!potentialTicket.isPresent()) {
+            if (potentialTicket.isEmpty()) {
                 return ArgumentParseResult.failure(new TicketNotFound());
             }
 
@@ -164,7 +162,7 @@ public final class TicketArgument extends CommandArgument<OnlineSoul, Ticket> {
             ArgumentParseResult<Ticket> result = this.any(commandContext, inputQueue);
             Optional<Ticket> potentialTicket = result.getParsedValue();
 
-            if (!potentialTicket.isPresent()) {
+            if (potentialTicket.isEmpty()) {
                 return result;
             }
 
