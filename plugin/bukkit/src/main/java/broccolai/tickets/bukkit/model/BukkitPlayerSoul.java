@@ -1,7 +1,6 @@
 package broccolai.tickets.bukkit.model;
 
 import broccolai.tickets.api.model.position.Position;
-import broccolai.tickets.api.model.user.OnlineSoul;
 import broccolai.tickets.api.model.user.PlayerSoul;
 import broccolai.tickets.api.service.tasks.TaskService;
 import io.papermc.lib.PaperLib;
@@ -9,13 +8,14 @@ import net.kyori.adventure.audience.Audience;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.util.UUID;
 
 @SuppressWarnings("ConstantConditions")
-public final class BukkitPlayerSoul implements PlayerSoul, OnlineSoul {
+public final class BukkitPlayerSoul implements PlayerSoul, BukkitOnlineSoul {
 
     private final Player player;
     private final Audience audience;
@@ -62,6 +62,11 @@ public final class BukkitPlayerSoul implements PlayerSoul, OnlineSoul {
         taskService.sync(() -> {
             PaperLib.teleportAsync(this.player, bukkitLocation);
         });
+    }
+
+    @Override
+    public CommandSender sender() {
+        return this.player;
     }
 
 }
