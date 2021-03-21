@@ -10,4 +10,7 @@ public interface Soul {
     @Pure
     @NonNull UUID uuid();
 
+    @Pure
+    @NonNull String username();
+
 }
