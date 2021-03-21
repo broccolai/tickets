@@ -1,11 +1,12 @@
 package broccolai.tickets.bukkit;
 
-import broccolai.tickets.api.model.user.ConsoleSoul;
 import broccolai.tickets.api.model.user.OnlineSoul;
 import broccolai.tickets.api.service.message.MessageService;
 import broccolai.tickets.api.service.user.UserService;
 import broccolai.tickets.bukkit.inject.BukkitModule;
 import broccolai.tickets.bukkit.listeners.PlayerJoinListener;
+import broccolai.tickets.bukkit.model.BukkitOnlineSoul;
+import broccolai.tickets.bukkit.service.BukkitUserService;
 import broccolai.tickets.core.PureTickets;
 import broccolai.tickets.core.exceptions.PureException;
 import broccolai.tickets.core.inject.platform.PluginPlatform;
@@ -20,7 +21,6 @@ import cloud.commandframework.paper.PaperCommandManager;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import net.kyori.adventure.audience.ForwardingAudience;
-import org.bukkit.Bukkit;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
@@ -76,6 +76,8 @@ public final class BukkitPlatform extends JavaPlugin implements PluginPlatform {
             final @NonNull UserService userService,
             final @NonNull MessageService messageService
     ) throws Exception {
+        BukkitUserService bukkitUserService = (BukkitUserService) userService;
+
         PaperCommandManager<@NonNull OnlineSoul> cloudManager = new PaperCommandManager<>(
                 this,
                 AsynchronousCommandExecutionCoordinator.<OnlineSoul>newBuilder().withAsynchronousParsing().build(),
@@ -85,14 +87,11 @@ public final class BukkitPlatform extends JavaPlugin implements PluginPlatform {
                     }
 
                     Player player = (Player) sender;
-                    return userService.player(player.getUniqueId());
+                    return bukkitUserService.player(player);
                 },
-                user -> {
-                    if (user.uuid().equals(ConsoleSoul.UUID)) {
-                        return Bukkit.getConsoleSender();
-                    } else {
-                        return Bukkit.getPlayer(user.uuid());
-                    }
+                soul -> {
+                    BukkitOnlineSoul bukkitSoul = (BukkitOnlineSoul) soul;
+                    return bukkitSoul.sender();
                 }
         );
 

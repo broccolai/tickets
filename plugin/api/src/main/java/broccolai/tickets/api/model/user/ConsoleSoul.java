@@ -5,7 +5,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.util.UUID;
 
-public final class ConsoleSoul implements OnlineSoul {
+public abstract class ConsoleSoul implements OnlineSoul {
 
     public static final @NonNull UUID UUID = new UUID(0, 0);
 
@@ -18,22 +18,22 @@ public final class ConsoleSoul implements OnlineSoul {
     }
 
     @Override
-    public @NonNull UUID uuid() {
+    public final @NonNull UUID uuid() {
         return UUID;
     }
 
     @Override
-    public @NonNull String username() {
+    public final @NonNull String username() {
         return USERNAME;
     }
 
     @Override
-    public boolean permission(final @NonNull String permission) {
+    public final boolean permission(final @NonNull String permission) {
         return true;
     }
 
     @Override
-    public @NonNull Audience audience() {
+    public final @NonNull Audience audience() {
         return this.audience;
     }
 

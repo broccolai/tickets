@@ -1,6 +1,8 @@
 package broccolai.tickets.bukkit.service;
 
+import broccolai.tickets.api.model.user.ConsoleSoul;
 import broccolai.tickets.api.model.user.PlayerSoul;
+import broccolai.tickets.bukkit.model.BukkitConsoleSoul;
 import broccolai.tickets.bukkit.model.BukkitPlayerSoul;
 import broccolai.tickets.core.service.user.SimpleUserService;
 import com.google.inject.Inject;
@@ -16,14 +18,31 @@ import java.util.UUID;
 @Singleton
 public final class BukkitUserService extends SimpleUserService {
 
+    private final AudienceProvider audienceProvider;
+
     @Inject
     public BukkitUserService(final @NonNull AudienceProvider audienceProvider) {
-        super(audienceProvider);
+        this.audienceProvider = audienceProvider;
+    }
+
+    public @NonNull PlayerSoul player(final @NonNull Player player) {
+        return new BukkitPlayerSoul(player, this.audienceProvider.player(player.getUniqueId()));
     }
 
     @Override
-    public @NonNull PlayerSoul player(@NonNull final UUID uuid) {
-        return new BukkitPlayerSoul(uuid, this.audienceProvider.player(uuid));
+    public @NonNull ConsoleSoul console() {
+        return new BukkitConsoleSoul(this.audienceProvider.console());
+    }
+
+    @Override
+    public @NonNull PlayerSoul player(final @NonNull UUID uuid) {
+        Player player = Bukkit.getPlayer(uuid);
+
+        if (player == null) {
+            throw new IllegalArgumentException();
+        }
+
+        return new BukkitPlayerSoul(player, this.audienceProvider.player(uuid));
     }
 
     @Override
