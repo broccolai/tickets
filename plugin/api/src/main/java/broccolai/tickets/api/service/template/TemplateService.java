@@ -1,15 +1,15 @@
 package broccolai.tickets.api.service.template;
 
 import broccolai.tickets.api.model.ticket.Ticket;
+import broccolai.tickets.api.model.user.Soul;
 import net.kyori.adventure.text.minimessage.Template;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.util.List;
-import java.util.UUID;
 
 public interface TemplateService {
 
-    List<Template> player(@NonNull String prefix, @NonNull UUID uuid);
+    List<Template> player(@NonNull String prefix, @NonNull Soul soul);
 
     List<Template> ticket(@NonNull Ticket ticket);
 
