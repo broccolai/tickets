@@ -239,10 +239,10 @@ public final class DatabaseStorageService implements StorageService {
     public Map<UUID, Integer> highscores(final @NonNull ChronoUnit chronoUnit) {
         return this.jdbi.withHandle(handle -> {
             return handle.createQuery(SQLQueries.HIGHSCORES.get()[0])
-                    .bind("date", LocalDateTime.now().minus(1, chronoUnit))
+                    .bind("time", LocalDateTime.now().minus(1, chronoUnit))
                     .reduceRows(new HashMap<>(), (map, rowView) -> {
                         map.put(
-                                rowView.getColumn("picker", UUID.class),
+                                rowView.getColumn("claimer", UUID.class),
                                 rowView.getColumn("num", Integer.class)
                         );
 
