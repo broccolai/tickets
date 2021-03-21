@@ -1,6 +1,7 @@
 package broccolai.tickets.core.service.template;
 
 import broccolai.tickets.api.model.ticket.Ticket;
+import broccolai.tickets.api.model.user.Soul;
 import broccolai.tickets.api.service.template.TemplateService;
 import broccolai.tickets.api.service.user.UserService;
 import com.google.inject.Inject;
@@ -31,13 +32,12 @@ public final class MiniTemplateService implements TemplateService {
     @Override
     public List<Template> player(
             final @NonNull String prefix,
-            final @NonNull UUID uuid
+            final @NonNull Soul soul
     ) {
-        String name = this.userService.name(uuid);
         return Arrays.asList(
-                Template.of(prefix, this.userComponent(name, uuid)),
-                Template.of(prefix + "_name", name),
-                Template.of(prefix + "_uuid", uuid.toString())
+                Template.of(prefix, this.userComponent(soul.username(), soul.uuid())),
+                Template.of(prefix + "_name", soul.username()),
+                Template.of(prefix + "_uuid", soul.uuid().toString())
         );
     }
 

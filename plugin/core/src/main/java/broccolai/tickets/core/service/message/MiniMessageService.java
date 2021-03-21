@@ -7,6 +7,7 @@ import broccolai.tickets.api.model.ticket.Ticket;
 import broccolai.tickets.api.model.user.Soul;
 import broccolai.tickets.api.service.message.MessageService;
 import broccolai.tickets.api.service.template.TemplateService;
+import broccolai.tickets.api.service.user.UserService;
 import broccolai.tickets.core.configuration.LocaleConfiguration;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -31,6 +32,7 @@ import java.util.UUID;
 public final class MiniMessageService implements MessageService {
 
     private final LocaleConfiguration locale;
+    private final UserService userService;
     private final TemplateService templateService;
 
     private final Template prefix;
@@ -38,9 +40,11 @@ public final class MiniMessageService implements MessageService {
     @Inject
     public MiniMessageService(
             final @NonNull LocaleConfiguration locale,
+            final @NonNull UserService userService,
             final @NonNull TemplateService templateService
     ) {
         this.locale = locale;
+        this.userService = userService;
         this.templateService = templateService;
         this.prefix = Template.of("prefix", this.locale.prefix.use());
     }
@@ -104,7 +108,7 @@ public final class MiniMessageService implements MessageService {
         List<Template> templates = new ArrayList<>();
         templates.add(this.prefix);
         templates.addAll(this.templateService.ticket(ticket));
-        templates.addAll(this.templateService.player("target", target.uuid()));
+        templates.addAll(this.templateService.player("target", target));
 
         return this.locale.sender.assign.use(templates);
     }
@@ -284,8 +288,10 @@ public final class MiniMessageService implements MessageService {
                 .append(this.locale.title.allTickets.use(Collections.singletonList(wrapper)));
 
         map.forEach((uuid, tickets) -> {
+            Soul soul = this.userService.wrap(uuid);
+
             builder.append(Component.newline());
-            builder.append(this.locale.format.listHeader.use(this.templateService.player("player", uuid)));
+            builder.append(this.locale.format.listHeader.use(this.templateService.player("player", soul)));
 
             List<Ticket> sortedTickets = new ArrayList<>(tickets);
             sortedTickets.sort(Comparator.comparingInt(Ticket::id));
@@ -319,7 +325,8 @@ public final class MiniMessageService implements MessageService {
                 .append(this.locale.title.highscores.use(Collections.singletonList(wrapper)), Component.newline());
 
         List<Component> entries = Lists.map(ranks.entrySet(), (entry) -> {
-            List<Template> templates = new ArrayList<>(this.templateService.player("player", entry.getKey()));
+            Soul soul = this.userService.wrap(entry.getKey());
+            List<Template> templates = new ArrayList<>(this.templateService.player("player", soul));
             templates.add(Template.of("amount", entry.getValue().toString()));
 
             return this.locale.format.hs.use(templates);
@@ -340,7 +347,8 @@ public final class MiniMessageService implements MessageService {
                 .append(this.locale.title.log.use(Collections.singletonList(wrapper)), Component.newline());
 
         List<Component> entries = Lists.map(interactions, (interaction) -> {
-            List<Template> templates = new ArrayList<>(this.templateService.player("player", interaction.sender()));
+            Soul soul = this.userService.wrap(interaction.sender());
+            List<Template> templates = new ArrayList<>(this.templateService.player("player", soul));
             templates.add(Template.of("action", interaction.action().name()));
 
             Component hoverComponent = Component.text("Time: " + formatter.format(interaction.time()));
