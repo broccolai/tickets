@@ -45,7 +45,7 @@ subprojects {
             publishReleasesTo("broccolai", "https://repo.broccol.ai/releases")
 
             javaVersions {
-                target.set(8)
+                target.set(11)
             }
 
             github("broccolai", "tickets") {
