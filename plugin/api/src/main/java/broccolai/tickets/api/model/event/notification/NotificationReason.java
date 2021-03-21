@@ -8,7 +8,6 @@ public enum NotificationReason {
     NOTE_TICKET,
     CLAIM_TICKET,
     REOPEN_TICKET,
-    TELEPORT_TICKET,
     UPDATE_TICKET,
     UNCLAIM_TICKET
 }
