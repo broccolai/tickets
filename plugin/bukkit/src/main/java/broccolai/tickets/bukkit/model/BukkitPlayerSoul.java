@@ -9,6 +9,7 @@ import net.kyori.adventure.audience.Audience;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.entity.Player;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.util.UUID;
@@ -16,27 +17,27 @@ import java.util.UUID;
 @SuppressWarnings("ConstantConditions")
 public final class BukkitPlayerSoul implements PlayerSoul, OnlineSoul {
 
-    private final UUID uuid;
+    private final Player player;
     private final Audience audience;
 
-    public BukkitPlayerSoul(final @NonNull UUID uuid, final @NonNull Audience audience) {
-        this.uuid = uuid;
+    public BukkitPlayerSoul(final @NonNull Player player, final @NonNull Audience audience) {
+        this.player = player;
         this.audience = audience;
     }
 
     @Override
     public @NonNull UUID uuid() {
-        return this.uuid;
+        return this.player.getUniqueId();
     }
 
     @Override
     public @NonNull String username() {
-        return Bukkit.getPlayer(this.uuid).getName();
+        return this.player.getName();
     }
 
     @Override
     public boolean permission(final @NonNull String permission) {
-        return Bukkit.getPlayer(this.uuid).hasPermission(permission);
+        return this.player.getPlayer().hasPermission(permission);
     }
 
     @Override
@@ -46,7 +47,7 @@ public final class BukkitPlayerSoul implements PlayerSoul, OnlineSoul {
 
     @Override
     public @NonNull Position position() {
-        Location location = Bukkit.getPlayer(this.uuid).getLocation();
+        Location location = this.player.getLocation();
         World world = location.getWorld();
         String worldName = world != null ? world.getName() : null;
 
@@ -59,7 +60,7 @@ public final class BukkitPlayerSoul implements PlayerSoul, OnlineSoul {
         Location bukkitLocation = new Location(world, position.x(), position.y(), position.z());
 
         taskService.sync(() -> {
-            PaperLib.teleportAsync(Bukkit.getPlayer(this.uuid), bukkitLocation);
+            PaperLib.teleportAsync(this.player, bukkitLocation);
         });
     }
 
