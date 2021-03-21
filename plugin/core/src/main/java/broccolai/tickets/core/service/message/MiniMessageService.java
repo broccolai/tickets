@@ -26,6 +26,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 
 @Singleton
@@ -411,12 +412,25 @@ public final class MiniMessageService implements MessageService {
         templates.add(Template.of("wrapper", this.locale.title.wrapper.use()));
         templates.addAll(this.templateService.ticket(ticket));
 
+        Optional<UUID> claimer = ticket.claimer();
+        Component component;
+
+        if (claimer.isPresent()) {
+            Soul soul = this.userService.wrap(claimer.get());
+            templates.addAll(this.templateService.player("claimer", soul));
+
+            component = this.locale.show.claimed.use(templates);
+        } else {
+            component = this.locale.show.unclaimed.use(templates);
+        }
+
         return this.padComponent(Component.join(
                 Component.newline(),
                 this.locale.title.showTicket.use(templates),
                 this.locale.show.status.use(templates),
                 this.locale.show.player.use(templates),
                 this.locale.show.position.use(templates),
+                component,
                 this.locale.show.message.use(templates)
         ));
     }
