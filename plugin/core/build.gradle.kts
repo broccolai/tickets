@@ -34,7 +34,7 @@ dependencies {
     api("com.google.inject", "guice", Versions.GUICE)
 
     // Configurate
-    api("org.spongepowered", "configurate-yaml", "4.0.0")
+    api("org.spongepowered", "configurate-yaml", Versions.CONFIGURATE)
 
     api("com.google.inject.extensions", "guice-assistedinject", Versions.GUICE) {
         isTransitive = false
