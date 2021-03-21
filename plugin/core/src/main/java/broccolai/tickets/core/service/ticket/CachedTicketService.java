@@ -48,7 +48,10 @@ public final class CachedTicketService implements TicketService {
             final @NonNull MessageInteraction interaction
     ) {
         int id = this.storageService.create(soul, position, interaction);
-        return new Ticket(id, soul.uuid(), position, TicketStatus.OPEN, interaction, null);
+        Ticket ticket = new Ticket(id, soul.uuid(), position, TicketStatus.OPEN, interaction, null);
+        this.cache.put(id, ticket);
+
+        return ticket;
     }
 
     @Override
