@@ -337,7 +337,7 @@ public final class MiniMessageService implements MessageService {
         Template wrapper = Template.of("wrapper", this.locale.title.wrapper.use());
 
         TextComponent.Builder builder = Component.text()
-                .append(this.locale.title.highscores.use(Collections.singletonList(wrapper)), Component.newline());
+                .append(this.locale.title.log.use(Collections.singletonList(wrapper)), Component.newline());
 
         List<Component> entries = Lists.map(interactions, (interaction) -> {
             List<Template> templates = new ArrayList<>(this.templateService.player("player", interaction.sender()));

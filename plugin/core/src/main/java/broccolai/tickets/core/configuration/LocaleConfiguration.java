@@ -106,6 +106,8 @@ public final class LocaleConfiguration {
 
         public LocaleEntry highscores = new LocaleEntry("<wrapper><color:#f5a5a5>Highscores<wrapper>");
 
+        public LocaleEntry log = new LocaleEntry("<wrapper><color:#f5a5a5>Log<wrapper>");
+
     }
 
     @ConfigSerializable
