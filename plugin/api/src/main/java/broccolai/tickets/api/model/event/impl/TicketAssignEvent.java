@@ -32,12 +32,12 @@ public final class TicketAssignEvent extends TicketsCommandEvent {
 
     @Override
     public @NotNull TargetPair target(final @NonNull MessageService messageService) {
-        return TargetPair.of(this.ticket.player(), messageService.targetTicketClaim(this.ticket));
+        return TargetPair.of(this.ticket.player(), messageService.targetTicketClaim(this.ticket, this.target));
     }
 
     @Override
     public @Nullable Component staff(final @NonNull MessageService messageService) {
-        return messageService.staffTicketAssign(this.ticket);
+        return messageService.staffTicketAssign(this.ticket, this.target);
     }
 
 }

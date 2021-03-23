@@ -31,12 +31,12 @@ public final class TicketNoteEvent extends TicketsCommandEvent {
 
     @Override
     public @NotNull TargetPair target(@NonNull final MessageService messageService) {
-        return TargetPair.of(this.ticket.player(), messageService.targetTicketNote(this.ticket, this.note));
+        return TargetPair.of(this.ticket.player(), messageService.targetTicketNote(this.ticket, this.note, this.soul));
     }
 
     @Override
     public Component staff(final @NonNull MessageService messageService) {
-        return messageService.staffTicketNote(this.ticket, this.note);
+        return messageService.staffTicketNote(this.ticket, this.note, this.soul);
     }
 
 }

@@ -22,12 +22,12 @@ public final class TicketReopenEvent extends TicketsCommandEvent {
 
     @Override
     public TargetPair target(final @NonNull MessageService messageService) {
-        return TargetPair.of(this.ticket.player(), messageService.targetTicketReopen(this.ticket));
+        return TargetPair.of(this.ticket.player(), messageService.targetTicketReopen(this.ticket, this.soul));
     }
 
     @Override
     public Component staff(final @NonNull MessageService messageService) {
-        return messageService.staffTicketReopen(this.ticket);
+        return messageService.staffTicketReopen(this.ticket, this.soul);
     }
 
 }

@@ -22,12 +22,12 @@ public final class TicketUnclaimEvent extends TicketsCommandEvent {
 
     @Override
     public TargetPair target(final @NonNull MessageService messageService) {
-        return TargetPair.of(this.ticket.player(), messageService.targetTicketUnclaim(this.ticket));
+        return TargetPair.of(this.ticket.player(), messageService.targetTicketUnclaim(this.ticket, this.soul));
     }
 
     @Override
     public Component staff(final @NonNull MessageService messageService) {
-        return messageService.staffTicketUnclaim(this.ticket);
+        return messageService.staffTicketUnclaim(this.ticket, this.soul);
     }
 
 }

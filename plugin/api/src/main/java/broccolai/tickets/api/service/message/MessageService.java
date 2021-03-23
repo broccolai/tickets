@@ -38,15 +38,15 @@ public interface MessageService {
     // Target
     //
 
-    Component targetTicketClaim(@NonNull Ticket ticket);
+    Component targetTicketClaim(@NonNull Ticket ticket, @NonNull Soul soul);
 
-    Component targetTicketReopen(@NonNull Ticket ticket);
+    Component targetTicketReopen(@NonNull Ticket ticket, @NonNull Soul soul);
 
-    Component targetTicketUnclaim(@NonNull Ticket ticket);
+    Component targetTicketUnclaim(@NonNull Ticket ticket, @NonNull Soul soul);
 
-    Component targetTicketComplete(@NonNull Ticket ticket);
+    Component targetTicketComplete(@NonNull Ticket ticket, @NonNull Soul soul);
 
-    Component targetTicketNote(@NonNull Ticket ticket, @NonNull String note);
+    Component targetTicketNote(@NonNull Ticket ticket, @NonNull String note, @NonNull Soul soul);
 
     //
     // Staff
@@ -54,21 +54,21 @@ public interface MessageService {
 
     Component staffTicketCreate(@NonNull Ticket ticket);
 
-    Component staffTicketReopen(@NonNull Ticket ticket);
-
     Component staffTicketUpdate(@NonNull Ticket ticket);
 
     Component staffTicketClose(@NonNull Ticket ticket);
 
-    Component staffTicketClaim(@NonNull Ticket ticket);
+    Component staffTicketReopen(@NonNull Ticket ticket, @NonNull Soul soul);
 
-    Component staffTicketUnclaim(@NonNull Ticket ticket);
+    Component staffTicketClaim(@NonNull Ticket ticket, @NonNull Soul soul);
 
-    Component staffTicketAssign(@NonNull Ticket ticket);
+    Component staffTicketUnclaim(@NonNull Ticket ticket, @NonNull Soul soul);
 
-    Component staffTicketComplete(@NonNull Ticket ticket);
+    Component staffTicketAssign(@NonNull Ticket ticket, @NonNull Soul soul);
 
-    Component staffTicketNote(@NonNull Ticket ticket, @NonNull String note);
+    Component staffTicketComplete(@NonNull Ticket ticket, @NonNull Soul soul);
+
+    Component staffTicketNote(@NonNull Ticket ticket, @NonNull String note, @NonNull Soul soul);
 
     //
     // Commands
