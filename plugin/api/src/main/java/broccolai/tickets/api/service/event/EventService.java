@@ -7,7 +7,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 
 public interface EventService {
 
-    PostResult post(@NonNull Event event);
+    @NonNull PostResult post(@NonNull Event event);
 
     <T extends Event> void register(@NonNull Class<T> clazz, @NonNull EventSubscriber<T> subscriber);
 

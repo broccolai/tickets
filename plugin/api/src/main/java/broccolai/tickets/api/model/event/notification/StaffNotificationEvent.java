@@ -6,6 +6,6 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 
 public interface StaffNotificationEvent extends NotificationEvent {
 
-    Component staff(@NonNull MessageService messageService);
+    @NonNull Component staff(@NonNull MessageService messageService);
 
 }

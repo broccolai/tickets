@@ -61,7 +61,7 @@ public final class Ticket {
         this.message = message;
     }
 
-    public @NonNull Optional<UUID> claimer() {
+    public @NonNull Optional<@NonNull UUID> claimer() {
         return Optional.ofNullable(this.claimer);
     }
 

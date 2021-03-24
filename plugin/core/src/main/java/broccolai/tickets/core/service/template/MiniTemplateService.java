@@ -14,6 +14,7 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.minimessage.Template;
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 import java.util.List;
@@ -30,7 +31,7 @@ public final class MiniTemplateService implements TemplateService {
     }
 
     @Override
-    public List<Template> player(
+    public @NotNull List<@NonNull Template> player(
             final @NonNull String prefix,
             final @NonNull Soul soul
     ) {
@@ -42,7 +43,7 @@ public final class MiniTemplateService implements TemplateService {
     }
 
     @Override
-    public List<Template> ticket(final @NonNull Ticket ticket) {
+    public @NonNull List<@NonNull Template> ticket(final @NonNull Ticket ticket) {
         String name = this.userService.name(ticket.player());
         return Arrays.asList(
                 Template.of("ticket", Component.text('#', NamedTextColor.DARK_GRAY).append(Component.text(

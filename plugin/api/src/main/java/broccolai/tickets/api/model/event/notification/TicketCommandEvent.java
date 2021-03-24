@@ -8,6 +8,7 @@ import broccolai.tickets.api.model.user.PlayerSoul;
 import broccolai.tickets.api.service.user.UserService;
 import com.google.gson.JsonObject;
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.jetbrains.annotations.NotNull;
 
 public abstract class TicketCommandEvent implements SenderNotificationEvent, StaffNotificationEvent, DiscordNotificationEvent,
         TicketEvent, SoulEvent {
@@ -27,17 +28,17 @@ public abstract class TicketCommandEvent implements SenderNotificationEvent, Sta
     }
 
     @Override
-    public final PlayerSoul soul() {
+    public final @NotNull PlayerSoul soul() {
         return this.soul;
     }
 
     @Override
-    public final Ticket ticket() {
+    public final @NonNull Ticket ticket() {
         return this.ticket;
     }
 
     @Override
-    public final JsonObject discord(final @NonNull UserService userService) {
+    public final @NonNull JsonObject discord(final @NonNull UserService userService) {
         JsonObject json = new JsonObject();
 
         json.add("ticket", JsonUtility.ticket(userService, this.ticket));

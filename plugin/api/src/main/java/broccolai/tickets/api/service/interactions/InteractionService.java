@@ -9,7 +9,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 
 public interface InteractionService {
 
-    Ticket create(@NonNull PlayerSoul soul, @NonNull MessageInteraction interaction);
+    @NonNull Ticket create(@NonNull PlayerSoul soul, @NonNull MessageInteraction interaction);
 
     void update(@NonNull PlayerSoul soul, @NonNull Ticket ticket, @NonNull MessageInteraction interaction);
 

@@ -103,7 +103,7 @@ public final class DatabaseStorageService implements StorageService {
     }
 
     @Override
-    public @NonNull Map<Integer, Ticket> tickets(
+    public @NonNull Map<@NonNull Integer, @NonNull Ticket> tickets(
             final @NonNull Collection<@NonNull Integer> ids
     ) {
         return this.jdbi.withHandle(handle -> {
@@ -117,7 +117,7 @@ public final class DatabaseStorageService implements StorageService {
     }
 
     @Override
-    public @NonNull Map<Integer, Ticket> findTickets(@NonNull final Collection<TicketStatus> statuses) {
+    public @NonNull Map<@NonNull Integer, @NonNull Ticket> findTickets(@NonNull final Collection<TicketStatus> statuses) {
         return this.jdbi.withHandle(handle -> {
             String[] queries = SQLQueries.SELECT_TICKETS_STATUSES.get();
 
@@ -129,7 +129,7 @@ public final class DatabaseStorageService implements StorageService {
     }
 
     @Override
-    public @NonNull Map<Integer, Ticket> findTickets(
+    public @NonNull Map<@NonNull Integer, @NonNull Ticket> findTickets(
             final @NonNull Soul soul,
             final @NonNull Collection<TicketStatus> statuses
     ) {
@@ -186,7 +186,7 @@ public final class DatabaseStorageService implements StorageService {
     }
 
     @Override
-    public Collection<Interaction> interactions(@NonNull final Ticket ticket) {
+    public @NonNull Collection<@NonNull Interaction> interactions(@NonNull final Ticket ticket) {
         return this.jdbi.withHandle(handle -> {
             return handle.createQuery(SQLQueries.SELECT_INTERACTIONS.get()[0])
                     .bind("ticket", ticket.id())
@@ -224,7 +224,7 @@ public final class DatabaseStorageService implements StorageService {
     }
 
     @Override
-    public Map<UUID, Integer> highscores(final @NonNull ChronoUnit chronoUnit) {
+    public @NonNull Map<@NonNull UUID, @NonNull Integer> highscores(final @NonNull ChronoUnit chronoUnit) {
         return this.jdbi.withHandle(handle -> {
             return handle.createQuery(SQLQueries.HIGHSCORES.get()[0])
                     .bind("time", LocalDateTime.now().minus(1, chronoUnit))

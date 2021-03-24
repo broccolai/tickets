@@ -9,7 +9,6 @@ import broccolai.tickets.api.model.user.Soul;
 import broccolai.tickets.api.service.message.MessageService;
 import net.kyori.adventure.text.Component;
 import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
 import org.jetbrains.annotations.NotNull;
 
 public final class TicketAssignEvent extends TicketsCommandEvent {
@@ -21,7 +20,7 @@ public final class TicketAssignEvent extends TicketsCommandEvent {
         this.target = target;
     }
 
-    public Soul targetSoul() {
+    public @NonNull Soul targetSoul() {
         return this.target;
     }
 
@@ -36,7 +35,7 @@ public final class TicketAssignEvent extends TicketsCommandEvent {
     }
 
     @Override
-    public @Nullable Component staff(final @NonNull MessageService messageService) {
+    public @NonNull Component staff(final @NonNull MessageService messageService) {
         return messageService.staffTicketAssign(this.ticket, this.target);
     }
 

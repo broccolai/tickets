@@ -35,7 +35,7 @@ public final class TicketNoteEvent extends TicketsCommandEvent {
     }
 
     @Override
-    public Component staff(final @NonNull MessageService messageService) {
+    public @NonNull Component staff(final @NonNull MessageService messageService) {
         return messageService.staffTicketNote(this.ticket, this.note, this.soul);
     }
 

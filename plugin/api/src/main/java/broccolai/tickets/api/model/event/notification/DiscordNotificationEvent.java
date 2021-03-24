@@ -6,6 +6,6 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 
 public interface DiscordNotificationEvent extends NotificationEvent {
 
-    JsonObject discord(@NonNull UserService userService);
+    @NonNull JsonObject discord(@NonNull UserService userService);
 
 }

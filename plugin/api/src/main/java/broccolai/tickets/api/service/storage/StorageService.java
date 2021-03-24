@@ -20,23 +20,23 @@ public interface StorageService extends Disposable {
 
     int create(@NonNull Soul soul, @NonNull Position position, @NonNull MessageInteraction messageInteraction);
 
-    @NonNull Map<Integer, Ticket> tickets(@NonNull Collection<@NonNull Integer> ids);
+    @NonNull Map<@NonNull Integer, @NonNull Ticket> tickets(@NonNull Collection<@NonNull Integer> ids);
 
-    @NonNull Map<Integer, Ticket> findTickets(@NonNull Collection<TicketStatus> statuses);
+    @NonNull Map<@NonNull Integer, @NonNull Ticket> findTickets(@NonNull Collection<TicketStatus> statuses);
 
-    @NonNull Map<Integer, Ticket> findTickets(@NonNull Soul soul, @NonNull Collection<TicketStatus> statuses);
+    @NonNull Map<@NonNull Integer, @NonNull Ticket> findTickets(@NonNull Soul soul, @NonNull Collection<@NonNull TicketStatus> statuses);
 
     void updateTickets(@NonNull Collection<Ticket> tickets);
 
     void saveInteractions(@NonNull Multimap<Ticket, Interaction> interactions);
 
-    Collection<Interaction> interactions(@NonNull Ticket ticket);
+    @NonNull Collection<@NonNull Interaction> interactions(@NonNull Ticket ticket);
 
-    @NonNull Collection<Component> notifications(@NonNull Soul soul);
+    @NonNull Collection<@NonNull Component> notifications(@NonNull Soul soul);
 
     void saveNotification(@NonNull Soul soul, @NonNull Component component);
 
-    Map<UUID, Integer> highscores(@NonNull ChronoUnit chronoUnit);
+    @NonNull Map<@NonNull UUID, @NonNull Integer> highscores(@NonNull ChronoUnit chronoUnit);
 
     void queue(@NonNull Ticket ticket, @NonNull Interaction interaction);
 
