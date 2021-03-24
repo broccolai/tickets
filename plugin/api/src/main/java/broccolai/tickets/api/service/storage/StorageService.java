@@ -28,8 +28,6 @@ public interface StorageService extends Disposable {
 
     void updateTickets(@NonNull Collection<Ticket> tickets);
 
-    int countTickets(@NonNull Collection<TicketStatus> statuses);
-
     void saveInteractions(@NonNull Multimap<Ticket, Interaction> interactions);
 
     Collection<Interaction> interactions(@NonNull Ticket ticket);

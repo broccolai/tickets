@@ -114,11 +114,6 @@ public final class CachedTicketService implements TicketService {
         );
     }
 
-    @Override
-    public int count(final @NonNull Set<TicketStatus> statuses) {
-        return this.storageService.countTickets(statuses);
-    }
-
     private void putAllNotPresent(final @NonNull Map<Integer, Ticket> toAdd) {
         toAdd.forEach((id, ticket) -> {
             Ticket current = this.cache.getIfPresent(id);
