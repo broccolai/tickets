@@ -5,7 +5,6 @@ import broccolai.tickets.api.model.interaction.MessageInteraction;
 import broccolai.tickets.api.model.user.PlayerSoul;
 import net.kyori.event.AbstractCancellable;
 import org.checkerframework.checker.nullness.qual.NonNull;
-import org.jetbrains.annotations.NotNull;
 
 public final class TicketConstructionEvent extends AbstractCancellable implements SoulEvent {
 
