@@ -13,7 +13,7 @@ plugins {
 }
 
 group = "broccolai.tickets"
-version = "5.0.3"
+version = "5.1.0-SNAPSHOT"
 
 subprojects {
     apply {
