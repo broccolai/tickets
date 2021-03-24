@@ -20,7 +20,7 @@ event = "5.0.0-SNAPSHOT"
 # Storage
 jdbi = "3.18.0"
 hikari = "4.0.3"
-flyway = "7.7.0"
+flyway = "7.7.1"
 h2 = "1.4.200"
 configurate = "4.0.0"
 
