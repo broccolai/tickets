@@ -16,98 +16,98 @@ public interface MessageService {
     // Sender
     //
 
-    Component senderTicketCreation(@NonNull Ticket ticket);
+    @NonNull Component senderTicketCreation(@NonNull Ticket ticket);
 
-    Component senderTicketReopen(@NonNull Ticket ticket);
+    @NonNull Component senderTicketReopen(@NonNull Ticket ticket);
 
-    Component senderTicketUpdate(@NonNull Ticket ticket);
+    @NonNull Component senderTicketUpdate(@NonNull Ticket ticket);
 
-    Component senderTicketClose(@NonNull Ticket ticket);
+    @NonNull Component senderTicketClose(@NonNull Ticket ticket);
 
-    Component senderTicketClaim(@NonNull Ticket ticket);
+    @NonNull Component senderTicketClaim(@NonNull Ticket ticket);
 
-    Component senderTicketUnclaim(@NonNull Ticket ticket);
+    @NonNull Component senderTicketUnclaim(@NonNull Ticket ticket);
 
-    Component senderTicketAssign(@NonNull Ticket ticket, @NonNull Soul target);
+    @NonNull Component senderTicketAssign(@NonNull Ticket ticket, @NonNull Soul target);
 
-    Component senderTicketComplete(@NonNull Ticket ticket);
+    @NonNull Component senderTicketComplete(@NonNull Ticket ticket);
 
-    Component senderTicketNote(@NonNull Ticket ticket);
+    @NonNull Component senderTicketNote(@NonNull Ticket ticket);
 
     //
     // Target
     //
 
-    Component targetTicketClaim(@NonNull Ticket ticket, @NonNull Soul soul);
+    @NonNull Component targetTicketClaim(@NonNull Ticket ticket, @NonNull Soul soul);
 
-    Component targetTicketReopen(@NonNull Ticket ticket, @NonNull Soul soul);
+    @NonNull Component targetTicketReopen(@NonNull Ticket ticket, @NonNull Soul soul);
 
-    Component targetTicketUnclaim(@NonNull Ticket ticket, @NonNull Soul soul);
+    @NonNull Component targetTicketUnclaim(@NonNull Ticket ticket, @NonNull Soul soul);
 
-    Component targetTicketComplete(@NonNull Ticket ticket, @NonNull Soul soul);
+    @NonNull Component targetTicketComplete(@NonNull Ticket ticket, @NonNull Soul soul);
 
-    Component targetTicketNote(@NonNull Ticket ticket, @NonNull String note, @NonNull Soul soul);
+    @NonNull Component targetTicketNote(@NonNull Ticket ticket, @NonNull String note, @NonNull Soul soul);
 
     //
     // Staff
     //
 
-    Component staffTicketCreate(@NonNull Ticket ticket);
+    @NonNull Component staffTicketCreate(@NonNull Ticket ticket);
 
-    Component staffTicketUpdate(@NonNull Ticket ticket);
+    @NonNull Component staffTicketUpdate(@NonNull Ticket ticket);
 
-    Component staffTicketClose(@NonNull Ticket ticket);
+    @NonNull Component staffTicketClose(@NonNull Ticket ticket);
 
-    Component staffTicketReopen(@NonNull Ticket ticket, @NonNull Soul soul);
+    @NonNull Component staffTicketReopen(@NonNull Ticket ticket, @NonNull Soul soul);
 
-    Component staffTicketClaim(@NonNull Ticket ticket, @NonNull Soul soul);
+    @NonNull Component staffTicketClaim(@NonNull Ticket ticket, @NonNull Soul soul);
 
-    Component staffTicketUnclaim(@NonNull Ticket ticket, @NonNull Soul soul);
+    @NonNull Component staffTicketUnclaim(@NonNull Ticket ticket, @NonNull Soul soul);
 
-    Component staffTicketAssign(@NonNull Ticket ticket, @NonNull Soul soul);
+    @NonNull Component staffTicketAssign(@NonNull Ticket ticket, @NonNull Soul soul);
 
-    Component staffTicketComplete(@NonNull Ticket ticket, @NonNull Soul soul);
+    @NonNull Component staffTicketComplete(@NonNull Ticket ticket, @NonNull Soul soul);
 
-    Component staffTicketNote(@NonNull Ticket ticket, @NonNull String note, @NonNull Soul soul);
+    @NonNull Component staffTicketNote(@NonNull Ticket ticket, @NonNull String note, @NonNull Soul soul);
 
     //
     // Commands
     //
 
-    Component commandsTicketList(@NonNull Collection<@NonNull Ticket> tickets);
+    @NonNull Component commandsTicketList(@NonNull Collection<@NonNull Ticket> tickets);
 
-    Component commandsTicketsList(@NonNull Map<@NonNull UUID, @NonNull Collection<@NonNull Ticket>> tickets);
+    @NonNull Component commandsTicketsList(@NonNull Map<@NonNull UUID, @NonNull Collection<@NonNull Ticket>> tickets);
 
-    Component commandsTeleport(@NonNull Ticket ticket);
+    @NonNull Component commandsTeleport(@NonNull Ticket ticket);
 
-    Component commandsHighscore(@NonNull Map<UUID, Integer> ranks);
+    @NonNull Component commandsHighscore(@NonNull Map<UUID, Integer> ranks);
 
-    Component commandsLog(@NonNull Collection<Interaction> interactions);
+    @NonNull Component commandsLog(@NonNull Collection<Interaction> interactions);
 
     //
     // Exception
     //
 
-    Component exceptionTicketOpen();
+    @NonNull Component exceptionTicketOpen();
 
-    Component exceptionTicketClaimed();
+    @NonNull Component exceptionTicketClaimed();
 
-    Component exceptionTicketClosed();
+    @NonNull Component exceptionTicketClosed();
 
-    Component exceptionTicketNotFound();
+    @NonNull Component exceptionTicketNotFound();
 
-    Component exceptionTooManyTicketsOpen();
+    @NonNull Component exceptionTooManyTicketsOpen();
 
-    Component exceptionNoPermission();
+    @NonNull Component exceptionNoPermission();
 
-    Component exceptionWrongSender(@NonNull Class<?> sender);
+    @NonNull Component exceptionWrongSender(@NonNull Class<?> sender);
 
     //
     // Random
     //
 
-    Component showTicket(@NonNull Ticket ticket);
+    @NonNull Component showTicket(@NonNull Ticket ticket);
 
-    Component taskReminder(int count);
+    @NonNull Component taskReminder(int count);
 
 }

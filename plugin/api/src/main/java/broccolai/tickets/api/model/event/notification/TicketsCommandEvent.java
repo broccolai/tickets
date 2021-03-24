@@ -28,17 +28,17 @@ public abstract class TicketsCommandEvent implements SenderNotificationEvent, Ta
     }
 
     @Override
-    public final Soul soul() {
+    public final @NonNull Soul soul() {
         return this.soul;
     }
 
     @Override
-    public final Ticket ticket() {
+    public final @NonNull Ticket ticket() {
         return this.ticket;
     }
 
     @Override
-    public final JsonObject discord(final @NonNull UserService userService) {
+    public final @NonNull JsonObject discord(final @NonNull UserService userService) {
         JsonObject json = new JsonObject();
 
         json.add("ticket", JsonUtility.ticket(userService, this.ticket));

@@ -14,11 +14,11 @@ public enum TicketStatus {
 
     private final TextColor color;
 
-    TicketStatus(final TextColor color) {
+    TicketStatus(final @NonNull TextColor color) {
         this.color = color;
     }
 
-    public TextColor color() {
+    public @NonNull TextColor color() {
         return this.color;
     }
 

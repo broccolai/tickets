@@ -8,7 +8,6 @@ import broccolai.tickets.api.model.user.OnlineSoul;
 import broccolai.tickets.api.service.message.MessageService;
 import net.kyori.adventure.text.Component;
 import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
 
 public final class TicketCompleteEvent extends TicketsCommandEvent {
 
@@ -27,7 +26,7 @@ public final class TicketCompleteEvent extends TicketsCommandEvent {
     }
 
     @Override
-    public @Nullable Component staff(@NonNull final MessageService messageService) {
+    public @NonNull Component staff(@NonNull final MessageService messageService) {
         return messageService.staffTicketComplete(this.ticket, this.soul);
     }
 

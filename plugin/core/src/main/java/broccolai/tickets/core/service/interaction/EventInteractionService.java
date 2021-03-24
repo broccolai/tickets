@@ -58,7 +58,7 @@ public final class EventInteractionService implements InteractionService {
     }
 
     @Override
-    public Ticket create(
+    public @NonNull Ticket create(
             final @NonNull PlayerSoul soul,
             final @NonNull MessageInteraction interaction
     ) {

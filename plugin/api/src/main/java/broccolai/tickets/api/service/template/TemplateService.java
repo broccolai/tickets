@@ -9,8 +9,8 @@ import java.util.List;
 
 public interface TemplateService {
 
-    List<Template> player(@NonNull String prefix, @NonNull Soul soul);
+    @NonNull List<@NonNull Template> player(@NonNull String prefix, @NonNull Soul soul);
 
-    List<Template> ticket(@NonNull Ticket ticket);
+    @NonNull List<@NonNull Template> ticket(@NonNull Ticket ticket);
 
 }

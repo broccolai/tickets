@@ -26,7 +26,7 @@ public final class TicketClaimEvent extends TicketsCommandEvent {
     }
 
     @Override
-    public Component staff(final @NonNull MessageService messageService) {
+    public @NonNull Component staff(final @NonNull MessageService messageService) {
         return messageService.staffTicketClaim(this.ticket, this.soul);
     }
 
