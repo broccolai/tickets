@@ -1,5 +1,5 @@
 dependencies {
-    api(project(":tickets-api"))
+    api(projects.ticketsApi)
 
     api(libs.adventure.platform)
     api(libs.jdbi)
