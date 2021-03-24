@@ -26,6 +26,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Predicate;
 
 @Singleton
@@ -33,7 +34,7 @@ public final class CachedTicketService implements TicketService {
 
     private final StorageService storageService;
 
-    private final Cache<Integer, Ticket> cache = Caffeine.newBuilder().build();
+    private final Cache<Integer, Ticket> cache = Caffeine.newBuilder().expireAfterAccess(15, TimeUnit.MINUTES).build();
     private final Multimap<UUID, TicketStatus> lookups = MultimapBuilder.hashKeys().enumSetValues(TicketStatus.class).build();
 
     @Inject
