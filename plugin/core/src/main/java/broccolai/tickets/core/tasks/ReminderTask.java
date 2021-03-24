@@ -36,7 +36,7 @@ public final class ReminderTask implements Task {
 
     @Override
     public void run() {
-        int tickets = this.ticketService.count(EnumSet.of(TicketStatus.OPEN, TicketStatus.CLAIMED));
+        int tickets = this.ticketService.get(EnumSet.of(TicketStatus.OPEN, TicketStatus.CLAIMED)).size();
 
         if (tickets == 0) {
             return;

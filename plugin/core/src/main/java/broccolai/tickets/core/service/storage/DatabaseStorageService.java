@@ -161,18 +161,6 @@ public final class DatabaseStorageService implements StorageService {
     }
 
     @Override
-    public int countTickets(final @NonNull Collection<TicketStatus> statuses) {
-        return this.jdbi.withHandle(handle -> {
-            String[] queries = SQLQueries.COUNT_TICKETS_STATUSES.get();
-
-            return handle.createQuery(queries[0])
-                    .bindList("statuses", statuses)
-                    .mapTo(Integer.class)
-                    .first();
-        });
-    }
-
-    @Override
     public void saveInteractions(final @NonNull Multimap<Ticket, Interaction> interactionMultimap) {
         this.jdbi.useHandle(handle -> {
             PreparedBatch batch = handle.prepareBatch(SQLQueries.INSERT_INTERACTION.get()[0]);

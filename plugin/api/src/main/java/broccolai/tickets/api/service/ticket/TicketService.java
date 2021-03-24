@@ -25,6 +25,4 @@ public interface TicketService {
 
     @NonNull Collection<@NonNull Ticket> get(@NonNull Soul soul, @NonNull Set<TicketStatus> statuses);
 
-    int count(@NonNull Set<TicketStatus> statuses);
-
 }
