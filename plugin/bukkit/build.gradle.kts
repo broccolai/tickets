@@ -1,5 +1,5 @@
 dependencies {
-    api(project(":tickets-core"))
+    api(projects.ticketsCore)
 
     compileOnly(libs.spigot)
     api(libs.paper.lib)

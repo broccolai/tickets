@@ -7,3 +7,4 @@ project(":core").name = "tickets-core"
 project(":bukkit").name = "tickets-bukkit"
 
 enableFeaturePreview("VERSION_CATALOGS")
+enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
