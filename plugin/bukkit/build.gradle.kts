@@ -1,17 +1,10 @@
 dependencies {
     api(project(":tickets-core"))
 
-    // Spigot
-    compileOnly("org.spigotmc", "spigot-api", Versions.SPIGOT)
-
-    // Kyori/adventure platform
-    api("net.kyori", "adventure-platform-bukkit", Versions.KYORI_PLATFORM)
-
-    // Cloud
-    api("cloud.commandframework", "cloud-paper", Versions.CLOUD)
-
-    // Paper lib for async tp
-    api("io.papermc", "paperlib", Versions.PAPER_LIB)
+    compileOnly(libs.spigot)
+    api(libs.paper.lib)
+    api(libs.adventure.bukkit)
+    api(libs.cloud.paper)
 }
 
 tasks {
