@@ -33,11 +33,6 @@ subprojects {
         maven("https://repo.broccol.ai/snapshots")
     }
 
-    dependencies {
-        // Checker-qual annotations
-        compileOnlyApi("org.checkerframework", "checker-qual", Versions.CHECKER_QUAL)
-    }
-
     tasks {
 
         indra {
