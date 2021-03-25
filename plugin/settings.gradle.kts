@@ -1,10 +1,11 @@
 rootProject.name = "tickets"
 
-include("api", "core", "bukkit")
+include("api", "core", "bukkit", "sponge")
 
 project(":api").name = "tickets-api"
 project(":core").name = "tickets-core"
 project(":bukkit").name = "tickets-bukkit"
+project(":sponge").name = "tickets-sponge"
 
 enableFeaturePreview("VERSION_CATALOGS")
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")

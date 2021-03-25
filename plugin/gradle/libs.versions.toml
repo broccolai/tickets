@@ -27,11 +27,14 @@ configurate = "4.0.0"
 # Misc
 corn = "2.1.0"
 slf4j = "1.7.30"
-caffeine = "3.0.1"
+caffeine = "2.9.0"
 
 # Bukkit
 spigot = "1.16.5-R0.1-SNAPSHOT"
 paper-lib = "1.0.6"
+
+# Sponge
+sponge-seven = "7.2.0"
 
 [libraries]
 # Tooling
@@ -47,12 +50,14 @@ guice-assisted = { group = "com.google.inject.extensions", name = "guice-assiste
 http4j = { group = "com.intellectualsites.http", name = "HTTP4J", version.ref = "http4j" }
 cloud-core = { group = "cloud.commandframework", name = "cloud-core", version.ref = "cloud" }
 cloud-paper = { group = "cloud.commandframework", name = "cloud-paper", version.ref = "cloud" }
+cloud-sponge-seven = { group = "cloud.commandframework", name = "cloud-sponge7", version.ref = "cloud" }
 cloud-extras = { group = "cloud.commandframework", name = "cloud-minecraft-extras", version.ref = "cloud" }
 
 # Kyori
 adventure-api = { group = "net.kyori", name = "adventure-api", version.ref = "adventure" }
 adventure-platform = { group = "net.kyori", name = "adventure-platform-api", version.ref = "adventure-platform" }
 adventure-bukkit = { group = "net.kyori", name = "adventure-platform-bukkit", version.ref = "adventure-platform" }
+adventure-sponge-seven = { group = "net.kyori", name = "adventure-platform-spongeapi", version.ref = "adventure-platform" }
 minimessage = { group = "net.kyori", name = "adventure-text-minimessage", version.ref = "minimessage" }
 event = { group = "net.kyori", name = "event-api", version.ref = "event" }
 
@@ -71,6 +76,9 @@ caffeine = { group = "com.github.ben-manes.caffeine", name = "caffeine", version
 # Bukkit
 spigot = { group = "org.spigotmc", name = "spigot-api", version.ref = "spigot" }
 paper-lib = { group = "io.papermc", name = "paperlib", version.ref = "paper-lib" }
+
+# Sponge
+sponge-seven = { group = "org.spongepowered", name = "spongeapi", version.ref = "sponge-seven" }
 
 [bundles]
 guice = ["guice-core", "guice-assisted"]
