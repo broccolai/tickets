@@ -37,7 +37,7 @@ public final class BukkitPlayerSoul implements PlayerSoul, BukkitOnlineSoul {
 
     @Override
     public boolean permission(final @NonNull String permission) {
-        return this.player.getPlayer().hasPermission(permission);
+        return this.player.hasPermission(permission);
     }
 
     @Override
