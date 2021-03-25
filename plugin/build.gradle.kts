@@ -30,7 +30,7 @@ subprojects {
         maven("https://hub.spigotmc.org/nexus/content/repositories/snapshots/")
         maven("https://mvn.intellectualsites.com/content/repositories/snapshots")
         maven("https://papermc.io/repo/repository/maven-public/")
-        maven("https://repo.spongepowered.org/maven")
+        maven("https://repo.spongepowered.org/repository/maven-public/")
         maven("https://repo.broccol.ai")
         maven("https://repo.broccol.ai/snapshots")
     }
