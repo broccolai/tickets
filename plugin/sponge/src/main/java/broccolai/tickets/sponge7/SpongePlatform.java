@@ -1,4 +1,4 @@
-package broccolai.tickets.sponge;
+package broccolai.tickets.sponge7;
 
 import broccolai.tickets.api.model.user.OnlineSoul;
 import broccolai.tickets.api.service.message.MessageService;
@@ -6,8 +6,9 @@ import broccolai.tickets.api.service.user.UserService;
 import broccolai.tickets.core.PureTickets;
 import broccolai.tickets.core.exceptions.PureException;
 import broccolai.tickets.core.inject.platform.PluginPlatform;
-import broccolai.tickets.sponge.model.SpongeOnlineSoul;
-import broccolai.tickets.sponge.service.SpongeUserService;
+import broccolai.tickets.sponge7.inject.SpongeModule;
+import broccolai.tickets.sponge7.model.SpongeOnlineSoul;
+import broccolai.tickets.sponge7.service.SpongeUserService;
 import cloud.commandframework.CommandManager;
 import cloud.commandframework.exceptions.InvalidCommandSenderException;
 import cloud.commandframework.execution.AsynchronousCommandExecutionCoordinator;
@@ -53,7 +54,7 @@ public final class SpongePlatform implements PluginPlatform {
         configFolder.mkdirs();
 
         Injector injector = Guice.createInjector(
-//                new BukkitModule(this, this)
+                new SpongeModule(this)
         );
 
         this.pureTickets = injector.getInstance(PureTickets.class);
@@ -70,11 +71,6 @@ public final class SpongePlatform implements PluginPlatform {
         }
 
         this.pureTickets.subscribers(SUBSCRIBERS);
-
-//        for (final Class<? extends Listener> listenerClass : LISTENERS) {
-//            Listener listener = injector.getInstance(listenerClass);
-//            this.getServer().getPluginManager().registerEvents(listener, this);
-//        }
     }
 
     private CommandManager<OnlineSoul> commandManager(

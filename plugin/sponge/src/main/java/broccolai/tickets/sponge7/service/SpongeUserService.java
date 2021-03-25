@@ -1,12 +1,12 @@
-package broccolai.tickets.sponge.service;
+package broccolai.tickets.sponge7.service;
 
 import broccolai.tickets.api.model.user.ConsoleSoul;
 import broccolai.tickets.api.model.user.PlayerSoul;
 import broccolai.tickets.api.model.user.Soul;
 import broccolai.tickets.core.service.user.SimpleUserService;
-import broccolai.tickets.sponge.model.SpongeConsoleSoul;
-import broccolai.tickets.sponge.model.SpongeOfflineSoul;
-import broccolai.tickets.sponge.model.SpongePlayerSoul;
+import broccolai.tickets.sponge7.model.SpongeConsoleSoul;
+import broccolai.tickets.sponge7.model.SpongeOfflineSoul;
+import broccolai.tickets.sponge7.model.SpongePlayerSoul;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import net.kyori.adventure.platform.AudienceProvider;

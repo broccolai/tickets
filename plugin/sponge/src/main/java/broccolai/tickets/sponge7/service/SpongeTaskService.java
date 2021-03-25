@@ -1,8 +1,8 @@
-package broccolai.tickets.sponge.service;
+package broccolai.tickets.sponge7.service;
 
 import broccolai.tickets.api.model.task.Task;
 import broccolai.tickets.api.service.tasks.TaskService;
-import broccolai.tickets.sponge.SpongePlatform;
+import broccolai.tickets.core.inject.platform.PluginPlatform;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -13,12 +13,12 @@ import java.util.concurrent.TimeUnit;
 @Singleton
 public final class SpongeTaskService implements TaskService {
 
-    private final SpongePlatform plugin;
+    private final PluginPlatform plugin;
     private final SpongeExecutorService syncExecutor;
     private final SpongeExecutorService asyncExecutor;
 
     @Inject
-    public SpongeTaskService(final @NonNull SpongePlatform plugin) {
+    public SpongeTaskService(final @NonNull PluginPlatform plugin) {
         this.plugin = plugin;
         this.syncExecutor = Sponge.getScheduler().createSyncExecutor(plugin);
         this.asyncExecutor = Sponge.getScheduler().createAsyncExecutor(plugin);

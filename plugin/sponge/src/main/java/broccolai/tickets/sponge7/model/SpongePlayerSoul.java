@@ -1,4 +1,4 @@
-package broccolai.tickets.sponge.model;
+package broccolai.tickets.sponge7.model;
 
 import broccolai.tickets.api.model.position.Position;
 import broccolai.tickets.api.model.user.PlayerSoul;
