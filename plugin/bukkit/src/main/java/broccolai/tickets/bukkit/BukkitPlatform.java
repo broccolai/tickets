@@ -14,6 +14,7 @@ import broccolai.tickets.core.utilities.ArrayHelper;
 import cloud.commandframework.CommandManager;
 import cloud.commandframework.exceptions.InvalidCommandSenderException;
 import cloud.commandframework.execution.AsynchronousCommandExecutionCoordinator;
+import cloud.commandframework.execution.FilteringCommandSuggestionProcessor;
 import cloud.commandframework.minecraft.extras.MinecraftExceptionHandler;
 
 import cloud.commandframework.paper.PaperCommandManager;
@@ -27,6 +28,9 @@ import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
 import org.checkerframework.checker.nullness.qual.NonNull;
+
+import java.util.LinkedList;
+import java.util.List;
 
 @SuppressWarnings("unused")
 public final class BukkitPlatform extends JavaPlugin implements PluginPlatform {
@@ -125,6 +129,29 @@ public final class BukkitPlatform extends JavaPlugin implements PluginPlatform {
                     return pureException.message(messageService);
                 })
                 .apply(cloudManager, ForwardingAudience.Single::audience);
+
+        cloudManager.setCommandSuggestionProcessor((context, strings) -> {
+            String input;
+
+            if (context.getInputQueue().isEmpty()) {
+                input = "";
+            } else {
+                input = context.getInputQueue().peek();
+            }
+
+            input = input.toLowerCase();
+            List<String> suggestions = new LinkedList<>();
+
+            for (String suggestion : strings) {
+                suggestion = suggestion.toLowerCase();
+
+                if (suggestion.startsWith(input)) {
+                    suggestions.add(suggestion);
+                }
+            }
+
+            return suggestions;
+        });
 
         return cloudManager;
     }
