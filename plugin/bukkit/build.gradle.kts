@@ -1,4 +1,5 @@
 dependencies {
+    api(projects.ticketsApi)
     api(projects.ticketsCore)
 
     compileOnly(libs.spigot)
