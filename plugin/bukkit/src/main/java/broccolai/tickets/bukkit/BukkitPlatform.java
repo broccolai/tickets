@@ -14,7 +14,6 @@ import broccolai.tickets.core.utilities.ArrayHelper;
 import cloud.commandframework.CommandManager;
 import cloud.commandframework.exceptions.InvalidCommandSenderException;
 import cloud.commandframework.execution.AsynchronousCommandExecutionCoordinator;
-import cloud.commandframework.execution.FilteringCommandSuggestionProcessor;
 import cloud.commandframework.minecraft.extras.MinecraftExceptionHandler;
 
 import cloud.commandframework.paper.PaperCommandManager;
