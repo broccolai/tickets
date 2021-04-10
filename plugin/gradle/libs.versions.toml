@@ -12,7 +12,7 @@ http4j = "1.3-SNAPSHOT"
 cloud = "1.4.0"
 
 # Kyori
-adventure = "4.7.0"
+adventure-core = "4.7.0"
 adventure-platform = "4.0.0-SNAPSHOT"
 minimessage = "4.1.0-SNAPSHOT"
 event = "5.0.0-SNAPSHOT"
@@ -50,7 +50,7 @@ cloud-paper = { group = "cloud.commandframework", name = "cloud-paper", version.
 cloud-extras = { group = "cloud.commandframework", name = "cloud-minecraft-extras", version.ref = "cloud" }
 
 # Kyori
-adventure-api = { group = "net.kyori", name = "adventure-api", version.ref = "adventure" }
+adventure-api = { group = "net.kyori", name = "adventure-api", version.ref = "adventure-core" }
 adventure-platform = { group = "net.kyori", name = "adventure-platform-api", version.ref = "adventure-platform" }
 adventure-bukkit = { group = "net.kyori", name = "adventure-platform-bukkit", version.ref = "adventure-platform" }
 minimessage = { group = "net.kyori", name = "adventure-text-minimessage", version.ref = "minimessage" }
