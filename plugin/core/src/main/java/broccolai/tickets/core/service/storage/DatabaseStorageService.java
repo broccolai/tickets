@@ -119,7 +119,7 @@ public final class DatabaseStorageService implements StorageService {
     }
 
     @Override
-    public @NonNull Map<@NonNull Integer, @NonNull Ticket> findTickets(@NonNull final Collection<TicketStatus> statuses) {
+    public @NonNull Map<@NonNull Integer, @NonNull Ticket> findTickets(final @NonNull Collection<TicketStatus> statuses) {
         return this.jdbi.withHandle(handle -> {
             String[] queries = SQLQueries.SELECT_TICKETS_STATUSES.get();
 
@@ -147,7 +147,7 @@ public final class DatabaseStorageService implements StorageService {
     }
 
     @Override
-    public void updateTickets(@NonNull final Collection<Ticket> tickets) {
+    public void updateTickets(final @NonNull Collection<Ticket> tickets) {
         this.jdbi.useHandle(handle -> {
             PreparedBatch batch = handle.prepareBatch(SQLQueries.UPDATE_TICKET.get()[0]);
 
@@ -188,7 +188,7 @@ public final class DatabaseStorageService implements StorageService {
     }
 
     @Override
-    public @NonNull Collection<@NonNull Interaction> interactions(@NonNull final Ticket ticket) {
+    public @NonNull Collection<@NonNull Interaction> interactions(final @NonNull Ticket ticket) {
         return this.jdbi.withHandle(handle -> {
             return handle.createQuery(SQLQueries.SELECT_INTERACTIONS.get()[0])
                     .bind("ticket", ticket.id())
@@ -242,7 +242,7 @@ public final class DatabaseStorageService implements StorageService {
     }
 
     @Override
-    public void queue(@NonNull final Ticket ticket, @NonNull final Interaction interaction) {
+    public void queue(final @NonNull Ticket ticket, final @NonNull Interaction interaction) {
         this.queue.put(ticket, interaction);
     }
 

@@ -14,7 +14,7 @@ public final class KyoriEventService implements EventService {
     private final EventBus<Event> eventBus = EventBus.create(Event.class);
 
     @Override
-    public @NonNull PostResult post(@NonNull final Event event) {
+    public @NonNull PostResult post(final @NonNull Event event) {
         return this.eventBus.post(event);
     }
 

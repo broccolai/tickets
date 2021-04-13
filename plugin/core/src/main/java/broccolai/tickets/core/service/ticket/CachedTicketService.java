@@ -74,7 +74,7 @@ public final class CachedTicketService implements TicketService {
     }
 
     @Override
-    public @NonNull Map<@NonNull UUID, @NonNull Collection<@NonNull Ticket>> get(@NonNull final Set<TicketStatus> queries) {
+    public @NonNull Map<@NonNull UUID, @NonNull Collection<@NonNull Ticket>> get(final @NonNull Set<TicketStatus> queries) {
         Set<TicketStatus> modifiableQueries = new HashSet<>(queries);
 
         for (final TicketStatus query : queries) {
