@@ -98,7 +98,7 @@ public final class EventInteractionService implements InteractionService {
     }
 
     @Override
-    public void close(@NonNull final PlayerSoul soul, @NonNull final Ticket ticket) {
+    public void close(final @NonNull PlayerSoul soul, final @NonNull Ticket ticket) {
         this.requireOpen(ticket);
 
         Interaction interaction = new BasicInteraction(Action.CLOSE, LocalDateTime.now(), soul.uuid());
@@ -136,7 +136,7 @@ public final class EventInteractionService implements InteractionService {
     }
 
     @Override
-    public void assign(@NonNull final OnlineSoul soul, @NonNull final Soul target, @NonNull final Ticket ticket) {
+    public void assign(final @NonNull OnlineSoul soul, final @NonNull Soul target, final @NonNull Ticket ticket) {
         this.requireOpenAndUnclaimed(ticket);
 
         Interaction interaction = new BasicInteraction(Action.ASSIGN, LocalDateTime.now(), soul.uuid());
@@ -149,7 +149,7 @@ public final class EventInteractionService implements InteractionService {
     }
 
     @Override
-    public void unclaim(@NonNull final OnlineSoul soul, @NonNull final Ticket ticket) {
+    public void unclaim(final @NonNull OnlineSoul soul, final @NonNull Ticket ticket) {
         this.requireOpen(ticket);
 
         Interaction interaction = new BasicInteraction(Action.UNCLAIM, LocalDateTime.now(), soul.uuid());
@@ -162,7 +162,7 @@ public final class EventInteractionService implements InteractionService {
     }
 
     @Override
-    public void reopen(@NonNull final OnlineSoul soul, @NonNull final Ticket ticket) {
+    public void reopen(final @NonNull OnlineSoul soul, final @NonNull Ticket ticket) {
         this.requireClosed(ticket);
 
         Interaction interaction = new BasicInteraction(Action.REOPEN, LocalDateTime.now(), soul.uuid());
@@ -174,7 +174,7 @@ public final class EventInteractionService implements InteractionService {
     }
 
     @Override
-    public void note(@NonNull final OnlineSoul soul, @NonNull final Ticket ticket, @NonNull final MessageInteraction message) {
+    public void note(final @NonNull OnlineSoul soul, final @NonNull Ticket ticket, final @NonNull MessageInteraction message) {
         Interaction interaction = new BasicInteraction(Action.NOTE, LocalDateTime.now(), soul.uuid());
 
         this.storageService.queue(ticket, interaction);

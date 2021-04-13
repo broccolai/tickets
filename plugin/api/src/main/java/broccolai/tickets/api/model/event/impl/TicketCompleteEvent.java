@@ -16,17 +16,17 @@ public final class TicketCompleteEvent extends TicketsCommandEvent {
     }
 
     @Override
-    public void sender(@NonNull final MessageService messageService) {
+    public void sender(final @NonNull MessageService messageService) {
         this.soul.sendMessage(messageService.senderTicketComplete(this.ticket));
     }
 
     @Override
-    public @NonNull TargetPair target(@NonNull final MessageService messageService) {
+    public @NonNull TargetPair target(final @NonNull MessageService messageService) {
         return TargetPair.of(this.ticket.player(), messageService.targetTicketComplete(this.ticket, this.soul));
     }
 
     @Override
-    public @NonNull Component staff(@NonNull final MessageService messageService) {
+    public @NonNull Component staff(final @NonNull MessageService messageService) {
         return messageService.staffTicketComplete(this.ticket, this.soul);
     }
 

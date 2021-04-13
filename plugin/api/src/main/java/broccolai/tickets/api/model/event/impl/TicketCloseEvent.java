@@ -15,12 +15,12 @@ public final class TicketCloseEvent extends TicketCommandEvent {
     }
 
     @Override
-    public void sender(@NonNull final MessageService messageService) {
+    public void sender(final @NonNull MessageService messageService) {
         this.soul.sendMessage(messageService.senderTicketClose(this.ticket));
     }
 
     @Override
-    public @NonNull Component staff(@NonNull final MessageService messageService) {
+    public @NonNull Component staff(final @NonNull MessageService messageService) {
         return messageService.staffTicketClose(this.ticket);
     }
 
