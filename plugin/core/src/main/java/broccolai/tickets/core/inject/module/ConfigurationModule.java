@@ -24,7 +24,12 @@ public final class ConfigurationModule extends AbstractModule {
         file.createNewFile();
 
         YamlConfigurationLoader loader = YamlConfigurationLoader.builder()
-                .defaultOptions(opts -> opts.shouldCopyDefaults(true))
+                .defaultOptions(opts -> opts
+                        .shouldCopyDefaults(true)
+                        .header("For help setting up Discord Integration, look here "
+                                + "https://github.com/broccolai/tickets/wiki/Discord-Integration "
+                                + "or if you still need help join my Discord https://discord.broccol.ai")
+                )
                 .file(file)
                 .build();
         CommentedConfigurationNode node = loader.load();
