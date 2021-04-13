@@ -49,7 +49,7 @@ public final class BukkitUserService extends SimpleUserService {
     }
 
     @Override
-    public @NonNull Soul offlinePlayer(@NonNull final UUID uuid) {
+    public @NonNull Soul offlinePlayer(final @NonNull UUID uuid) {
         OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(uuid);
         return new BukkitOfflineSoul(offlinePlayer);
     }
@@ -66,18 +66,18 @@ public final class BukkitUserService extends SimpleUserService {
     }
 
     @Override
-    public @NonNull String name(@NonNull final UUID uuid) {
+    public @NonNull String name(final @NonNull UUID uuid) {
         return Bukkit.getOfflinePlayer(uuid).getName();
     }
 
     @SuppressWarnings("deprecation")
     @Override
-    public @NonNull UUID uuidFromName(@NonNull final String name) {
+    public @NonNull UUID uuidFromName(final @NonNull String name) {
         return Bukkit.getOfflinePlayer(name).getUniqueId();
     }
 
     @Override
-    protected boolean isOnline(@NonNull final UUID uuid) {
+    protected boolean isOnline(final @NonNull UUID uuid) {
         return Bukkit.getOfflinePlayer(uuid).isOnline();
     }
 

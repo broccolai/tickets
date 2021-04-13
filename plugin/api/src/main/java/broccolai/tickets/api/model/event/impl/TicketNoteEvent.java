@@ -30,7 +30,7 @@ public final class TicketNoteEvent extends TicketsCommandEvent {
     }
 
     @Override
-    public @NotNull TargetPair target(@NonNull final MessageService messageService) {
+    public @NotNull TargetPair target(final @NonNull MessageService messageService) {
         return TargetPair.of(this.ticket.player(), messageService.targetTicketNote(this.ticket, this.note, this.soul));
     }
 

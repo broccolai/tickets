@@ -24,7 +24,7 @@ public abstract class SimpleUserService implements UserService {
     }
 
     @Override
-    public final @NonNull Soul wrap(@NonNull final String name) {
+    public final @NonNull Soul wrap(final @NonNull String name) {
         if (name.equalsIgnoreCase("CONSOLE")) {
             return this.console();
         }

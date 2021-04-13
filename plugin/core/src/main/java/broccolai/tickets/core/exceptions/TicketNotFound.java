@@ -9,7 +9,7 @@ public final class TicketNotFound extends PureException.Abstract {
     private static final long serialVersionUID = -1L;
 
     @Override
-    public @NonNull Component message(@NonNull final MessageService messageService) {
+    public @NonNull Component message(final @NonNull MessageService messageService) {
         return messageService.exceptionTicketNotFound();
     }
 

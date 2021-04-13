@@ -61,7 +61,7 @@ public final class MiniMessageService implements MessageService {
     }
 
     @Override
-    public @NotNull Component senderTicketReopen(@NonNull final Ticket ticket) {
+    public @NotNull Component senderTicketReopen(final @NonNull Ticket ticket) {
         List<Template> templates = new ArrayList<>();
         templates.add(this.prefix);
         templates.addAll(this.templateService.ticket(ticket));
@@ -70,7 +70,7 @@ public final class MiniMessageService implements MessageService {
     }
 
     @Override
-    public @NotNull Component senderTicketUpdate(@NonNull final Ticket ticket) {
+    public @NotNull Component senderTicketUpdate(final @NonNull Ticket ticket) {
         List<Template> templates = new ArrayList<>();
         templates.add(this.prefix);
         templates.addAll(this.templateService.ticket(ticket));
@@ -79,7 +79,7 @@ public final class MiniMessageService implements MessageService {
     }
 
     @Override
-    public @NotNull Component senderTicketClose(@NonNull final Ticket ticket) {
+    public @NotNull Component senderTicketClose(final @NonNull Ticket ticket) {
         List<Template> templates = new ArrayList<>();
         templates.add(this.prefix);
         templates.addAll(this.templateService.ticket(ticket));
@@ -97,7 +97,7 @@ public final class MiniMessageService implements MessageService {
     }
 
     @Override
-    public @NotNull Component senderTicketUnclaim(@NonNull final Ticket ticket) {
+    public @NotNull Component senderTicketUnclaim(final @NonNull Ticket ticket) {
         List<Template> templates = new ArrayList<>();
         templates.add(this.prefix);
         templates.addAll(this.templateService.ticket(ticket));
@@ -106,7 +106,7 @@ public final class MiniMessageService implements MessageService {
     }
 
     @Override
-    public @NotNull Component senderTicketAssign(@NonNull final Ticket ticket, final @NonNull Soul target) {
+    public @NotNull Component senderTicketAssign(final @NonNull Ticket ticket, final @NonNull Soul target) {
         List<Template> templates = new ArrayList<>();
         templates.add(this.prefix);
         templates.addAll(this.templateService.ticket(ticket));
@@ -116,7 +116,7 @@ public final class MiniMessageService implements MessageService {
     }
 
     @Override
-    public @NotNull Component senderTicketComplete(@NonNull final Ticket ticket) {
+    public @NotNull Component senderTicketComplete(final @NonNull Ticket ticket) {
         List<Template> templates = new ArrayList<>();
         templates.add(this.prefix);
         templates.addAll(this.templateService.ticket(ticket));
@@ -125,7 +125,7 @@ public final class MiniMessageService implements MessageService {
     }
 
     @Override
-    public @NotNull Component senderTicketNote(@NonNull final Ticket ticket) {
+    public @NotNull Component senderTicketNote(final @NonNull Ticket ticket) {
         List<Template> templates = new ArrayList<>();
         templates.add(this.prefix);
         templates.addAll(this.templateService.ticket(ticket));
@@ -144,7 +144,7 @@ public final class MiniMessageService implements MessageService {
     }
 
     @Override
-    public @NotNull Component targetTicketReopen(@NonNull final Ticket ticket, final @NonNull Soul soul) {
+    public @NotNull Component targetTicketReopen(final @NonNull Ticket ticket, final @NonNull Soul soul) {
         List<Template> templates = new ArrayList<>();
         templates.add(this.prefix);
         templates.addAll(this.templateService.ticket(ticket));
@@ -154,7 +154,7 @@ public final class MiniMessageService implements MessageService {
     }
 
     @Override
-    public @NotNull Component targetTicketUnclaim(@NonNull final Ticket ticket, final @NonNull Soul soul) {
+    public @NotNull Component targetTicketUnclaim(final @NonNull Ticket ticket, final @NonNull Soul soul) {
         List<Template> templates = new ArrayList<>();
         templates.add(this.prefix);
         templates.addAll(this.templateService.ticket(ticket));
@@ -164,7 +164,7 @@ public final class MiniMessageService implements MessageService {
     }
 
     @Override
-    public @NotNull Component targetTicketComplete(@NonNull final Ticket ticket, final @NonNull Soul soul) {
+    public @NotNull Component targetTicketComplete(final @NonNull Ticket ticket, final @NonNull Soul soul) {
         List<Template> templates = new ArrayList<>();
         templates.add(this.prefix);
         templates.addAll(this.templateService.ticket(ticket));
@@ -174,7 +174,7 @@ public final class MiniMessageService implements MessageService {
     }
 
     @Override
-    public @NotNull Component targetTicketNote(@NonNull final Ticket ticket, final @NonNull String note, final @NonNull Soul soul) {
+    public @NotNull Component targetTicketNote(final @NonNull Ticket ticket, final @NonNull String note, final @NonNull Soul soul) {
         List<Template> templates = new ArrayList<>();
         templates.add(this.prefix);
         templates.add(Template.of("note", note));
@@ -195,7 +195,7 @@ public final class MiniMessageService implements MessageService {
     }
 
     @Override
-    public @NotNull Component staffTicketUnclaim(@NonNull final Ticket ticket, final @NonNull Soul soul) {
+    public @NotNull Component staffTicketUnclaim(final @NonNull Ticket ticket, final @NonNull Soul soul) {
         List<Template> templates = new ArrayList<>();
         templates.add(this.prefix);
         templates.addAll(this.templateService.ticket(ticket));
@@ -205,7 +205,7 @@ public final class MiniMessageService implements MessageService {
     }
 
     @Override
-    public @NotNull Component staffTicketAssign(@NonNull final Ticket ticket, final @NonNull Soul soul) {
+    public @NotNull Component staffTicketAssign(final @NonNull Ticket ticket, final @NonNull Soul soul) {
         List<Template> templates = new ArrayList<>();
         templates.add(this.prefix);
         templates.addAll(this.templateService.ticket(ticket));
@@ -215,7 +215,7 @@ public final class MiniMessageService implements MessageService {
     }
 
     @Override
-    public @NotNull Component staffTicketComplete(@NonNull final Ticket ticket, final @NonNull Soul soul) {
+    public @NotNull Component staffTicketComplete(final @NonNull Ticket ticket, final @NonNull Soul soul) {
         List<Template> templates = new ArrayList<>();
         templates.add(this.prefix);
         templates.addAll(this.templateService.ticket(ticket));
@@ -225,7 +225,7 @@ public final class MiniMessageService implements MessageService {
     }
 
     @Override
-    public @NotNull Component staffTicketNote(@NonNull final Ticket ticket, final @NonNull String note, final @NonNull Soul soul) {
+    public @NotNull Component staffTicketNote(final @NonNull Ticket ticket, final @NonNull String note, final @NonNull Soul soul) {
         List<Template> templates = new ArrayList<>();
         templates.add(this.prefix);
         templates.add(Template.of("note", note));
@@ -236,7 +236,7 @@ public final class MiniMessageService implements MessageService {
     }
 
     @Override
-    public @NotNull Component staffTicketCreate(@NonNull final Ticket ticket) {
+    public @NotNull Component staffTicketCreate(final @NonNull Ticket ticket) {
         List<Template> templates = new ArrayList<>();
         templates.add(this.prefix);
         templates.addAll(this.templateService.ticket(ticket));
@@ -245,7 +245,7 @@ public final class MiniMessageService implements MessageService {
     }
 
     @Override
-    public @NotNull Component staffTicketReopen(@NonNull final Ticket ticket, final @NonNull Soul soul) {
+    public @NotNull Component staffTicketReopen(final @NonNull Ticket ticket, final @NonNull Soul soul) {
         List<Template> templates = new ArrayList<>();
         templates.add(this.prefix);
         templates.addAll(this.templateService.ticket(ticket));
@@ -256,7 +256,7 @@ public final class MiniMessageService implements MessageService {
     }
 
     @Override
-    public @NotNull Component staffTicketUpdate(@NonNull final Ticket ticket) {
+    public @NotNull Component staffTicketUpdate(final @NonNull Ticket ticket) {
         List<Template> templates = new ArrayList<>();
         templates.add(this.prefix);
         templates.addAll(this.templateService.ticket(ticket));
@@ -265,7 +265,7 @@ public final class MiniMessageService implements MessageService {
     }
 
     @Override
-    public @NotNull Component staffTicketClose(@NonNull final Ticket ticket) {
+    public @NotNull Component staffTicketClose(final @NonNull Ticket ticket) {
         List<Template> templates = new ArrayList<>();
         templates.add(this.prefix);
         templates.addAll(this.templateService.ticket(ticket));
@@ -295,7 +295,7 @@ public final class MiniMessageService implements MessageService {
     }
 
     @Override
-    public @NotNull Component commandsTicketsList(@NonNull final Map<@NonNull UUID, @NonNull Collection<@NonNull Ticket>> map) {
+    public @NotNull Component commandsTicketsList(final @NonNull Map<@NonNull UUID, @NonNull Collection<@NonNull Ticket>> map) {
         Template wrapper = Template.of("wrapper", this.locale.title.wrapper.use());
 
         TextComponent.Builder builder = Component.text()
@@ -323,7 +323,7 @@ public final class MiniMessageService implements MessageService {
     }
 
     @Override
-    public @NotNull Component commandsTeleport(@NonNull final Ticket ticket) {
+    public @NotNull Component commandsTeleport(final @NonNull Ticket ticket) {
         List<Template> templates = new ArrayList<>();
         templates.add(this.prefix);
         templates.addAll(this.templateService.ticket(ticket));
@@ -332,7 +332,7 @@ public final class MiniMessageService implements MessageService {
     }
 
     @Override
-    public @NotNull Component commandsHighscore(@NonNull final Map<UUID, Integer> ranks) {
+    public @NotNull Component commandsHighscore(final @NonNull Map<UUID, Integer> ranks) {
         Template wrapper = Template.of("wrapper", this.locale.title.wrapper.use());
 
         TextComponent.Builder builder = Component.text()
@@ -353,7 +353,7 @@ public final class MiniMessageService implements MessageService {
     }
 
     @Override
-    public @NotNull Component commandsLog(@NonNull final Collection<Interaction> interactions) {
+    public @NotNull Component commandsLog(final @NonNull Collection<Interaction> interactions) {
         DateTimeFormatter formatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM);
         Template wrapper = Template.of("wrapper", this.locale.title.wrapper.use());
 
@@ -413,13 +413,13 @@ public final class MiniMessageService implements MessageService {
     }
 
     @Override
-    public @NotNull Component exceptionWrongSender(@NonNull final Class<?> sender) {
+    public @NotNull Component exceptionWrongSender(final @NonNull Class<?> sender) {
         Template template = Template.of("sender", sender.getSimpleName());
         return this.locale.exception.invalidSender.use(Arrays.asList(this.prefix, template));
     }
 
     @Override
-    public @NotNull Component showTicket(@NonNull final Ticket ticket) {
+    public @NotNull Component showTicket(final @NonNull Ticket ticket) {
         List<Template> templates = new ArrayList<>();
         templates.add(this.prefix);
         templates.add(Template.of("wrapper", this.locale.title.wrapper.use()));

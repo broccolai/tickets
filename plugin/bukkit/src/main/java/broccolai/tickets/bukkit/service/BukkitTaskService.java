@@ -19,7 +19,7 @@ public final class BukkitTaskService implements TaskService {
     }
 
     @Override
-    public void sync(@NonNull final Runnable runnable) {
+    public void sync(final @NonNull Runnable runnable) {
         Bukkit.getScheduler().runTask(this.plugin, runnable);
     }
 
