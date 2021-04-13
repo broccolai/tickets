@@ -9,6 +9,7 @@ import broccolai.tickets.api.model.user.Soul;
 import broccolai.tickets.api.service.storage.StorageService;
 import broccolai.tickets.core.configuration.MainConfiguration;
 import broccolai.tickets.core.storage.SQLQueries;
+import broccolai.tickets.core.storage.factory.UUIDArgumentFactory;
 import broccolai.tickets.core.storage.mapper.ComponentMapper;
 import broccolai.tickets.core.storage.mapper.InteractionMapper;
 import broccolai.tickets.core.storage.mapper.PositionMapper;
@@ -63,6 +64,7 @@ public final class DatabaseStorageService implements StorageService {
                 .migrate();
 
         this.jdbi = Jdbi.create(this.dataSource)
+            .registerArgument(new UUIDArgumentFactory())
             .registerColumnMapper(Component.class, new ComponentMapper())
             .registerColumnMapper(Position.class, new PositionMapper())
             .registerRowMapper(Interaction.class, new InteractionMapper())
