@@ -40,5 +40,5 @@ jobs:
         with:
           upload_url: ${{ github.event.release.upload_url }}
           asset_path: plugin/build/libs/tickets-bukkit.jar
-          asset_name: tickets.jar
+          asset_name: tickets-bukkit.jar
           asset_content_type: application/java-archive
