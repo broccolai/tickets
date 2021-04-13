@@ -79,10 +79,10 @@ public final class DatabaseStorageService implements StorageService {
             String[] queries = SQLQueries.INSERT_TICKET.get();
 
             handle.createUpdate(queries[0])
-                    .bind("player", soul.uuid().toString())
+                    .bind("player", soul.uuid())
                     .bind("position", PositionMapper.valueOf(position))
                     .bind("status", TicketStatus.OPEN)
-                    .bind("claimer", (String) null)
+                    .bind("claimer", (UUID) null)
                     .execute();
 
             int id = handle.createQuery(queries[1])
@@ -94,7 +94,7 @@ public final class DatabaseStorageService implements StorageService {
                     .bind("ticket", id)
                     .bind("action", messageInteraction.action())
                     .bind("time", messageInteraction.time())
-                    .bind("sender", messageInteraction.sender().toString())
+                    .bind("sender", messageInteraction.sender())
                     .bind("message", messageInteraction.message())
                     .execute();
 
@@ -137,7 +137,7 @@ public final class DatabaseStorageService implements StorageService {
             String[] queries = SQLQueries.SELECT_TICKETS_SOUL_STATUSES.get();
 
             return handle.createQuery(queries[0])
-                    .bind("player", soul.uuid().toString())
+                    .bind("player", soul.uuid())
                     .bindList("statuses", statuses)
                     .mapTo(Ticket.class)
                     .collect(Collectors.toMap(Ticket::id, ticket -> ticket));
@@ -152,7 +152,7 @@ public final class DatabaseStorageService implements StorageService {
             for (final Ticket ticket : tickets) {
                 batch.bind("id", ticket.id())
                         .bind("status", ticket.status())
-                        .bind("claimer", ticket.claimer().map(Object::toString).orElse(null))
+                        .bind("claimer", ticket.claimer())
                         .add();
             }
 
@@ -169,7 +169,7 @@ public final class DatabaseStorageService implements StorageService {
                 batch.bind("ticket", ticket.id())
                         .bind("action", interaction.action())
                         .bind("time", interaction.time())
-                        .bind("sender", interaction.sender().toString());
+                        .bind("sender", interaction.sender());
 
                 if (interaction instanceof MessageInteraction) {
                     MessageInteraction messageInteraction = (MessageInteraction) interaction;
@@ -201,12 +201,12 @@ public final class DatabaseStorageService implements StorageService {
             String[] queries = SQLQueries.NOTIFICATIONS.get();
 
             Collection<Component> components = handle.createQuery(queries[0])
-                        .bind("uuid", soul.uuid().toString())
+                        .bind("uuid", soul.uuid())
                         .mapTo(Component.class)
                         .list();
 
             handle.createUpdate(queries[1])
-                    .bind("uuid", soul.uuid().toString())
+                    .bind("uuid", soul.uuid())
                     .execute();
 
             return components;
@@ -217,7 +217,7 @@ public final class DatabaseStorageService implements StorageService {
     public void saveNotification(final @NonNull Soul soul, final @NonNull Component component) {
         this.jdbi.useHandle(handle -> {
             handle.createUpdate(SQLQueries.INSERT_NOTIFICATION.get()[0])
-                    .bind("uuid", soul.uuid().toString())
+                    .bind("uuid", soul.uuid())
                     .bind("message", ComponentMapper.MINI.serialize(component))
                     .execute();
         });
