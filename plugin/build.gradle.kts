@@ -34,6 +34,7 @@ subprojects {
         paper()
 
         maven("https://mvn.intellectualsites.com/content/repositories/snapshots")
+        maven("https://nexus.velocitypowered.com/repository/maven-public/")
         maven("https://repo.broccol.ai")
     }
 
