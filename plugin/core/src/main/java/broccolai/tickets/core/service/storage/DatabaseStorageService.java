@@ -20,6 +20,8 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.zaxxer.hikari.HikariDataSource;
 
+import java.io.IOException;
+import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Collection;
@@ -36,8 +38,6 @@ import org.flywaydb.core.Flyway;
 import org.jdbi.v3.core.Jdbi;
 import org.jdbi.v3.core.statement.PreparedBatch;
 
-import java.io.File;
-
 @Singleton
 public final class DatabaseStorageService implements StorageService {
 
@@ -48,10 +48,10 @@ public final class DatabaseStorageService implements StorageService {
 
     @Inject
     public DatabaseStorageService(
-            final @NonNull File folder,
+            final @NonNull Path folder,
             final @NonNull ClassLoader classLoader,
             final @NonNull MainConfiguration mainConfiguration
-    ) {
+    ) throws IOException {
         this.dataSource = new HikariDataSource(mainConfiguration.storageConfiguration.asHikari(folder));
 
         Flyway.configure(classLoader)
