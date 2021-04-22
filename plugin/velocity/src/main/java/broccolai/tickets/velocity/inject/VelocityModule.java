@@ -6,7 +6,7 @@ import broccolai.tickets.velocity.service.VelocityTaskService;
 import broccolai.tickets.velocity.service.VelocityUserService;
 import broccolai.tickets.core.inject.platform.PluginPlatform;
 import com.google.inject.AbstractModule;
-import java.io.File;
+import java.nio.file.Path;
 import com.velocitypowered.api.proxy.ProxyServer;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
@@ -14,12 +14,12 @@ public final class VelocityModule extends AbstractModule {
 
     private final ProxyServer server;
     private final PluginPlatform platform;
-    private final File folder;
+    private final Path folder;
 
     public VelocityModule(
             final @NonNull PluginPlatform platform,
             final @NonNull ProxyServer server,
-            final @NonNull File folder
+            final @NonNull Path folder
     ) {
         this.server = server;
         this.platform = platform;
@@ -30,7 +30,7 @@ public final class VelocityModule extends AbstractModule {
     protected void configure() {
         this.bind(ClassLoader.class).toInstance(this.platform.loader());
         this.bind(ProxyServer.class).toInstance(this.server);
-        this.bind(File.class).toInstance(this.folder);
+        this.bind(Path.class).toInstance(this.folder);
         this.bind(TaskService.class).to(VelocityTaskService.class);
         this.bind(UserService.class).to(VelocityUserService.class);
     }

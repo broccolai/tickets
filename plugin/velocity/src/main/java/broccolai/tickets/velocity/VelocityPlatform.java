@@ -26,8 +26,8 @@ import com.velocitypowered.api.proxy.ProxyServer;
 import net.kyori.adventure.audience.ForwardingAudience;
 import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
 import org.checkerframework.checker.nullness.qual.NonNull;
-
-import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.LinkedList;
 import java.util.List;
@@ -41,7 +41,7 @@ public final class VelocityPlatform implements PluginPlatform {
 
     private final Injector velocityInjector;
     private final ProxyServer server;
-    private final File directory;
+    private final Path directory;
 
     private @MonotonicNonNull PureTickets pureTickets;
 
@@ -53,13 +53,12 @@ public final class VelocityPlatform implements PluginPlatform {
     ) {
         this.velocityInjector = velocityInjector;
         this.server = server;
-        this.directory = directory.toFile();
+        this.directory = directory;
     }
 
     @Subscribe
-    @SuppressWarnings("ResultOfMethodCallIgnored")
-    public void onInitialisation(final @NonNull ProxyInitializeEvent event) {
-        this.directory.mkdirs();
+    public void onInitialisation(final @NonNull ProxyInitializeEvent event) throws IOException {
+        Files.createDirectories(this.directory);
 
         Injector injector = velocityInjector.createChildInjector(
                 new VelocityModule(this, this.server, this.directory)
@@ -88,6 +87,7 @@ public final class VelocityPlatform implements PluginPlatform {
         this.pureTickets.unload();
     }
 
+    @SuppressWarnings("OverrideOnly")
     private CommandManager<OnlineSoul> commandManager(
             final @NonNull Injector injector
     ) {
