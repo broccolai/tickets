@@ -4,15 +4,14 @@ import broccolai.tickets.api.model.interaction.Action;
 import broccolai.tickets.api.model.interaction.Interaction;
 import broccolai.tickets.core.model.interaction.BasicInteraction;
 import broccolai.tickets.core.model.interaction.BasicMessageInteraction;
-import org.jdbi.v3.core.mapper.ColumnMapper;
-import org.jdbi.v3.core.mapper.EnumMapper;
-import org.jdbi.v3.core.mapper.RowMapper;
-import org.jdbi.v3.core.statement.StatementContext;
-
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.UUID;
+import org.jdbi.v3.core.mapper.ColumnMapper;
+import org.jdbi.v3.core.mapper.EnumMapper;
+import org.jdbi.v3.core.mapper.RowMapper;
+import org.jdbi.v3.core.statement.StatementContext;
 
 public final class InteractionMapper implements RowMapper<Interaction> {
 

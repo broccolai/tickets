@@ -1,9 +1,8 @@
 package broccolai.tickets.api.model.interaction;
 
-import org.checkerframework.checker.nullness.qual.NonNull;
-
 import java.time.LocalDateTime;
 import java.util.UUID;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 public abstract class Interaction implements Comparable<Interaction> {
 

@@ -1,12 +1,11 @@
 package broccolai.tickets.core.configuration.serializers;
 
 import broccolai.tickets.core.model.locale.LocaleEntry;
+import java.lang.reflect.Type;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.spongepowered.configurate.ConfigurationNode;
 import org.spongepowered.configurate.serialize.SerializationException;
 import org.spongepowered.configurate.serialize.TypeSerializer;
-
-import java.lang.reflect.Type;
 
 public final class LocaleEntrySerializer implements TypeSerializer<LocaleEntry> {
 

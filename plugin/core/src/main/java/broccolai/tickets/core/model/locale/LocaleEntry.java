@@ -1,11 +1,10 @@
 package broccolai.tickets.core.model.locale;
 
+import java.util.List;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.Template;
 import org.checkerframework.checker.nullness.qual.NonNull;
-
-import java.util.List;
 
 public final class LocaleEntry {
 

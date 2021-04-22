@@ -3,9 +3,8 @@ package broccolai.tickets.core.service.user;
 import broccolai.tickets.api.model.user.ConsoleSoul;
 import broccolai.tickets.api.model.user.Soul;
 import broccolai.tickets.api.service.user.UserService;
-import org.checkerframework.checker.nullness.qual.NonNull;
-
 import java.util.UUID;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 public abstract class SimpleUserService implements UserService {
 

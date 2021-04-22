@@ -1,11 +1,11 @@
 package broccolai.tickets.core.service.interaction;
 
 import broccolai.tickets.api.model.event.impl.TicketAssignEvent;
+import broccolai.tickets.api.model.event.impl.TicketClaimEvent;
 import broccolai.tickets.api.model.event.impl.TicketCloseEvent;
 import broccolai.tickets.api.model.event.impl.TicketCompleteEvent;
 import broccolai.tickets.api.model.event.impl.TicketConstructionEvent;
 import broccolai.tickets.api.model.event.impl.TicketCreateEvent;
-import broccolai.tickets.api.model.event.impl.TicketClaimEvent;
 import broccolai.tickets.api.model.event.impl.TicketNoteEvent;
 import broccolai.tickets.api.model.event.impl.TicketReopenEvent;
 import broccolai.tickets.api.model.event.impl.TicketUnclaimEvent;
@@ -30,10 +30,8 @@ import broccolai.tickets.core.exceptions.TooManyOpenTickets;
 import broccolai.tickets.core.model.interaction.BasicInteraction;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-
 import java.time.LocalDateTime;
 import java.util.EnumSet;
-
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 @Singleton

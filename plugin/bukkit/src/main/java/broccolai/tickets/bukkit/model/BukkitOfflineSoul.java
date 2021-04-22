@@ -1,10 +1,9 @@
 package broccolai.tickets.bukkit.model;
 
 import broccolai.tickets.api.model.user.Soul;
+import java.util.UUID;
 import org.bukkit.OfflinePlayer;
 import org.checkerframework.checker.nullness.qual.NonNull;
-
-import java.util.UUID;
 
 public final class BukkitOfflineSoul implements Soul {
 
