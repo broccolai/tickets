@@ -74,4 +74,5 @@ public final class CommandsConfiguration {
         public String[] aliases = new String[0];
 
     }
+
 }

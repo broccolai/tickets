@@ -19,7 +19,6 @@ import com.google.common.collect.MultimapBuilder;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.zaxxer.hikari.HikariDataSource;
-
 import java.io.IOException;
 import java.nio.file.Path;
 import java.time.LocalDateTime;
@@ -27,11 +26,8 @@ import java.time.temporal.ChronoUnit;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-
 import java.util.UUID;
-
 import java.util.stream.Collectors;
-
 import net.kyori.adventure.text.Component;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.flywaydb.core.Flyway;
@@ -64,11 +60,11 @@ public final class DatabaseStorageService implements StorageService {
                 .migrate();
 
         this.jdbi = Jdbi.create(this.dataSource)
-            .registerArgument(new UUIDArgumentFactory())
-            .registerColumnMapper(Component.class, new ComponentMapper())
-            .registerColumnMapper(Position.class, new PositionMapper())
-            .registerRowMapper(Interaction.class, new InteractionMapper())
-            .registerRowMapper(Ticket.class, new TicketMapper());
+                .registerArgument(new UUIDArgumentFactory())
+                .registerColumnMapper(Component.class, new ComponentMapper())
+                .registerColumnMapper(Position.class, new PositionMapper())
+                .registerRowMapper(Interaction.class, new InteractionMapper())
+                .registerRowMapper(Ticket.class, new TicketMapper());
     }
 
     @Override
@@ -203,9 +199,9 @@ public final class DatabaseStorageService implements StorageService {
             String[] queries = SQLQueries.NOTIFICATIONS.get();
 
             Collection<Component> components = handle.createQuery(queries[0])
-                        .bind("uuid", soul.uuid())
-                        .mapTo(Component.class)
-                        .list();
+                    .bind("uuid", soul.uuid())
+                    .mapTo(Component.class)
+                    .list();
 
             handle.createUpdate(queries[1])
                     .bind("uuid", soul.uuid())

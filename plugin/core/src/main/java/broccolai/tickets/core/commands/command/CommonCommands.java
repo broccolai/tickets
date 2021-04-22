@@ -5,9 +5,8 @@ import broccolai.tickets.api.model.ticket.Ticket;
 import broccolai.tickets.api.model.user.OnlineSoul;
 import broccolai.tickets.api.service.message.MessageService;
 import broccolai.tickets.api.service.storage.StorageService;
-import org.checkerframework.checker.nullness.qual.NonNull;
-
 import java.util.Collection;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 public abstract class CommonCommands implements BaseCommand {
 

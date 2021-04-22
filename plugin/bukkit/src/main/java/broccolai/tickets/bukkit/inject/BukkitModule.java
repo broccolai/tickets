@@ -6,11 +6,11 @@ import broccolai.tickets.bukkit.service.BukkitTaskService;
 import broccolai.tickets.bukkit.service.BukkitUserService;
 import broccolai.tickets.core.inject.platform.PluginPlatform;
 import com.google.inject.AbstractModule;
+import java.nio.file.Path;
 import net.kyori.adventure.platform.AudienceProvider;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import org.bukkit.plugin.Plugin;
 import org.checkerframework.checker.nullness.qual.NonNull;
-import java.nio.file.Path;
 
 public final class BukkitModule extends AbstractModule {
 

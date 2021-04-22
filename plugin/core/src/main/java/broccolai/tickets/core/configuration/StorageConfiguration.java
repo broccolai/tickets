@@ -2,9 +2,9 @@ package broccolai.tickets.core.configuration;
 
 import com.zaxxer.hikari.HikariConfig;
 import java.io.IOException;
-import org.checkerframework.checker.nullness.qual.NonNull;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 
 @ConfigSerializable

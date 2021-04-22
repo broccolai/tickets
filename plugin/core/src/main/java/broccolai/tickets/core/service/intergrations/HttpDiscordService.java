@@ -10,10 +10,9 @@ import com.google.inject.Singleton;
 import com.intellectualsites.http.EntityMapper;
 import com.intellectualsites.http.HttpClient;
 import com.intellectualsites.http.external.GsonMapper;
-import org.checkerframework.checker.nullness.qual.NonNull;
-
 import java.util.Base64;
 import java.util.logging.Logger;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 @Singleton
 public final class HttpDiscordService implements DiscordService {

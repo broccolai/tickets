@@ -15,11 +15,11 @@ import cloud.commandframework.CommandManager;
 import cloud.commandframework.exceptions.InvalidCommandSenderException;
 import cloud.commandframework.execution.AsynchronousCommandExecutionCoordinator;
 import cloud.commandframework.minecraft.extras.MinecraftExceptionHandler;
-
 import cloud.commandframework.paper.PaperCommandManager;
-
 import com.google.inject.Guice;
 import com.google.inject.Injector;
+import java.util.LinkedList;
+import java.util.List;
 import net.kyori.adventure.audience.ForwardingAudience;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
@@ -27,9 +27,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
 import org.checkerframework.checker.nullness.qual.NonNull;
-
-import java.util.LinkedList;
-import java.util.List;
 
 @SuppressWarnings("unused")
 public final class BukkitPlatform extends JavaPlugin implements PluginPlatform {
@@ -107,7 +104,10 @@ public final class BukkitPlatform extends JavaPlugin implements PluginPlatform {
                     InvalidCommandSenderException icse = (InvalidCommandSenderException) ex;
                     return messageService.exceptionWrongSender(icse.getRequiredSender());
                 })
-                .withHandler(MinecraftExceptionHandler.ExceptionType.NO_PERMISSION, (ex) -> messageService.exceptionNoPermission())
+                .withHandler(
+                        MinecraftExceptionHandler.ExceptionType.NO_PERMISSION,
+                        (ex) -> messageService.exceptionNoPermission()
+                )
                 .withHandler(MinecraftExceptionHandler.ExceptionType.ARGUMENT_PARSING, (ex) -> {
                     Throwable cause = ex.getCause();
 

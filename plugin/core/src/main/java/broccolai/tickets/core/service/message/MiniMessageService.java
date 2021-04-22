@@ -11,13 +11,6 @@ import broccolai.tickets.api.service.user.UserService;
 import broccolai.tickets.core.configuration.LocaleConfiguration;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.TextComponent;
-import net.kyori.adventure.text.event.HoverEvent;
-import net.kyori.adventure.text.minimessage.Template;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.jetbrains.annotations.NotNull;
-
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
 import java.util.ArrayList;
@@ -29,6 +22,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.event.HoverEvent;
+import net.kyori.adventure.text.minimessage.Template;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.jetbrains.annotations.NotNull;
 
 @Singleton
 public final class MiniMessageService implements MessageService {
@@ -174,7 +173,11 @@ public final class MiniMessageService implements MessageService {
     }
 
     @Override
-    public @NotNull Component targetTicketNote(final @NonNull Ticket ticket, final @NonNull String note, final @NonNull Soul soul) {
+    public @NotNull Component targetTicketNote(
+            final @NonNull Ticket ticket,
+            final @NonNull String note,
+            final @NonNull Soul soul
+    ) {
         List<Template> templates = new ArrayList<>();
         templates.add(this.prefix);
         templates.add(Template.of("note", note));
@@ -225,7 +228,11 @@ public final class MiniMessageService implements MessageService {
     }
 
     @Override
-    public @NotNull Component staffTicketNote(final @NonNull Ticket ticket, final @NonNull String note, final @NonNull Soul soul) {
+    public @NotNull Component staffTicketNote(
+            final @NonNull Ticket ticket,
+            final @NonNull String note,
+            final @NonNull Soul soul
+    ) {
         List<Template> templates = new ArrayList<>();
         templates.add(this.prefix);
         templates.add(Template.of("note", note));

@@ -1,9 +1,9 @@
 package broccolai.tickets.api.model.message;
 
+import java.util.UUID;
 import net.kyori.adventure.text.Component;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.dataflow.qual.Pure;
-import java.util.UUID;
 
 public final class TargetPair {
 

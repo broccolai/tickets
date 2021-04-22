@@ -8,11 +8,10 @@ import cloud.commandframework.arguments.CommandArgument;
 import cloud.commandframework.arguments.parser.ArgumentParseResult;
 import cloud.commandframework.arguments.parser.ArgumentParser;
 import cloud.commandframework.context.CommandContext;
-import org.checkerframework.checker.nullness.qual.NonNull;
-
 import java.time.LocalDateTime;
 import java.util.Queue;
 import java.util.StringJoiner;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 public final class MessageArgument extends CommandArgument<OnlineSoul, MessageInteraction> {
 

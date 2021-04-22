@@ -1,12 +1,11 @@
 package broccolai.tickets.core.storage.mapper;
 
 import broccolai.tickets.api.model.position.Position;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.jdbi.v3.core.mapper.ColumnMapper;
 import org.jdbi.v3.core.statement.StatementContext;
-
-import java.sql.ResultSet;
-import java.sql.SQLException;
 
 public final class PositionMapper implements ColumnMapper<Position> {
 

@@ -47,4 +47,5 @@ public abstract class TicketsCommandEvent implements SenderNotificationEvent, Ta
 
         return json;
     }
+
 }

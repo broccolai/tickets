@@ -5,13 +5,12 @@ import broccolai.tickets.api.model.position.Position;
 import broccolai.tickets.api.model.ticket.Ticket;
 import broccolai.tickets.api.model.ticket.TicketStatus;
 import broccolai.tickets.api.model.user.Soul;
-import org.checkerframework.checker.nullness.qual.NonNull;
-
 import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 public interface TicketService {
 

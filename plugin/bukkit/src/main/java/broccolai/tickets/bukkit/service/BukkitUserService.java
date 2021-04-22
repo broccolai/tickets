@@ -10,13 +10,13 @@ import broccolai.tickets.core.service.user.SimpleUserService;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.UUID;
 import net.kyori.adventure.platform.AudienceProvider;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.checkerframework.checker.nullness.qual.NonNull;
-import java.util.Collection;
-import java.util.UUID;
 
 @Singleton
 public final class BukkitUserService extends SimpleUserService {

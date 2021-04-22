@@ -21,11 +21,10 @@ import cloud.commandframework.CommandManager;
 import cloud.commandframework.arguments.standard.EnumArgument;
 import cloud.commandframework.context.CommandContext;
 import com.google.inject.Inject;
-import net.kyori.adventure.text.Component;
-import org.checkerframework.checker.nullness.qual.NonNull;
-
 import java.util.Collection;
 import java.util.EnumSet;
+import net.kyori.adventure.text.Component;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 public final class TicketCommand extends CommonCommands {
 
@@ -63,71 +62,71 @@ public final class TicketCommand extends CommonCommands {
                 this.config.create.main,
                 ArgumentDescription.of("Create a ticket"),
                 this.config.create.aliases
-        )
-                .permission(Constants.USER_PERMISSION + ".create")
-                .argument(MessageArgument.of("message"))
-                .handler(this::processCreate)
+                )
+                        .permission(Constants.USER_PERMISSION + ".create")
+                        .argument(MessageArgument.of("message"))
+                        .handler(this::processCreate)
         );
 
         manager.command(builder.literal(
                 this.config.update.main,
                 ArgumentDescription.of("Update a ticket"),
                 this.config.update.aliases
-        )
-                .permission(Constants.USER_PERMISSION + ".update")
-                .argument(this.argumentFactory.ticket(
-                        "ticket", TicketParserMode.SENDERS,
-                        EnumSet.of(TicketStatus.OPEN, TicketStatus.CLAIMED),
-                        0
-                ))
-                .argument(MessageArgument.of("message"))
-                .handler(this::processUpdate)
+                )
+                        .permission(Constants.USER_PERMISSION + ".update")
+                        .argument(this.argumentFactory.ticket(
+                                "ticket", TicketParserMode.SENDERS,
+                                EnumSet.of(TicketStatus.OPEN, TicketStatus.CLAIMED),
+                                0
+                        ))
+                        .argument(MessageArgument.of("message"))
+                        .handler(this::processUpdate)
         );
 
         manager.command(builder.literal(
                 this.config.close.main,
                 ArgumentDescription.of("Close a ticket"),
                 this.config.close.aliases
-        )
-                .permission(Constants.USER_PERMISSION + ".close")
-                .argument(this.argumentFactory.ticket(
-                        "ticket",
-                        TicketParserMode.SENDERS,
-                        EnumSet.of(TicketStatus.OPEN, TicketStatus.CLAIMED),
-                        0
-                ))
-                .handler(this::processClose)
+                )
+                        .permission(Constants.USER_PERMISSION + ".close")
+                        .argument(this.argumentFactory.ticket(
+                                "ticket",
+                                TicketParserMode.SENDERS,
+                                EnumSet.of(TicketStatus.OPEN, TicketStatus.CLAIMED),
+                                0
+                        ))
+                        .handler(this::processClose)
         );
 
         manager.command(builder.literal(
                 this.config.list.main,
                 ArgumentDescription.of("List tickets"),
                 this.config.list.aliases
-        )
-                .permission(Constants.USER_PERMISSION + ".list")
-                .flag(manager.flagBuilder("status")
-                        .withArgument(EnumArgument.of(TicketStatus.class, "status")))
-                .handler(this::processList)
+                )
+                        .permission(Constants.USER_PERMISSION + ".list")
+                        .flag(manager.flagBuilder("status")
+                                .withArgument(EnumArgument.of(TicketStatus.class, "status")))
+                        .handler(this::processList)
         );
 
         manager.command(builder.literal(
                 this.config.show.main,
                 ArgumentDescription.of("Show a ticket"),
                 this.config.show.aliases
-        )
-                .permission(Constants.USER_PERMISSION + ".show")
-                .argument(this.argumentFactory.ticket("ticket", TicketParserMode.SENDERS, EnumSet.allOf(TicketStatus.class), 0))
-                .handler(c -> processShow(c.getSender(), c.get("ticket")))
+                )
+                        .permission(Constants.USER_PERMISSION + ".show")
+                        .argument(this.argumentFactory.ticket("ticket", TicketParserMode.SENDERS, EnumSet.allOf(TicketStatus.class), 0))
+                        .handler(c -> processShow(c.getSender(), c.get("ticket")))
         );
 
         manager.command(builder.literal(
                 this.config.log.main,
                 ArgumentDescription.of("View a tickets log"),
                 this.config.log.aliases
-        )
-                .permission(Constants.USER_PERMISSION + ".log")
-                .argument(this.argumentFactory.ticket("ticket", TicketParserMode.SENDERS, EnumSet.allOf(TicketStatus.class), 0))
-                .handler(c -> processLog(c.getSender(), c.get("ticket")))
+                )
+                        .permission(Constants.USER_PERMISSION + ".log")
+                        .argument(this.argumentFactory.ticket("ticket", TicketParserMode.SENDERS, EnumSet.allOf(TicketStatus.class), 0))
+                        .handler(c -> processLog(c.getSender(), c.get("ticket")))
         );
     }
 

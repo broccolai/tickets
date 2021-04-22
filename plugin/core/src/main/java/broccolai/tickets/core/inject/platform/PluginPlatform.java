@@ -10,6 +10,7 @@ import broccolai.tickets.core.subscribers.SoulSubscriber;
 import broccolai.tickets.core.utilities.ArrayHelper;
 
 public interface PluginPlatform {
+
     Class<? extends BaseCommand>[] COMMANDS = ArrayHelper.create(
             TicketCommand.class,
             TicketsCommand.class,
@@ -22,4 +23,5 @@ public interface PluginPlatform {
     );
 
     ClassLoader loader();
+
 }

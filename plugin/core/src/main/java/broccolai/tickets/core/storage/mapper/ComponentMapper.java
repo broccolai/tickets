@@ -1,12 +1,11 @@
 package broccolai.tickets.core.storage.mapper;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.jdbi.v3.core.mapper.ColumnMapper;
 import org.jdbi.v3.core.statement.StatementContext;
-
-import java.sql.ResultSet;
-import java.sql.SQLException;
 
 public final class ComponentMapper implements ColumnMapper<Component> {
 

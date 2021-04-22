@@ -8,13 +8,12 @@ import broccolai.tickets.api.model.ticket.Ticket;
 import broccolai.tickets.api.model.ticket.TicketStatus;
 import broccolai.tickets.api.model.user.Soul;
 import com.google.common.collect.Multimap;
-import net.kyori.adventure.text.Component;
-import org.checkerframework.checker.nullness.qual.NonNull;
-
 import java.time.temporal.ChronoUnit;
 import java.util.Collection;
 import java.util.Map;
 import java.util.UUID;
+import net.kyori.adventure.text.Component;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 public interface StorageService extends Disposable {
 
@@ -24,7 +23,10 @@ public interface StorageService extends Disposable {
 
     @NonNull Map<@NonNull Integer, @NonNull Ticket> findTickets(@NonNull Collection<TicketStatus> statuses);
 
-    @NonNull Map<@NonNull Integer, @NonNull Ticket> findTickets(@NonNull Soul soul, @NonNull Collection<@NonNull TicketStatus> statuses);
+    @NonNull Map<@NonNull Integer, @NonNull Ticket> findTickets(
+            @NonNull Soul soul,
+            @NonNull Collection<@NonNull TicketStatus> statuses
+    );
 
     void updateTickets(@NonNull Collection<Ticket> tickets);
 

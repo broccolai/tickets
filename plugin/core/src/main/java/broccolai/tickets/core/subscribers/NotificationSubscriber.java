@@ -15,9 +15,9 @@ import broccolai.tickets.api.service.message.MessageService;
 import broccolai.tickets.api.service.storage.StorageService;
 import broccolai.tickets.api.service.user.UserService;
 import com.google.inject.Inject;
+import java.util.UUID;
 import net.kyori.adventure.text.Component;
 import org.checkerframework.checker.nullness.qual.NonNull;
-import java.util.UUID;
 
 public final class NotificationSubscriber implements Subscriber {
 
@@ -93,4 +93,5 @@ public final class NotificationSubscriber implements Subscriber {
     public void onDiscordNotification(final @NonNull DiscordNotificationEvent event) {
         this.discordService.announce(event.discord(this.userService));
     }
+
 }

@@ -10,11 +10,10 @@ import broccolai.tickets.api.service.storage.StorageService;
 import broccolai.tickets.api.service.ticket.TicketService;
 import broccolai.tickets.core.utilities.Constants;
 import com.google.inject.Inject;
-import net.kyori.adventure.text.Component;
-import org.checkerframework.checker.nullness.qual.NonNull;
-
 import java.util.Collection;
 import java.util.EnumSet;
+import net.kyori.adventure.text.Component;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 public final class SoulSubscriber implements Subscriber {
 
