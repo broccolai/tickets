@@ -72,10 +72,6 @@ public final class NotificationSubscriber implements Subscriber {
     public void onStaffNotification(final @NonNull StaffNotificationEvent event) {
         Component message = event.staff(this.messageService);
 
-        if (message == null) {
-            return;
-        }
-
         final UUID ignore;
 
         if (event instanceof SoulEvent) {
