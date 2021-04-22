@@ -6,22 +6,20 @@ import broccolai.tickets.core.configuration.serializers.LocaleEntrySerializer;
 import broccolai.tickets.core.model.locale.LocaleEntry;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
-
-import java.io.File;
-
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.spongepowered.configurate.CommentedConfigurationNode;
 import org.spongepowered.configurate.yaml.YamlConfigurationLoader;
 
-@SuppressWarnings("ResultOfMethodCallIgnored")
 public final class ConfigurationModule extends AbstractModule {
 
     @Provides
-    public MainConfiguration providesMainConfiguration(final @NonNull File folder) throws IOException {
-        File file = new File(folder, "configuration.yml");
-        file.createNewFile();
+    public MainConfiguration providesMainConfiguration(final @NonNull Path folder) throws IOException {
+        Path file = folder.resolve("configuration.yml");
+        Files.createFile(file);
 
         YamlConfigurationLoader loader = YamlConfigurationLoader.builder()
                 .defaultOptions(opts -> opts
@@ -30,7 +28,7 @@ public final class ConfigurationModule extends AbstractModule {
                                 + "https://github.com/broccolai/tickets/wiki/Discord-Integration "
                                 + "or if you still need help join my Discord https://discord.broccol.ai")
                 )
-                .file(file)
+                .path(file)
                 .build();
         CommentedConfigurationNode node = loader.load();
         MainConfiguration config = MainConfiguration.loadFrom(node);
@@ -42,9 +40,9 @@ public final class ConfigurationModule extends AbstractModule {
     }
 
     @Provides
-    public LocaleConfiguration providesLocaleConfiguration(final @NonNull File folder) throws IOException {
-        File file = new File(folder, "locale.yml");
-        file.createNewFile();
+    public LocaleConfiguration providesLocaleConfiguration(final @NonNull Path folder) throws IOException {
+        Path file = folder.resolve("locale.yml");
+        Files.createFile(file);
 
         YamlConfigurationLoader loader = YamlConfigurationLoader.builder()
                 .defaultOptions(opts -> {
@@ -54,7 +52,7 @@ public final class ConfigurationModule extends AbstractModule {
 
                     return opts.shouldCopyDefaults(true);
                 })
-                .file(file)
+                .path(file)
                 .build();
         CommentedConfigurationNode node = loader.load();
         LocaleConfiguration config = LocaleConfiguration.loadFrom(node);
