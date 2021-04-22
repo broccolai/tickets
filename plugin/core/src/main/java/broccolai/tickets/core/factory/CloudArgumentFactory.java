@@ -5,9 +5,8 @@ import broccolai.tickets.core.commands.arguments.TargetArgument;
 import broccolai.tickets.core.commands.arguments.TicketArgument;
 import broccolai.tickets.core.commands.arguments.TicketParserMode;
 import com.google.inject.assistedinject.Assisted;
-import org.checkerframework.checker.nullness.qual.NonNull;
-
 import java.util.Set;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 public interface CloudArgumentFactory {
 

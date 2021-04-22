@@ -10,12 +10,11 @@ import cloud.commandframework.CommandManager;
 import cloud.commandframework.arguments.standard.EnumArgument;
 import cloud.commandframework.context.CommandContext;
 import com.google.inject.Inject;
-import net.kyori.adventure.text.Component;
-import org.checkerframework.checker.nullness.qual.NonNull;
-
 import java.time.temporal.ChronoUnit;
 import java.util.Map;
 import java.util.UUID;
+import net.kyori.adventure.text.Component;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 public final class PureTicketsCommand implements BaseCommand {
 
@@ -36,11 +35,11 @@ public final class PureTicketsCommand implements BaseCommand {
                 "highscore",
                 ArgumentDescription.of("View highscores of ticket completions"),
                 "hs"
-        )
-                .permission(Constants.STAFF_PERMISSION + ".highscore")
-                .argument(EnumArgument.optional(ChronoUnit.class, "amount"))
-                .handler(this::processHighscore)
-                .build()
+                )
+                        .permission(Constants.STAFF_PERMISSION + ".highscore")
+                        .argument(EnumArgument.optional(ChronoUnit.class, "amount"))
+                        .handler(this::processHighscore)
+                        .build()
         );
     }
 

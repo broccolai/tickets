@@ -16,16 +16,13 @@ import cloud.commandframework.arguments.parser.ArgumentParser;
 import cloud.commandframework.context.CommandContext;
 import cloud.commandframework.exceptions.parsing.NoInputProvidedException;
 import com.google.inject.Inject;
-
 import com.google.inject.assistedinject.Assisted;
-
 import java.util.ArrayList;
-import org.checkerframework.checker.nullness.qual.NonNull;
-
 import java.util.List;
 import java.util.Optional;
 import java.util.Queue;
 import java.util.Set;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 public final class TicketArgument extends CommandArgument<OnlineSoul, Ticket> {
 
@@ -69,9 +66,12 @@ public final class TicketArgument extends CommandArgument<OnlineSoul, Ticket> {
                 final @NonNull Queue<String> inputQueue
         ) {
             switch (this.parserMode) {
-                case ANY: return this.any(commandContext, inputQueue);
-                case SENDERS: return this.senders(commandContext, inputQueue);
-                default: throw new IllegalStateException();
+                case ANY:
+                    return this.any(commandContext, inputQueue);
+                case SENDERS:
+                    return this.senders(commandContext, inputQueue);
+                default:
+                    throw new IllegalStateException();
             }
         }
 

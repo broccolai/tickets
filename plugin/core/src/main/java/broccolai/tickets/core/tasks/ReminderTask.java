@@ -10,9 +10,9 @@ import broccolai.tickets.core.configuration.MainConfiguration;
 import broccolai.tickets.core.configuration.TasksConfiguration;
 import broccolai.tickets.core.utilities.Constants;
 import com.google.inject.Inject;
+import java.util.EnumSet;
 import net.kyori.adventure.text.Component;
 import org.checkerframework.checker.nullness.qual.NonNull;
-import java.util.EnumSet;
 
 public final class ReminderTask implements Task {
 

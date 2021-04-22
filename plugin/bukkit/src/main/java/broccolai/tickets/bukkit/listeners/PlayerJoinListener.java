@@ -6,12 +6,11 @@ import broccolai.tickets.api.service.event.EventService;
 import broccolai.tickets.api.service.tasks.TaskService;
 import broccolai.tickets.api.service.user.UserService;
 import com.google.inject.Inject;
+import java.util.UUID;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.checkerframework.checker.nullness.qual.NonNull;
-
-import java.util.UUID;
 
 public final class PlayerJoinListener implements Listener {
 

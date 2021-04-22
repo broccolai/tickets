@@ -1,11 +1,10 @@
 package broccolai.tickets.core.storage.factory;
 
+import java.sql.Types;
+import java.util.UUID;
 import org.jdbi.v3.core.argument.AbstractArgumentFactory;
 import org.jdbi.v3.core.argument.Argument;
 import org.jdbi.v3.core.config.ConfigRegistry;
-
-import java.sql.Types;
-import java.util.UUID;
 
 public final class UUIDArgumentFactory extends AbstractArgumentFactory<UUID> {
 

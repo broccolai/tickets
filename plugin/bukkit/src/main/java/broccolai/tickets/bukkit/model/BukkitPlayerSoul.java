@@ -4,6 +4,7 @@ import broccolai.tickets.api.model.position.Position;
 import broccolai.tickets.api.model.user.PlayerSoul;
 import broccolai.tickets.api.service.tasks.TaskService;
 import io.papermc.lib.PaperLib;
+import java.util.UUID;
 import net.kyori.adventure.audience.Audience;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -11,8 +12,6 @@ import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.checkerframework.checker.nullness.qual.NonNull;
-
-import java.util.UUID;
 
 public final class BukkitPlayerSoul implements PlayerSoul, BukkitOnlineSoul {
 

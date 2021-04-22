@@ -1,10 +1,10 @@
+import ca.stellardrift.build.common.paper
+import ca.stellardrift.build.common.spigot
 import com.github.jengelman.gradle.plugins.shadow.ShadowPlugin
 import net.kyori.indra.IndraCheckstylePlugin
 import net.kyori.indra.IndraPlugin
 import net.kyori.indra.IndraPublishingPlugin
 import net.kyori.indra.repository.sonatypeSnapshots
-import ca.stellardrift.build.common.spigot
-import ca.stellardrift.build.common.paper
 
 plugins {
     id("net.kyori.indra")
@@ -19,12 +19,10 @@ group = "broccolai.tickets"
 version = "5.2.0-SNAPSHOT"
 
 subprojects {
-    apply {
-        plugin<ShadowPlugin>()
-        plugin<IndraPlugin>()
-        plugin<IndraCheckstylePlugin>()
-        plugin<IndraPublishingPlugin>()
-    }
+    apply<ShadowPlugin>()
+    apply<IndraPlugin>()
+    apply<IndraCheckstylePlugin>()
+    apply<IndraPublishingPlugin>()
 
     repositories {
         mavenCentral()
@@ -48,6 +46,7 @@ subprojects {
 
             github("broccolai", "tickets") {
                 ci(true)
+                issues(true)
             }
         }
 
