@@ -33,7 +33,7 @@ public final class CachedTicketService implements TicketService {
 
     private final StorageService storageService;
 
-    private final Cache<Integer, Ticket> cache = Caffeine.newBuilder().build();
+    private final Cache<@NonNull Integer, @NonNull Ticket> cache = Caffeine.newBuilder().build();
     private final Multimap<UUID, TicketStatus> lookups = MultimapBuilder.hashKeys().enumSetValues(TicketStatus.class).build();
 
     @Inject

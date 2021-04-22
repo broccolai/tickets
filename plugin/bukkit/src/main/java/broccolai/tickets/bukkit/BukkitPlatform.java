@@ -75,6 +75,7 @@ public final class BukkitPlatform extends JavaPlugin implements PluginPlatform {
         this.pureTickets.unload();
     }
 
+    @SuppressWarnings("OverrideOnly")
     private CommandManager<OnlineSoul> commandManager(
             final @NonNull UserService userService,
             final @NonNull MessageService messageService

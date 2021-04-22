@@ -14,7 +14,6 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.util.UUID;
 
-@SuppressWarnings("ConstantConditions")
 public final class BukkitPlayerSoul implements PlayerSoul, BukkitOnlineSoul {
 
     private final Player player;
