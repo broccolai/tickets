@@ -3,11 +3,14 @@ import net.kyori.indra.IndraCheckstylePlugin
 import net.kyori.indra.IndraPlugin
 import net.kyori.indra.IndraPublishingPlugin
 import net.kyori.indra.repository.sonatypeSnapshots
+import ca.stellardrift.build.common.spigot
+import ca.stellardrift.build.common.paper
 
 plugins {
     id("net.kyori.indra")
     id("net.kyori.indra.publishing")
     id("net.kyori.indra.checkstyle")
+    id("ca.stellardrift.opinionated")
     id("com.github.johnrengelman.shadow")
     id("com.github.ben-manes.versions")
 }
@@ -26,12 +29,11 @@ subprojects {
     repositories {
         mavenCentral()
         sonatypeSnapshots()
+        spigot()
+        paper()
 
-        maven("https://hub.spigotmc.org/nexus/content/repositories/snapshots/")
         maven("https://mvn.intellectualsites.com/content/repositories/snapshots")
-        maven("https://papermc.io/repo/repository/maven-public/")
         maven("https://repo.broccol.ai")
-        maven("https://repo.broccol.ai/snapshots")
     }
 
     tasks {
