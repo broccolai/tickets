@@ -12,6 +12,7 @@ import broccolai.tickets.core.exceptions.PureException;
 import broccolai.tickets.core.inject.platform.PluginPlatform;
 import broccolai.tickets.core.utilities.ArrayHelper;
 import cloud.commandframework.CommandManager;
+import cloud.commandframework.bukkit.CloudBukkitCapabilities;
 import cloud.commandframework.exceptions.InvalidCommandSenderException;
 import cloud.commandframework.execution.AsynchronousCommandExecutionCoordinator;
 import cloud.commandframework.minecraft.extras.MinecraftExceptionHandler;
@@ -96,7 +97,9 @@ public final class BukkitPlatform extends JavaPlugin implements PluginPlatform {
                 }
         );
 
-        cloudManager.registerAsynchronousCompletions();
+        if (cloudManager.queryCapability(CloudBukkitCapabilities.ASYNCHRONOUS_COMPLETION)) {
+            cloudManager.registerAsynchronousCompletions();
+        }
 
         new MinecraftExceptionHandler<@NonNull OnlineSoul>()
                 .withDefaultHandlers()
