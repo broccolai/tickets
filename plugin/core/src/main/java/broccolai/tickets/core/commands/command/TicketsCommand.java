@@ -26,6 +26,7 @@ import cloud.commandframework.arguments.standard.StringArgument;
 import cloud.commandframework.context.CommandContext;
 import com.google.inject.Inject;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.EnumSet;
@@ -231,7 +232,12 @@ public final class TicketsCommand extends CommonCommands {
         OnlineSoul sender = c.getSender();
         Ticket ticket = c.get("ticket");
         String message = c.get("message");
-        MessageInteraction interaction = new BasicMessageInteraction(Action.NOTE, LocalDateTime.now(), sender.uuid(), message);
+        MessageInteraction interaction = new BasicMessageInteraction(
+                Action.NOTE,
+                LocalDateTime.now(ZoneId.systemDefault()),
+                sender.uuid(),
+                message
+        );
 
         this.interactionService.note(sender, ticket, interaction);
     }

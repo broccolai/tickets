@@ -31,6 +31,7 @@ import broccolai.tickets.core.model.interaction.BasicInteraction;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.EnumSet;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
@@ -99,7 +100,7 @@ public final class EventInteractionService implements InteractionService {
     public void close(final @NonNull PlayerSoul soul, final @NonNull Ticket ticket) {
         this.requireOpen(ticket);
 
-        Interaction interaction = new BasicInteraction(Action.CLOSE, LocalDateTime.now(), soul.uuid());
+        Interaction interaction = new BasicInteraction(Action.CLOSE, LocalDateTime.now(ZoneId.systemDefault()), soul.uuid());
         ticket.status(TicketStatus.CLOSED);
 
         this.storageService.queue(ticket, interaction);
@@ -111,7 +112,7 @@ public final class EventInteractionService implements InteractionService {
     public void claim(final @NonNull OnlineSoul soul, final @NonNull Ticket ticket) {
         this.requireOpenAndUnclaimed(ticket);
 
-        Interaction interaction = new BasicInteraction(Action.CLAIM, LocalDateTime.now(), soul.uuid());
+        Interaction interaction = new BasicInteraction(Action.CLAIM, LocalDateTime.now(ZoneId.systemDefault()), soul.uuid());
         ticket.status(TicketStatus.CLAIMED);
         ticket.claimer(soul.uuid());
 
@@ -124,7 +125,7 @@ public final class EventInteractionService implements InteractionService {
     public void complete(final @NonNull OnlineSoul soul, final @NonNull Ticket ticket) {
         this.requireOpen(ticket);
 
-        Interaction interaction = new BasicInteraction(Action.COMPLETE, LocalDateTime.now(), soul.uuid());
+        Interaction interaction = new BasicInteraction(Action.COMPLETE, LocalDateTime.now(ZoneId.systemDefault()), soul.uuid());
         ticket.status(TicketStatus.CLOSED);
         ticket.claimer(soul.uuid());
 
@@ -137,7 +138,7 @@ public final class EventInteractionService implements InteractionService {
     public void assign(final @NonNull OnlineSoul soul, final @NonNull Soul target, final @NonNull Ticket ticket) {
         this.requireOpenAndUnclaimed(ticket);
 
-        Interaction interaction = new BasicInteraction(Action.ASSIGN, LocalDateTime.now(), soul.uuid());
+        Interaction interaction = new BasicInteraction(Action.ASSIGN, LocalDateTime.now(ZoneId.systemDefault()), soul.uuid());
         ticket.status(TicketStatus.CLAIMED);
         ticket.claimer(soul.uuid());
 
@@ -150,7 +151,7 @@ public final class EventInteractionService implements InteractionService {
     public void unclaim(final @NonNull OnlineSoul soul, final @NonNull Ticket ticket) {
         this.requireOpen(ticket);
 
-        Interaction interaction = new BasicInteraction(Action.UNCLAIM, LocalDateTime.now(), soul.uuid());
+        Interaction interaction = new BasicInteraction(Action.UNCLAIM, LocalDateTime.now(ZoneId.systemDefault()), soul.uuid());
         ticket.status(TicketStatus.OPEN);
         ticket.claimer(null);
 
@@ -163,7 +164,7 @@ public final class EventInteractionService implements InteractionService {
     public void reopen(final @NonNull OnlineSoul soul, final @NonNull Ticket ticket) {
         this.requireClosed(ticket);
 
-        Interaction interaction = new BasicInteraction(Action.REOPEN, LocalDateTime.now(), soul.uuid());
+        Interaction interaction = new BasicInteraction(Action.REOPEN, LocalDateTime.now(ZoneId.systemDefault()), soul.uuid());
         ticket.status(TicketStatus.OPEN);
 
         this.storageService.queue(ticket, interaction);
@@ -173,7 +174,7 @@ public final class EventInteractionService implements InteractionService {
 
     @Override
     public void note(final @NonNull OnlineSoul soul, final @NonNull Ticket ticket, final @NonNull MessageInteraction message) {
-        Interaction interaction = new BasicInteraction(Action.NOTE, LocalDateTime.now(), soul.uuid());
+        Interaction interaction = new BasicInteraction(Action.NOTE, LocalDateTime.now(ZoneId.systemDefault()), soul.uuid());
 
         this.storageService.queue(ticket, interaction);
         TicketNoteEvent event = new TicketNoteEvent(soul, ticket, message.message());

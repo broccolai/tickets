@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.nio.charset.StandardCharsets;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 public final class FileReader {
@@ -15,7 +16,7 @@ public final class FileReader {
 
     public static @NonNull String fromPath(final @NonNull String file) {
         try (InputStream stream = PureTickets.class.getResourceAsStream(file);
-             Reader reader = new InputStreamReader(stream)) {
+             Reader reader = new InputStreamReader(stream, StandardCharsets.UTF_8)) {
             return CharStreams.toString(reader);
         } catch (final IOException ex) {
             throw new RuntimeException("Could not read file: " + file);

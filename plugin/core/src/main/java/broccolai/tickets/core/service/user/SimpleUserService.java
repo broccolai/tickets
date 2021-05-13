@@ -11,7 +11,7 @@ public abstract class SimpleUserService implements UserService {
     @Override
     public final @NonNull Soul wrap(final @NonNull UUID uuid) {
 
-        if (uuid.equals(ConsoleSoul.UUID)) {
+        if (uuid.equals(ConsoleSoul.UNIQUE_ID)) {
             return this.console();
         }
 

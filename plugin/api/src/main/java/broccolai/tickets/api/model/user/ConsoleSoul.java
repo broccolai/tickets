@@ -6,7 +6,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 
 public abstract class ConsoleSoul implements OnlineSoul {
 
-    public static final @NonNull UUID UUID = new UUID(0, 0);
+    public static final @NonNull UUID UNIQUE_ID = new UUID(0, 0);
 
     public static final @NonNull String USERNAME = "CONSOLE";
 
@@ -18,7 +18,7 @@ public abstract class ConsoleSoul implements OnlineSoul {
 
     @Override
     public final @NonNull UUID uuid() {
-        return UUID;
+        return UNIQUE_ID;
     }
 
     @Override

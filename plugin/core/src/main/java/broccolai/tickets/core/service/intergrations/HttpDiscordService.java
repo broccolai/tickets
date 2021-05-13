@@ -10,6 +10,7 @@ import com.google.inject.Singleton;
 import com.intellectualsites.http.EntityMapper;
 import com.intellectualsites.http.HttpClient;
 import com.intellectualsites.http.external.GsonMapper;
+import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.logging.Logger;
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -33,8 +34,8 @@ public final class HttpDiscordService implements DiscordService {
                 .withBaseURL(mainConfiguration.advancedConfiguration.api + "/api/v2")
                 .withDecorator(req -> {
                     String raw = config.guild + ":" + config.token;
-                    byte[] encoded = Base64.getEncoder().encode(raw.getBytes());
-                    String header = "Basic " + new String(encoded);
+                    byte[] encoded = Base64.getEncoder().encode(raw.getBytes(StandardCharsets.UTF_8));
+                    String header = "Basic " + new String(encoded, StandardCharsets.UTF_8);
 
                     req.withHeader("Authorization", header);
                 })

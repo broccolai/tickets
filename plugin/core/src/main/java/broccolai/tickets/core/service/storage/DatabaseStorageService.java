@@ -22,6 +22,7 @@ import com.zaxxer.hikari.HikariDataSource;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.Collection;
 import java.util.HashMap;
@@ -225,7 +226,7 @@ public final class DatabaseStorageService implements StorageService {
     public @NonNull Map<@NonNull UUID, @NonNull Integer> highscores(final @NonNull ChronoUnit chronoUnit) {
         return this.jdbi.withHandle(handle -> {
             return handle.createQuery(SQLQueries.HIGHSCORES.get()[0])
-                    .bind("time", LocalDateTime.now().minus(1, chronoUnit))
+                    .bind("time", LocalDateTime.now(ZoneId.systemDefault()).minus(1, chronoUnit))
                     .reduceRows(new HashMap<>(), (map, rowView) -> {
                         map.put(
                                 rowView.getColumn("claimer", UUID.class),

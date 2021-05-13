@@ -9,6 +9,7 @@ import cloud.commandframework.arguments.parser.ArgumentParseResult;
 import cloud.commandframework.arguments.parser.ArgumentParser;
 import cloud.commandframework.context.CommandContext;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Queue;
 import java.util.StringJoiner;
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -50,7 +51,7 @@ public final class MessageArgument extends CommandArgument<OnlineSoul, MessageIn
 
             return ArgumentParseResult.success(new BasicMessageInteraction(
                     Action.MESSAGE,
-                    LocalDateTime.now(),
+                    LocalDateTime.now(ZoneId.systemDefault()),
                     commandContext.getSender().uuid(),
                     sj.toString()
             ));

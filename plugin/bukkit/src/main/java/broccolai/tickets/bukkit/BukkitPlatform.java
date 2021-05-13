@@ -19,8 +19,9 @@ import cloud.commandframework.minecraft.extras.MinecraftExceptionHandler;
 import cloud.commandframework.paper.PaperCommandManager;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 import net.kyori.adventure.audience.ForwardingAudience;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
@@ -57,7 +58,7 @@ public final class BukkitPlatform extends JavaPlugin implements PluginPlatform {
             );
             this.pureTickets.commands(commandManager, COMMANDS);
         } catch (final Exception e) {
-            e.printStackTrace();
+            this.getLogger().log(Level.SEVERE, "Could not initiate Command Manager", e);
         }
 
         this.pureTickets.subscribers(SUBSCRIBERS);
@@ -143,7 +144,7 @@ public final class BukkitPlatform extends JavaPlugin implements PluginPlatform {
             }
 
             input = input.toLowerCase();
-            List<String> suggestions = new LinkedList<>();
+            List<String> suggestions = new ArrayList<>();
 
             for (String suggestion : strings) {
                 suggestion = suggestion.toLowerCase();
