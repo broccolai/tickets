@@ -5,6 +5,7 @@ import net.kyori.indra.IndraCheckstylePlugin
 import net.kyori.indra.IndraPlugin
 import net.kyori.indra.IndraPublishingPlugin
 import net.kyori.indra.repository.sonatypeSnapshots
+import net.ltgt.gradle.errorprone.ErrorPronePlugin
 
 plugins {
     id("net.kyori.indra")
@@ -13,6 +14,7 @@ plugins {
     id("ca.stellardrift.opinionated")
     id("com.github.johnrengelman.shadow")
     id("com.github.ben-manes.versions")
+    id("net.ltgt.errorprone")
 }
 
 group = "broccolai.tickets"
@@ -23,6 +25,7 @@ subprojects {
     apply<IndraPlugin>()
     apply<IndraCheckstylePlugin>()
     apply<IndraPublishingPlugin>()
+    apply<ErrorPronePlugin>()
 
     repositories {
         mavenCentral()
@@ -32,6 +35,10 @@ subprojects {
 
         maven("https://mvn.intellectualsites.com/content/repositories/snapshots")
         maven("https://repo.broccol.ai")
+    }
+
+    dependencies {
+        errorprone(rootProject.libs.errorprone)
     }
 
     tasks {
