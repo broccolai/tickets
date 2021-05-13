@@ -196,7 +196,6 @@ public final class TicketsCommand extends CommonCommands {
                         .handler(this::processList)
         );
 
-
     }
 
     private void processClaim(final @NonNull CommandContext<@NonNull OnlineSoul> c) {

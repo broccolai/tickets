@@ -23,7 +23,6 @@ public final class MessageArgument extends CommandArgument<OnlineSoul, MessageIn
         return new MessageArgument(true, name);
     }
 
-
     private static final class MessageParser implements ArgumentParser<OnlineSoul, MessageInteraction> {
 
         @Override

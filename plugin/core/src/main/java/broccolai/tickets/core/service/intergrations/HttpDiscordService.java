@@ -31,7 +31,7 @@ public final class HttpDiscordService implements DiscordService {
 
         this.client = HttpClient.newBuilder()
                 .withBaseURL(mainConfiguration.advancedConfiguration.api + "/api/v2")
-                .withDecorator((req) -> {
+                .withDecorator(req -> {
                     String raw = config.guild + ":" + config.token;
                     byte[] encoded = Base64.getEncoder().encode(raw.getBytes());
                     String header = "Basic " + new String(encoded);

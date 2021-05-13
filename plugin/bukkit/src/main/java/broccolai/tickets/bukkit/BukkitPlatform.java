@@ -56,7 +56,7 @@ public final class BukkitPlatform extends JavaPlugin implements PluginPlatform {
                     injector.getInstance(MessageService.class)
             );
             this.pureTickets.commands(commandManager, COMMANDS);
-        } catch (Exception e) {
+        } catch (final Exception e) {
             e.printStackTrace();
         }
 
@@ -103,15 +103,15 @@ public final class BukkitPlatform extends JavaPlugin implements PluginPlatform {
 
         new MinecraftExceptionHandler<@NonNull OnlineSoul>()
                 .withDefaultHandlers()
-                .withHandler(MinecraftExceptionHandler.ExceptionType.INVALID_SENDER, (ex) -> {
+                .withHandler(MinecraftExceptionHandler.ExceptionType.INVALID_SENDER, ex -> {
                     InvalidCommandSenderException icse = (InvalidCommandSenderException) ex;
                     return messageService.exceptionWrongSender(icse.getRequiredSender());
                 })
                 .withHandler(
                         MinecraftExceptionHandler.ExceptionType.NO_PERMISSION,
-                        (ex) -> messageService.exceptionNoPermission()
+                        ex -> messageService.exceptionNoPermission()
                 )
-                .withHandler(MinecraftExceptionHandler.ExceptionType.ARGUMENT_PARSING, (ex) -> {
+                .withHandler(MinecraftExceptionHandler.ExceptionType.ARGUMENT_PARSING, ex -> {
                     Throwable cause = ex.getCause();
 
                     if (!(cause instanceof PureException)) {
@@ -121,7 +121,7 @@ public final class BukkitPlatform extends JavaPlugin implements PluginPlatform {
                     PureException pureException = (PureException) cause;
                     return pureException.message(messageService);
                 })
-                .withHandler(MinecraftExceptionHandler.ExceptionType.COMMAND_EXECUTION, (ex) -> {
+                .withHandler(MinecraftExceptionHandler.ExceptionType.COMMAND_EXECUTION, ex -> {
                     Throwable cause = ex.getCause();
 
                     if (!(cause instanceof PureException)) {

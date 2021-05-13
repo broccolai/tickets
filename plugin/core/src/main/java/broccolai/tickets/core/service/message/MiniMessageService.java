@@ -258,7 +258,6 @@ public final class MiniMessageService implements MessageService {
         templates.addAll(this.templateService.ticket(ticket));
         templates.addAll(this.templateService.player("player", soul));
 
-
         return this.locale.announcement.reopen.use(templates);
     }
 
@@ -345,7 +344,7 @@ public final class MiniMessageService implements MessageService {
         TextComponent.Builder builder = Component.text()
                 .append(this.locale.title.highscores.use(Collections.singletonList(wrapper)), Component.newline());
 
-        List<Component> entries = Lists.map(ranks.entrySet(), (entry) -> {
+        List<Component> entries = Lists.map(ranks.entrySet(), entry -> {
             Soul soul = this.userService.wrap(entry.getKey());
             List<Template> templates = new ArrayList<>(this.templateService.player("player", soul));
             templates.add(Template.of("amount", entry.getValue().toString()));
@@ -367,7 +366,7 @@ public final class MiniMessageService implements MessageService {
         TextComponent.Builder builder = Component.text()
                 .append(this.locale.title.log.use(Collections.singletonList(wrapper)), Component.newline());
 
-        List<Component> entries = Lists.map(interactions, (interaction) -> {
+        List<Component> entries = Lists.map(interactions, interaction -> {
             Soul soul = this.userService.wrap(interaction.sender());
             List<Template> templates = new ArrayList<>(this.templateService.player("player", soul));
             templates.add(Template.of("action", interaction.action().name()));

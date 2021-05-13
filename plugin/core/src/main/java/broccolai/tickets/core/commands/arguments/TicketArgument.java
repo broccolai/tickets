@@ -139,7 +139,7 @@ public final class TicketArgument extends CommandArgument<OnlineSoul, Ticket> {
 
                 try {
                     value = Integer.parseInt(input);
-                } catch (Exception e) {
+                } catch (final Exception e) {
                     return ArgumentParseResult.failure(new TicketNotFound());
                 }
             }
