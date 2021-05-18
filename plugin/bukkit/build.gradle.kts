@@ -2,7 +2,7 @@ dependencies {
     api(projects.ticketsApi)
     api(projects.ticketsCore)
 
-    compileOnly(libs.spigot)
+    compileOnly(libs.paper.api)
     api(libs.paper.lib)
     api(libs.adventure.bukkit)
     api(libs.cloud.paper)
