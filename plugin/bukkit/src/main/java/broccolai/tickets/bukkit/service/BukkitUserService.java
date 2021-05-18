@@ -6,8 +6,11 @@ import broccolai.tickets.api.model.user.Soul;
 import broccolai.tickets.bukkit.model.BukkitConsoleSoul;
 import broccolai.tickets.bukkit.model.BukkitOfflineSoul;
 import broccolai.tickets.bukkit.model.BukkitPlayerSoul;
+import broccolai.tickets.bukkit.service.snapshot.BukkitSnapshotService;
 import broccolai.tickets.core.service.user.SimpleUserService;
+import broccolai.tickets.core.utilities.ClassHelper;
 import com.google.inject.Inject;
+import com.google.inject.Injector;
 import com.google.inject.Singleton;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -24,8 +27,20 @@ public final class BukkitUserService extends SimpleUserService {
     private final AudienceProvider audienceProvider;
 
     @Inject
-    public BukkitUserService(final @NonNull AudienceProvider audienceProvider) {
+    public BukkitUserService(
+            final @NonNull Injector injector,
+            final @NonNull AudienceProvider audienceProvider,
+            final @NonNull BukkitSnapshotService bukkitSnapshotService,
+            final @NonNull BukkitSnapshotService paperSnapshotService
+    ) {
+        super(injector);
         this.audienceProvider = audienceProvider;
+
+        this.registerSnapshotService(bukkitSnapshotService);
+
+        if (ClassHelper.classExists("com.destroystokyo.paper.profile.PlayerProfile")) {
+            this.registerSnapshotService(paperSnapshotService);
+        }
     }
 
     public @NonNull PlayerSoul player(final @NonNull Player player) {
