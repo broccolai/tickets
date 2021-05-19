@@ -72,7 +72,7 @@ public final class DatabaseStorageService implements StorageService {
                 .registerRowMapper(Ticket.class, new TicketMapper());
     }
 
-    @Overridea
+    @Override
     public int create(
             final @NonNull Soul soul,
             final @NonNull Position position,
