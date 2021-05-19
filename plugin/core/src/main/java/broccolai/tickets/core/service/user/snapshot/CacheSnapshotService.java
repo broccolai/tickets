@@ -1,22 +1,34 @@
 package broccolai.tickets.core.service.user.snapshot;
 
+import broccolai.corn.core.Lists;
+import broccolai.tickets.api.model.service.Disposable;
 import broccolai.tickets.api.model.user.SoulSnapshot;
+import broccolai.tickets.api.service.storage.StorageService;
 import broccolai.tickets.core.service.user.SoulSnapshotService;
 import cloud.commandframework.services.ExecutionOrder;
 import cloud.commandframework.services.annotations.Order;
+import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
 @Singleton
 @Order(ExecutionOrder.FIRST)
-public final class CacheSnapshotService implements SoulSnapshotService {
+public final class CacheSnapshotService implements SoulSnapshotService, Disposable {
+
+    private final StorageService storageService;
 
     private final Map<UUID, String> uuidMappings = new HashMap<>();
     private final Map<String, UUID> nameMappings = new HashMap<>();
+
+    @Inject
+    public CacheSnapshotService(final @NonNull StorageService storageService) {
+        this.storageService = storageService;
+    }
 
     @Override
     public @Nullable SoulSnapshot handleUniqueId(final @NonNull UUID uuid) {
@@ -41,6 +53,15 @@ public final class CacheSnapshotService implements SoulSnapshotService {
     public void cache(final @NonNull SoulSnapshot soulSnapshot) {
         this.nameMappings.put(soulSnapshot.username(), soulSnapshot.uuid());
         this.uuidMappings.put(soulSnapshot.uuid(), soulSnapshot.username());
+    }
+
+    @Override
+    public void dispose() {
+        List<SoulSnapshot> snapshots = Lists.map(this.uuidMappings.entrySet(), (e) -> {
+            return new SoulSnapshot(e.getKey(), e.getValue());
+        });
+
+        this.storageService.saveSnapshots(snapshots);
     }
 
 }

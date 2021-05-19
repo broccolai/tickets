@@ -13,7 +13,10 @@ public enum SQLQueries {
     INSERT_INTERACTION,
     NOTIFICATIONS,
     INSERT_NOTIFICATION,
-    HIGHSCORES;
+    HIGHSCORES,
+    SAVE_SNAPSHOTS,
+    SNAPSHOT_NAME,
+    SNAPSHOT_UUID;
 
     private final String query;
 
