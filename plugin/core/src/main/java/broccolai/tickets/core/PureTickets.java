@@ -10,6 +10,7 @@ import broccolai.tickets.core.commands.command.BaseCommand;
 import broccolai.tickets.core.inject.module.ConfigurationModule;
 import broccolai.tickets.core.inject.module.FactoryModule;
 import broccolai.tickets.core.inject.module.ServiceModule;
+import broccolai.tickets.core.service.user.snapshot.CacheSnapshotService;
 import broccolai.tickets.core.tasks.ReminderTask;
 import broccolai.tickets.core.tasks.SaveTask;
 import broccolai.tickets.core.utilities.ArrayHelper;
@@ -52,6 +53,7 @@ public final class PureTickets {
 
     public void unload() {
         this.injector.getInstance(StorageService.class).dispose();
+        this.injector.getInstance(CacheSnapshotService.class).dispose();
     }
 
     public void subscribers(final @NonNull Class<? extends Subscriber>[] subscribers) {

@@ -7,6 +7,7 @@ import broccolai.tickets.api.service.user.UserService;
 import broccolai.tickets.api.utilities.Either;
 import broccolai.tickets.core.service.user.snapshot.AshconSnapshotService;
 import broccolai.tickets.core.service.user.snapshot.CacheSnapshotService;
+import broccolai.tickets.core.service.user.snapshot.DatabaseSnapshotService;
 import cloud.commandframework.services.ServicePipeline;
 import com.google.inject.Injector;
 import io.leangen.geantyref.TypeToken;
@@ -26,6 +27,7 @@ public abstract class SimpleUserService implements UserService {
         this.soulSnapshotPipeline.registerServiceType(SNAPSHOT_SERVICE, injector.getInstance(AshconSnapshotService.class));
         this.cacheSnapshotService = injector.getInstance(CacheSnapshotService.class);
         this.registerSnapshotService(this.cacheSnapshotService);
+        this.registerSnapshotService(injector.getInstance(DatabaseSnapshotService.class));
     }
 
     @Override

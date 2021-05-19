@@ -6,6 +6,7 @@ import broccolai.tickets.api.model.position.Position;
 import broccolai.tickets.api.model.ticket.Ticket;
 import broccolai.tickets.api.model.ticket.TicketStatus;
 import broccolai.tickets.api.model.user.Soul;
+import broccolai.tickets.api.model.user.SoulSnapshot;
 import broccolai.tickets.api.service.storage.StorageService;
 import broccolai.tickets.core.configuration.MainConfiguration;
 import broccolai.tickets.core.storage.SQLQueries;
@@ -13,6 +14,7 @@ import broccolai.tickets.core.storage.factory.UUIDArgumentFactory;
 import broccolai.tickets.core.storage.mapper.ComponentMapper;
 import broccolai.tickets.core.storage.mapper.InteractionMapper;
 import broccolai.tickets.core.storage.mapper.PositionMapper;
+import broccolai.tickets.core.storage.mapper.SoulSnapshotMapper;
 import broccolai.tickets.core.storage.mapper.TicketMapper;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.MultimapBuilder;
@@ -31,6 +33,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 import net.kyori.adventure.text.Component;
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.flywaydb.core.Flyway;
 import org.jdbi.v3.core.Jdbi;
 import org.jdbi.v3.core.statement.PreparedBatch;
@@ -65,10 +68,11 @@ public final class DatabaseStorageService implements StorageService {
                 .registerColumnMapper(Component.class, new ComponentMapper())
                 .registerColumnMapper(Position.class, new PositionMapper())
                 .registerRowMapper(Interaction.class, new InteractionMapper())
+                .registerRowMapper(SoulSnapshot.class, new SoulSnapshotMapper())
                 .registerRowMapper(Ticket.class, new TicketMapper());
     }
 
-    @Override
+    @Overridea
     public int create(
             final @NonNull Soul soul,
             final @NonNull Position position,
@@ -235,6 +239,47 @@ public final class DatabaseStorageService implements StorageService {
 
                         return map;
                     });
+        });
+    }
+
+    @Override
+    public void saveSnapshots(
+            final @NonNull Collection<@NonNull SoulSnapshot> snapshots
+    ) {
+        this.jdbi.useHandle(handle -> {
+            PreparedBatch batch = handle.prepareBatch(SQLQueries.SAVE_SNAPSHOTS.get()[0]);
+
+            for (final SoulSnapshot snapshot : snapshots) {
+                batch.bind("uuid", snapshot.uuid())
+                        .bind("username", snapshot.username())
+                        .add();
+            }
+
+            batch.execute();
+        });
+    }
+
+    @Override
+    public @Nullable SoulSnapshot snapshot(
+            final @NonNull String name
+    ) {
+        return this.jdbi.withHandle(handle -> {
+            return handle.createQuery(SQLQueries.SNAPSHOT_NAME.get()[0])
+                    .bind("username", name)
+                    .mapTo(SoulSnapshot.class)
+                    .findFirst()
+                    .orElse(null);
+        });
+    }
+
+    @Override
+    public @Nullable SoulSnapshot snapshot(final @NonNull UUID uuid) {
+        return this.jdbi.withHandle(handle -> {
+            return handle.createQuery(SQLQueries.SNAPSHOT_UUID.get()[0])
+                    .bind("uuid", uuid)
+                    .mapTo(SoulSnapshot.class)
+                    .findFirst()
+                    .orElse(null);
         });
     }
 
