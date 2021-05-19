@@ -2,11 +2,11 @@ package broccolai.tickets.velocity.service;
 
 import broccolai.tickets.api.model.user.ConsoleSoul;
 import broccolai.tickets.api.model.user.PlayerSoul;
-import broccolai.tickets.api.model.user.Soul;
 import broccolai.tickets.velocity.model.VelocityConsoleSoul;
 import broccolai.tickets.velocity.model.VelocityPlayerSoul;
 import broccolai.tickets.core.service.user.SimpleUserService;
 import com.google.inject.Inject;
+import com.google.inject.Injector;
 import com.google.inject.Singleton;
 import java.util.ArrayList;
 
@@ -24,7 +24,12 @@ public final class VelocityUserService extends SimpleUserService {
     private final AudienceProvider audienceProvider;
 
     @Inject
-    public VelocityUserService(final @NonNull ProxyServer server, final @NonNull AudienceProvider audienceProvider) {
+    public VelocityUserService(
+            final @NonNull Injector injector,
+            final @NonNull ProxyServer server,
+            final @NonNull AudienceProvider audienceProvider
+    ) {
+        super(injector);
         this.server = server;
         this.audienceProvider = audienceProvider;
     }
@@ -47,12 +52,6 @@ public final class VelocityUserService extends SimpleUserService {
     }
 
     @Override
-    public @NonNull Soul offlinePlayer(final @NonNull UUID uuid) {
-        // TODO:
-        throw new IllegalStateException();
-    }
-
-    @Override
     public @NonNull Collection<PlayerSoul> players() {
         Collection<PlayerSoul> players = new ArrayList<>();
 
@@ -61,18 +60,6 @@ public final class VelocityUserService extends SimpleUserService {
         }
 
         return players;
-    }
-
-    @Override
-    public @NonNull String name(final @NonNull UUID uuid) {
-        // TODO:
-        throw new IllegalStateException();
-    }
-
-    @Override
-    public @NonNull UUID uuidFromName(final @NonNull String name) {
-        // TODO:
-        throw new IllegalStateException();
     }
 
     @Override
