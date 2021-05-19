@@ -16,7 +16,7 @@ public final class JsonUtility {
         json.addProperty("id", ticket.id());
 
         JsonObject playerJson = new JsonObject();
-        playerJson.addProperty("name", userService.name(ticket.player()));
+        playerJson.addProperty("name", userService.snapshot(ticket.player()).username());
         playerJson.addProperty("uuid", ticket.player().toString());
         json.add("player", playerJson);
 
