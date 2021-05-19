@@ -8,7 +8,6 @@ import broccolai.tickets.bukkit.listeners.PlayerJoinListener;
 import broccolai.tickets.bukkit.model.BukkitOnlineSoul;
 import broccolai.tickets.bukkit.service.BukkitUserService;
 import broccolai.tickets.core.PureTickets;
-import broccolai.tickets.core.exceptions.PureException;
 import broccolai.tickets.core.inject.module.ConfigurationModule;
 import broccolai.tickets.core.inject.module.FactoryModule;
 import broccolai.tickets.core.inject.module.ServiceModule;
@@ -16,16 +15,11 @@ import broccolai.tickets.core.inject.platform.PluginPlatform;
 import broccolai.tickets.core.utilities.ArrayHelper;
 import cloud.commandframework.CommandManager;
 import cloud.commandframework.bukkit.CloudBukkitCapabilities;
-import cloud.commandframework.exceptions.InvalidCommandSenderException;
 import cloud.commandframework.execution.AsynchronousCommandExecutionCoordinator;
-import cloud.commandframework.minecraft.extras.MinecraftExceptionHandler;
 import cloud.commandframework.paper.PaperCommandManager;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.logging.Level;
-import net.kyori.adventure.audience.ForwardingAudience;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
@@ -78,7 +72,6 @@ public final class BukkitPlatform extends JavaPlugin implements PluginPlatform {
         this.pureTickets.unload();
     }
 
-    @SuppressWarnings("OverrideOnly")
     private CommandManager<OnlineSoul> commandManager(
             final @NonNull UserService userService,
             final @NonNull MessageService messageService
@@ -106,61 +99,7 @@ public final class BukkitPlatform extends JavaPlugin implements PluginPlatform {
             cloudManager.registerAsynchronousCompletions();
         }
 
-        new MinecraftExceptionHandler<@NonNull OnlineSoul>()
-                .withDefaultHandlers()
-                .withHandler(MinecraftExceptionHandler.ExceptionType.INVALID_SENDER, ex -> {
-                    InvalidCommandSenderException icse = (InvalidCommandSenderException) ex;
-                    return messageService.exceptionWrongSender(icse.getRequiredSender());
-                })
-                .withHandler(
-                        MinecraftExceptionHandler.ExceptionType.NO_PERMISSION,
-                        ex -> messageService.exceptionNoPermission()
-                )
-                .withHandler(MinecraftExceptionHandler.ExceptionType.ARGUMENT_PARSING, ex -> {
-                    Throwable cause = ex.getCause();
-
-                    if (!(cause instanceof PureException)) {
-                        return MinecraftExceptionHandler.DEFAULT_ARGUMENT_PARSING_FUNCTION.apply(ex);
-                    }
-
-                    PureException pureException = (PureException) cause;
-                    return pureException.message(messageService);
-                })
-                .withHandler(MinecraftExceptionHandler.ExceptionType.COMMAND_EXECUTION, ex -> {
-                    Throwable cause = ex.getCause();
-
-                    if (!(cause instanceof PureException)) {
-                        return MinecraftExceptionHandler.DEFAULT_COMMAND_EXECUTION_FUNCTION.apply(ex);
-                    }
-
-                    PureException pureException = (PureException) cause;
-                    return pureException.message(messageService);
-                })
-                .apply(cloudManager, ForwardingAudience.Single::audience);
-
-        cloudManager.setCommandSuggestionProcessor((context, strings) -> {
-            String input;
-
-            if (context.getInputQueue().isEmpty()) {
-                input = "";
-            } else {
-                input = context.getInputQueue().peek();
-            }
-
-            input = input.toLowerCase();
-            List<String> suggestions = new ArrayList<>();
-
-            for (String suggestion : strings) {
-                suggestion = suggestion.toLowerCase();
-
-                if (suggestion.startsWith(input)) {
-                    suggestions.add(suggestion);
-                }
-            }
-
-            return suggestions;
-        });
-
+        this.pureTickets.defaultCommandManagerSettings(cloudManager);
         return cloudManager;
     }
 
