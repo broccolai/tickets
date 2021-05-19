@@ -2,9 +2,7 @@ package broccolai.tickets.bukkit.service;
 
 import broccolai.tickets.api.model.user.ConsoleSoul;
 import broccolai.tickets.api.model.user.PlayerSoul;
-import broccolai.tickets.api.model.user.Soul;
 import broccolai.tickets.bukkit.model.BukkitConsoleSoul;
-import broccolai.tickets.bukkit.model.BukkitOfflineSoul;
 import broccolai.tickets.bukkit.model.BukkitPlayerSoul;
 import broccolai.tickets.bukkit.service.snapshot.BukkitSnapshotService;
 import broccolai.tickets.core.service.user.SimpleUserService;
@@ -17,7 +15,6 @@ import java.util.Collection;
 import java.util.UUID;
 import net.kyori.adventure.platform.AudienceProvider;
 import org.bukkit.Bukkit;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
@@ -64,12 +61,6 @@ public final class BukkitUserService extends SimpleUserService {
     }
 
     @Override
-    public @NonNull Soul offlinePlayer(final @NonNull UUID uuid) {
-        OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(uuid);
-        return new BukkitOfflineSoul(offlinePlayer);
-    }
-
-    @Override
     public @NonNull Collection<PlayerSoul> players() {
         Collection<PlayerSoul> players = new ArrayList<>();
 
@@ -81,19 +72,9 @@ public final class BukkitUserService extends SimpleUserService {
     }
 
     @Override
-    public @NonNull String name(final @NonNull UUID uuid) {
-        return Bukkit.getOfflinePlayer(uuid).getName();
-    }
-
-    @SuppressWarnings("deprecation")
-    @Override
-    public @NonNull UUID uuidFromName(final @NonNull String name) {
-        return Bukkit.getOfflinePlayer(name).getUniqueId();
-    }
-
-    @Override
     protected boolean isOnline(final @NonNull UUID uuid) {
-        return Bukkit.getOfflinePlayer(uuid).isOnline();
+        Player player = Bukkit.getPlayer(uuid);
+        return player != null && player.isOnline();
     }
 
 }

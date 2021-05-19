@@ -43,7 +43,7 @@ public final class MiniTemplateService implements TemplateService {
 
     @Override
     public @NonNull List<@NonNull Template> ticket(final @NonNull Ticket ticket) {
-        String name = this.userService.name(ticket.player());
+        String name = this.userService.snapshot(ticket.player()).username();
         return Arrays.asList(
                 Template.of("ticket", Component.text('#', NamedTextColor.DARK_GRAY).append(Component.text(
                         ticket.id(), ticket.status().color(), TextDecoration.BOLD

@@ -39,7 +39,7 @@ public abstract class SimpleUserService implements UserService {
             return this.player(uuid);
         }
 
-        return this.offlinePlayer(uuid);
+        return this.snapshot(uuid);
     }
 
     @Override
@@ -48,7 +48,7 @@ public abstract class SimpleUserService implements UserService {
             return this.console();
         }
 
-        return this.wrap(this.uuidFromName(name));
+        return this.wrap(this.snapshot(name).uuid());
     }
 
     @Override
@@ -74,8 +74,6 @@ public abstract class SimpleUserService implements UserService {
 
         return snapshot;
     }
-
-    protected abstract @NonNull UUID uuidFromName(@NonNull String name);
 
     protected abstract boolean isOnline(@NonNull UUID uuid);
 
