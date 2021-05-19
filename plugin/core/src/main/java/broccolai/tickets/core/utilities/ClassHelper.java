@@ -12,7 +12,7 @@ public final class ClassHelper {
         try {
             Class.forName(clazz);
             return true;
-        } catch (ClassNotFoundException e) {
+        } catch (final ClassNotFoundException e) {
             return false;
         }
     }

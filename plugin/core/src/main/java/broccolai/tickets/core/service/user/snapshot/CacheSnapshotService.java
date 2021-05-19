@@ -57,7 +57,7 @@ public final class CacheSnapshotService implements SoulSnapshotService, Disposab
 
     @Override
     public void dispose() {
-        List<SoulSnapshot> snapshots = Lists.map(this.uuidMappings.entrySet(), (e) -> {
+        List<SoulSnapshot> snapshots = Lists.map(this.uuidMappings.entrySet(), e -> {
             return new SoulSnapshot(e.getKey(), e.getValue());
         });
 
