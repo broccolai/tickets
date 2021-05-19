@@ -6,6 +6,8 @@ import broccolai.tickets.api.model.user.OnlineSoul;
 import broccolai.tickets.api.service.event.EventService;
 import broccolai.tickets.api.service.storage.StorageService;
 import broccolai.tickets.api.service.tasks.TaskService;
+import broccolai.tickets.core.commands.cloud.CloudSuggestionProcessor;
+import broccolai.tickets.core.commands.cloud.ExceptionHandler;
 import broccolai.tickets.core.commands.command.BaseCommand;
 import broccolai.tickets.core.service.user.snapshot.CacheSnapshotService;
 import broccolai.tickets.core.subscribers.NotificationSubscriber;
@@ -65,6 +67,14 @@ public final class PureTickets {
         for (final Class<? extends Subscriber> subscriber : subscribers) {
             this.injector.getInstance(subscriber).register(this.eventService);
         }
+    }
+
+    public void defaultCommandManagerSettings(final @NonNull CommandManager<OnlineSoul> commandManager) {
+        ExceptionHandler exceptionHandler = this.injector.getInstance(ExceptionHandler.class);
+        CloudSuggestionProcessor suggestionProcessor = this.injector.getInstance(CloudSuggestionProcessor.class);
+
+        exceptionHandler.apply(commandManager);
+        commandManager.setCommandSuggestionProcessor(suggestionProcessor);
     }
 
     public void commands(
