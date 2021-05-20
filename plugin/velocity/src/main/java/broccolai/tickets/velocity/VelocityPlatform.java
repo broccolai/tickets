@@ -4,6 +4,7 @@ import broccolai.tickets.api.model.user.OnlineSoul;
 import broccolai.tickets.api.service.message.MessageService;
 import broccolai.tickets.api.service.user.UserService;
 import broccolai.tickets.velocity.inject.VelocityModule;
+import broccolai.tickets.velocity.model.VelocityOnlineSoul;
 import broccolai.tickets.velocity.subscribers.PlayerJoinSubscriber;
 import broccolai.tickets.velocity.service.VelocityUserService;
 import broccolai.tickets.core.PureTickets;
@@ -11,14 +12,15 @@ import broccolai.tickets.core.inject.platform.PluginPlatform;
 import broccolai.tickets.core.utilities.ArrayHelper;
 import broccolai.tickets.velocity.subscribers.VelocitySubscriber;
 import cloud.commandframework.CommandManager;
+import cloud.commandframework.execution.AsynchronousCommandExecutionCoordinator;
 import cloud.commandframework.velocity.VelocityCommandManager;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
-import com.google.inject.Key;
-import com.google.inject.TypeLiteral;
 import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.event.proxy.ProxyInitializeEvent;
 import com.velocitypowered.api.event.proxy.ProxyShutdownEvent;
+import com.velocitypowered.api.plugin.PluginContainer;
+import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.ProxyServer;
 import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -87,8 +89,23 @@ public final class VelocityPlatform implements PluginPlatform {
         MessageService messageService = injector.getInstance(MessageService.class);
         VelocityUserService velocityUserService = (VelocityUserService) injector.getInstance(UserService.class);
 
-        VelocityCommandManager<@NonNull OnlineSoul> cloudManager = injector.getInstance(
-                Key.get(new TypeLiteral<>() {})
+        VelocityCommandManager<@NonNull OnlineSoul> cloudManager = new VelocityCommandManager<>(
+                injector.getInstance(PluginContainer.class),
+                injector.getInstance(ProxyServer.class),
+                AsynchronousCommandExecutionCoordinator.<OnlineSoul>newBuilder().build(),
+                source -> {
+                    VelocityUserService userService = (VelocityUserService) injector.getInstance(UserService.class);
+
+                    if (source instanceof Player) {
+                        return userService.player((Player) source);
+                    }
+
+                    return userService.console();
+                },
+                soul -> {
+                    VelocityOnlineSoul velocitySoul = (VelocityOnlineSoul) soul;
+                    return velocitySoul.source();
+                }
         );
 
         this.pureTickets.defaultCommandManagerSettings(cloudManager);
