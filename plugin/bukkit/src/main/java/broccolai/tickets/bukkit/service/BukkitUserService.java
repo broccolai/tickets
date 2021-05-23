@@ -5,10 +5,13 @@ import broccolai.tickets.api.model.user.PlayerSoul;
 import broccolai.tickets.bukkit.model.BukkitConsoleSoul;
 import broccolai.tickets.bukkit.model.BukkitPlayerSoul;
 import broccolai.tickets.bukkit.service.snapshot.BukkitSnapshotService;
+import broccolai.tickets.bukkit.service.snapshot.PaperSnapshotService;
 import broccolai.tickets.core.service.user.SimpleUserService;
+import broccolai.tickets.core.service.user.snapshot.AshconSnapshotService;
+import broccolai.tickets.core.service.user.snapshot.CacheSnapshotService;
+import broccolai.tickets.core.service.user.snapshot.DatabaseSnapshotService;
 import broccolai.tickets.core.utilities.ClassHelper;
 import com.google.inject.Inject;
-import com.google.inject.Injector;
 import com.google.inject.Singleton;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -25,12 +28,14 @@ public final class BukkitUserService extends SimpleUserService {
 
     @Inject
     public BukkitUserService(
-            final @NonNull Injector injector,
             final @NonNull AudienceProvider audienceProvider,
+            final @NonNull AshconSnapshotService ashconSnapshotService,
+            final @NonNull CacheSnapshotService cacheSnapshotService,
+            final @NonNull DatabaseSnapshotService databaseSnapshotService,
             final @NonNull BukkitSnapshotService bukkitSnapshotService,
-            final @NonNull BukkitSnapshotService paperSnapshotService
+            final @NonNull PaperSnapshotService paperSnapshotService
     ) {
-        super(injector);
+        super(ashconSnapshotService, cacheSnapshotService, databaseSnapshotService);
         this.audienceProvider = audienceProvider;
 
         this.registerSnapshotService(bukkitSnapshotService);

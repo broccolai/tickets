@@ -9,7 +9,6 @@ import broccolai.tickets.core.service.user.snapshot.AshconSnapshotService;
 import broccolai.tickets.core.service.user.snapshot.CacheSnapshotService;
 import broccolai.tickets.core.service.user.snapshot.DatabaseSnapshotService;
 import cloud.commandframework.services.ServicePipeline;
-import com.google.inject.Injector;
 import io.leangen.geantyref.TypeToken;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
@@ -23,11 +22,16 @@ public abstract class SimpleUserService implements UserService {
     private final ServicePipeline soulSnapshotPipeline = ServicePipeline.builder().build();
     private final CacheSnapshotService cacheSnapshotService;
 
-    public SimpleUserService(final @NonNull Injector injector) {
-        this.soulSnapshotPipeline.registerServiceType(SNAPSHOT_SERVICE, injector.getInstance(AshconSnapshotService.class));
-        this.cacheSnapshotService = injector.getInstance(CacheSnapshotService.class);
+    public SimpleUserService(
+            final @NonNull AshconSnapshotService ashconSnapshotService,
+            final @NonNull CacheSnapshotService cacheSnapshotService,
+            final @NonNull DatabaseSnapshotService databaseSnapshotService
+    ) {
+        this.cacheSnapshotService = cacheSnapshotService;
+
+        this.soulSnapshotPipeline.registerServiceType(SNAPSHOT_SERVICE, ashconSnapshotService);
         this.registerSnapshotService(this.cacheSnapshotService);
-        this.registerSnapshotService(injector.getInstance(DatabaseSnapshotService.class));
+        this.registerSnapshotService(databaseSnapshotService);
     }
 
     @Override
