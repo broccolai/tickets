@@ -16,7 +16,6 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.minimessage.Template;
 import org.checkerframework.checker.nullness.qual.NonNull;
-import org.jetbrains.annotations.NotNull;
 
 @Singleton
 public final class MiniTemplateService implements TemplateService {
@@ -29,7 +28,7 @@ public final class MiniTemplateService implements TemplateService {
     }
 
     @Override
-    public @NotNull List<@NonNull Template> player(
+    public @NonNull List<@NonNull Template> player(
             final @NonNull String prefix,
             final @NonNull Soul soul
     ) {
