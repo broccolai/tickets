@@ -1,13 +1,17 @@
 package broccolai.tickets.bukkit;
 
+import broccolai.tickets.api.model.event.Subscriber;
 import broccolai.tickets.api.model.user.OnlineSoul;
 import broccolai.tickets.api.service.message.MessageService;
 import broccolai.tickets.api.service.user.UserService;
+import broccolai.tickets.bukkit.commands.BukkitTicketsCommand;
 import broccolai.tickets.bukkit.inject.BukkitModule;
 import broccolai.tickets.bukkit.listeners.PlayerJoinListener;
 import broccolai.tickets.bukkit.model.BukkitOnlineSoul;
 import broccolai.tickets.bukkit.service.BukkitUserService;
+import broccolai.tickets.bukkit.subscribers.TicketSubscriber;
 import broccolai.tickets.core.PureTickets;
+import broccolai.tickets.core.commands.command.BaseCommand;
 import broccolai.tickets.core.inject.platform.PluginPlatform;
 import broccolai.tickets.core.utilities.ArrayHelper;
 import cloud.commandframework.CommandManager;
@@ -31,6 +35,14 @@ public final class BukkitPlatform extends JavaPlugin implements PluginPlatform {
             PlayerJoinListener.class
     );
 
+    private static final Class<? extends Subscriber>[] BUKKIT_SUBSCRIBERS = ArrayHelper.create(
+            TicketSubscriber.class
+    );
+
+    private static final Class<? extends BaseCommand>[] BUKKIT_COMMANDS = ArrayHelper.create(
+            BukkitTicketsCommand.class
+    );
+
     private @MonotonicNonNull PureTickets pureTickets;
 
     @Override
@@ -49,9 +61,12 @@ public final class BukkitPlatform extends JavaPlugin implements PluginPlatform {
                     injector.getInstance(MessageService.class)
             );
             this.pureTickets.commands(commandManager, COMMANDS);
+            this.pureTickets.commands(commandManager, BUKKIT_COMMANDS);
         } catch (final Exception e) {
             this.getLogger().log(Level.SEVERE, "Could not initiate Command Manager", e);
         }
+
+        this.pureTickets.subscribers(BUKKIT_SUBSCRIBERS);
 
         for (final Class<? extends Listener> listenerClass : LISTENERS) {
             Listener listener = injector.getInstance(listenerClass);
