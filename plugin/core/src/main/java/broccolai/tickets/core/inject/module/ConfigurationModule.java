@@ -18,7 +18,10 @@ public final class ConfigurationModule extends AbstractModule {
     @Provides
     public MainConfiguration providesMainConfiguration(final @NonNull Path folder) throws IOException {
         Path file = folder.resolve("configuration.yml");
-        Files.createFile(file);
+
+        if (!Files.exists(file)) {
+            Files.createFile(file);
+        }
 
         YamlConfigurationLoader loader = YamlConfigurationLoader.builder()
                 .defaultOptions(opts -> opts
@@ -41,7 +44,10 @@ public final class ConfigurationModule extends AbstractModule {
     @Provides
     public LocaleConfiguration providesLocaleConfiguration(final @NonNull Path folder) throws IOException {
         Path file = folder.resolve("locale.yml");
-        Files.createFile(file);
+
+        if (!Files.exists(file)) {
+            Files.createFile(file);
+        }
 
         YamlConfigurationLoader loader = YamlConfigurationLoader.builder()
                 .defaultOptions(opts -> {

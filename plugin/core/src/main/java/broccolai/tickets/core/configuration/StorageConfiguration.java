@@ -25,7 +25,10 @@ public final class StorageConfiguration {
         switch (this.type) {
             case H2:
                 Path file = folder.resolve("storage.db");
-                Files.createFile(file);
+
+                if (!Files.exists(file)) {
+                    Files.createFile(file);
+                }
 
                 config.setJdbcUrl("jdbc:h2:" + file.toAbsolutePath() + ";MODE=MySQL;DATABASE_TO_LOWER=TRUE");
                 config.setDriverClassName("org.h2.Driver");

@@ -8,6 +8,7 @@ import broccolai.tickets.core.service.user.SoulSnapshotService;
 import cloud.commandframework.services.ExecutionOrder;
 import cloud.commandframework.services.annotations.Order;
 import com.google.inject.Inject;
+import com.google.inject.Provider;
 import com.google.inject.Singleton;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -20,13 +21,13 @@ import java.util.UUID;
 @Order(ExecutionOrder.FIRST)
 public final class CacheSnapshotService implements SoulSnapshotService, Disposable {
 
-    private final StorageService storageService;
+    private final Provider<StorageService> storageService;
 
     private final Map<UUID, String> uuidMappings = new HashMap<>();
     private final Map<String, UUID> nameMappings = new HashMap<>();
 
     @Inject
-    public CacheSnapshotService(final @NonNull StorageService storageService) {
+    public CacheSnapshotService(final @NonNull Provider<StorageService> storageService) {
         this.storageService = storageService;
     }
 
@@ -61,7 +62,7 @@ public final class CacheSnapshotService implements SoulSnapshotService, Disposab
             return new SoulSnapshot(e.getKey(), e.getValue());
         });
 
-        this.storageService.saveSnapshots(snapshots);
+        this.storageService.get().saveSnapshots(snapshots);
     }
 
 }
