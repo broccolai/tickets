@@ -4,7 +4,7 @@ dependencies {
     api(libs.adventure.platform)
     api(libs.jdbi)
     api(libs.caffeine)
-    api(libs.corn)
+    api(libs.corn.core)
     api(libs.cloud.extras)
     api(libs.http4j)
     api(libs.slf4j)
