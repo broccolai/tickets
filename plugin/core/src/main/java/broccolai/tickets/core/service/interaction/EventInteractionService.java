@@ -74,7 +74,7 @@ public final class EventInteractionService implements InteractionService {
             throw new TooManyOpenTickets();
         }
 
-        Ticket ticket = this.ticketService.create(soul, soul.position(), interaction);
+        Ticket ticket = this.ticketService.create(soul, interaction);
         TicketCreateEvent createEvent = new TicketCreateEvent(soul, ticket);
         this.eventService.post(createEvent);
 

@@ -2,7 +2,6 @@ package broccolai.tickets.api.service.storage;
 
 import broccolai.tickets.api.model.interaction.Interaction;
 import broccolai.tickets.api.model.interaction.MessageInteraction;
-import broccolai.tickets.api.model.position.Position;
 import broccolai.tickets.api.model.service.Disposable;
 import broccolai.tickets.api.model.ticket.Ticket;
 import broccolai.tickets.api.model.ticket.TicketStatus;
@@ -20,7 +19,7 @@ import java.util.UUID;
 
 public interface StorageService extends Disposable {
 
-    int create(@NonNull Soul soul, @NonNull Position position, @NonNull MessageInteraction messageInteraction);
+    int create(@NonNull Soul soul, @NonNull MessageInteraction messageInteraction);
 
     @NonNull Map<@NonNull Integer, @NonNull Ticket> tickets(@NonNull Collection<@NonNull Integer> ids);
 

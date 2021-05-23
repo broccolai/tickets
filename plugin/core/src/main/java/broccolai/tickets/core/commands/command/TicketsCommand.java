@@ -5,12 +5,10 @@ import broccolai.tickets.api.model.interaction.MessageInteraction;
 import broccolai.tickets.api.model.ticket.Ticket;
 import broccolai.tickets.api.model.ticket.TicketStatus;
 import broccolai.tickets.api.model.user.OnlineSoul;
-import broccolai.tickets.api.model.user.PlayerSoul;
 import broccolai.tickets.api.model.user.Soul;
 import broccolai.tickets.api.service.interactions.InteractionService;
 import broccolai.tickets.api.service.message.MessageService;
 import broccolai.tickets.api.service.storage.StorageService;
-import broccolai.tickets.api.service.tasks.TaskService;
 import broccolai.tickets.api.service.ticket.TicketService;
 import broccolai.tickets.core.commands.arguments.TicketParserMode;
 import broccolai.tickets.core.configuration.CommandsConfiguration;
@@ -44,7 +42,6 @@ public final class TicketsCommand extends CommonCommands {
     private final MessageService messageService;
     private final TicketService ticketService;
     private final InteractionService interactionService;
-    private final TaskService taskService;
 
     @Inject
     public TicketsCommand(
@@ -53,8 +50,7 @@ public final class TicketsCommand extends CommonCommands {
             final @NonNull MessageService messageService,
             final @NonNull StorageService storageService,
             final @NonNull TicketService ticketService,
-            final @NonNull InteractionService interactionService,
-            final @NonNull TaskService taskService
+            final @NonNull InteractionService interactionService
     ) {
         super(messageService, storageService);
         this.config = config.commandsConfiguration.tickets;
@@ -62,7 +58,6 @@ public final class TicketsCommand extends CommonCommands {
         this.messageService = messageService;
         this.ticketService = ticketService;
         this.interactionService = interactionService;
-        this.taskService = taskService;
     }
 
     @Override
@@ -160,18 +155,6 @@ public final class TicketsCommand extends CommonCommands {
         );
 
         manager.command(builder.literal(
-                this.config.teleport.main,
-                ArgumentDescription.of("Teleport to a tickets creation location"),
-                this.config.teleport.aliases
-                )
-                        .senderType(PlayerSoul.class)
-                        .permission(Constants.STAFF_PERMISSION + ".teleport")
-                        .argument(this.argumentFactory.ticket("ticket", TicketParserMode.ANY, EnumSet.allOf(TicketStatus.class), 0))
-                        .handler(this::processTeleport)
-                        .build()
-        );
-
-        manager.command(builder.literal(
                 this.config.log.main,
                 ArgumentDescription.of("View a tickets log"),
                 this.config.log.aliases
@@ -247,15 +230,6 @@ public final class TicketsCommand extends CommonCommands {
         Ticket ticket = c.get("ticket");
 
         this.interactionService.reopen(sender, ticket);
-    }
-
-    private void processTeleport(final @NonNull CommandContext<@NonNull OnlineSoul> c) {
-        PlayerSoul soul = (PlayerSoul) c.getSender();
-        Ticket ticket = c.get("ticket");
-
-        soul.teleport(this.taskService, ticket.position());
-        Component component = this.messageService.commandsTeleport(ticket);
-        soul.sendMessage(component);
     }
 
     private void processList(final @NonNull CommandContext<@NonNull OnlineSoul> c) {
