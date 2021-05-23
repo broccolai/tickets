@@ -20,13 +20,6 @@ public final class JsonUtility {
         playerJson.addProperty("uuid", ticket.player().toString());
         json.add("player", playerJson);
 
-        JsonObject locationJson = new JsonObject();
-        locationJson.addProperty("world", ticket.position().world());
-        locationJson.addProperty("x", ticket.position().x());
-        locationJson.addProperty("y", ticket.position().y());
-        locationJson.addProperty("z", ticket.position().z());
-        json.add("location", locationJson);
-
         json.addProperty("status", ticket.status().name());
         json.addProperty("message", ticket.message().message());
 

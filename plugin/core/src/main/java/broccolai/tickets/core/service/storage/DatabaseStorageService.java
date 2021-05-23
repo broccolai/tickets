@@ -2,7 +2,6 @@ package broccolai.tickets.core.service.storage;
 
 import broccolai.tickets.api.model.interaction.Interaction;
 import broccolai.tickets.api.model.interaction.MessageInteraction;
-import broccolai.tickets.api.model.position.Position;
 import broccolai.tickets.api.model.ticket.Ticket;
 import broccolai.tickets.api.model.ticket.TicketStatus;
 import broccolai.tickets.api.model.user.Soul;
@@ -14,7 +13,6 @@ import broccolai.tickets.core.storage.SQLQueries;
 import broccolai.tickets.core.storage.factory.UUIDArgumentFactory;
 import broccolai.tickets.core.storage.mapper.ComponentMapper;
 import broccolai.tickets.core.storage.mapper.InteractionMapper;
-import broccolai.tickets.core.storage.mapper.PositionMapper;
 import broccolai.tickets.core.storage.mapper.SoulSnapshotMapper;
 import broccolai.tickets.core.storage.mapper.TicketMapper;
 import com.google.common.collect.Multimap;
@@ -67,7 +65,6 @@ public final class DatabaseStorageService implements StorageService {
         this.jdbi = Jdbi.create(this.dataSource)
                 .registerArgument(new UUIDArgumentFactory())
                 .registerColumnMapper(Component.class, new ComponentMapper())
-                .registerColumnMapper(Position.class, new PositionMapper())
                 .registerRowMapper(Interaction.class, new InteractionMapper())
                 .registerRowMapper(SoulSnapshot.class, new SoulSnapshotMapper())
                 .registerRowMapper(Ticket.class, new TicketMapper());
@@ -76,7 +73,6 @@ public final class DatabaseStorageService implements StorageService {
     @Override
     public int create(
             final @NonNull Soul soul,
-            final @NonNull Position position,
             final @NonNull MessageInteraction messageInteraction
     ) {
         return this.jdbi.withHandle(handle -> {
@@ -84,7 +80,6 @@ public final class DatabaseStorageService implements StorageService {
 
             handle.createUpdate(queries[0])
                     .bind("player", soul.uuid())
-                    .bind("position", PositionMapper.valueOf(position))
                     .bind("status", TicketStatus.OPEN)
                     .bind("claimer", (UUID) null)
                     .execute();

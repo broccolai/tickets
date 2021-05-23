@@ -10,7 +10,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -55,15 +54,16 @@ public final class MiniTemplateService implements TemplateService {
                 ))).clickEvent(ClickEvent.runCommand("/tickets show " + ticket.id()))),
                 Template.of("status", ticket.status().name()),
                 Template.of("player", this.userComponent(name, ticket.player())),
-                Template.of("position", TextComponent.ofChildren(
-                        Component.text("[", NamedTextColor.DARK_GRAY),
-                        Component.text(ticket.position().x(), NamedTextColor.YELLOW),
-                        Component.text(',', NamedTextColor.DARK_GRAY),
-                        Component.text(ticket.position().y(), NamedTextColor.YELLOW),
-                        Component.text(',', NamedTextColor.DARK_GRAY),
-                        Component.text(ticket.position().z(), NamedTextColor.YELLOW),
-                        Component.text("]", NamedTextColor.DARK_GRAY)
-                )),
+//TODO
+//                Template.of("position", TextComponent.ofChildren(
+//                        Component.text("[", NamedTextColor.DARK_GRAY),
+//                        Component.text(ticket.position().x(), NamedTextColor.YELLOW),
+//                        Component.text(',', NamedTextColor.DARK_GRAY),
+//                        Component.text(ticket.position().y(), NamedTextColor.YELLOW),
+//                        Component.text(',', NamedTextColor.DARK_GRAY),
+//                        Component.text(ticket.position().z(), NamedTextColor.YELLOW),
+//                        Component.text("]", NamedTextColor.DARK_GRAY)
+//                )),
                 Template.of("message", ticket.message().message())
         );
     }
