@@ -1,3 +1,7 @@
+plugins {
+    id("xyz.jpenilla.run-paper")
+}
+
 dependencies {
     api(projects.ticketsApi)
     api(projects.ticketsCore)
@@ -56,5 +60,11 @@ tasks {
         archiveClassifier.set(null as String?)
         archiveFileName.set(project.name + ".jar")
         destinationDirectory.set(rootProject.tasks.shadowJar.get().destinationDirectory.get())
+    }
+
+    runServer {
+        minecraftVersion("1.16.5")
+        // :( https://github.com/PaperMC/Paper/issues/4155
+        jvmArgs("-DLog4jContextSelector=org.apache.logging.log4j.core.selector.ClassLoaderContextSelector")
     }
 }

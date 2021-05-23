@@ -2,6 +2,7 @@ pluginManagement {
     repositories {
         gradlePluginPortal()
         maven("https://repo.stellardrift.ca/repository/snapshots/")
+        maven("https://repo.jpenilla.xyz/snapshots/")
     }
 }
 
