@@ -2,11 +2,13 @@ package broccolai.tickets.velocity.service;
 
 import broccolai.tickets.api.model.user.ConsoleSoul;
 import broccolai.tickets.api.model.user.PlayerSoul;
+import broccolai.tickets.core.service.user.snapshot.AshconSnapshotService;
+import broccolai.tickets.core.service.user.snapshot.CacheSnapshotService;
+import broccolai.tickets.core.service.user.snapshot.DatabaseSnapshotService;
 import broccolai.tickets.velocity.model.VelocityConsoleSoul;
 import broccolai.tickets.velocity.model.VelocityPlayerSoul;
 import broccolai.tickets.core.service.user.SimpleUserService;
 import com.google.inject.Inject;
-import com.google.inject.Injector;
 import com.google.inject.Singleton;
 import java.util.ArrayList;
 
@@ -25,11 +27,13 @@ public final class VelocityUserService extends SimpleUserService {
 
     @Inject
     public VelocityUserService(
-            final @NonNull Injector injector,
             final @NonNull ProxyServer server,
-            final @NonNull AudienceProvider audienceProvider
+            final @NonNull AudienceProvider audienceProvider,
+            final @NonNull AshconSnapshotService ashconSnapshotService,
+            final @NonNull CacheSnapshotService cacheSnapshotService,
+            final @NonNull DatabaseSnapshotService databaseSnapshotService
     ) {
-        super(injector);
+        super(ashconSnapshotService, cacheSnapshotService, databaseSnapshotService);
         this.server = server;
         this.audienceProvider = audienceProvider;
     }

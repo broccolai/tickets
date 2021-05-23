@@ -3,6 +3,9 @@ package broccolai.tickets.velocity;
 import broccolai.tickets.api.model.user.OnlineSoul;
 import broccolai.tickets.api.service.message.MessageService;
 import broccolai.tickets.api.service.user.UserService;
+import broccolai.tickets.core.inject.module.ConfigurationModule;
+import broccolai.tickets.core.inject.module.FactoryModule;
+import broccolai.tickets.core.inject.module.ServiceModule;
 import broccolai.tickets.velocity.inject.VelocityModule;
 import broccolai.tickets.velocity.model.VelocityOnlineSoul;
 import broccolai.tickets.velocity.subscribers.PlayerJoinSubscriber;
@@ -57,11 +60,14 @@ public final class VelocityPlatform implements PluginPlatform {
         Files.createDirectories(this.directory);
 
         Injector injector = this.velocityInjector.createChildInjector(
-                new VelocityModule(this, this.server, this.directory)
+                new VelocityModule(this, this.server, this.directory),
+                new ConfigurationModule(),
+                new ServiceModule(),
+                new FactoryModule()
         );
 
         this.pureTickets = injector.getInstance(PureTickets.class);
-        injector = this.pureTickets.load();
+        this.pureTickets.load();
 
         try {
             CommandManager<OnlineSoul> commandManager = this.commandManager(injector);
@@ -69,8 +75,6 @@ public final class VelocityPlatform implements PluginPlatform {
         } catch (final Exception e) {
             throw new RuntimeException(e);
         }
-
-        this.pureTickets.subscribers(SUBSCRIBERS);
 
         for (final Class<? extends VelocitySubscriber> listenerClass : LISTENERS) {
             VelocitySubscriber listener = injector.getInstance(listenerClass);
