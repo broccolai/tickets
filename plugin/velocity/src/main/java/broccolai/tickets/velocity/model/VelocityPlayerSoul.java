@@ -1,8 +1,6 @@
 package broccolai.tickets.velocity.model;
 
-import broccolai.tickets.api.model.position.Position;
 import broccolai.tickets.api.model.user.PlayerSoul;
-import broccolai.tickets.api.service.tasks.TaskService;
 import com.velocitypowered.api.command.CommandSource;
 import com.velocitypowered.api.proxy.Player;
 import net.kyori.adventure.audience.Audience;
@@ -38,18 +36,6 @@ public final class VelocityPlayerSoul implements PlayerSoul, VelocityOnlineSoul 
     @Override
     public @NonNull Audience audience() {
         return this.audience;
-    }
-
-    @Override
-    public @NonNull Position position() {
-        //todo
-        throw new IllegalStateException();
-    }
-
-    @Override
-    public void teleport(final @NonNull TaskService taskService, final @NonNull Position position) {
-        //todo
-        throw new IllegalStateException();
     }
 
     @Override
