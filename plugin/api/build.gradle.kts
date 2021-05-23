@@ -7,4 +7,5 @@ dependencies {
     api(libs.event)
     api(libs.adventure.api)
     api(libs.minimessage)
+    api(libs.corn.context)
 }
