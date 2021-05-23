@@ -9,6 +9,9 @@ import broccolai.tickets.bukkit.model.BukkitOnlineSoul;
 import broccolai.tickets.bukkit.service.BukkitUserService;
 import broccolai.tickets.core.PureTickets;
 import broccolai.tickets.core.exceptions.PureException;
+import broccolai.tickets.core.inject.module.ConfigurationModule;
+import broccolai.tickets.core.inject.module.FactoryModule;
+import broccolai.tickets.core.inject.module.ServiceModule;
 import broccolai.tickets.core.inject.platform.PluginPlatform;
 import broccolai.tickets.core.utilities.ArrayHelper;
 import cloud.commandframework.CommandManager;
@@ -45,11 +48,14 @@ public final class BukkitPlatform extends JavaPlugin implements PluginPlatform {
         this.getDataFolder().mkdirs();
 
         Injector injector = Guice.createInjector(
-                new BukkitModule(this, this)
+                new BukkitModule(this, this),
+                new ConfigurationModule(),
+                new ServiceModule(),
+                new FactoryModule()
         );
 
         this.pureTickets = injector.getInstance(PureTickets.class);
-        injector = this.pureTickets.load();
+        this.pureTickets.load();
 
         try {
             CommandManager<OnlineSoul> commandManager = this.commandManager(
@@ -60,8 +66,6 @@ public final class BukkitPlatform extends JavaPlugin implements PluginPlatform {
         } catch (final Exception e) {
             this.getLogger().log(Level.SEVERE, "Could not initiate Command Manager", e);
         }
-
-        this.pureTickets.subscribers(SUBSCRIBERS);
 
         for (final Class<? extends Listener> listenerClass : LISTENERS) {
             Listener listener = injector.getInstance(listenerClass);
