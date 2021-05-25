@@ -9,6 +9,7 @@ import broccolai.tickets.api.model.user.Soul;
 import broccolai.tickets.api.model.user.SoulSnapshot;
 import broccolai.tickets.api.service.storage.StorageService;
 import broccolai.tickets.core.configuration.MainConfiguration;
+import broccolai.tickets.core.inject.ForTickets;
 import broccolai.tickets.core.storage.SQLQueries;
 import broccolai.tickets.core.storage.factory.UUIDArgumentFactory;
 import broccolai.tickets.core.storage.mapper.ComponentMapper;
@@ -48,8 +49,8 @@ public final class DatabaseStorageService implements StorageService {
 
     @Inject
     public DatabaseStorageService(
-            final @NonNull Path folder,
-            final @NonNull ClassLoader classLoader,
+            final @NonNull @ForTickets Path folder,
+            final @NonNull @ForTickets ClassLoader classLoader,
             final @NonNull MainConfiguration mainConfiguration
     ) throws IOException {
         this.dataSource = new HikariDataSource(mainConfiguration.storageConfiguration.asHikari(folder));

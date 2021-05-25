@@ -3,9 +3,6 @@ package broccolai.tickets.velocity;
 import broccolai.tickets.api.model.user.OnlineSoul;
 import broccolai.tickets.api.service.message.MessageService;
 import broccolai.tickets.api.service.user.UserService;
-import broccolai.tickets.core.inject.module.ConfigurationModule;
-import broccolai.tickets.core.inject.module.FactoryModule;
-import broccolai.tickets.core.inject.module.ServiceModule;
 import broccolai.tickets.velocity.inject.VelocityModule;
 import broccolai.tickets.velocity.model.VelocityOnlineSoul;
 import broccolai.tickets.velocity.subscribers.PlayerJoinSubscriber;
@@ -23,6 +20,7 @@ import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.event.proxy.ProxyInitializeEvent;
 import com.velocitypowered.api.event.proxy.ProxyShutdownEvent;
 import com.velocitypowered.api.plugin.PluginContainer;
+import com.velocitypowered.api.plugin.annotation.DataDirectory;
 import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.ProxyServer;
 import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
@@ -48,7 +46,7 @@ public final class VelocityPlatform implements PluginPlatform {
     public VelocityPlatform(
             final @NonNull Injector velocityInjector,
             final @NonNull ProxyServer server,
-            final @NonNull Path directory
+            final @NonNull @DataDirectory Path directory
     ) {
         this.velocityInjector = velocityInjector;
         this.server = server;
@@ -59,12 +57,7 @@ public final class VelocityPlatform implements PluginPlatform {
     public void onInitialisation(final @NonNull ProxyInitializeEvent event) throws IOException {
         Files.createDirectories(this.directory);
 
-        Injector injector = this.velocityInjector.createChildInjector(
-                new VelocityModule(this, this.server, this.directory),
-                new ConfigurationModule(),
-                new ServiceModule(),
-                new FactoryModule()
-        );
+        Injector injector = this.velocityInjector.createChildInjector(new VelocityModule(this, this.server, this.directory));
 
         this.pureTickets = injector.getInstance(PureTickets.class);
         this.pureTickets.load();

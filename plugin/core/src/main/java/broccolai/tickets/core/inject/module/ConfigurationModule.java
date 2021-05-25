@@ -3,6 +3,7 @@ package broccolai.tickets.core.inject.module;
 import broccolai.tickets.core.configuration.LocaleConfiguration;
 import broccolai.tickets.core.configuration.MainConfiguration;
 import broccolai.tickets.core.configuration.serializers.LocaleEntrySerializer;
+import broccolai.tickets.core.inject.ForTickets;
 import broccolai.tickets.core.model.locale.LocaleEntry;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
@@ -16,7 +17,7 @@ import org.spongepowered.configurate.yaml.YamlConfigurationLoader;
 public final class ConfigurationModule extends AbstractModule {
 
     @Provides
-    public MainConfiguration providesMainConfiguration(final @NonNull Path folder) throws IOException {
+    public MainConfiguration providesMainConfiguration(final @NonNull @ForTickets Path folder) throws IOException {
         Path file = folder.resolve("configuration.yml");
 
         if (!Files.exists(file)) {
@@ -42,7 +43,7 @@ public final class ConfigurationModule extends AbstractModule {
     }
 
     @Provides
-    public LocaleConfiguration providesLocaleConfiguration(final @NonNull Path folder) throws IOException {
+    public LocaleConfiguration providesLocaleConfiguration(final @NonNull @ForTickets Path folder) throws IOException {
         Path file = folder.resolve("locale.yml");
 
         if (!Files.exists(file)) {

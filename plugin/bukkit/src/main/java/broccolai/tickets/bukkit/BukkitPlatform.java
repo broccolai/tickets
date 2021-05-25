@@ -8,9 +8,6 @@ import broccolai.tickets.bukkit.listeners.PlayerJoinListener;
 import broccolai.tickets.bukkit.model.BukkitOnlineSoul;
 import broccolai.tickets.bukkit.service.BukkitUserService;
 import broccolai.tickets.core.PureTickets;
-import broccolai.tickets.core.inject.module.ConfigurationModule;
-import broccolai.tickets.core.inject.module.FactoryModule;
-import broccolai.tickets.core.inject.module.ServiceModule;
 import broccolai.tickets.core.inject.platform.PluginPlatform;
 import broccolai.tickets.core.utilities.ArrayHelper;
 import cloud.commandframework.CommandManager;
@@ -41,12 +38,7 @@ public final class BukkitPlatform extends JavaPlugin implements PluginPlatform {
     public void onEnable() {
         this.getDataFolder().mkdirs();
 
-        Injector injector = Guice.createInjector(
-                new BukkitModule(this, this),
-                new ConfigurationModule(),
-                new ServiceModule(),
-                new FactoryModule()
-        );
+        Injector injector = Guice.createInjector(new BukkitModule(this, this));
 
         this.pureTickets = injector.getInstance(PureTickets.class);
         this.pureTickets.load();

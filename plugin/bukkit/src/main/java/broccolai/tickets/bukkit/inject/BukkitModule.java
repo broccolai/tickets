@@ -4,6 +4,8 @@ import broccolai.tickets.api.service.tasks.TaskService;
 import broccolai.tickets.api.service.user.UserService;
 import broccolai.tickets.bukkit.service.BukkitTaskService;
 import broccolai.tickets.bukkit.service.BukkitUserService;
+import broccolai.tickets.core.inject.ForTickets;
+import broccolai.tickets.core.inject.module.CoreModule;
 import broccolai.tickets.core.inject.platform.PluginPlatform;
 import com.google.inject.AbstractModule;
 import java.nio.file.Path;
@@ -24,9 +26,11 @@ public final class BukkitModule extends AbstractModule {
 
     @Override
     protected void configure() {
-        this.bind(ClassLoader.class).toInstance(this.platform.loader());
+        this.install(new CoreModule());
+
+        this.bind(ClassLoader.class).annotatedWith(ForTickets.class).toInstance(this.platform.loader());
         this.bind(Plugin.class).toInstance(this.plugin);
-        this.bind(Path.class).toInstance(this.plugin.getDataFolder().toPath());
+        this.bind(Path.class).annotatedWith(ForTickets.class).toInstance(this.plugin.getDataFolder().toPath());
         this.bind(AudienceProvider.class).toInstance(BukkitAudiences.create(this.plugin));
         this.bind(TaskService.class).to(BukkitTaskService.class);
         this.bind(UserService.class).to(BukkitUserService.class);
