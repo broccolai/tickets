@@ -7,7 +7,7 @@ import broccolai.tickets.api.model.user.PlayerSoul;
 import broccolai.tickets.api.service.message.MessageService;
 import broccolai.tickets.api.service.tasks.TaskService;
 import broccolai.tickets.bukkit.model.BukkitPlayerSoul;
-import broccolai.tickets.bukkit.model.BukkitTicketContextKeys;
+import broccolai.tickets.bukkit.context.BukkitTicketContextKeys;
 import broccolai.tickets.core.commands.arguments.TicketParserMode;
 import broccolai.tickets.core.commands.command.BaseCommand;
 import broccolai.tickets.core.configuration.CommandsConfiguration;

@@ -5,7 +5,7 @@ import broccolai.tickets.api.model.event.impl.TicketCreateEvent;
 import broccolai.tickets.api.model.ticket.Ticket;
 import broccolai.tickets.api.service.event.EventService;
 import broccolai.tickets.bukkit.model.BukkitPlayerSoul;
-import broccolai.tickets.bukkit.model.BukkitTicketContextKeys;
+import broccolai.tickets.bukkit.context.BukkitTicketContextKeys;
 import org.bukkit.entity.Player;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
