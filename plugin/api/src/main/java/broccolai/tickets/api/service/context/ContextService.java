@@ -15,7 +15,7 @@ public interface ContextService {
 
     <T> Optional<ContextKey<T>> parseKey(@NonNull String keyString);
 
-    <T> void registerMapper(@NonNull ContextKey<T> key, final @NonNull ContextMapper<T> mapper);
+    <T> void registerMapper(@NonNull ContextKey<T> key, @NonNull ContextMapper<T> mapper);
 
     <T> Optional<ContextMapper<T>> useMapper(@NonNull ContextKey<T> key);
 
