@@ -5,15 +5,18 @@ import broccolai.corn.context.ContextKeyRegistry;
 import broccolai.tickets.api.model.context.ContextMapper;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import java.util.Optional;
+import java.util.function.Function;
 
 public interface ContextService {
 
-    void registerKeys(final @NonNull ContextKeyRegistry keyRegistry);
+    Function<ContextKey<?>, String> STRING_BUILDER = key -> key.namespace() + ":" + key.name();
 
-    <T> ContextKey<T> parseKey(final @NonNull String keyString);
+    void registerKeys(@NonNull ContextKeyRegistry keyRegistry);
 
-    <T> void registerMapper(final @NonNull ContextKey<T> key, final @NonNull ContextMapper<T> mapper);
+    <T> Optional<ContextKey<T>> parseKey(@NonNull String keyString);
 
-    <T> Optional<ContextMapper<T>> getMapper(final @NonNull ContextKey<T> key);
+    <T> void registerMapper(@NonNull ContextKey<T> key, final @NonNull ContextMapper<T> mapper);
+
+    <T> Optional<ContextMapper<T>> useMapper(@NonNull ContextKey<T> key);
 
 }

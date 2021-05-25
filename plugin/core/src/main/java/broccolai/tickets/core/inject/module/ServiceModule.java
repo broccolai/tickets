@@ -1,5 +1,6 @@
 package broccolai.tickets.core.inject.module;
 
+import broccolai.tickets.api.service.context.ContextService;
 import broccolai.tickets.api.service.event.EventService;
 import broccolai.tickets.api.service.interactions.InteractionService;
 import broccolai.tickets.api.service.intergrations.DiscordService;
@@ -7,6 +8,7 @@ import broccolai.tickets.api.service.message.MessageService;
 import broccolai.tickets.api.service.storage.StorageService;
 import broccolai.tickets.api.service.template.TemplateService;
 import broccolai.tickets.api.service.ticket.TicketService;
+import broccolai.tickets.core.service.context.MappedContextService;
 import broccolai.tickets.core.service.event.KyoriEventService;
 import broccolai.tickets.core.service.interaction.EventInteractionService;
 import broccolai.tickets.core.service.intergrations.HttpDiscordService;
@@ -27,6 +29,7 @@ public final class ServiceModule extends AbstractModule {
         this.bind(EventService.class).to(KyoriEventService.class);
         this.bind(InteractionService.class).to(EventInteractionService.class);
         this.bind(DiscordService.class).to(HttpDiscordService.class);
+        this.bind(ContextService.class).to(MappedContextService.class);
     }
 
 }
