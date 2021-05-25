@@ -1,4 +1,4 @@
-package broccolai.tickets.bukkit.model;
+package broccolai.tickets.bukkit.context;
 
 import broccolai.corn.context.ContextKey;
 import broccolai.corn.context.DelegatingContextKeyRegistry;

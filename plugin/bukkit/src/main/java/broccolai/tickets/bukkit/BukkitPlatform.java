@@ -2,9 +2,12 @@ package broccolai.tickets.bukkit;
 
 import broccolai.tickets.api.model.event.Subscriber;
 import broccolai.tickets.api.model.user.OnlineSoul;
+import broccolai.tickets.api.service.context.ContextService;
 import broccolai.tickets.api.service.message.MessageService;
 import broccolai.tickets.api.service.user.UserService;
 import broccolai.tickets.bukkit.commands.BukkitTicketsCommand;
+import broccolai.tickets.bukkit.context.BukkitTicketContextKeys;
+import broccolai.tickets.bukkit.context.LocationContextSerializer;
 import broccolai.tickets.bukkit.inject.BukkitModule;
 import broccolai.tickets.bukkit.listeners.PlayerJoinListener;
 import broccolai.tickets.bukkit.model.BukkitOnlineSoul;
@@ -43,6 +46,7 @@ public final class BukkitPlatform extends JavaPlugin implements PluginPlatform {
             BukkitTicketsCommand.class
     );
 
+    private @MonotonicNonNull Injector injector;
     private @MonotonicNonNull PureTickets pureTickets;
 
     @Override
@@ -50,15 +54,17 @@ public final class BukkitPlatform extends JavaPlugin implements PluginPlatform {
     public void onEnable() {
         this.getDataFolder().mkdirs();
 
-        Injector injector = Guice.createInjector(new BukkitModule(this, this));
+        this.injector = Guice.createInjector(new BukkitModule(this, this));
 
-        this.pureTickets = injector.getInstance(PureTickets.class);
+        this.pureTickets = this.injector.getInstance(PureTickets.class);
+
+        this.setupContexts();
         this.pureTickets.load();
 
         try {
             CommandManager<OnlineSoul> commandManager = this.commandManager(
-                    injector.getInstance(UserService.class),
-                    injector.getInstance(MessageService.class)
+                    this.injector.getInstance(UserService.class),
+                    this.injector.getInstance(MessageService.class)
             );
             this.pureTickets.commands(commandManager, COMMANDS);
             this.pureTickets.commands(commandManager, BUKKIT_COMMANDS);
@@ -69,7 +75,7 @@ public final class BukkitPlatform extends JavaPlugin implements PluginPlatform {
         this.pureTickets.subscribers(BUKKIT_SUBSCRIBERS);
 
         for (final Class<? extends Listener> listenerClass : LISTENERS) {
-            Listener listener = injector.getInstance(listenerClass);
+            Listener listener = this.injector.getInstance(listenerClass);
             this.getServer().getPluginManager().registerEvents(listener, this);
         }
     }
@@ -108,6 +114,12 @@ public final class BukkitPlatform extends JavaPlugin implements PluginPlatform {
 
         this.pureTickets.defaultCommandManagerSettings(cloudManager);
         return cloudManager;
+    }
+
+    private void setupContexts() {
+        ContextService contextService = this.injector.getInstance(ContextService.class);
+        contextService.registerKeys(new BukkitTicketContextKeys());
+        contextService.registerMapper(BukkitTicketContextKeys.LOCATION, new LocationContextSerializer());
     }
 
     @Override
