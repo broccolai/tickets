@@ -53,16 +53,8 @@ public final class MiniTemplateService implements TemplateService {
                 ))).clickEvent(ClickEvent.runCommand("/tickets show " + ticket.id()))),
                 Template.of("status", ticket.status().name()),
                 Template.of("player", this.userComponent(name, ticket.player())),
-//TODO
-//                Template.of("position", TextComponent.ofChildren(
-//                        Component.text("[", NamedTextColor.DARK_GRAY),
-//                        Component.text(ticket.position().x(), NamedTextColor.YELLOW),
-//                        Component.text(',', NamedTextColor.DARK_GRAY),
-//                        Component.text(ticket.position().y(), NamedTextColor.YELLOW),
-//                        Component.text(',', NamedTextColor.DARK_GRAY),
-//                        Component.text(ticket.position().z(), NamedTextColor.YELLOW),
-//                        Component.text("]", NamedTextColor.DARK_GRAY)
-//                )),
+                Template.of("context", Component.text("context")
+                        .clickEvent(ClickEvent.runCommand("/tickets context " + ticket.id()))),
                 Template.of("message", ticket.message().message())
         );
     }
