@@ -180,6 +180,16 @@ public final class TicketsCommand extends CommonCommands {
                         .handler(this::processList)
         );
 
+        //todo: USE CONFIG
+        manager.command(builder.literal(
+                "context",
+                ArgumentDescription.of("View a tickets context")
+                )
+                .permission(Constants.STAFF_PERMISSION + ".context")
+                .argument(this.argumentFactory.ticket("ticket", TicketParserMode.ANY, EnumSet.allOf(TicketStatus.class), 0))
+                .handler(this::processContext)
+        );
+
     }
 
     private void processClaim(final @NonNull CommandContext<@NonNull OnlineSoul> c) {
@@ -246,6 +256,15 @@ public final class TicketsCommand extends CommonCommands {
 
         Component component = this.messageService.commandsTicketsList(tickets);
         soul.sendMessage(component);
+    }
+
+    private void processContext(final @NonNull CommandContext<@NonNull OnlineSoul> c) {
+        OnlineSoul soul = c.getSender();
+        Ticket ticket = c.get("ticket");
+
+        ticket.context().forEach((key, value) -> {
+            soul.sendMessage(Component.text(key.name() + ":" + value.toString()));
+        });
     }
 
 }
