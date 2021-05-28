@@ -7,7 +7,7 @@ import net.kyori.indra.sonatypeSnapshots
 plugins {
     id("net.kyori.indra") version "1.3.1"
     id("net.kyori.indra.publishing") version "1.3.1"
-    id("net.kyori.indra.checkstyle") version "1.3.1"
+    id("net.kyori.indra.checkstyle") version "2.0.5"
     id("com.github.johnrengelman.shadow") version "6.1.0"
     id("com.github.ben-manes.versions") version "0.38.0"
 }
