@@ -2,6 +2,7 @@ package broccolai.tickets.core.service.ticket;
 
 import broccolai.tickets.api.model.interaction.MessageInteraction;
 import broccolai.tickets.api.model.ticket.Ticket;
+import broccolai.tickets.core.model.ticket.TicketImpl;
 import broccolai.tickets.api.model.ticket.TicketStatus;
 import broccolai.tickets.api.model.user.Soul;
 import broccolai.tickets.api.service.storage.StorageService;
@@ -45,7 +46,8 @@ public final class CachedTicketService implements TicketService {
             final @NonNull MessageInteraction interaction
     ) {
         int id = this.storageService.create(soul, interaction);
-        Ticket ticket = new Ticket(id, soul.uuid(), TicketStatus.OPEN, interaction, null);
+        Ticket ticket = new TicketImpl(id, soul.uuid(), TicketStatus.OPEN, null);
+        ticket.interactions().add(interaction);
         this.cache.put(id, ticket);
 
         return ticket;

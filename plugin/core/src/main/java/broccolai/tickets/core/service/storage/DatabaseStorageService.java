@@ -27,6 +27,7 @@ import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -110,8 +111,23 @@ public final class DatabaseStorageService implements StorageService {
 
             return handle.createQuery(queries[0])
                     .bindList("ids", ids)
-                    .mapTo(Ticket.class)
-                    .collect(Collectors.toMap(Ticket::id, ticket -> ticket));
+                    .reduceRows(new LinkedHashMap<>(), ((map, row) -> {
+                        Ticket ticket = map.computeIfAbsent(
+                                row.getColumn("id", int.class),
+                                (id) -> row.getRow(Ticket.class)
+                        );
+
+                        if (row.getColumn("action", String.class) != null) {
+                            Interaction interaction = row.getRow(Interaction.class);
+                            ticket.interactions().add(interaction);
+                        }
+
+                        if (row.getColumn("namespace", String.class) != null) {
+                            //todo: ticket add context & assisted inject?
+                        }
+
+                        return map;
+                    }));
         });
     }
 
