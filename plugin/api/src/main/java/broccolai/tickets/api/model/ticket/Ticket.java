@@ -1,71 +1,30 @@
 package broccolai.tickets.api.model.ticket;
 
 import broccolai.corn.context.Context;
-import broccolai.corn.context.MappedContext;
-import broccolai.tickets.api.model.interaction.MessageInteraction;
-import java.util.Optional;
-import java.util.UUID;
+import broccolai.tickets.api.model.interaction.Interaction;
+import broccolai.tickets.api.model.interaction.Interactions;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
+import java.util.Collection;
+import java.util.Optional;
+import java.util.UUID;
 
-public final class Ticket {
+public interface Ticket {
 
-    private final int id;
-    private final UUID player;
-    private TicketStatus status;
-    private MessageInteraction message;
-    private @Nullable UUID claimer;
+    int id();
 
-    private final Context context = new MappedContext();
+    @NonNull UUID player();
 
-    public Ticket(
-            final int id,
-            final @NonNull UUID player,
-            final @NonNull TicketStatus status,
-            final @NonNull MessageInteraction message,
-            final @Nullable UUID claimer
-    ) {
-        this.id = id;
-        this.player = player;
-        this.status = status;
-        this.message = message;
-        this.claimer = claimer;
-    }
+    @NonNull TicketStatus status();
 
-    public int id() {
-        return this.id;
-    }
+    void status(@NonNull TicketStatus status);
 
-    public @NonNull UUID player() {
-        return this.player;
-    }
+    @NonNull Optional<@NonNull UUID> claimer();
 
-    public @NonNull TicketStatus status() {
-        return this.status;
-    }
+    void claimer(@Nullable UUID claimer);
 
-    public void status(final @NonNull TicketStatus status) {
-        this.status = status;
-    }
+    @NonNull Context context();
 
-    public @NonNull MessageInteraction message() {
-        return this.message;
-    }
-
-    public void message(final @NonNull MessageInteraction message) {
-        this.message = message;
-    }
-
-    public @NonNull Optional<@NonNull UUID> claimer() {
-        return Optional.ofNullable(this.claimer);
-    }
-
-    public void claimer(final @Nullable UUID claimer) {
-        this.claimer = claimer;
-    }
-
-    public @NonNull Context context() {
-        return this.context;
-    }
+    @NonNull Interactions interactions();
 
 }
