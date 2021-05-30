@@ -6,12 +6,16 @@ import broccolai.tickets.api.model.ticket.Ticket;
 import broccolai.tickets.api.model.ticket.TicketStatus;
 import broccolai.tickets.api.model.user.Soul;
 import broccolai.tickets.api.model.user.SoulSnapshot;
+import broccolai.tickets.api.service.context.ContextService;
 import broccolai.tickets.api.service.storage.StorageService;
 import broccolai.tickets.core.configuration.MainConfiguration;
 import broccolai.tickets.core.inject.ForTickets;
+import broccolai.tickets.core.model.context.ContextKeyValuePair;
 import broccolai.tickets.core.storage.SQLQueries;
+import broccolai.tickets.core.storage.accumulators.TicketAccumulator;
 import broccolai.tickets.core.storage.factory.UUIDArgumentFactory;
 import broccolai.tickets.core.storage.mapper.ComponentMapper;
+import broccolai.tickets.core.storage.mapper.ContextDatabaseMapper;
 import broccolai.tickets.core.storage.mapper.InteractionMapper;
 import broccolai.tickets.core.storage.mapper.SoulSnapshotMapper;
 import broccolai.tickets.core.storage.mapper.TicketMapper;
@@ -30,7 +34,6 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.UUID;
-import java.util.stream.Collectors;
 import net.kyori.adventure.text.Component;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -50,7 +53,8 @@ public final class DatabaseStorageService implements StorageService {
     public DatabaseStorageService(
             final @NonNull @ForTickets Path folder,
             final @NonNull @ForTickets ClassLoader classLoader,
-            final @NonNull MainConfiguration mainConfiguration
+            final @NonNull MainConfiguration mainConfiguration,
+            final @NonNull ContextService contextService
     ) throws IOException {
         this.dataSource = new HikariDataSource(mainConfiguration.storageConfiguration.asHikari(folder));
 
@@ -68,6 +72,7 @@ public final class DatabaseStorageService implements StorageService {
                 .registerColumnMapper(Component.class, new ComponentMapper())
                 .registerRowMapper(Interaction.class, new InteractionMapper())
                 .registerRowMapper(SoulSnapshot.class, new SoulSnapshotMapper())
+                .registerRowMapper(ContextKeyValuePair.class, new ContextDatabaseMapper(contextService))
                 .registerRowMapper(Ticket.class, new TicketMapper());
     }
 
@@ -111,23 +116,7 @@ public final class DatabaseStorageService implements StorageService {
 
             return handle.createQuery(queries[0])
                     .bindList("ids", ids)
-                    .reduceRows(new LinkedHashMap<>(), ((map, row) -> {
-                        Ticket ticket = map.computeIfAbsent(
-                                row.getColumn("id", int.class),
-                                (id) -> row.getRow(Ticket.class)
-                        );
-
-                        if (row.getColumn("action", String.class) != null) {
-                            Interaction interaction = row.getRow(Interaction.class);
-                            ticket.interactions().add(interaction);
-                        }
-
-                        if (row.getColumn("namespace", String.class) != null) {
-                            //todo: ticket add context & assisted inject?
-                        }
-
-                        return map;
-                    }));
+                    .reduceRows(new LinkedHashMap<>(), new TicketAccumulator());
         });
     }
 
@@ -138,8 +127,7 @@ public final class DatabaseStorageService implements StorageService {
 
             return handle.createQuery(queries[0])
                     .bindList("statuses", statuses)
-                    .mapTo(Ticket.class)
-                    .collect(Collectors.toMap(Ticket::id, ticket -> ticket));
+                    .reduceRows(new LinkedHashMap<>(), new TicketAccumulator());
         });
     }
 
@@ -154,8 +142,7 @@ public final class DatabaseStorageService implements StorageService {
             return handle.createQuery(queries[0])
                     .bind("player", soul.uuid())
                     .bindList("statuses", statuses)
-                    .mapTo(Ticket.class)
-                    .collect(Collectors.toMap(Ticket::id, ticket -> ticket));
+                    .reduceRows(new LinkedHashMap<>(), new TicketAccumulator());
         });
     }
 
