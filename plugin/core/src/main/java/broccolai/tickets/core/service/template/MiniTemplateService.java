@@ -1,5 +1,6 @@
 package broccolai.tickets.core.service.template;
 
+import broccolai.tickets.api.model.interaction.MessageInteraction;
 import broccolai.tickets.api.model.ticket.Ticket;
 import broccolai.tickets.api.model.user.Soul;
 import broccolai.tickets.api.service.template.TemplateService;
@@ -55,7 +56,10 @@ public final class MiniTemplateService implements TemplateService {
                 Template.of("player", this.userComponent(name, ticket.player())),
                 Template.of("context", Component.text("context")
                         .clickEvent(ClickEvent.runCommand("/tickets context " + ticket.id()))),
-                Template.of("message", ticket.message().message())
+                Template.of(
+                        "message",
+                        ticket.interactions().findLatestMessage(null).map(MessageInteraction::message).orElse("NO MESSAGE")
+                )
         );
     }
 

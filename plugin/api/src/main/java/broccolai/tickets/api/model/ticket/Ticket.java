@@ -1,11 +1,9 @@
 package broccolai.tickets.api.model.ticket;
 
 import broccolai.corn.context.Context;
-import broccolai.tickets.api.model.interaction.Interaction;
 import broccolai.tickets.api.model.interaction.Interactions;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
-import java.util.Collection;
 import java.util.Optional;
 import java.util.UUID;
 

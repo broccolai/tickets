@@ -19,13 +19,13 @@ public final class MappedContextService implements ContextService {
 
     @Override
     public void registerKeys(@NotNull final ContextKeyRegistry keyRegistry) {
-        keyRegistry.forEach(key -> this.namedContexts.put(STRING_BUILDER.apply(key), key));
+        keyRegistry.forEach(key -> this.namedContexts.put(STRING_CONVERTER.apply(key), key));
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public <T> Optional<ContextKey<T>> parseKey(final @NonNull String keyString) {
-        ContextKey<T> key = (ContextKey<T>) this.namedContexts.get(keyString);
+    public <T> Optional<ContextKey<T>> parseKey(final @NonNull String namespace, final @NonNull String name) {
+        ContextKey<T> key = (ContextKey<T>) this.namedContexts.get(STRING_BUILDER.apply(namespace, name));
         return Optional.ofNullable(key);
     }
 
