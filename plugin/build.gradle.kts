@@ -18,7 +18,7 @@ plugins {
 }
 
 group = "broccolai.tickets"
-version = "5.2.0-SNAPSHOT"
+version = "6.0.0-SNAPSHOT"
 
 subprojects {
     apply<ShadowPlugin>()
