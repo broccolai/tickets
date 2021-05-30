@@ -3,7 +3,7 @@ ALTER TABLE puretickets_ticket
 
 CREATE TABLE IF NOT EXISTS puretickets_context
 (
-    `ticket` int NOT NULL PRIMARY KEY,
+    `ticket` int NOT NULL,
     `namespace` varchar(255) NOT NULL,
     `name` varchar(255) NOT NULL,
     `value` LONGTEXT,
