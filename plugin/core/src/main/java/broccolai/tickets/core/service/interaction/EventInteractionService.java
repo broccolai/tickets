@@ -89,7 +89,7 @@ public final class EventInteractionService implements InteractionService {
     ) {
         this.requireOpen(ticket);
 
-        ticket.message(interaction);
+        ticket.interactions().add(interaction);
 
         this.storageService.queue(ticket, interaction);
         TicketUpdateEvent event = new TicketUpdateEvent(soul, ticket);
