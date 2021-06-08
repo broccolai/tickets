@@ -25,6 +25,6 @@ public interface InteractionService {
 
     void reopen(@NonNull OnlineSoul soul, @NonNull Ticket ticket);
 
-    void note(@NonNull OnlineSoul soul, @NonNull Ticket ticket, @NonNull MessageInteraction message);
+    void note(@NonNull OnlineSoul soul, @NonNull Ticket ticket, @NonNull MessageInteraction interaction);
 
 }

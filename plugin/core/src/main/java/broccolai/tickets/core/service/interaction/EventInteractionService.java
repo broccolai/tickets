@@ -174,11 +174,9 @@ public final class EventInteractionService implements InteractionService {
     }
 
     @Override
-    public void note(final @NonNull OnlineSoul soul, final @NonNull Ticket ticket, final @NonNull MessageInteraction message) {
-        Interaction interaction = new BasicInteraction(Action.NOTE, LocalDateTime.now(), soul.uuid());
-
+    public void note(final @NonNull OnlineSoul soul, final @NonNull Ticket ticket, final @NonNull MessageInteraction interaction) {
         this.storageService.queue(ticket, interaction);
-        TicketNoteEvent event = new TicketNoteEvent(soul, ticket, message.message());
+        TicketNoteEvent event = new TicketNoteEvent(soul, ticket, interaction.message());
         this.eventService.post(event);
     }
 
