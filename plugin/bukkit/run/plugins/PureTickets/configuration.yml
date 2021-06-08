@@ -1,0 +1,59 @@
+# For help setting up Discord Integration, look here https://github.com/broccolai/tickets/wiki/Discord-Integration or if you still need help join my Discord https://discord.broccol.ai
+
+storage-configuration: {type: H2, url: 'jdbc:mysql://localhost:3306/tickets', username: username,
+    password: '********'}
+discord-configuration: {enabled: false, guild: '', token: ''}
+commands-configuration:
+    ticket:
+        create:
+            main: create
+            aliases: [c]
+        show:
+            main: show
+            aliases: [s]
+        update:
+            main: update
+            aliases: [u]
+        close:
+            main: close
+            aliases: [cl]
+        list:
+            main: list
+            aliases: [l]
+        log:
+            main: log
+            aliases: []
+    tickets:
+        show:
+            main: show
+            aliases: [s]
+        claim:
+            main: claim
+            aliases: [c]
+        complete:
+            main: done
+            aliases: [d]
+        assign:
+            main: assign
+            aliases: [a]
+        unclaim:
+            main: unclaim
+            aliases: [u]
+        reopen:
+            main: reopen
+            aliases: [r]
+        log:
+            main: log
+            aliases: []
+        teleport:
+            main: teleport
+            aliases: [tp]
+        note:
+            main: note
+            aliases: [n]
+        list:
+            main: list
+            aliases: [l]
+tasks-configuration:
+    reminder: {delay: 2, repeat: 5}
+advanced-configuration: {api: 'https://tickets.broccol.ai', open-ticket-limit: 5}
