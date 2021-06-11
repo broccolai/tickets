@@ -65,14 +65,10 @@ public final class TicketArgument extends CommandArgument<OnlineSoul, Ticket> {
                 final @NonNull CommandContext<OnlineSoul> commandContext,
                 final @NonNull Queue<String> inputQueue
         ) {
-            switch (this.parserMode) {
-                case ANY:
-                    return this.any(commandContext, inputQueue);
-                case SENDERS:
-                    return this.senders(commandContext, inputQueue);
-                default:
-                    throw new IllegalStateException();
-            }
+            return switch (this.parserMode) {
+                case ANY -> this.any(commandContext, inputQueue);
+                case SENDERS -> this.senders(commandContext, inputQueue);
+            };
         }
 
         @Override

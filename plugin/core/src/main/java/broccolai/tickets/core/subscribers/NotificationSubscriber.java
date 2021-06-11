@@ -60,8 +60,7 @@ public final class NotificationSubscriber implements Subscriber {
 
         Soul targetSoul = this.userService.wrap(target.uuid());
 
-        if (targetSoul instanceof OnlineSoul) {
-            OnlineSoul onlineSoul = (OnlineSoul) targetSoul;
+        if (targetSoul instanceof OnlineSoul onlineSoul) {
             onlineSoul.sendMessage(target.component());
             return;
         }
@@ -74,8 +73,7 @@ public final class NotificationSubscriber implements Subscriber {
 
         final UUID ignore;
 
-        if (event instanceof SoulEvent) {
-            SoulEvent soulEvent = (SoulEvent) event;
+        if (event instanceof SoulEvent soulEvent) {
             ignore = soulEvent.soul().uuid();
         } else {
             ignore = null;
