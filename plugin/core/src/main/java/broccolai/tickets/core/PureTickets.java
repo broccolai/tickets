@@ -53,8 +53,8 @@ public final class PureTickets {
     }
 
     public void unload() {
-        this.injector.getInstance(StorageService.class).dispose();
         this.injector.getInstance(CacheSnapshotService.class).dispose();
+        this.injector.getInstance(StorageService.class).dispose();
     }
 
     public void tasks(final @NonNull Class<? extends Task>[] tasks) {
