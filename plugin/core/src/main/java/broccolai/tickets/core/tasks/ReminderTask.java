@@ -1,6 +1,7 @@
 package broccolai.tickets.core.tasks;
 
 import broccolai.tickets.api.model.task.Task;
+import broccolai.tickets.api.model.ticket.Ticket;
 import broccolai.tickets.api.model.ticket.TicketStatus;
 import broccolai.tickets.api.model.user.PlayerSoul;
 import broccolai.tickets.api.service.message.MessageService;
@@ -9,8 +10,10 @@ import broccolai.tickets.api.service.user.UserService;
 import broccolai.tickets.core.configuration.MainConfiguration;
 import broccolai.tickets.core.configuration.TasksConfiguration;
 import broccolai.tickets.core.utilities.Constants;
+import com.google.common.collect.Multimap;
 import com.google.inject.Inject;
 import java.util.EnumSet;
+import java.util.UUID;
 import net.kyori.adventure.text.Component;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
@@ -36,13 +39,14 @@ public final class ReminderTask implements Task {
 
     @Override
     public void run() {
-        int tickets = this.ticketService.get(EnumSet.of(TicketStatus.OPEN, TicketStatus.CLAIMED)).size();
+        Multimap<UUID, Ticket> tickets = this.ticketService.get(EnumSet.of(TicketStatus.OPEN, TicketStatus.CLAIMED));
+        int total = tickets.entries().size();
 
-        if (tickets == 0) {
+        if (total == 0) {
             return;
         }
 
-        Component component = this.messageService.taskReminder(tickets);
+        Component component = this.messageService.taskReminder(total);
 
         for (PlayerSoul soul : this.userService.players()) {
             if (!soul.permission(Constants.STAFF_PERMISSION + ".remind")) {

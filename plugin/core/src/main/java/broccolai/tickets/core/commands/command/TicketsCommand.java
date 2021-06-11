@@ -252,7 +252,7 @@ public final class TicketsCommand extends CommonCommands {
                     value,
                     statuses
             ));
-        }).orElse(this.ticketService.get(statuses));
+        }).orElse(this.ticketService.get(statuses).asMap());
 
         Component component = this.messageService.commandsTicketsList(tickets);
         soul.sendMessage(component);

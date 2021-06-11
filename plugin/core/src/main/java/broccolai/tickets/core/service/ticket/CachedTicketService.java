@@ -15,7 +15,6 @@ import com.google.common.collect.Multimap;
 import com.google.common.collect.MultimapBuilder;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -73,7 +72,7 @@ public final class CachedTicketService implements TicketService {
     }
 
     @Override
-    public @NonNull Map<@NonNull UUID, @NonNull Collection<@NonNull Ticket>> get(final @NonNull Set<TicketStatus> queries) {
+    public @NonNull Multimap<@NonNull UUID, @NonNull Ticket> get(final @NonNull Set<TicketStatus> queries) {
         Set<TicketStatus> modifiableQueries = new HashSet<>(queries);
 
         for (final TicketStatus query : queries) {
@@ -107,10 +106,9 @@ public final class CachedTicketService implements TicketService {
             this.lookups.get(soul.uuid()).addAll(modifiableQueries);
         }
 
-        return this.filter(ticket -> ticket.player().equals(soul.uuid()) && queries.contains(ticket.status())).getOrDefault(
-                soul.uuid(),
-                new ArrayList<>()
-        );
+        return this.filter(ticket -> {
+            return ticket.player().equals(soul.uuid()) && queries.contains(ticket.status());
+        }).get(soul.uuid());
     }
 
     private void putAllNotPresent(final @NonNull Map<Integer, Ticket> toAdd) {
@@ -123,7 +121,7 @@ public final class CachedTicketService implements TicketService {
         });
     }
 
-    private @NonNull Map<@NonNull UUID, @NonNull Collection<@NonNull Ticket>> filter(final @NonNull Predicate<@NonNull Ticket> predicate) {
+    private @NonNull Multimap<@NonNull UUID, @NonNull Ticket> filter(final @NonNull Predicate<@NonNull Ticket> predicate) {
         Multimap<UUID, Ticket> tickets = HashMultimap.create();
 
         for (final Ticket ticket : this.cache.asMap().values()) {
@@ -132,7 +130,7 @@ public final class CachedTicketService implements TicketService {
             }
         }
 
-        return tickets.asMap();
+        return tickets;
     }
 
 }

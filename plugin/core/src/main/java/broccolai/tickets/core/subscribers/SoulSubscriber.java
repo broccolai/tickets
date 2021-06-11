@@ -2,6 +2,7 @@ package broccolai.tickets.core.subscribers;
 
 import broccolai.tickets.api.model.event.Subscriber;
 import broccolai.tickets.api.model.event.impl.SoulJoinEvent;
+import broccolai.tickets.api.model.ticket.Ticket;
 import broccolai.tickets.api.model.ticket.TicketStatus;
 import broccolai.tickets.api.model.user.PlayerSoul;
 import broccolai.tickets.api.service.event.EventService;
@@ -9,9 +10,11 @@ import broccolai.tickets.api.service.message.MessageService;
 import broccolai.tickets.api.service.storage.StorageService;
 import broccolai.tickets.api.service.ticket.TicketService;
 import broccolai.tickets.core.utilities.Constants;
+import com.google.common.collect.Multimap;
 import com.google.inject.Inject;
 import java.util.Collection;
 import java.util.EnumSet;
+import java.util.UUID;
 import net.kyori.adventure.text.Component;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
@@ -46,10 +49,11 @@ public final class SoulSubscriber implements Subscriber {
         }
 
         if (soul.permission(Constants.STAFF_PERMISSION + ".announce")) {
-            int tickets = this.ticketService.get(EnumSet.of(TicketStatus.OPEN, TicketStatus.CLAIMED)).size();
+            Multimap<UUID, Ticket> tickets = this.ticketService.get(EnumSet.of(TicketStatus.OPEN, TicketStatus.CLAIMED));
+            int total = tickets.entries().size();
 
-            if (tickets != 0) {
-                soul.sendMessage(this.messageService.taskReminder(tickets));
+            if (total != 0) {
+                soul.sendMessage(this.messageService.taskReminder(total));
             }
         }
     }

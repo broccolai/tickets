@@ -27,7 +27,7 @@ public final class LocaleEntrySerializer implements TypeSerializer<LocaleEntry> 
             return;
         }
 
-        node.set(localeEntry.toString());
+        node.set(localeEntry.serialised());
     }
 
 }
