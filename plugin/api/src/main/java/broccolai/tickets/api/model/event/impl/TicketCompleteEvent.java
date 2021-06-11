@@ -22,7 +22,7 @@ public final class TicketCompleteEvent extends TicketsCommandEvent {
 
     @Override
     public @NonNull TargetPair target(final @NonNull MessageService messageService) {
-        return TargetPair.of(this.ticket.player(), messageService.targetTicketComplete(this.ticket, this.soul));
+        return new TargetPair(this.ticket.player(), messageService.targetTicketComplete(this.ticket, this.soul));
     }
 
     @Override

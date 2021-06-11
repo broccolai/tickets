@@ -25,7 +25,7 @@ public final class AshconSnapshotService implements SoulSnapshotService {
     private static final String AGENT = "minecraft/";
     private static final String NAMES_PATH = "/names";
 
-    private HttpClient client = HttpClient.newBuilder()
+    private final HttpClient client = HttpClient.newBuilder()
             .withBaseURL("https://api.mojang.com/user/profiles/")
             .build();
 

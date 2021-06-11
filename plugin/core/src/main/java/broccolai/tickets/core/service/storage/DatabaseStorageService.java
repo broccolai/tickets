@@ -173,8 +173,7 @@ public final class DatabaseStorageService implements StorageService {
                         .bind("time", interaction.time())
                         .bind("sender", interaction.sender());
 
-                if (interaction instanceof MessageInteraction) {
-                    MessageInteraction messageInteraction = (MessageInteraction) interaction;
+                if (interaction instanceof MessageInteraction messageInteraction) {
                     batch.bind("message", messageInteraction.message());
                 } else {
                     batch.bind("message", (String) null);

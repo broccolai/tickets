@@ -64,11 +64,9 @@ public final class TreeSetInteractions implements Interactions {
         while (reverseIterator.hasNext()) {
             Interaction next = reverseIterator.next();
 
-            if (!(next instanceof MessageInteraction)) {
+            if (!(next instanceof MessageInteraction nextMessage)) {
                 continue;
             }
-
-            MessageInteraction nextMessage = (MessageInteraction) next;
 
             if (predicate == null || predicate.test(nextMessage)) {
                 return Optional.of(nextMessage);

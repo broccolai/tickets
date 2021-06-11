@@ -38,21 +38,19 @@ public final class ExceptionHandler {
                 .withHandler(MinecraftExceptionHandler.ExceptionType.ARGUMENT_PARSING, ex -> {
                     Throwable cause = ex.getCause();
 
-                    if (!(cause instanceof PureException)) {
+                    if (!(cause instanceof PureException pureException)) {
                         return MinecraftExceptionHandler.DEFAULT_ARGUMENT_PARSING_FUNCTION.apply(ex);
                     }
 
-                    PureException pureException = (PureException) cause;
                     return pureException.message(this.messageService);
                 })
                 .withHandler(MinecraftExceptionHandler.ExceptionType.COMMAND_EXECUTION, ex -> {
                     Throwable cause = ex.getCause();
 
-                    if (!(cause instanceof PureException)) {
+                    if (!(cause instanceof PureException pureException)) {
                         return MinecraftExceptionHandler.DEFAULT_COMMAND_EXECUTION_FUNCTION.apply(ex);
                     }
 
-                    PureException pureException = (PureException) cause;
                     return pureException.message(this.messageService);
                 });
     }

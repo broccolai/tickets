@@ -23,23 +23,20 @@ public final class StorageConfiguration {
         HikariConfig config = new HikariConfig();
 
         switch (this.type) {
-            case H2:
+            case H2 -> {
                 Path file = folder.resolve("storage.db");
-
                 if (!Files.exists(file)) {
                     Files.createFile(file);
                 }
-
                 config.setJdbcUrl("jdbc:h2:" + file.toAbsolutePath() + ";MODE=MySQL;DATABASE_TO_LOWER=TRUE");
                 config.setDriverClassName("org.h2.Driver");
-                break;
-            case MYSQL:
+            }
+            case MYSQL -> {
                 config.setJdbcUrl(this.url);
                 config.setUsername(this.username);
                 config.setPassword(this.password);
-                break;
-            default:
-                throw new IllegalStateException();
+            }
+            default -> throw new IllegalStateException();
         }
 
         config.setMaximumPoolSize(10);

@@ -5,12 +5,9 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.util.function.Function;
 
-public final class Either<L, R> {
+public record Either<L, R>(L left, R right) {
 
-    private final L left;
-    private final R right;
-
-    private Either(final @Nullable L left, final @Nullable R right) {
+    public Either(final @Nullable L left, final @Nullable R right) {
         this.left = left;
         this.right = right;
     }
@@ -29,14 +26,6 @@ public final class Either<L, R> {
 
     public boolean isRight() {
         return this.right != null;
-    }
-
-    public L left() {
-        return this.left;
-    }
-
-    public R right() {
-        return this.right;
     }
 
     public <O> O map(final @NonNull Function<L, O> leftMapper, final @NonNull Function<R, O> rightMapper) {

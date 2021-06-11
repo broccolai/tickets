@@ -6,11 +6,9 @@ import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.Template;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-public final class LocaleEntry {
+public record LocaleEntry(String serialised) {
 
     private static final MiniMessage MINI = MiniMessage.get();
-
-    private final String serialised;
 
     public LocaleEntry(final @NonNull String serialised) {
         this.serialised = serialised;
@@ -22,11 +20,6 @@ public final class LocaleEntry {
 
     public @NonNull Component use(final @NonNull List<Template> templates) {
         return MINI.parse(this.serialised, templates);
-    }
-
-    @Override
-    public @NonNull String toString() {
-        return this.serialised;
     }
 
 }

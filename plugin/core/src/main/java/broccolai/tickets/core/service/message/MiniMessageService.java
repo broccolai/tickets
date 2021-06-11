@@ -374,8 +374,7 @@ public final class MiniMessageService implements MessageService {
             Component hoverComponent = Component.text("Time: " + formatter.format(interaction.time()));
             hoverComponent = hoverComponent.append(Component.newline());
 
-            if (interaction instanceof MessageInteraction) {
-                MessageInteraction messageInteraction = (MessageInteraction) interaction;
+            if (interaction instanceof MessageInteraction messageInteraction) {
                 hoverComponent = hoverComponent.append(Component.text("Message: " + messageInteraction.message()));
             }
 
