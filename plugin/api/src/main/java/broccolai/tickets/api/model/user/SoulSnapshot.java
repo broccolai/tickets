@@ -4,7 +4,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.util.UUID;
 
-public final class SoulSnapshot implements Soul {
+public final class SoulSnapshot extends Soul.Abstract {
 
     private final UUID uuid;
     private final String username;

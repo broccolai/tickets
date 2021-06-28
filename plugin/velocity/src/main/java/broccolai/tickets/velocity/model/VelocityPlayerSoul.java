@@ -1,6 +1,7 @@
 package broccolai.tickets.velocity.model;
 
 import broccolai.tickets.api.model.user.PlayerSoul;
+import broccolai.tickets.api.model.user.Soul;
 import com.velocitypowered.api.command.CommandSource;
 import com.velocitypowered.api.proxy.Player;
 import net.kyori.adventure.audience.Audience;
@@ -8,7 +9,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.util.UUID;
 
-public final class VelocityPlayerSoul implements PlayerSoul, VelocityOnlineSoul {
+public final class VelocityPlayerSoul extends Soul.Abstract implements PlayerSoul, VelocityOnlineSoul {
 
     private final Player player;
     private final Audience audience;
