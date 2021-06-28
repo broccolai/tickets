@@ -7,7 +7,7 @@ import broccolai.tickets.api.model.ticket.TicketStatus;
 import broccolai.tickets.api.model.user.OnlineSoul;
 import broccolai.tickets.api.model.user.Soul;
 import broccolai.tickets.api.service.interactions.InteractionService;
-import broccolai.tickets.api.service.message.MessageService;
+import broccolai.tickets.api.service.message.OldMessageService;
 import broccolai.tickets.api.service.storage.StorageService;
 import broccolai.tickets.api.service.ticket.TicketService;
 import broccolai.tickets.core.commands.arguments.TicketParserMode;
@@ -39,7 +39,7 @@ public final class TicketsCommand extends CommonCommands {
 
     private final CommandsConfiguration.TicketsConfiguration config;
     private final CloudArgumentFactory argumentFactory;
-    private final MessageService messageService;
+    private final OldMessageService oldMessageService;
     private final TicketService ticketService;
     private final InteractionService interactionService;
 
@@ -47,15 +47,15 @@ public final class TicketsCommand extends CommonCommands {
     public TicketsCommand(
             final @NonNull MainConfiguration config,
             final @NonNull CloudArgumentFactory argumentFactory,
-            final @NonNull MessageService messageService,
+            final @NonNull OldMessageService oldMessageService,
             final @NonNull StorageService storageService,
             final @NonNull TicketService ticketService,
             final @NonNull InteractionService interactionService
     ) {
-        super(messageService, storageService);
+        super(oldMessageService, storageService);
         this.config = config.commandsConfiguration.tickets;
         this.argumentFactory = argumentFactory;
-        this.messageService = messageService;
+        this.oldMessageService = oldMessageService;
         this.ticketService = ticketService;
         this.interactionService = interactionService;
     }
@@ -254,7 +254,7 @@ public final class TicketsCommand extends CommonCommands {
             ));
         }).orElse(this.ticketService.get(statuses).asMap());
 
-        Component component = this.messageService.commandsTicketsList(tickets);
+        Component component = this.oldMessageService.commandsTicketsList(tickets);
         soul.sendMessage(component);
     }
 

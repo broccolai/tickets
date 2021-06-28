@@ -1,7 +1,7 @@
 package broccolai.tickets.core.commands.command;
 
 import broccolai.tickets.api.model.user.OnlineSoul;
-import broccolai.tickets.api.service.message.MessageService;
+import broccolai.tickets.api.service.message.OldMessageService;
 import broccolai.tickets.api.service.storage.StorageService;
 import broccolai.tickets.core.utilities.Constants;
 import cloud.commandframework.ArgumentDescription;
@@ -18,12 +18,12 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 
 public final class PureTicketsCommand implements BaseCommand {
 
-    private final MessageService messageService;
+    private final OldMessageService oldMessageService;
     private final StorageService storageService;
 
     @Inject
-    public PureTicketsCommand(final @NonNull MessageService messageService, final @NonNull StorageService storageService) {
-        this.messageService = messageService;
+    public PureTicketsCommand(final @NonNull OldMessageService oldMessageService, final @NonNull StorageService storageService) {
+        this.oldMessageService = oldMessageService;
         this.storageService = storageService;
     }
 
@@ -49,7 +49,7 @@ public final class PureTicketsCommand implements BaseCommand {
         ChronoUnit amount = c.<ChronoUnit>getOptional("amount").orElse(ChronoUnit.YEARS);
 
         Map<UUID, Integer> highscores = this.storageService.highscores(amount);
-        Component component = this.messageService.commandsHighscore(highscores);
+        Component component = this.oldMessageService.commandsHighscore(highscores);
 
         sender.sendMessage(component);
     }

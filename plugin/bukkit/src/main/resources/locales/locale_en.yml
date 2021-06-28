@@ -1,0 +1,4 @@
+prefix: "hello"
+
+feedback:
+  create: "<prefix> Ticket <ticket_id> created"

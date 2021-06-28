@@ -5,7 +5,7 @@ import broccolai.tickets.api.model.event.notification.TicketsCommandEvent;
 import broccolai.tickets.api.model.message.TargetPair;
 import broccolai.tickets.api.model.ticket.Ticket;
 import broccolai.tickets.api.model.user.OnlineSoul;
-import broccolai.tickets.api.service.message.MessageService;
+import broccolai.tickets.api.service.message.OldMessageService;
 import net.kyori.adventure.text.Component;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.jetbrains.annotations.NotNull;
@@ -24,19 +24,19 @@ public final class TicketNoteEvent extends TicketsCommandEvent {
     }
 
     @Override
-    public void sender(final @NonNull MessageService messageService) {
-        Component component = messageService.senderTicketNote(this.ticket);
+    public void sender(final @NonNull OldMessageService oldMessageService) {
+        Component component = oldMessageService.senderTicketNote(this.ticket);
         this.soul.sendMessage(component);
     }
 
     @Override
-    public @NotNull TargetPair target(final @NonNull MessageService messageService) {
-        return new TargetPair(this.ticket.player(), messageService.targetTicketNote(this.ticket, this.note, this.soul));
+    public @NotNull TargetPair target(final @NonNull OldMessageService oldMessageService) {
+        return new TargetPair(this.ticket.player(), oldMessageService.targetTicketNote(this.ticket, this.note, this.soul));
     }
 
     @Override
-    public @NonNull Component staff(final @NonNull MessageService messageService) {
-        return messageService.staffTicketNote(this.ticket, this.note, this.soul);
+    public @NonNull Component staff(final @NonNull OldMessageService oldMessageService) {
+        return oldMessageService.staffTicketNote(this.ticket, this.note, this.soul);
     }
 
 }
