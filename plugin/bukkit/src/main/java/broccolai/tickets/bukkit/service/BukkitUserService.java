@@ -10,7 +10,7 @@ import broccolai.tickets.core.service.user.SimpleUserService;
 import broccolai.tickets.core.service.user.snapshot.AshconSnapshotService;
 import broccolai.tickets.core.service.user.snapshot.CacheSnapshotService;
 import broccolai.tickets.core.service.user.snapshot.DatabaseSnapshotService;
-import broccolai.tickets.core.utilities.ClassHelper;
+import broccolai.tickets.core.utilities.ReflectionHelper;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import java.util.ArrayList;
@@ -40,7 +40,7 @@ public final class BukkitUserService extends SimpleUserService {
 
         this.registerSnapshotService(bukkitSnapshotService);
 
-        if (ClassHelper.classExists("com.destroystokyo.paper.profile.PlayerProfile")) {
+        if (ReflectionHelper.classExists("com.destroystokyo.paper.profile.PlayerProfile")) {
             this.registerSnapshotService(paperSnapshotService);
         }
     }
