@@ -1,6 +1,7 @@
 package broccolai.tickets.core.inject.module;
 
 import broccolai.tickets.api.model.ticket.Ticket;
+import broccolai.tickets.api.model.user.Soul;
 import broccolai.tickets.api.service.context.ContextService;
 import broccolai.tickets.api.service.event.EventService;
 import broccolai.tickets.api.service.interactions.InteractionService;
@@ -14,12 +15,13 @@ import broccolai.tickets.core.service.context.MappedContextService;
 import broccolai.tickets.core.service.event.KyoriEventService;
 import broccolai.tickets.core.service.interaction.EventInteractionService;
 import broccolai.tickets.core.service.intergrations.HttpDiscordService;
-import broccolai.tickets.core.service.message.moonshine.BasicReceiverResolver;
 import broccolai.tickets.core.service.message.MiniOldMessageService;
-import broccolai.tickets.core.service.message.moonshine.StaffReceiverResolver;
+import broccolai.tickets.core.service.message.moonshine.BasicReceiverResolver;
 import broccolai.tickets.core.service.message.moonshine.MessageRenderer;
 import broccolai.tickets.core.service.message.moonshine.MessageSender;
 import broccolai.tickets.core.service.message.moonshine.MessageSource;
+import broccolai.tickets.core.service.message.moonshine.SoulPlaceholderResolver;
+import broccolai.tickets.core.service.message.moonshine.StaffReceiverResolver;
 import broccolai.tickets.core.service.message.moonshine.TicketPlaceholderResolver;
 import broccolai.tickets.core.service.storage.DatabaseStorageService;
 import broccolai.tickets.core.service.template.MiniTemplateService;
@@ -55,7 +57,8 @@ public final class ServiceModule extends AbstractModule {
             final @NonNull MessageSource messageSource,
             final @NonNull MessageRenderer messageRenderer,
             final @NonNull MessageSender messageSender,
-            final @NonNull TicketPlaceholderResolver ticketPlaceholderResolver
+            final @NonNull TicketPlaceholderResolver ticketPlaceholderResolver,
+            final @NonNull SoulPlaceholderResolver soulPlaceholderResolver
     ) throws UnscannableMethodException {
         return Moonshine.<MessageService, Audience>builder(TypeToken.get(MessageService.class))
                 .receiverLocatorResolver(basicReceiverResolver, 0)
@@ -67,6 +70,7 @@ public final class ServiceModule extends AbstractModule {
                         new StandardPlaceholderResolverStrategy<>(new StandardSupertypeThenInterfaceSupertypeStrategy(true))
                 )
                 .weightedPlaceholderResolver(Ticket.class, ticketPlaceholderResolver, 0)
+                .weightedPlaceholderResolver(Soul.class, soulPlaceholderResolver, 0)
                 .create(this.getClass().getClassLoader());
     }
 

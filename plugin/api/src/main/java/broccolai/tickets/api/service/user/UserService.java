@@ -4,9 +4,9 @@ import broccolai.tickets.api.model.user.ConsoleSoul;
 import broccolai.tickets.api.model.user.PlayerSoul;
 import broccolai.tickets.api.model.user.Soul;
 import broccolai.tickets.api.model.user.SoulSnapshot;
-import org.checkerframework.checker.nullness.qual.NonNull;
 import java.util.Collection;
 import java.util.UUID;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 public interface UserService {
 

@@ -1,8 +1,7 @@
 package broccolai.tickets.api.model.user;
 
-import org.checkerframework.checker.nullness.qual.NonNull;
-
 import java.util.UUID;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 public final class SoulSnapshot extends Soul.Abstract {
 

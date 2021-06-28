@@ -2,10 +2,10 @@ package broccolai.tickets.api.model.ticket;
 
 import broccolai.corn.context.Context;
 import broccolai.tickets.api.model.interaction.Interactions;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
 import java.util.Optional;
 import java.util.UUID;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 public interface Ticket {
 

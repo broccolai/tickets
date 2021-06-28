@@ -3,9 +3,6 @@ package broccolai.tickets.core.model.interaction;
 import broccolai.tickets.api.model.interaction.Interaction;
 import broccolai.tickets.api.model.interaction.Interactions;
 import broccolai.tickets.api.model.interaction.MessageInteraction;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
-import org.jetbrains.annotations.NotNull;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashSet;
@@ -13,6 +10,9 @@ import java.util.Iterator;
 import java.util.Optional;
 import java.util.TreeSet;
 import java.util.function.Predicate;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jetbrains.annotations.NotNull;
 
 public final class TreeSetInteractions implements Interactions {
 

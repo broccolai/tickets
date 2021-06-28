@@ -1,9 +1,8 @@
 package broccolai.tickets.api.utilities;
 
+import java.util.function.Function;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
-
-import java.util.function.Function;
 
 public record Either<L, R>(L left, R right) {
 

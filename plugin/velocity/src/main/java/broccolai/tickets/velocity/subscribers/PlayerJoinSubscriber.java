@@ -8,9 +8,8 @@ import broccolai.tickets.api.service.user.UserService;
 import com.google.inject.Inject;
 import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.event.player.ServerConnectedEvent;
-import org.checkerframework.checker.nullness.qual.NonNull;
-
 import java.util.UUID;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 public final class PlayerJoinSubscriber implements VelocitySubscriber {
 

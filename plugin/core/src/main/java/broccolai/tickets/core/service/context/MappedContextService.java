@@ -5,11 +5,11 @@ import broccolai.corn.context.ContextKeyRegistry;
 import broccolai.tickets.api.model.context.ContextMapper;
 import broccolai.tickets.api.service.context.ContextService;
 import com.google.inject.Singleton;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.jetbrains.annotations.NotNull;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.jetbrains.annotations.NotNull;
 
 @Singleton
 public final class MappedContextService implements ContextService {

@@ -4,12 +4,12 @@ import broccolai.tickets.api.service.tasks.TaskService;
 import broccolai.tickets.api.service.user.UserService;
 import broccolai.tickets.core.inject.ForTickets;
 import broccolai.tickets.core.inject.module.CoreModule;
+import broccolai.tickets.core.inject.platform.PluginPlatform;
 import broccolai.tickets.velocity.service.VelocityTaskService;
 import broccolai.tickets.velocity.service.VelocityUserService;
-import broccolai.tickets.core.inject.platform.PluginPlatform;
 import com.google.inject.AbstractModule;
-import java.nio.file.Path;
 import com.velocitypowered.api.proxy.ProxyServer;
+import java.nio.file.Path;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 public final class VelocityModule extends AbstractModule {

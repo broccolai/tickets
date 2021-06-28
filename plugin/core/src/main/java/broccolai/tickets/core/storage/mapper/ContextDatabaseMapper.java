@@ -4,11 +4,11 @@ import broccolai.tickets.api.service.context.ContextService;
 import broccolai.tickets.core.model.context.ContextKeyValuePair;
 import cloud.commandframework.types.tuples.Pair;
 import com.google.inject.Inject;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.jdbi.v3.core.mapper.RowMapper;
 import org.jdbi.v3.core.statement.StatementContext;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 
 public final class ContextDatabaseMapper implements RowMapper<ContextKeyValuePair<?>> {
 

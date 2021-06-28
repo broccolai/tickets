@@ -1,8 +1,8 @@
 package broccolai.tickets.bukkit.model;
 
 import broccolai.tickets.api.model.user.PlayerSoul;
-import java.util.UUID;
 import broccolai.tickets.api.model.user.Soul;
+import java.util.UUID;
 import net.kyori.adventure.audience.Audience;
 import org.bukkit.entity.Player;
 import org.checkerframework.checker.nullness.qual.NonNull;

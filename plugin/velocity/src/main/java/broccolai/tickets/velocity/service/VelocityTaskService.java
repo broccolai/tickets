@@ -6,9 +6,8 @@ import broccolai.tickets.core.inject.platform.PluginPlatform;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.velocitypowered.api.proxy.ProxyServer;
-import org.checkerframework.checker.nullness.qual.NonNull;
-
 import java.util.concurrent.TimeUnit;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 @Singleton
 public final class VelocityTaskService implements TaskService {

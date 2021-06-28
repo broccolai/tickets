@@ -9,11 +9,11 @@ import com.google.gson.JsonObject;
 import com.google.inject.Singleton;
 import com.intellectualsites.http.HttpClient;
 import com.intellectualsites.http.HttpResponse;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.jetbrains.annotations.NotNull;
 import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.jetbrains.annotations.NotNull;
 
 @Singleton
 @Order(ExecutionOrder.LAST)

@@ -1,7 +1,24 @@
-prefix: "<color:#f5a5a5><bold>T <dark_gray>»<reset>"
+prefix : "<color:#f5a5a5><bold>T <dark_gray>»<reset>"
 
-feedback:
-  create: "<prefix> Ticket <ticket_id> created"
+feedback :
+  create : "<prefix> Ticket <ticket_id> created"
+  update : "<prefix> Ticket <ticket> updated"
+  close : "<prefix> Ticket <ticket> closed"
+  claim : "<prefix> Ticket <ticket> claimed"
+  unclaim : "<prefix> Ticket <ticket> unclaimed"
+  assign : "<prefix> Ticket <ticket> assigned to <target>"
+  complete : "<prefix> Ticket <ticket> completed"
+  reopen : "<prefix> Ticket <ticket> completed"
+  note : "<prefix> Note added to ticket <ticket>"
+  teleport : "<prefix> Teleported to ticket <ticket> creation location"
 
-announce:
-  creation: "<prefix> <player> opened a new ticket <ticket><white> - <message>"
+notify :
+  claim : "<prefix> <player> has claimed your ticket"
+  unclaim : "<prefix> <player> has yielded your ticket"
+  assign : "<prefix> <player> has assigned you to ticket <id>"
+  complete : "<prefix> <player> has completed your ticket"
+  reopen : "<prefix> <player> has reopened your ticket"
+  note : "<prefix> <player> has added a note to your ticket <note>"
+
+announce :
+  creation : "<prefix> <player> opened a new ticket <ticket><white> - <message>"

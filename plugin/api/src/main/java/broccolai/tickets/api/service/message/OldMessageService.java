@@ -12,64 +12,6 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 public interface OldMessageService {
 
     //
-    // Sender
-    //
-
-    @NonNull Component senderTicketCreation(@NonNull Ticket ticket);
-
-    @NonNull Component senderTicketReopen(@NonNull Ticket ticket);
-
-    @NonNull Component senderTicketUpdate(@NonNull Ticket ticket);
-
-    @NonNull Component senderTicketClose(@NonNull Ticket ticket);
-
-    @NonNull Component senderTicketClaim(@NonNull Ticket ticket);
-
-    @NonNull Component senderTicketUnclaim(@NonNull Ticket ticket);
-
-    @NonNull Component senderTicketAssign(@NonNull Ticket ticket, @NonNull Soul target);
-
-    @NonNull Component senderTicketComplete(@NonNull Ticket ticket);
-
-    @NonNull Component senderTicketNote(@NonNull Ticket ticket);
-
-    //
-    // Target
-    //
-
-    @NonNull Component targetTicketClaim(@NonNull Ticket ticket, @NonNull Soul soul);
-
-    @NonNull Component targetTicketReopen(@NonNull Ticket ticket, @NonNull Soul soul);
-
-    @NonNull Component targetTicketUnclaim(@NonNull Ticket ticket, @NonNull Soul soul);
-
-    @NonNull Component targetTicketComplete(@NonNull Ticket ticket, @NonNull Soul soul);
-
-    @NonNull Component targetTicketNote(@NonNull Ticket ticket, @NonNull String note, @NonNull Soul soul);
-
-    //
-    // Staff
-    //
-
-    @NonNull Component staffTicketCreate(@NonNull Ticket ticket);
-
-    @NonNull Component staffTicketUpdate(@NonNull Ticket ticket);
-
-    @NonNull Component staffTicketClose(@NonNull Ticket ticket);
-
-    @NonNull Component staffTicketReopen(@NonNull Ticket ticket, @NonNull Soul soul);
-
-    @NonNull Component staffTicketClaim(@NonNull Ticket ticket, @NonNull Soul soul);
-
-    @NonNull Component staffTicketUnclaim(@NonNull Ticket ticket, @NonNull Soul soul);
-
-    @NonNull Component staffTicketAssign(@NonNull Ticket ticket, @NonNull Soul soul);
-
-    @NonNull Component staffTicketComplete(@NonNull Ticket ticket, @NonNull Soul soul);
-
-    @NonNull Component staffTicketNote(@NonNull Ticket ticket, @NonNull String note, @NonNull Soul soul);
-
-    //
     // Commands
     //
 

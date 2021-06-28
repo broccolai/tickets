@@ -3,16 +3,16 @@ package broccolai.tickets.core.service.message.moonshine;
 import broccolai.tickets.core.configuration.NewLocaleConfiguration;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import net.kyori.adventure.audience.Audience;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.minimessage.MiniMessage;
-import net.kyori.adventure.text.minimessage.Template;
-import net.kyori.moonshine.message.IMessageRenderer;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import net.kyori.adventure.audience.Audience;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.kyori.adventure.text.minimessage.Template;
+import net.kyori.moonshine.message.IMessageRenderer;
 
 @Singleton
 public final class MessageRenderer implements IMessageRenderer<Audience, String, Component, Component> {

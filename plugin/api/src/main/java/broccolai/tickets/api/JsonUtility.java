@@ -5,9 +5,8 @@ import broccolai.tickets.api.model.ticket.Ticket;
 import broccolai.tickets.api.model.user.Soul;
 import broccolai.tickets.api.service.user.UserService;
 import com.google.gson.JsonObject;
-import org.checkerframework.checker.nullness.qual.NonNull;
-
 import java.util.Optional;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 public final class JsonUtility {
 

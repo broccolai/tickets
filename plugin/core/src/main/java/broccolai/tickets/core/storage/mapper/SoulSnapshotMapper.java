@@ -1,12 +1,12 @@
 package broccolai.tickets.core.storage.mapper;
 
 import broccolai.tickets.api.model.user.SoulSnapshot;
-import org.jdbi.v3.core.mapper.ColumnMapper;
-import org.jdbi.v3.core.mapper.RowMapper;
-import org.jdbi.v3.core.statement.StatementContext;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.UUID;
+import org.jdbi.v3.core.mapper.ColumnMapper;
+import org.jdbi.v3.core.mapper.RowMapper;
+import org.jdbi.v3.core.statement.StatementContext;
 
 public final class SoulSnapshotMapper implements RowMapper<SoulSnapshot> {
 

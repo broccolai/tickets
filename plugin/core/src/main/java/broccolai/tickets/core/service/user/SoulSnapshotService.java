@@ -3,9 +3,9 @@ package broccolai.tickets.core.service.user;
 import broccolai.tickets.api.model.user.SoulSnapshot;
 import broccolai.tickets.api.utilities.Either;
 import cloud.commandframework.services.types.Service;
+import java.util.UUID;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
-import java.util.UUID;
 
 public interface SoulSnapshotService extends Service<Either<UUID, String>, SoulSnapshot> {
 
