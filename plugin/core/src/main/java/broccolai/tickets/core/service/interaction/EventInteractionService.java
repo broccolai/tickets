@@ -20,6 +20,7 @@ import broccolai.tickets.api.model.user.PlayerSoul;
 import broccolai.tickets.api.model.user.Soul;
 import broccolai.tickets.api.service.event.EventService;
 import broccolai.tickets.api.service.interactions.InteractionService;
+import broccolai.tickets.api.service.message.MessageService;
 import broccolai.tickets.api.service.storage.StorageService;
 import broccolai.tickets.api.service.ticket.TicketService;
 import broccolai.tickets.core.configuration.MainConfiguration;
@@ -41,6 +42,7 @@ public final class EventInteractionService implements InteractionService {
     private final StorageService storageService;
     private final EventService eventService;
     private final TicketService ticketService;
+    private final MessageService messageService;
     private final int openTicketLimit;
 
     @Inject
@@ -48,11 +50,13 @@ public final class EventInteractionService implements InteractionService {
             final @NonNull MainConfiguration mainConfiguration,
             final @NonNull StorageService storageService,
             final @NonNull EventService eventService,
-            final @NonNull TicketService ticketService
+            final @NonNull TicketService ticketService,
+            final @NonNull MessageService messageService
     ) {
         this.storageService = storageService;
         this.eventService = eventService;
         this.ticketService = ticketService;
+        this.messageService = messageService;
         this.openTicketLimit = mainConfiguration.advancedConfiguration.openTicketLimit;
     }
 
@@ -77,6 +81,9 @@ public final class EventInteractionService implements InteractionService {
         Ticket ticket = this.ticketService.create(soul, interaction);
         TicketCreateEvent createEvent = new TicketCreateEvent(soul, ticket);
         this.eventService.post(createEvent);
+
+        this.messageService.feedbackCreate(soul, ticket);
+        this.messageService.announceCreation(soul, ticket);
 
         return ticket;
     }
