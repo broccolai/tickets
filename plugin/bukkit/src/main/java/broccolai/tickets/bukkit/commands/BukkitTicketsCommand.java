@@ -4,7 +4,7 @@ import broccolai.tickets.api.model.ticket.Ticket;
 import broccolai.tickets.api.model.ticket.TicketStatus;
 import broccolai.tickets.api.model.user.OnlineSoul;
 import broccolai.tickets.api.model.user.PlayerSoul;
-import broccolai.tickets.api.service.message.MessageService;
+import broccolai.tickets.api.service.message.OldMessageService;
 import broccolai.tickets.api.service.tasks.TaskService;
 import broccolai.tickets.bukkit.model.BukkitPlayerSoul;
 import broccolai.tickets.bukkit.context.BukkitTicketContextKeys;
@@ -31,19 +31,19 @@ public final class BukkitTicketsCommand implements BaseCommand {
 
     private final CommandsConfiguration.TicketsConfiguration config;
     private final CloudArgumentFactory argumentFactory;
-    private final MessageService messageService;
+    private final OldMessageService oldMessageService;
     private final TaskService taskService;
 
     @Inject
     public BukkitTicketsCommand(
             final @NonNull MainConfiguration config,
             final @NonNull CloudArgumentFactory argumentFactory,
-            final @NonNull MessageService messageService,
+            final @NonNull OldMessageService oldMessageService,
             final @NonNull TaskService taskService
     ) {
         this.config = config.commandsConfiguration.tickets;
         this.argumentFactory = argumentFactory;
-        this.messageService = messageService;
+        this.oldMessageService = oldMessageService;
         this.taskService = taskService;
     }
 
@@ -80,7 +80,7 @@ public final class BukkitTicketsCommand implements BaseCommand {
         this.taskService.sync(() -> {
             Player player = soul.sender();
             PaperLib.teleportAsync(player, potentialLocation.get());
-            Component component = this.messageService.commandsTeleport(ticket);
+            Component component = this.oldMessageService.commandsTeleport(ticket);
             soul.sendMessage(component);
         });
     }

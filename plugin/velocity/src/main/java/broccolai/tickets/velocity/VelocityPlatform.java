@@ -1,7 +1,7 @@
 package broccolai.tickets.velocity;
 
 import broccolai.tickets.api.model.user.OnlineSoul;
-import broccolai.tickets.api.service.message.MessageService;
+import broccolai.tickets.api.service.message.OldMessageService;
 import broccolai.tickets.api.service.user.UserService;
 import broccolai.tickets.velocity.inject.VelocityModule;
 import broccolai.tickets.velocity.model.VelocityOnlineSoul;
@@ -83,7 +83,7 @@ public final class VelocityPlatform implements PluginPlatform {
     private CommandManager<OnlineSoul> commandManager(
             final @NonNull Injector injector
     ) {
-        MessageService messageService = injector.getInstance(MessageService.class);
+        OldMessageService oldMessageService = injector.getInstance(OldMessageService.class);
         VelocityUserService velocityUserService = (VelocityUserService) injector.getInstance(UserService.class);
 
         VelocityCommandManager<@NonNull OnlineSoul> cloudManager = new VelocityCommandManager<>(

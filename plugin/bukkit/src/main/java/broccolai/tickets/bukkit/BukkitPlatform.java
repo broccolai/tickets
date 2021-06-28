@@ -3,7 +3,7 @@ package broccolai.tickets.bukkit;
 import broccolai.tickets.api.model.event.Subscriber;
 import broccolai.tickets.api.model.user.OnlineSoul;
 import broccolai.tickets.api.service.context.ContextService;
-import broccolai.tickets.api.service.message.MessageService;
+import broccolai.tickets.api.service.message.OldMessageService;
 import broccolai.tickets.api.service.user.UserService;
 import broccolai.tickets.bukkit.commands.BukkitTicketsCommand;
 import broccolai.tickets.bukkit.context.BukkitTicketContextKeys;
@@ -15,6 +15,9 @@ import broccolai.tickets.bukkit.service.BukkitUserService;
 import broccolai.tickets.bukkit.subscribers.TicketSubscriber;
 import broccolai.tickets.core.PureTickets;
 import broccolai.tickets.core.commands.command.BaseCommand;
+import broccolai.tickets.core.configuration.MainConfiguration;
+import broccolai.tickets.core.configuration.NewLocaleConfiguration;
+import broccolai.tickets.core.inject.ForTickets;
 import broccolai.tickets.core.inject.platform.PluginPlatform;
 import broccolai.tickets.core.utilities.ArrayHelper;
 import cloud.commandframework.CommandManager;
@@ -23,7 +26,11 @@ import cloud.commandframework.execution.AsynchronousCommandExecutionCoordinator;
 import cloud.commandframework.paper.PaperCommandManager;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.logging.Level;
+import com.google.inject.Key;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
@@ -64,7 +71,7 @@ public final class BukkitPlatform extends JavaPlugin implements PluginPlatform {
         try {
             CommandManager<OnlineSoul> commandManager = this.commandManager(
                     this.injector.getInstance(UserService.class),
-                    this.injector.getInstance(MessageService.class)
+                    this.injector.getInstance(OldMessageService.class)
             );
             this.pureTickets.commands(commandManager, COMMANDS);
             this.pureTickets.commands(commandManager, BUKKIT_COMMANDS);
@@ -78,6 +85,29 @@ public final class BukkitPlatform extends JavaPlugin implements PluginPlatform {
             Listener listener = this.injector.getInstance(listenerClass);
             this.getServer().getPluginManager().registerEvents(listener, this);
         }
+
+        Path folder = this.injector.getInstance(Key.get(Path.class, ForTickets.class));
+        Path localeFolder = folder.resolve("locales");
+        try {
+            if (Files.notExists(localeFolder)) {
+                Files.createDirectory(localeFolder);
+            }
+
+            Path file = localeFolder.resolve("locale_en.yml");
+            if (Files.notExists(file)) {
+                Files.createFile(file);
+            }
+
+            System.out.println(1);
+            System.out.println(1);
+            System.out.println(1);
+            System.out.println(1);
+            System.out.println(1);
+            new NewLocaleConfiguration(folder, this.injector.getInstance(MainConfiguration.class));
+        } catch (final IOException e) {
+            e.printStackTrace();
+        }
+
     }
 
     @Override
@@ -87,7 +117,7 @@ public final class BukkitPlatform extends JavaPlugin implements PluginPlatform {
 
     private CommandManager<OnlineSoul> commandManager(
             final @NonNull UserService userService,
-            final @NonNull MessageService messageService
+            final @NonNull OldMessageService oldMessageService
     ) throws Exception {
         BukkitUserService bukkitUserService = (BukkitUserService) userService;
 

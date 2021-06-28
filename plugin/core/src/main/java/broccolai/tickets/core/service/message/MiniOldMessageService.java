@@ -5,7 +5,7 @@ import broccolai.tickets.api.model.interaction.Interaction;
 import broccolai.tickets.api.model.interaction.MessageInteraction;
 import broccolai.tickets.api.model.ticket.Ticket;
 import broccolai.tickets.api.model.user.Soul;
-import broccolai.tickets.api.service.message.MessageService;
+import broccolai.tickets.api.service.message.OldMessageService;
 import broccolai.tickets.api.service.template.TemplateService;
 import broccolai.tickets.api.service.user.UserService;
 import broccolai.tickets.core.configuration.LocaleConfiguration;
@@ -30,7 +30,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.jetbrains.annotations.NotNull;
 
 @Singleton
-public final class MiniMessageService implements MessageService {
+public final class MiniOldMessageService implements OldMessageService {
 
     private final LocaleConfiguration locale;
     private final UserService userService;
@@ -39,7 +39,7 @@ public final class MiniMessageService implements MessageService {
     private final Template prefix;
 
     @Inject
-    public MiniMessageService(
+    public MiniOldMessageService(
             final @NonNull LocaleConfiguration locale,
             final @NonNull UserService userService,
             final @NonNull TemplateService templateService

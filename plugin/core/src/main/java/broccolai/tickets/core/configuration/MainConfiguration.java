@@ -11,6 +11,8 @@ import org.spongepowered.configurate.serialize.SerializationException;
 @SuppressWarnings("CanBeFinal")
 public final class MainConfiguration {
 
+    public String locale = "en";
+
     public StorageConfiguration storageConfiguration = new StorageConfiguration();
 
     public DiscordConfiguration discordConfiguration = new DiscordConfiguration();

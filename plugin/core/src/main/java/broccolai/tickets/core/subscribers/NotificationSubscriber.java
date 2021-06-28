@@ -11,7 +11,7 @@ import broccolai.tickets.api.model.user.OnlineSoul;
 import broccolai.tickets.api.model.user.Soul;
 import broccolai.tickets.api.service.event.EventService;
 import broccolai.tickets.api.service.intergrations.DiscordService;
-import broccolai.tickets.api.service.message.MessageService;
+import broccolai.tickets.api.service.message.OldMessageService;
 import broccolai.tickets.api.service.storage.StorageService;
 import broccolai.tickets.api.service.user.UserService;
 import com.google.inject.Inject;
@@ -22,19 +22,19 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 public final class NotificationSubscriber implements Subscriber {
 
     private final UserService userService;
-    private final MessageService messageService;
+    private final OldMessageService oldMessageService;
     private final DiscordService discordService;
     private final StorageService storageService;
 
     @Inject
     public NotificationSubscriber(
             final @NonNull UserService userService,
-            final @NonNull MessageService messageService,
+            final @NonNull OldMessageService oldMessageService,
             final @NonNull DiscordService discordService,
             final @NonNull StorageService storageService
     ) {
         this.userService = userService;
-        this.messageService = messageService;
+        this.oldMessageService = oldMessageService;
         this.discordService = discordService;
         this.storageService = storageService;
     }
@@ -48,11 +48,11 @@ public final class NotificationSubscriber implements Subscriber {
     }
 
     public void onSenderNotification(final @NonNull SenderNotificationEvent event) {
-        event.sender(this.messageService);
+        event.sender(this.oldMessageService);
     }
 
     public void onTargetNotification(final @NonNull TargetNotificationEvent event) {
-        TargetPair target = event.target(this.messageService);
+        TargetPair target = event.target(this.oldMessageService);
 
         if (target == null) {
             return;
@@ -69,7 +69,7 @@ public final class NotificationSubscriber implements Subscriber {
     }
 
     public void onStaffNotification(final @NonNull StaffNotificationEvent event) {
-        Component message = event.staff(this.messageService);
+        Component message = event.staff(this.oldMessageService);
 
         final UUID ignore;
 
