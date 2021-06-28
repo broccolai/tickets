@@ -3,10 +3,10 @@ package broccolai.tickets.api.service.context;
 import broccolai.corn.context.ContextKey;
 import broccolai.corn.context.ContextKeyRegistry;
 import broccolai.tickets.api.model.context.ContextMapper;
-import org.checkerframework.checker.nullness.qual.NonNull;
 import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.function.Function;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 public interface ContextService {
 

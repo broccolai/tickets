@@ -1,6 +1,6 @@
 package broccolai.tickets.core.service.message.moonshine;
 
-import broccolai.tickets.api.model.ticket.Ticket;
+import broccolai.tickets.api.model.user.Soul;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.Map;
@@ -13,22 +13,19 @@ import net.kyori.moonshine.util.Either;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-public final class TicketPlaceholderResolver implements IPlaceholderResolver<Audience, Ticket, Component> {
+public final class SoulPlaceholderResolver implements IPlaceholderResolver<Audience, Soul, Component> {
 
     @Override
     public @NonNull Map<String, Either<ConclusionValue<? extends Component>, ContinuanceValue<?>>> resolve(
             final String placeholderName,
-            final Ticket value,
+            final Soul soul,
             final Audience receiver,
             final Type owner,
             final Method method,
             final @Nullable Object[] parameters
     ) {
         return Map.of(
-                placeholderName + "_id",
-                Either.left(ConclusionValue.conclusionValue(Component.text(value.id()))),
-                placeholderName + "_creator",
-                Either.left(ConclusionValue.conclusionValue(Component.text(value.player().toString())))
+                placeholderName, Either.left(ConclusionValue.conclusionValue(Component.text(soul.username())))
         );
     }
 

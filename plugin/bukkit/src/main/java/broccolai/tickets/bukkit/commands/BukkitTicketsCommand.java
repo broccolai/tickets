@@ -6,8 +6,8 @@ import broccolai.tickets.api.model.user.OnlineSoul;
 import broccolai.tickets.api.model.user.PlayerSoul;
 import broccolai.tickets.api.service.message.OldMessageService;
 import broccolai.tickets.api.service.tasks.TaskService;
-import broccolai.tickets.bukkit.model.BukkitPlayerSoul;
 import broccolai.tickets.bukkit.context.BukkitTicketContextKeys;
+import broccolai.tickets.bukkit.model.BukkitPlayerSoul;
 import broccolai.tickets.core.commands.arguments.TicketParserMode;
 import broccolai.tickets.core.commands.command.BaseCommand;
 import broccolai.tickets.core.configuration.CommandsConfiguration;
@@ -20,12 +20,12 @@ import cloud.commandframework.CommandManager;
 import cloud.commandframework.context.CommandContext;
 import com.google.inject.Inject;
 import io.papermc.lib.PaperLib;
+import java.util.EnumSet;
+import java.util.Optional;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.checkerframework.checker.nullness.qual.NonNull;
-import java.util.EnumSet;
-import java.util.Optional;
 
 public final class BukkitTicketsCommand implements BaseCommand {
 
@@ -54,10 +54,10 @@ public final class BukkitTicketsCommand implements BaseCommand {
         final Command.Builder<OnlineSoul> builder = manager.commandBuilder("tickets", "tis");
 
         manager.command(builder.literal(
-                this.config.teleport.main,
-                ArgumentDescription.of("Teleport to a tickets creation location"),
-                this.config.teleport.aliases
-                )
+                                this.config.teleport.main,
+                                ArgumentDescription.of("Teleport to a tickets creation location"),
+                                this.config.teleport.aliases
+                        )
                         .senderType(PlayerSoul.class)
                         .permission(Constants.STAFF_PERMISSION + ".teleport")
                         .argument(this.argumentFactory.ticket("ticket", TicketParserMode.ANY, EnumSet.allOf(TicketStatus.class), 0))

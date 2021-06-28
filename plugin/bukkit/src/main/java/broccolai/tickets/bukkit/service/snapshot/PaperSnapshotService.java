@@ -6,11 +6,10 @@ import cloud.commandframework.services.ExecutionOrder;
 import cloud.commandframework.services.annotations.Order;
 import com.destroystokyo.paper.profile.PlayerProfile;
 import com.google.inject.Singleton;
+import java.util.UUID;
 import org.bukkit.Bukkit;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
-
-import java.util.UUID;
 
 @Singleton
 @Order(ExecutionOrder.SOON)

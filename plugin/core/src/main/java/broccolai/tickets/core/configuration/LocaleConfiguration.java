@@ -16,10 +16,6 @@ public final class LocaleConfiguration {
 
     public SenderLocaleConfiguration sender = new SenderLocaleConfiguration();
 
-    public NotifyLocaleConfiguration notify = new NotifyLocaleConfiguration();
-
-    public AnnouncementLocaleConfiguration announcement = new AnnouncementLocaleConfiguration();
-
     public TitleLocaleConfiguration title = new TitleLocaleConfiguration();
 
     public ShowLocaleConfiguration show = new ShowLocaleConfiguration();
@@ -31,65 +27,7 @@ public final class LocaleConfiguration {
     @ConfigSerializable
     public static final class SenderLocaleConfiguration {
 
-        public LocaleEntry create = new LocaleEntry("<prefix> Ticket <ticket> created");
-
-        public LocaleEntry update = new LocaleEntry("<prefix> Ticket <ticket> updated");
-
-        public LocaleEntry close = new LocaleEntry("<prefix> Ticket <ticket> closed");
-
-        public LocaleEntry claim = new LocaleEntry("<prefix> Ticket <ticket> claimed");
-
-        public LocaleEntry unclaim = new LocaleEntry("<prefix> Ticket <ticket> unclaimed");
-
-        public LocaleEntry assign = new LocaleEntry("<prefix> Ticket <ticket> assigned to <target>");
-
-        public LocaleEntry complete = new LocaleEntry("<prefix> Ticket <ticket> completed");
-
-        public LocaleEntry reopen = new LocaleEntry("<prefix> Ticket <ticket> completed");
-
-        public LocaleEntry note = new LocaleEntry("<prefix> Note added to ticket <ticket>");
-
         public LocaleEntry teleport = new LocaleEntry("<prefix> Teleported to ticket <ticket> creation location");
-
-    }
-
-    @ConfigSerializable
-    public static final class NotifyLocaleConfiguration {
-
-        public LocaleEntry claim = new LocaleEntry("<prefix> <player> has claimed your ticket");
-
-        public LocaleEntry unclaim = new LocaleEntry("<prefix> <player> has yielded your ticket");
-
-        public LocaleEntry assign = new LocaleEntry("<prefix> <player> has assigned you to ticket <id>");
-
-        public LocaleEntry complete = new LocaleEntry("<prefix> <player> has completed your ticket");
-
-        public LocaleEntry reopen = new LocaleEntry("<prefix> <player> has reopened your ticket");
-
-        public LocaleEntry note = new LocaleEntry("<prefix> <player> has added a note to your ticket <note>");
-
-    }
-
-    @ConfigSerializable
-    public static final class AnnouncementLocaleConfiguration {
-
-        public LocaleEntry create = new LocaleEntry("<prefix> <player> opened a new ticket <ticket><white> - <message>");
-
-        public LocaleEntry update = new LocaleEntry("<prefix> <player> updated ticket <ticket><white> - <message>");
-
-        public LocaleEntry close = new LocaleEntry("<prefix> <player> closed their ticket <ticket>");
-
-        public LocaleEntry claim = new LocaleEntry("<prefix> <player> claimed ticket <ticket>");
-
-        public LocaleEntry unclaim = new LocaleEntry("<prefix> <player> unclaimed ticket <ticket>");
-
-        public LocaleEntry assign = new LocaleEntry("<prefix> <player> assigned ticket <ticket><white> to <target>");
-
-        public LocaleEntry complete = new LocaleEntry("<prefix> <player> completed ticket <ticket>");
-
-        public LocaleEntry reopen = new LocaleEntry("<prefix> <player> reopened ticket <ticket>");
-
-        public LocaleEntry note = new LocaleEntry("<prefix> <player> added a note to ticket <ticket><white> - <note>");
 
     }
 

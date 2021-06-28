@@ -6,12 +6,12 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
+import java.io.IOException;
+import java.util.UUID;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.checkerframework.checker.nullness.qual.Nullable;
-import java.io.IOException;
-import java.util.UUID;
 
 public final class LocationContextSerializer implements ContextMapper<Location> {
 

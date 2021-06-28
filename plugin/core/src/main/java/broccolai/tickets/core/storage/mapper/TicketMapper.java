@@ -1,8 +1,8 @@
 package broccolai.tickets.core.storage.mapper;
 
 import broccolai.tickets.api.model.ticket.Ticket;
-import broccolai.tickets.core.model.ticket.TicketImpl;
 import broccolai.tickets.api.model.ticket.TicketStatus;
+import broccolai.tickets.core.model.ticket.TicketImpl;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.UUID;

@@ -9,8 +9,7 @@ import broccolai.tickets.api.service.user.UserService;
 import com.google.gson.JsonObject;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-public abstract class TicketCommandEvent implements SenderNotificationEvent, StaffNotificationEvent, DiscordNotificationEvent,
-        TicketEvent, SoulEvent {
+public abstract class TicketCommandEvent implements TicketEvent, SoulEvent {
 
     private final NotificationReason notificationReason;
     protected final PlayerSoul soul;

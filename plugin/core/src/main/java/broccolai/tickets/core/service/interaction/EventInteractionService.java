@@ -101,6 +101,9 @@ public final class EventInteractionService implements InteractionService {
         this.storageService.queue(ticket, interaction);
         TicketUpdateEvent event = new TicketUpdateEvent(soul, ticket);
         this.eventService.post(event);
+
+        this.messageService.feedbackUpdate(soul, ticket);
+        this.messageService.announceUpdate(soul, ticket);
     }
 
     @Override
@@ -113,6 +116,9 @@ public final class EventInteractionService implements InteractionService {
         this.storageService.queue(ticket, interaction);
         TicketCloseEvent event = new TicketCloseEvent(soul, ticket);
         this.eventService.post(event);
+
+        this.messageService.feedbackClose(soul, ticket);
+        this.messageService.announceClose(soul, ticket);
     }
 
     @Override
@@ -126,6 +132,10 @@ public final class EventInteractionService implements InteractionService {
         this.storageService.queue(ticket, interaction);
         TicketClaimEvent event = new TicketClaimEvent(soul, ticket);
         this.eventService.post(event);
+
+        this.messageService.feedbackClaim(soul, ticket);
+        this.messageService.notifyClaim(ticket, soul);
+        this.messageService.announceClaim(soul, ticket);
     }
 
     @Override
@@ -139,6 +149,10 @@ public final class EventInteractionService implements InteractionService {
         this.storageService.queue(ticket, interaction);
         TicketCompleteEvent event = new TicketCompleteEvent(soul, ticket);
         this.eventService.post(event);
+
+        this.messageService.feedbackComplete(soul, ticket);
+        this.messageService.notifyComplete(ticket, soul);
+        this.messageService.announceComplete(soul, ticket);
     }
 
     @Override
@@ -152,6 +166,11 @@ public final class EventInteractionService implements InteractionService {
         this.storageService.queue(ticket, interaction);
         TicketAssignEvent event = new TicketAssignEvent(soul, target, ticket);
         this.eventService.post(event);
+
+        this.messageService.feedbackAssign(soul, target, ticket);
+        this.messageService.notifyClaim(ticket, target);
+        this.messageService.notifyAssign(target, ticket);
+        this.messageService.announceAssign(soul, target, ticket);
     }
 
     @Override
@@ -165,6 +184,10 @@ public final class EventInteractionService implements InteractionService {
         this.storageService.queue(ticket, interaction);
         TicketUnclaimEvent event = new TicketUnclaimEvent(soul, ticket);
         this.eventService.post(event);
+
+        this.messageService.feedbackUnclaim(soul, ticket);
+        this.messageService.notifyUnclaim(ticket, soul);
+        this.messageService.announceUnclaim(soul, ticket);
     }
 
     @Override
@@ -177,6 +200,10 @@ public final class EventInteractionService implements InteractionService {
         this.storageService.queue(ticket, interaction);
         TicketReopenEvent event = new TicketReopenEvent(soul, ticket);
         this.eventService.post(event);
+
+        this.messageService.feedbackReopen(soul, ticket);
+        this.messageService.notifyReopen(ticket, soul);
+        this.messageService.announceReopen(soul, ticket);
     }
 
     @Override
@@ -186,6 +213,10 @@ public final class EventInteractionService implements InteractionService {
         this.storageService.queue(ticket, interaction);
         TicketNoteEvent event = new TicketNoteEvent(soul, ticket, message.message());
         this.eventService.post(event);
+
+        this.messageService.feedbackNote(soul, ticket);
+        this.messageService.notifyNote(ticket, message.message(), soul);
+        this.messageService.announceNote(soul, ticket, message.message());
     }
 
     private void requireOpen(final @NonNull Ticket ticket) {

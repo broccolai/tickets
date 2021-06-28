@@ -4,13 +4,13 @@ import broccolai.tickets.core.PureTickets;
 import broccolai.tickets.core.inject.ForTickets;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import java.nio.file.Path;
+import java.util.HashMap;
+import java.util.Map;
 import org.spongepowered.configurate.CommentedConfigurationNode;
 import org.spongepowered.configurate.ConfigurateException;
 import org.spongepowered.configurate.ConfigurationNode;
 import org.spongepowered.configurate.yaml.YamlConfigurationLoader;
-import java.nio.file.Path;
-import java.util.HashMap;
-import java.util.Map;
 
 @Singleton
 public final class NewLocaleConfiguration {
@@ -18,7 +18,10 @@ public final class NewLocaleConfiguration {
     private final Map<String, String> entries;
 
     @Inject
-    public NewLocaleConfiguration(final @ForTickets Path folder, final MainConfiguration configuration) throws ConfigurateException {
+    public NewLocaleConfiguration(
+            final @ForTickets Path folder,
+            final MainConfiguration configuration
+    ) throws ConfigurateException {
         Path localeFolder = folder.resolve("locales");
         Path file = localeFolder.resolve(this.makeLocaleFileName(configuration.locale));
 

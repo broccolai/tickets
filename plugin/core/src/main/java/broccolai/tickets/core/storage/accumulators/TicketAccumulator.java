@@ -3,9 +3,9 @@ package broccolai.tickets.core.storage.accumulators;
 import broccolai.tickets.api.model.interaction.Interaction;
 import broccolai.tickets.api.model.ticket.Ticket;
 import broccolai.tickets.core.model.context.ContextKeyValuePair;
-import org.jdbi.v3.core.result.RowView;
 import java.util.Map;
 import java.util.function.BiFunction;
+import org.jdbi.v3.core.result.RowView;
 
 public final class TicketAccumulator implements BiFunction<Map<Integer, Ticket>, RowView, Map<Integer, Ticket>> {
 

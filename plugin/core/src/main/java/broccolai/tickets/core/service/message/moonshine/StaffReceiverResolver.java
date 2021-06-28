@@ -7,13 +7,13 @@ import broccolai.tickets.api.service.message.moonshine.StaffReceiver;
 import broccolai.tickets.api.service.user.UserService;
 import broccolai.tickets.core.utilities.ReflectionHelper;
 import com.google.inject.Inject;
+import java.lang.reflect.Method;
+import java.lang.reflect.Type;
+import java.util.Collection;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.moonshine.receiver.IReceiverLocator;
 import net.kyori.moonshine.receiver.IReceiverLocatorResolver;
 import org.checkerframework.checker.nullness.qual.Nullable;
-import java.lang.reflect.Method;
-import java.lang.reflect.Type;
-import java.util.Collection;
 
 public final class StaffReceiverResolver implements IReceiverLocatorResolver<Audience> {
 

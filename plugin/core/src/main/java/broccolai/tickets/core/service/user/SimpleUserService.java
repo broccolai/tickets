@@ -10,10 +10,9 @@ import broccolai.tickets.core.service.user.snapshot.CacheSnapshotService;
 import broccolai.tickets.core.service.user.snapshot.DatabaseSnapshotService;
 import cloud.commandframework.services.ServicePipeline;
 import io.leangen.geantyref.TypeToken;
-import org.checkerframework.checker.nullness.qual.NonNull;
-
 import java.util.Collections;
 import java.util.UUID;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 public abstract class SimpleUserService implements UserService {
 
@@ -61,8 +60,8 @@ public abstract class SimpleUserService implements UserService {
         Either<UUID, String> context = Either.left(uuid);
 
         SoulSnapshot snapshot = this.soulSnapshotPipeline.pump(context)
-            .through(SoulSnapshotService.class)
-            .getResult();
+                .through(SoulSnapshotService.class)
+                .getResult();
         this.cacheSnapshotService.cache(snapshot);
 
         return snapshot;

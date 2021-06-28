@@ -7,9 +7,9 @@ import cloud.commandframework.services.ExecutionOrder;
 import cloud.commandframework.services.annotations.Order;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import java.util.UUID;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
-import java.util.UUID;
 
 @Singleton
 @Order(ExecutionOrder.LATER)

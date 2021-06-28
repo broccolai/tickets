@@ -1,25 +1,43 @@
 package broccolai.tickets.core.service.message.moonshine;
 
+import broccolai.tickets.api.model.ticket.Ticket;
+import broccolai.tickets.api.model.user.OnlineSoul;
+import broccolai.tickets.api.model.user.Soul;
 import broccolai.tickets.api.service.message.moonshine.Receiver;
+import broccolai.tickets.api.service.user.UserService;
+import broccolai.tickets.core.utilities.ReflectionHelper;
+import com.google.inject.Inject;
+import java.lang.reflect.Method;
+import java.lang.reflect.Type;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.moonshine.exception.ReceiverMissingException;
 import net.kyori.moonshine.receiver.IReceiverLocator;
 import net.kyori.moonshine.receiver.IReceiverLocatorResolver;
 import org.checkerframework.checker.nullness.qual.Nullable;
-import java.lang.reflect.Method;
-import java.lang.reflect.Parameter;
-import java.lang.reflect.Type;
 
 public final class BasicReceiverResolver implements IReceiverLocatorResolver<Audience> {
+
+    private final UserService userService;
+
+    @Inject
+    public BasicReceiverResolver(final UserService userService) {
+        this.userService = userService;
+    }
 
     @Override
     public IReceiverLocator<Audience> resolve(
             final Method method, final Type proxy
     ) {
-        return new BasicResolver();
+        return new BasicResolver(this.userService);
     }
 
     public static final class BasicResolver implements IReceiverLocator<Audience> {
+
+        private final UserService userService;
+
+        public BasicResolver(final UserService userService) {
+            this.userService = userService;
+        }
 
         @Override
         public Audience locate(
@@ -27,16 +45,29 @@ public final class BasicReceiverResolver implements IReceiverLocatorResolver<Aud
                 final Object proxy,
                 final @Nullable Object[] parameters
         ) throws ReceiverMissingException {
-            Parameter[] reflectedParameters = method.getParameters();
+            Object presentValue = ReflectionHelper.parameterAnnotatedBy(Receiver.class, method, parameters);
 
-            for (int i = 0; i < reflectedParameters.length; i++) {
-                Parameter reflectedParameter = reflectedParameters[i];
-                if (reflectedParameter.isAnnotationPresent(Receiver.class)) {
-                    return (Audience) parameters[i];
-                }
+            if (presentValue == null) {
+                throw new ReceiverMissingException("Receiver parameter not found") {
+                };
             }
 
-            throw new ReceiverMissingException("receiver not found") {};
+            if (presentValue instanceof Audience audience) {
+                return audience;
+            }
+
+            if (presentValue instanceof Ticket ticket) {
+                Soul soul = this.userService.wrap(ticket.player());
+
+                if (soul instanceof OnlineSoul playerSoul) {
+                    return playerSoul;
+                }
+
+                return Audience.empty();
+            }
+
+            throw new ReceiverMissingException("No annotated receiver") {
+            };
         }
 
     }
