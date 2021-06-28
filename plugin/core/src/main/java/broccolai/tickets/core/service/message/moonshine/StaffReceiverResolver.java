@@ -1,7 +1,11 @@
 package broccolai.tickets.core.service.message.moonshine;
 
 import broccolai.tickets.api.model.user.PlayerSoul;
+import broccolai.tickets.api.model.user.Soul;
+import broccolai.tickets.api.service.message.moonshine.Causer;
+import broccolai.tickets.api.service.message.moonshine.StaffReceiver;
 import broccolai.tickets.api.service.user.UserService;
+import broccolai.tickets.core.utilities.ReflectionHelper;
 import com.google.inject.Inject;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.moonshine.receiver.IReceiverLocator;
@@ -42,13 +46,15 @@ public final class StaffReceiverResolver implements IReceiverLocatorResolver<Aud
 
         @Override
         public Audience locate(final Method method, final Object proxy, final @Nullable Object[] parameters) {
-            //todo: Create UserService#players method with predicate to prevent unnecessary wrapping
-
-
+            final Soul causer = ReflectionHelper.getParameterAnnotatedBy(
+                    Causer.class,
+                    method,
+                    parameters
+            );
 
             Collection<PlayerSoul> souls = this.userService.players();
             souls.removeIf(soul -> {
-                return !soul.permission("tickets.staff.announce");
+                return soul.equals(causer) || !soul.permission("tickets.staff.announce");
             });
             return Audience.audience(souls);
         }
