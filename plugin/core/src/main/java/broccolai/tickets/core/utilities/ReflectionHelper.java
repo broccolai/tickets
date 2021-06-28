@@ -1,6 +1,10 @@
 package broccolai.tickets.core.utilities;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
+import java.lang.reflect.Parameter;
 
 public final class ReflectionHelper {
 
@@ -15,6 +19,24 @@ public final class ReflectionHelper {
         } catch (final ClassNotFoundException e) {
             return false;
         }
+    }
+
+    public static <T> @Nullable T getParameterAnnotatedBy(
+            final Class<? extends Annotation> annotationClass,
+            final Method method,
+            final @Nullable Object @NonNull [] objectParameters
+    ) {
+        Parameter[] reflectedParameters = method.getParameters();
+
+        for (int i = 0; i < reflectedParameters.length; i++) {
+            Parameter reflectedParameter = reflectedParameters[i];
+            if (reflectedParameter != null && reflectedParameter.isAnnotationPresent(annotationClass)) {
+                //noinspection unchecked
+                return (T) objectParameters[i];
+            }
+        }
+
+        return null;
     }
 
 }

@@ -1,4 +1,4 @@
-package broccolai.tickets.core.service.message.moonshine;
+package broccolai.tickets.api.service.message.moonshine;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -6,7 +6,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.METHOD)
-public @interface StaffReceiver {
+@Target(ElementType.PARAMETER)
+public @interface Causer {
 
 }
