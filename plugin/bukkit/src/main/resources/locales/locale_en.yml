@@ -1,4 +1,7 @@
-prefix: "hello"
+prefix: "<color:#f5a5a5><bold>T <dark_gray>»<reset>"
 
 feedback:
   create: "<prefix> Ticket <ticket_id> created"
+
+announce:
+  creation: "<prefix> <player> opened a new ticket <ticket><white> - <message>"
