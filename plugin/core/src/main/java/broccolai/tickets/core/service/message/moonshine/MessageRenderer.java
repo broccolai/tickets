@@ -1,5 +1,7 @@
 package broccolai.tickets.core.service.message.moonshine;
 
+import broccolai.tickets.core.configuration.NewLocaleConfiguration;
+import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
@@ -16,6 +18,12 @@ import java.util.Map;
 public final class MessageRenderer implements IMessageRenderer<Audience, String, Component, Component> {
 
     private final MiniMessage miniMessage = MiniMessage.get();
+    private final Template prefix;
+
+    @Inject
+    public MessageRenderer(final NewLocaleConfiguration localeConfiguration) {
+        this.prefix = Template.of("prefix", localeConfiguration.get("prefix"));
+    }
 
     @Override
     public Component render(
@@ -29,6 +37,7 @@ public final class MessageRenderer implements IMessageRenderer<Audience, String,
         resolvedPlaceholders.forEach((key, component) -> {
             templates.add(Template.of(key, component));
         });
+        templates.add(prefix);
 
         return this.miniMessage.parse(intermediateMessage, templates);
     }
