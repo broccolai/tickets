@@ -46,7 +46,7 @@ public final class StaffReceiverResolver implements IReceiverLocatorResolver<Aud
 
         @Override
         public Audience locate(final Method method, final Object proxy, final @Nullable Object[] parameters) {
-            final Soul causer = ReflectionHelper.getParameterAnnotatedBy(
+            final Soul causer = ReflectionHelper.parameterAnnotatedBy(
                     Causer.class,
                     method,
                     parameters

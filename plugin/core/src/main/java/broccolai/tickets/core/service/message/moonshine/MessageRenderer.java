@@ -37,7 +37,7 @@ public final class MessageRenderer implements IMessageRenderer<Audience, String,
         resolvedPlaceholders.forEach((key, component) -> {
             templates.add(Template.of(key, component));
         });
-        templates.add(prefix);
+        templates.add(this.prefix);
 
         return this.miniMessage.parse(intermediateMessage, templates);
     }
