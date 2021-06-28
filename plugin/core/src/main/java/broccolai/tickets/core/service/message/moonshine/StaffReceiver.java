@@ -1,4 +1,4 @@
-package broccolai.tickets.core.service.message;
+package broccolai.tickets.core.service.message.moonshine;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
