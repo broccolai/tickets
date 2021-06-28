@@ -54,6 +54,7 @@ public final class NewLocaleConfiguration {
         return results;
     }
 
+    //todo: NEEDS TO COPY ALL LOCALES REGARDLESS
     private CommentedConfigurationNode loadDefault(final String locale) throws ConfigurateException {
         YamlConfigurationLoader loader = YamlConfigurationLoader.builder()
                 .url(PureTickets.class.getResource("/locales/" + this.makeLocaleFileName(locale)))

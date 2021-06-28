@@ -133,7 +133,7 @@ public final class TicketCommand extends CommonCommands {
     private void processCreate(final @NonNull CommandContext<OnlineSoul> c) {
         PlayerSoul soul = (PlayerSoul) c.getSender();
 
-        Ticket ticket = this.interactionService.create(soul, c.get("message"));
+        this.interactionService.create(soul, c.get("message"));
     }
 
     private void processUpdate(final @NonNull CommandContext<OnlineSoul> c) {

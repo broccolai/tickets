@@ -21,7 +21,7 @@ public final class ReflectionHelper {
         }
     }
 
-    public static <T> @Nullable T getParameterAnnotatedBy(
+    public static <T> @Nullable T parameterAnnotatedBy(
             final Class<? extends Annotation> annotationClass,
             final Method method,
             final @Nullable Object @NonNull [] objectParameters

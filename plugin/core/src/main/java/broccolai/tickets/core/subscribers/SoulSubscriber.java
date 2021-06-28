@@ -47,8 +47,6 @@ public final class SoulSubscriber implements Subscriber {
     public void onSoulJoin(final @NonNull SoulJoinEvent event) {
         PlayerSoul soul = event.soul();
 
-        this.messageService.testMessage(soul);
-
         Collection<Component> notifications = this.storageService.notifications(soul);
 
         for (final Component notification : notifications) {
