@@ -1,4 +1,4 @@
-package broccolai.tickets.core.service.message;
+package broccolai.tickets.core.service.message.moonshine;
 
 import broccolai.tickets.api.service.message.moonshine.Receiver;
 import net.kyori.adventure.audience.Audience;

@@ -1,4 +1,4 @@
-package broccolai.tickets.core.service.message;
+package broccolai.tickets.core.service.message.moonshine;
 
 import broccolai.tickets.api.model.user.PlayerSoul;
 import broccolai.tickets.api.service.user.UserService;
@@ -43,6 +43,9 @@ public final class StaffReceiverResolver implements IReceiverLocatorResolver<Aud
         @Override
         public Audience locate(final Method method, final Object proxy, final @Nullable Object[] parameters) {
             //todo: Create UserService#players method with predicate to prevent unnecessary wrapping
+
+
+
             Collection<PlayerSoul> souls = this.userService.players();
             souls.removeIf(soul -> {
                 return !soul.permission("tickets.staff.announce");
