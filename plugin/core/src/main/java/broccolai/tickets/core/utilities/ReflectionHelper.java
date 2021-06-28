@@ -2,9 +2,9 @@ package broccolai.tickets.core.utilities;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-public final class ClassHelper {
+public final class ReflectionHelper {
 
-    private ClassHelper() {
+    private ReflectionHelper() {
         // utility class
     }
 
