@@ -59,6 +59,10 @@ subprojects {
             }
         }
 
+        compileJava {
+            options.compilerArgs.add("-parameters")
+        }
+
         processResources {
             expand("version" to rootProject.version)
         }
