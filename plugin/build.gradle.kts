@@ -35,10 +35,8 @@ subprojects {
 
         maven("https://mvn.intellectualsites.com/content/repositories/snapshots")
         maven("https://nexus.velocitypowered.com/repository/maven-public/")
-        maven("https://repo.broccol.ai")
+        maven("https://repo.broccol.ai/releases")
         maven("https://repo.broccol.ai/snapshots")
-        maven("https://nexus.mardroemmar.dev/repository/maven-snapshots")
-        mavenLocal()
     }
 
     dependencies {
