@@ -25,7 +25,7 @@ public final class StaffReceiverResolver implements IReceiverLocatorResolver<Aud
     }
 
     @Override
-    public @Nullable IReceiverLocator<Audience> resolve(
+    public IReceiverLocator<Audience> resolve(
             final Method method, final Type proxy
     ) {
         final StaffReceiver annotation = method.getAnnotation(StaffReceiver.class);
@@ -46,7 +46,7 @@ public final class StaffReceiverResolver implements IReceiverLocatorResolver<Aud
 
         @Override
         public Audience locate(final Method method, final Object proxy, final @Nullable Object[] parameters) {
-            final Soul causer = ReflectionHelper.parameterAnnotatedBy(
+            final @Nullable Collection<Soul> causers = ReflectionHelper.parametersAnnotatedBy(
                     Causer.class,
                     method,
                     parameters
@@ -54,7 +54,7 @@ public final class StaffReceiverResolver implements IReceiverLocatorResolver<Aud
 
             Collection<PlayerSoul> souls = this.userService.players();
             souls.removeIf(soul -> {
-                return soul.equals(causer) || !soul.permission("tickets.staff.announce");
+                return causers.contains(soul) || !soul.permission("tickets.staff.announce");
             });
             return Audience.audience(souls);
         }
