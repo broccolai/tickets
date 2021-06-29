@@ -46,6 +46,7 @@ public final class DatabaseStorageService implements StorageService {
 
     private final Multimap<Ticket, Interaction> queue = MultimapBuilder.hashKeys().hashSetValues().build();
 
+    private final ContextService contextService;
     private final HikariDataSource dataSource;
     private final Jdbi jdbi;
 
@@ -56,6 +57,7 @@ public final class DatabaseStorageService implements StorageService {
             final @NonNull MainConfiguration mainConfiguration,
             final @NonNull ContextService contextService
     ) throws IOException {
+        this.contextService = contextService;
         this.dataSource = new HikariDataSource(mainConfiguration.storageConfiguration.asHikari(folder));
 
         Flyway.configure(classLoader)
@@ -72,7 +74,7 @@ public final class DatabaseStorageService implements StorageService {
                 .registerColumnMapper(Component.class, new ComponentMapper())
                 .registerRowMapper(Interaction.class, new InteractionMapper())
                 .registerRowMapper(SoulSnapshot.class, new SoulSnapshotMapper())
-                .registerRowMapper(ContextKeyValuePair.class, new ContextDatabaseMapper(contextService))
+                .registerRowMapper(ContextKeyValuePair.class, new ContextDatabaseMapper(this.contextService))
                 .registerRowMapper(Ticket.class, new TicketMapper());
     }
 
@@ -149,16 +151,28 @@ public final class DatabaseStorageService implements StorageService {
     @Override
     public void updateTickets(final @NonNull Collection<Ticket> tickets) {
         this.jdbi.useHandle(handle -> {
-            PreparedBatch batch = handle.prepareBatch(SQLQueries.UPDATE_TICKET.get()[0]);
-
+            PreparedBatch ticketBatch = handle.prepareBatch(SQLQueries.UPDATE_TICKET.get()[0]);
+            PreparedBatch contextBatch = handle.prepareBatch(SQLQueries.INSERT_CONTEXT.get()[0]);
             for (final Ticket ticket : tickets) {
-                batch.bind("id", ticket.id())
+                ticketBatch.bind("id", ticket.id())
                         .bind("status", ticket.status())
                         .bind("claimer", ticket.claimer())
                         .add();
+
+                ticket.context().forEach((contextKey, o) -> System.out.println(contextKey.name()));
+
+                ticket.context().forEach((key, value) -> this.contextService.useMapper(key).ifPresent(mapper -> {
+                    contextBatch.bind("ticket", ticket.id())
+                            .bind("namespace", key.namespace())
+                            .bind("name", key.name())
+                            .bind("value", mapper.serializeObject(value))
+                            .add();
+                }));
+
             }
 
-            batch.execute();
+            ticketBatch.execute();
+            contextBatch.execute();
         });
     }
 
