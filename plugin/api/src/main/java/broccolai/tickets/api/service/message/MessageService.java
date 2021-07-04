@@ -92,5 +92,4 @@ public interface MessageService {
     @Message("announce.note")
     void announceNote(@Causer @Placeholder Soul causer, @Placeholder Ticket ticket, @Placeholder String note);
 
-
 }
