@@ -2,7 +2,6 @@ package broccolai.tickets.api.service.message;
 
 import broccolai.tickets.api.model.interaction.Interaction;
 import broccolai.tickets.api.model.ticket.Ticket;
-import broccolai.tickets.api.model.user.Soul;
 import java.util.Collection;
 import java.util.Map;
 import java.util.UUID;
