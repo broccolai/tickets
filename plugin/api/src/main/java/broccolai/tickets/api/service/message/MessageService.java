@@ -6,6 +6,7 @@ import broccolai.tickets.api.service.message.moonshine.Causer;
 import broccolai.tickets.api.service.message.moonshine.Receiver;
 import broccolai.tickets.api.service.message.moonshine.StaffReceiver;
 import net.kyori.adventure.audience.Audience;
+import net.kyori.adventure.text.Component;
 import net.kyori.moonshine.annotation.Message;
 import net.kyori.moonshine.annotation.Placeholder;
 
@@ -37,6 +38,9 @@ public interface MessageService {
 
     @Message("feedback.note")
     void feedbackNote(@Receiver Audience receiver, @Placeholder Ticket ticket);
+
+    @Message("feedback.teleport")
+    void feedbackTeleport(@Receiver Audience receiver, @Placeholder Ticket ticket);
 
     @Message("notify.claim")
     void notifyClaim(@Receiver @Placeholder Ticket ticket, @Placeholder Soul soul);
@@ -91,5 +95,33 @@ public interface MessageService {
     @StaffReceiver
     @Message("announce.note")
     void announceNote(@Causer @Placeholder Soul causer, @Placeholder Ticket ticket, @Placeholder String note);
+
+    @Message("task.reminder")
+    void taskReminder(@Receiver Audience receiver, @Placeholder int count);
+
+    @StaffReceiver
+    @Message("task.reminder")
+    void taskReminder(@Placeholder int count);
+
+    @Message("exception.noPermission")
+    Component exceptionNoPermission();
+
+    @Message("exception.invalidSender")
+    Component exceptionInvalidSender(@Placeholder String sender);
+
+    @Message("exception.ticketOpen")
+    Component exceptionTicketOpen();
+
+    @Message("exception.ticketClaimed")
+    Component exceptionTicketClaimed();
+
+    @Message("exception.ticketClosed")
+    Component exceptionTicketClosed();
+
+    @Message("exception.ticketNotFound")
+    Component exceptionTicketNotFound();
+
+    @Message("exception.tooManyTicketsOpen")
+    Component exceptionTooManyTicketsOpen();
 
 }

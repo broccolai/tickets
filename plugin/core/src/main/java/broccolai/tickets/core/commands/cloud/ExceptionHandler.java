@@ -1,7 +1,7 @@
 package broccolai.tickets.core.commands.cloud;
 
 import broccolai.tickets.api.model.user.OnlineSoul;
-import broccolai.tickets.api.service.message.OldMessageService;
+import broccolai.tickets.api.service.message.MessageService;
 import broccolai.tickets.core.exceptions.PureException;
 import cloud.commandframework.CommandManager;
 import cloud.commandframework.exceptions.InvalidCommandSenderException;
@@ -14,13 +14,13 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 @Singleton
 public final class ExceptionHandler {
 
-    private final OldMessageService oldMessageService;
+    private final MessageService messageService;
 
     private final MinecraftExceptionHandler<OnlineSoul> adventureHandler;
 
     @Inject
-    public ExceptionHandler(final @NonNull OldMessageService oldMessageService) {
-        this.oldMessageService = oldMessageService;
+    public ExceptionHandler(final @NonNull MessageService messageService) {
+        this.messageService = messageService;
         this.adventureHandler = this.generateAdventureHandler();
     }
 
@@ -29,11 +29,11 @@ public final class ExceptionHandler {
                 .withDefaultHandlers()
                 .withHandler(MinecraftExceptionHandler.ExceptionType.INVALID_SENDER, ex -> {
                     InvalidCommandSenderException icse = (InvalidCommandSenderException) ex;
-                    return this.oldMessageService.exceptionWrongSender(icse.getRequiredSender());
+                    return this.messageService.exceptionInvalidSender(icse.getRequiredSender().getSimpleName());
                 })
                 .withHandler(
                         MinecraftExceptionHandler.ExceptionType.NO_PERMISSION,
-                        ex -> this.oldMessageService.exceptionNoPermission()
+                        ex -> this.messageService.exceptionNoPermission()
                 )
                 .withHandler(MinecraftExceptionHandler.ExceptionType.ARGUMENT_PARSING, ex -> {
                     Throwable cause = ex.getCause();
@@ -42,7 +42,7 @@ public final class ExceptionHandler {
                         return MinecraftExceptionHandler.DEFAULT_ARGUMENT_PARSING_FUNCTION.apply(ex);
                     }
 
-                    return pureException.message(this.oldMessageService);
+                    return pureException.message(this.messageService);
                 })
                 .withHandler(MinecraftExceptionHandler.ExceptionType.COMMAND_EXECUTION, ex -> {
                     Throwable cause = ex.getCause();
@@ -51,7 +51,7 @@ public final class ExceptionHandler {
                         return MinecraftExceptionHandler.DEFAULT_COMMAND_EXECUTION_FUNCTION.apply(ex);
                     }
 
-                    return pureException.message(this.oldMessageService);
+                    return pureException.message(this.messageService);
                 });
     }
 

@@ -10,6 +10,7 @@ import java.util.Map;
 import org.spongepowered.configurate.CommentedConfigurationNode;
 import org.spongepowered.configurate.ConfigurateException;
 import org.spongepowered.configurate.ConfigurationNode;
+import org.spongepowered.configurate.yaml.NodeStyle;
 import org.spongepowered.configurate.yaml.YamlConfigurationLoader;
 
 @Singleton
@@ -26,6 +27,7 @@ public final class NewLocaleConfiguration {
         Path file = localeFolder.resolve(this.makeLocaleFileName(configuration.locale));
 
         YamlConfigurationLoader loader = YamlConfigurationLoader.builder()
+                .nodeStyle(NodeStyle.BLOCK)
                 .path(file)
                 .build();
 
@@ -60,6 +62,7 @@ public final class NewLocaleConfiguration {
     //todo: NEEDS TO COPY ALL LOCALES REGARDLESS
     private CommentedConfigurationNode loadDefault(final String locale) throws ConfigurateException {
         YamlConfigurationLoader loader = YamlConfigurationLoader.builder()
+                .nodeStyle(NodeStyle.BLOCK)
                 .url(PureTickets.class.getResource("/locales/" + this.makeLocaleFileName(locale)))
                 .build();
 

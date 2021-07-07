@@ -22,3 +22,23 @@ notify :
 
 announce :
   creation : "<prefix> <player> opened a new ticket <ticket><white> - <message>"
+  update : "<prefix> <player> updated ticket <ticket><white> - <message>"
+  close : "<prefix> <player> closed their ticket <ticket>"
+  claim : "<prefix> <player> claimed ticket <ticket>"
+  unclaim : "<prefix> <player> unclaimed ticket <ticket>"
+  assign : "<prefix> <player> assigned ticket <ticket><white> to <target>"
+  complete : "<prefix> <player> completed ticket <ticket>"
+  reopen : "<prefix> <player> reopened ticket <ticket>"
+  note : "<prefix> <player> added a note to ticket <ticket><white> - <note>"
+
+exception :
+  noPermission : "<prefix> <color:#ff1744>You do not have permission for this command"
+  invalidSender : "<prefix> <color:#ff1744>This command must be executed by <sender>"
+  ticketOpen : "<prefix> <color:#ff1744>This ticket is already open"
+  ticketClaimed : "<prefix> <color:#ff1744>This ticket is already claimed"
+  ticketClosed : "<prefix> <color:#ff1744>This ticket is closed"
+  ticketNotFound : "<prefix> <color:#ff1744>Ticket could not be found"
+  tooManyTicketsOpen : "<prefix> <color:#ff1744>You already have too many open tickets"
+
+task :
+  reminder : "<prefix> There are <amount> ticket(s) currently open"
