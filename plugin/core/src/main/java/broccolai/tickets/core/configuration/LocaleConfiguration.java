@@ -14,22 +14,11 @@ public final class LocaleConfiguration {
 
     public LocaleEntry prefix = new LocaleEntry("<color:#f5a5a5><bold>T <dark_gray>»<reset>");
 
-    public SenderLocaleConfiguration sender = new SenderLocaleConfiguration();
-
     public TitleLocaleConfiguration title = new TitleLocaleConfiguration();
 
     public ShowLocaleConfiguration show = new ShowLocaleConfiguration();
 
-    public ExceptionLocaleConfiguration exception = new ExceptionLocaleConfiguration();
-
     public FormatLocaleConfiguration format = new FormatLocaleConfiguration();
-
-    @ConfigSerializable
-    public static final class SenderLocaleConfiguration {
-
-        public LocaleEntry teleport = new LocaleEntry("<prefix> Teleported to ticket <ticket> creation location");
-
-    }
 
     @ConfigSerializable
     public static final class TitleLocaleConfiguration {
@@ -66,25 +55,6 @@ public final class LocaleConfiguration {
     }
 
     @ConfigSerializable
-    public static final class ExceptionLocaleConfiguration {
-
-        public LocaleEntry noPermission = new LocaleEntry("<prefix> <color:#ff1744>You do not have permission for this command");
-
-        public LocaleEntry invalidSender = new LocaleEntry("<prefix> <color:#ff1744>This command must be executed by <sender>");
-
-        public LocaleEntry ticketNotFound = new LocaleEntry("<prefix> <color:#ff1744>Ticket could not be found");
-
-        public LocaleEntry ticketClosed = new LocaleEntry("<prefix> <color:#ff1744>This ticket is closed");
-
-        public LocaleEntry ticketOpen = new LocaleEntry("<prefix> <color:#ff1744>This ticket is already open");
-
-        public LocaleEntry ticketClaimed = new LocaleEntry("<prefix> <color:#ff1744>This ticket is already claimed");
-
-        public LocaleEntry tooManyTicketsOpen = new LocaleEntry("<prefix> <color:#ff1744>You already have too many open tickets");
-
-    }
-
-    @ConfigSerializable
     public static final class FormatLocaleConfiguration {
 
         public LocaleEntry list = new LocaleEntry("<ticket> <dark_gray>- <white><message>");
@@ -94,8 +64,6 @@ public final class LocaleConfiguration {
         public LocaleEntry log = new LocaleEntry("<yellow><bold><action> - <white><player>");
 
         public LocaleEntry hs = new LocaleEntry("<green><player> <dark_gray>- <white><bold><amount>");
-
-        public LocaleEntry reminder = new LocaleEntry("<prefix> There are <amount> ticket(s) currently open");
 
     }
 

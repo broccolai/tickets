@@ -4,7 +4,7 @@ import broccolai.tickets.api.model.ticket.Ticket;
 import broccolai.tickets.api.model.ticket.TicketStatus;
 import broccolai.tickets.api.model.user.OnlineSoul;
 import broccolai.tickets.api.model.user.PlayerSoul;
-import broccolai.tickets.api.service.message.OldMessageService;
+import broccolai.tickets.api.service.message.MessageService;
 import broccolai.tickets.api.service.tasks.TaskService;
 import broccolai.tickets.bukkit.context.BukkitTicketContextKeys;
 import broccolai.tickets.bukkit.model.BukkitPlayerSoul;
@@ -22,7 +22,6 @@ import com.google.inject.Inject;
 import io.papermc.lib.PaperLib;
 import java.util.EnumSet;
 import java.util.Optional;
-import net.kyori.adventure.text.Component;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -31,19 +30,19 @@ public final class BukkitTicketsCommand implements BaseCommand {
 
     private final CommandsConfiguration.TicketsConfiguration config;
     private final CloudArgumentFactory argumentFactory;
-    private final OldMessageService oldMessageService;
+    private final MessageService messageService;
     private final TaskService taskService;
 
     @Inject
     public BukkitTicketsCommand(
             final @NonNull MainConfiguration config,
             final @NonNull CloudArgumentFactory argumentFactory,
-            final @NonNull OldMessageService oldMessageService,
+            final @NonNull MessageService messageService,
             final @NonNull TaskService taskService
     ) {
         this.config = config.commandsConfiguration.tickets;
         this.argumentFactory = argumentFactory;
-        this.oldMessageService = oldMessageService;
+        this.messageService = messageService;
         this.taskService = taskService;
     }
 
@@ -80,8 +79,7 @@ public final class BukkitTicketsCommand implements BaseCommand {
         this.taskService.sync(() -> {
             Player player = soul.sender();
             PaperLib.teleportAsync(player, potentialLocation.get());
-            Component component = this.oldMessageService.commandsTeleport(ticket);
-            soul.sendMessage(component);
+            this.messageService.feedbackTeleport(soul, ticket);
         });
     }
 

@@ -14,7 +14,6 @@ import com.google.inject.Singleton;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -100,15 +99,6 @@ public final class MiniOldMessageService implements OldMessageService {
     }
 
     @Override
-    public @NotNull Component commandsTeleport(final @NonNull Ticket ticket) {
-        List<Template> templates = new ArrayList<>();
-        templates.add(this.prefix);
-        templates.addAll(this.templateService.ticket(ticket));
-
-        return this.locale.sender.teleport.use(templates);
-    }
-
-    @Override
     public @NotNull Component commandsHighscore(final @NonNull Map<UUID, Integer> ranks) {
         Template wrapper = Template.of("wrapper", this.locale.title.wrapper.use());
 
@@ -159,42 +149,6 @@ public final class MiniOldMessageService implements OldMessageService {
     }
 
     @Override
-    public @NotNull Component exceptionTicketOpen() {
-        return this.locale.exception.ticketOpen.use(Collections.singletonList(this.prefix));
-    }
-
-    @Override
-    public @NotNull Component exceptionTicketClaimed() {
-        return this.locale.exception.ticketClaimed.use(Collections.singletonList(this.prefix));
-    }
-
-    @Override
-    public @NotNull Component exceptionTicketClosed() {
-        return this.locale.exception.ticketClosed.use(Collections.singletonList(this.prefix));
-    }
-
-    @Override
-    public @NotNull Component exceptionTicketNotFound() {
-        return this.locale.exception.ticketNotFound.use(Collections.singletonList(this.prefix));
-    }
-
-    @Override
-    public @NotNull Component exceptionTooManyTicketsOpen() {
-        return this.locale.exception.tooManyTicketsOpen.use(Collections.singletonList(this.prefix));
-    }
-
-    @Override
-    public @NotNull Component exceptionNoPermission() {
-        return this.locale.exception.noPermission.use(Collections.singletonList(this.prefix));
-    }
-
-    @Override
-    public @NotNull Component exceptionWrongSender(final @NonNull Class<?> sender) {
-        Template template = Template.of("sender", sender.getSimpleName());
-        return this.locale.exception.invalidSender.use(Arrays.asList(this.prefix, template));
-    }
-
-    @Override
     public @NotNull Component showTicket(final @NonNull Ticket ticket) {
         List<Template> templates = new ArrayList<>();
         templates.add(this.prefix);
@@ -222,15 +176,6 @@ public final class MiniOldMessageService implements OldMessageService {
                 component,
                 this.locale.show.message.use(templates)
         ));
-    }
-
-    @Override
-    public @NotNull Component taskReminder(final int count) {
-        List<Template> templates = new ArrayList<>();
-        templates.add(this.prefix);
-        templates.add(Template.of("amount", String.valueOf(count)));
-
-        return this.locale.format.reminder.use(templates);
     }
 
     private Component padComponent(final @NonNull Component component) {

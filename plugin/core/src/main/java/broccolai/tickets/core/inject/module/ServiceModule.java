@@ -69,8 +69,8 @@ public final class ServiceModule extends AbstractModule {
                 .resolvingWithStrategy(
                         new StandardPlaceholderResolverStrategy<>(new StandardSupertypeThenInterfaceSupertypeStrategy(true))
                 )
-                .weightedPlaceholderResolver(Ticket.class, ticketPlaceholderResolver, 0)
-                .weightedPlaceholderResolver(Soul.class, soulPlaceholderResolver, 0)
+                .weightedPlaceholderResolver(Ticket.class, ticketPlaceholderResolver, 1)
+                .weightedPlaceholderResolver(Soul.class, soulPlaceholderResolver, 1)
                 .create(this.getClass().getClassLoader());
     }
 

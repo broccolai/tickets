@@ -7,7 +7,6 @@ import broccolai.tickets.api.model.ticket.TicketStatus;
 import broccolai.tickets.api.model.user.PlayerSoul;
 import broccolai.tickets.api.service.event.EventService;
 import broccolai.tickets.api.service.message.MessageService;
-import broccolai.tickets.api.service.message.OldMessageService;
 import broccolai.tickets.api.service.storage.StorageService;
 import broccolai.tickets.api.service.ticket.TicketService;
 import broccolai.tickets.core.utilities.Constants;
@@ -24,19 +23,16 @@ public final class SoulSubscriber implements Subscriber {
     private final StorageService storageService;
     private final TicketService ticketService;
     private final MessageService messageService;
-    private final OldMessageService oldMessageService;
 
     @Inject
     public SoulSubscriber(
             final @NonNull StorageService storageService,
             final @NonNull TicketService ticketService,
-            final @NonNull MessageService messageService,
-            final @NonNull OldMessageService oldMessageService
+            final @NonNull MessageService messageService
     ) {
         this.storageService = storageService;
         this.ticketService = ticketService;
         this.messageService = messageService;
-        this.oldMessageService = oldMessageService;
     }
 
     @Override
@@ -58,7 +54,7 @@ public final class SoulSubscriber implements Subscriber {
             int total = tickets.entries().size();
 
             if (total != 0) {
-                soul.sendMessage(this.oldMessageService.taskReminder(total));
+                this.messageService.taskReminder(soul, total);
             }
         }
     }

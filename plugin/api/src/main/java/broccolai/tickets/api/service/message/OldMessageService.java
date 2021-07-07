@@ -18,36 +18,14 @@ public interface OldMessageService {
 
     @NonNull Component commandsTicketsList(@NonNull Map<@NonNull UUID, @NonNull Collection<@NonNull Ticket>> tickets);
 
-    @NonNull Component commandsTeleport(@NonNull Ticket ticket);
-
     @NonNull Component commandsHighscore(@NonNull Map<UUID, Integer> ranks);
 
     @NonNull Component commandsLog(@NonNull Collection<Interaction> interactions);
-
-    //
-    // Exception
-    //
-
-    @NonNull Component exceptionTicketOpen();
-
-    @NonNull Component exceptionTicketClaimed();
-
-    @NonNull Component exceptionTicketClosed();
-
-    @NonNull Component exceptionTicketNotFound();
-
-    @NonNull Component exceptionTooManyTicketsOpen();
-
-    @NonNull Component exceptionNoPermission();
-
-    @NonNull Component exceptionWrongSender(@NonNull Class<?> sender);
 
     //
     // Random
     //
 
     @NonNull Component showTicket(@NonNull Ticket ticket);
-
-    @NonNull Component taskReminder(int count);
 
 }
