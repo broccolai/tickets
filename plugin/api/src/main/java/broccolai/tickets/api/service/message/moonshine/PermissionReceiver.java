@@ -7,6 +7,10 @@ import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
-public @interface StaffReceiver {
+public @interface PermissionReceiver {
+
+    String STAFF = "tickets.staff";
+
+    String permission();
 
 }
