@@ -20,8 +20,10 @@ import broccolai.tickets.core.service.message.moonshine.BasicReceiverResolver;
 import broccolai.tickets.core.service.message.moonshine.MessageRenderer;
 import broccolai.tickets.core.service.message.moonshine.MessageSender;
 import broccolai.tickets.core.service.message.moonshine.MessageSource;
+import broccolai.tickets.core.service.message.moonshine.NumberPlaceholderResolver;
 import broccolai.tickets.core.service.message.moonshine.SoulPlaceholderResolver;
-import broccolai.tickets.core.service.message.moonshine.StaffReceiverResolver;
+import broccolai.tickets.core.service.message.moonshine.PermissionReceiverResolver;
+import broccolai.tickets.core.service.message.moonshine.StringPlaceholderResolver;
 import broccolai.tickets.core.service.message.moonshine.TicketPlaceholderResolver;
 import broccolai.tickets.core.service.storage.DatabaseStorageService;
 import broccolai.tickets.core.service.template.MiniTemplateService;
@@ -53,22 +55,26 @@ public final class ServiceModule extends AbstractModule {
     @Provides
     public MessageService messageService(
             final @NonNull BasicReceiverResolver basicReceiverResolver,
-            final @NonNull StaffReceiverResolver staffReceiverResolver,
+            final @NonNull PermissionReceiverResolver permissionReceiverResolver,
             final @NonNull MessageSource messageSource,
             final @NonNull MessageRenderer messageRenderer,
             final @NonNull MessageSender messageSender,
+            final @NonNull StringPlaceholderResolver stringPlaceholderResolver,
+            final @NonNull NumberPlaceholderResolver numberPlaceholderResolver,
             final @NonNull TicketPlaceholderResolver ticketPlaceholderResolver,
             final @NonNull SoulPlaceholderResolver soulPlaceholderResolver
     ) throws UnscannableMethodException {
         return Moonshine.<MessageService, Audience>builder(TypeToken.get(MessageService.class))
                 .receiverLocatorResolver(basicReceiverResolver, 0)
-                .receiverLocatorResolver(staffReceiverResolver, 1)
+                .receiverLocatorResolver(permissionReceiverResolver, 1)
                 .sourced(messageSource)
                 .rendered(messageRenderer)
                 .sent(messageSender)
                 .resolvingWithStrategy(
                         new StandardPlaceholderResolverStrategy<>(new StandardSupertypeThenInterfaceSupertypeStrategy(true))
                 )
+                .weightedPlaceholderResolver(String.class, stringPlaceholderResolver, 1)
+                .weightedPlaceholderResolver(Number.class, numberPlaceholderResolver, 1)
                 .weightedPlaceholderResolver(Ticket.class, ticketPlaceholderResolver, 1)
                 .weightedPlaceholderResolver(Soul.class, soulPlaceholderResolver, 1)
                 .create(this.getClass().getClassLoader());

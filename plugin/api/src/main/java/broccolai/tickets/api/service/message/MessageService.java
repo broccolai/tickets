@@ -3,8 +3,8 @@ package broccolai.tickets.api.service.message;
 import broccolai.tickets.api.model.ticket.Ticket;
 import broccolai.tickets.api.model.user.Soul;
 import broccolai.tickets.api.service.message.moonshine.Causer;
+import broccolai.tickets.api.service.message.moonshine.PermissionReceiver;
 import broccolai.tickets.api.service.message.moonshine.Receiver;
-import broccolai.tickets.api.service.message.moonshine.StaffReceiver;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
 import net.kyori.moonshine.annotation.Message;
@@ -60,48 +60,48 @@ public interface MessageService {
     @Message("notify.assign")
     void notifyAssign(@Receiver Soul soul, @Placeholder Ticket ticket);
 
-    @StaffReceiver
+    @PermissionReceiver(permission = PermissionReceiver.STAFF)
     @Message("announce.creation")
     void announceCreation(@Causer @Placeholder Soul causer, @Placeholder Ticket ticket);
 
-    @StaffReceiver
+    @PermissionReceiver(permission = PermissionReceiver.STAFF)
     @Message("announce.update")
     void announceUpdate(@Causer @Placeholder Soul causer, @Placeholder Ticket ticket);
 
-    @StaffReceiver
+    @PermissionReceiver(permission = PermissionReceiver.STAFF)
     @Message("announce.close")
     void announceClose(@Causer @Placeholder Soul causer, @Placeholder Ticket ticket);
 
-    @StaffReceiver
+    @PermissionReceiver(permission = PermissionReceiver.STAFF)
     @Message("announce.reopen")
     void announceReopen(@Causer @Placeholder Soul causer, @Placeholder Ticket ticket);
 
-    @StaffReceiver
+    @PermissionReceiver(permission = PermissionReceiver.STAFF)
     @Message("announce.claim")
     void announceClaim(@Causer @Placeholder Soul causer, @Placeholder Ticket ticket);
 
-    @StaffReceiver
+    @PermissionReceiver(permission = PermissionReceiver.STAFF)
     @Message("announce.unclaim")
     void announceUnclaim(@Causer @Placeholder Soul causer, @Placeholder Ticket ticket);
 
-    @StaffReceiver
+    @PermissionReceiver(permission = PermissionReceiver.STAFF)
     @Message("announce.assign")
     void announceAssign(@Causer @Placeholder Soul causer, @Causer @Placeholder Soul target, @Placeholder Ticket ticket);
 
-    @StaffReceiver
+    @PermissionReceiver(permission = PermissionReceiver.STAFF)
     @Message("announce.complete")
     void announceComplete(@Causer @Placeholder Soul causer, @Placeholder Ticket ticket);
 
-    @StaffReceiver
+    @PermissionReceiver(permission = PermissionReceiver.STAFF)
     @Message("announce.note")
     void announceNote(@Causer @Placeholder Soul causer, @Placeholder Ticket ticket, @Placeholder String note);
 
     @Message("task.reminder")
-    void taskReminder(@Receiver Audience receiver, @Placeholder int count);
+    void taskReminder(@Receiver Audience receiver, @Placeholder Integer count);
 
-    @StaffReceiver
+    @PermissionReceiver(permission = PermissionReceiver.STAFF)
     @Message("task.reminder")
-    void taskReminder(@Placeholder int count);
+    void taskReminder(@Placeholder Integer count);
 
     @Message("exception.noPermission")
     Component exceptionNoPermission();

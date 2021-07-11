@@ -41,4 +41,4 @@ exception :
   tooManyTicketsOpen : "<prefix> <color:#ff1744>You already have too many open tickets"
 
 task :
-  reminder : "<prefix> There are <amount> ticket(s) currently open"
+  reminder : "<prefix> There are <count> ticket(s) currently open"
