@@ -7,9 +7,10 @@ import broccolai.tickets.api.model.ticket.TicketStatus;
 import broccolai.tickets.api.model.user.OnlineSoul;
 import broccolai.tickets.api.model.user.Soul;
 import broccolai.tickets.api.service.interactions.InteractionService;
-import broccolai.tickets.api.service.message.OldMessageService;
+import broccolai.tickets.api.service.message.MessageService;
 import broccolai.tickets.api.service.storage.StorageService;
 import broccolai.tickets.api.service.ticket.TicketService;
+import broccolai.tickets.api.service.user.UserService;
 import broccolai.tickets.core.commands.arguments.TicketParserMode;
 import broccolai.tickets.core.configuration.CommandsConfiguration;
 import broccolai.tickets.core.configuration.MainConfiguration;
@@ -25,9 +26,11 @@ import cloud.commandframework.context.CommandContext;
 import com.google.inject.Inject;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.EnumSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -39,25 +42,28 @@ public final class TicketsCommand extends CommonCommands {
 
     private final CommandsConfiguration.TicketsConfiguration config;
     private final CloudArgumentFactory argumentFactory;
-    private final OldMessageService oldMessageService;
+    private final MessageService messageService;
     private final TicketService ticketService;
     private final InteractionService interactionService;
+    private final UserService userService;
 
     @Inject
     public TicketsCommand(
             final @NonNull MainConfiguration config,
             final @NonNull CloudArgumentFactory argumentFactory,
-            final @NonNull OldMessageService oldMessageService,
+            final @NonNull MessageService messageService,
             final @NonNull StorageService storageService,
             final @NonNull TicketService ticketService,
-            final @NonNull InteractionService interactionService
+            final @NonNull InteractionService interactionService,
+            final @NonNull UserService userService
     ) {
-        super(oldMessageService, storageService);
+        super(messageService, storageService, userService);
         this.config = config.commandsConfiguration.tickets;
         this.argumentFactory = argumentFactory;
-        this.oldMessageService = oldMessageService;
+        this.messageService = messageService;
         this.ticketService = ticketService;
         this.interactionService = interactionService;
+        this.userService = userService;
     }
 
     @Override
@@ -254,8 +260,23 @@ public final class TicketsCommand extends CommonCommands {
             ));
         }).orElse(this.ticketService.get(statuses).asMap());
 
-        Component component = this.oldMessageService.commandsTicketsList(tickets);
-        soul.sendMessage(component);
+        List<Component> results = new ArrayList<>();
+        results.add(Component.empty());
+        results.add(this.messageService.listTitleAll());
+
+        tickets.forEach((uuid, playersTickets) -> {
+            Soul player = this.userService.snapshot(uuid);
+            results.add(this.messageService.listTitleHeader(player));
+
+            for (final Ticket ticket : playersTickets) {
+                results.add(this.messageService.listTitleEntry(ticket));
+            }
+        });
+
+        soul.sendMessage(Component.join(
+                Component.newline(),
+                results
+        ));
     }
 
     private void processContext(final @NonNull CommandContext<@NonNull OnlineSoul> c) {

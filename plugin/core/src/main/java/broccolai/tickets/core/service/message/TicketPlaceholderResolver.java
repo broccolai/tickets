@@ -1,5 +1,7 @@
-package broccolai.tickets.core.service.message.moonshine;
+package broccolai.tickets.core.service.message;
 
+import broccolai.tickets.api.model.interaction.Action;
+import broccolai.tickets.api.model.interaction.MessageInteraction;
 import broccolai.tickets.api.model.ticket.Ticket;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
@@ -40,14 +42,19 @@ public final class TicketPlaceholderResolver implements IPlaceholderResolver<Aud
     ) {
         Soul soul = this.userService.snapshot(value.player());
         int id = value.id();
+        String message = value.interactions().findLatestMessage(msg -> msg.action() == Action.MESSAGE)
+                .map(MessageInteraction::message)
+                .orElseThrow();
 
         return Map.of(
                 placeholderName,
                 Either.left(ConclusionValue.conclusionValue(this.wholeTicket(value, soul))),
                 placeholderName + "_id",
-                Either.left(ConclusionValue.conclusionValue(Component.text(id))),
+                Either.right(ContinuanceValue.continuanceValue(id, Number.class)),
                 placeholderName + "_creator",
-                Either.left(ConclusionValue.conclusionValue(Component.text(soul.username())))
+                Either.right(ContinuanceValue.continuanceValue(soul.username(), String.class)),
+                placeholderName + "_message",
+                Either.right(ContinuanceValue.continuanceValue(message, String.class))
         );
     }
 

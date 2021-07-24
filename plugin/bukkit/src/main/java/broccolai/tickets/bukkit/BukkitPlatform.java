@@ -3,7 +3,6 @@ package broccolai.tickets.bukkit;
 import broccolai.tickets.api.model.event.Subscriber;
 import broccolai.tickets.api.model.user.OnlineSoul;
 import broccolai.tickets.api.service.context.ContextService;
-import broccolai.tickets.api.service.message.OldMessageService;
 import broccolai.tickets.api.service.user.UserService;
 import broccolai.tickets.bukkit.commands.BukkitTicketsCommand;
 import broccolai.tickets.bukkit.context.BukkitTicketContextKeys;
@@ -63,8 +62,7 @@ public final class BukkitPlatform extends JavaPlugin implements PluginPlatform {
 
         try {
             CommandManager<OnlineSoul> commandManager = this.commandManager(
-                    this.injector.getInstance(UserService.class),
-                    this.injector.getInstance(OldMessageService.class)
+                    this.injector.getInstance(UserService.class)
             );
             this.pureTickets.commands(commandManager, COMMANDS);
             this.pureTickets.commands(commandManager, BUKKIT_COMMANDS);
@@ -87,8 +85,7 @@ public final class BukkitPlatform extends JavaPlugin implements PluginPlatform {
     }
 
     private CommandManager<OnlineSoul> commandManager(
-            final @NonNull UserService userService,
-            final @NonNull OldMessageService oldMessageService
+            final @NonNull UserService userService
     ) throws Exception {
         BukkitUserService bukkitUserService = (BukkitUserService) userService;
 

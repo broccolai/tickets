@@ -1,4 +1,4 @@
-package broccolai.tickets.core.service.message.moonshine;
+package broccolai.tickets.core.service.message;
 
 import broccolai.tickets.api.model.user.PlayerSoul;
 import broccolai.tickets.api.model.user.Soul;

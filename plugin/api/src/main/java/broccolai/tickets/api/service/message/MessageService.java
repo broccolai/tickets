@@ -1,6 +1,8 @@
 package broccolai.tickets.api.service.message;
 
+import broccolai.tickets.api.model.interaction.Interaction;
 import broccolai.tickets.api.model.ticket.Ticket;
+import broccolai.tickets.api.model.ticket.TicketStatus;
 import broccolai.tickets.api.model.user.Soul;
 import broccolai.tickets.api.service.message.moonshine.Causer;
 import broccolai.tickets.api.service.message.moonshine.PermissionReceiver;
@@ -102,6 +104,45 @@ public interface MessageService {
     @PermissionReceiver(permission = PermissionReceiver.STAFF)
     @Message("task.reminder")
     void taskReminder(@Placeholder Integer count);
+
+    @Message("format.list.title.all")
+    Component listTitleAll();
+
+    @Message("format.list.title.personal")
+    Component listTitlePersonal();
+
+    @Message("format.list.header")
+    Component listTitleHeader(@Placeholder Soul player);
+
+    @Message("format.list.entry")
+    Component listTitleEntry(@Placeholder Ticket ticket);
+
+    @Message("format.log.title")
+    Component logTitle();
+
+    @Message("format.log.entry")
+    Component logEntry(@Placeholder Interaction interaction);
+
+    @Message("format.show.title")
+    Component showTitle();
+
+    @Message("format.show.field.status")
+    Component showFieldStatus(TicketStatus status);
+
+    @Message("format.show.field.creator")
+    Component showFieldCreator(Soul creator);
+
+    @Message("format.show.field.claimer")
+    Component showFieldClaimer(Soul claimer);
+
+    @Message("format.show.field.message")
+    Component showFieldMessage(String message);
+
+    @Message("format.highscore.title")
+    Component highscoreTitle();
+
+    @Message("format.highscore.entry")
+    Component highscoreEntry(Soul player, Number amount);
 
     @Message("exception.noPermission")
     Component exceptionNoPermission();

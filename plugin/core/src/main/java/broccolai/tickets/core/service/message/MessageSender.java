@@ -1,4 +1,4 @@
-package broccolai.tickets.core.service.message.moonshine;
+package broccolai.tickets.core.service.message;
 
 import com.google.inject.Singleton;
 import net.kyori.adventure.audience.Audience;

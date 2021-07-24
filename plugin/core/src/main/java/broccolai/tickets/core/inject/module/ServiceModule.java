@@ -1,5 +1,6 @@
 package broccolai.tickets.core.inject.module;
 
+import broccolai.tickets.api.model.interaction.Interaction;
 import broccolai.tickets.api.model.ticket.Ticket;
 import broccolai.tickets.api.model.user.Soul;
 import broccolai.tickets.api.service.context.ContextService;
@@ -7,7 +8,6 @@ import broccolai.tickets.api.service.event.EventService;
 import broccolai.tickets.api.service.interactions.InteractionService;
 import broccolai.tickets.api.service.intergrations.DiscordService;
 import broccolai.tickets.api.service.message.MessageService;
-import broccolai.tickets.api.service.message.OldMessageService;
 import broccolai.tickets.api.service.storage.StorageService;
 import broccolai.tickets.api.service.template.TemplateService;
 import broccolai.tickets.api.service.ticket.TicketService;
@@ -15,16 +15,16 @@ import broccolai.tickets.core.service.context.MappedContextService;
 import broccolai.tickets.core.service.event.KyoriEventService;
 import broccolai.tickets.core.service.interaction.EventInteractionService;
 import broccolai.tickets.core.service.intergrations.HttpDiscordService;
-import broccolai.tickets.core.service.message.MiniOldMessageService;
-import broccolai.tickets.core.service.message.moonshine.BasicReceiverResolver;
-import broccolai.tickets.core.service.message.moonshine.MessageRenderer;
-import broccolai.tickets.core.service.message.moonshine.MessageSender;
-import broccolai.tickets.core.service.message.moonshine.MessageSource;
-import broccolai.tickets.core.service.message.moonshine.NumberPlaceholderResolver;
-import broccolai.tickets.core.service.message.moonshine.SoulPlaceholderResolver;
-import broccolai.tickets.core.service.message.moonshine.PermissionReceiverResolver;
-import broccolai.tickets.core.service.message.moonshine.StringPlaceholderResolver;
-import broccolai.tickets.core.service.message.moonshine.TicketPlaceholderResolver;
+import broccolai.tickets.core.service.message.BasicReceiverResolver;
+import broccolai.tickets.core.service.message.InteractionPlaceholderResolver;
+import broccolai.tickets.core.service.message.MessageRenderer;
+import broccolai.tickets.core.service.message.MessageSender;
+import broccolai.tickets.core.service.message.MessageSource;
+import broccolai.tickets.core.service.message.NumberPlaceholderResolver;
+import broccolai.tickets.core.service.message.SoulPlaceholderResolver;
+import broccolai.tickets.core.service.message.PermissionReceiverResolver;
+import broccolai.tickets.core.service.message.StringPlaceholderResolver;
+import broccolai.tickets.core.service.message.TicketPlaceholderResolver;
 import broccolai.tickets.core.service.storage.DatabaseStorageService;
 import broccolai.tickets.core.service.template.MiniTemplateService;
 import broccolai.tickets.core.service.ticket.CachedTicketService;
@@ -45,7 +45,6 @@ public final class ServiceModule extends AbstractModule {
         this.bind(StorageService.class).to(DatabaseStorageService.class);
         this.bind(TicketService.class).to(CachedTicketService.class);
         this.bind(TemplateService.class).to(MiniTemplateService.class);
-        this.bind(OldMessageService.class).to(MiniOldMessageService.class);
         this.bind(EventService.class).to(KyoriEventService.class);
         this.bind(InteractionService.class).to(EventInteractionService.class);
         this.bind(DiscordService.class).to(HttpDiscordService.class);
@@ -62,6 +61,7 @@ public final class ServiceModule extends AbstractModule {
             final @NonNull StringPlaceholderResolver stringPlaceholderResolver,
             final @NonNull NumberPlaceholderResolver numberPlaceholderResolver,
             final @NonNull TicketPlaceholderResolver ticketPlaceholderResolver,
+            final @NonNull InteractionPlaceholderResolver interactionPlaceholderResolver,
             final @NonNull SoulPlaceholderResolver soulPlaceholderResolver
     ) throws UnscannableMethodException {
         return Moonshine.<MessageService, Audience>builder(TypeToken.get(MessageService.class))
@@ -76,6 +76,7 @@ public final class ServiceModule extends AbstractModule {
                 .weightedPlaceholderResolver(String.class, stringPlaceholderResolver, 1)
                 .weightedPlaceholderResolver(Number.class, numberPlaceholderResolver, 1)
                 .weightedPlaceholderResolver(Ticket.class, ticketPlaceholderResolver, 1)
+                .weightedPlaceholderResolver(Interaction.class, interactionPlaceholderResolver, 1)
                 .weightedPlaceholderResolver(Soul.class, soulPlaceholderResolver, 1)
                 .create(this.getClass().getClassLoader());
     }
