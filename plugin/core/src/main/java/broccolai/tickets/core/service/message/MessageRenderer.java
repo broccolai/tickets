@@ -1,6 +1,6 @@
-package broccolai.tickets.core.service.message.moonshine;
+package broccolai.tickets.core.service.message;
 
-import broccolai.tickets.core.configuration.NewLocaleConfiguration;
+import broccolai.tickets.core.configuration.LocaleConfiguration;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import java.lang.reflect.Method;
@@ -21,7 +21,7 @@ public final class MessageRenderer implements IMessageRenderer<Audience, String,
     private final Template prefix;
 
     @Inject
-    public MessageRenderer(final NewLocaleConfiguration localeConfiguration) {
+    public MessageRenderer(final LocaleConfiguration localeConfiguration) {
         this.prefix = Template.of("prefix", localeConfiguration.get("prefix"));
     }
 

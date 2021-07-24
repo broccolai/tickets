@@ -1,10 +1,7 @@
 package broccolai.tickets.core.inject.module;
 
-import broccolai.tickets.core.configuration.LocaleConfiguration;
 import broccolai.tickets.core.configuration.MainConfiguration;
-import broccolai.tickets.core.configuration.serializers.LocaleEntrySerializer;
 import broccolai.tickets.core.inject.ForTickets;
-import broccolai.tickets.core.model.locale.LocaleEntry;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 import java.io.IOException;
@@ -35,33 +32,6 @@ public final class ConfigurationModule extends AbstractModule {
                 .build();
         CommentedConfigurationNode node = loader.load();
         MainConfiguration config = MainConfiguration.loadFrom(node);
-
-        config.saveTo(node);
-        loader.save(node);
-
-        return config;
-    }
-
-    @Provides
-    public LocaleConfiguration providesLocaleConfiguration(final @NonNull @ForTickets Path folder) throws IOException {
-        Path file = folder.resolve("locale.yml");
-
-        if (!Files.exists(file)) {
-            Files.createFile(file);
-        }
-
-        YamlConfigurationLoader loader = YamlConfigurationLoader.builder()
-                .defaultOptions(opts -> {
-                    opts = opts.serializers(serializers -> {
-                        serializers.register(LocaleEntry.class, LocaleEntrySerializer.INSTANCE);
-                    });
-
-                    return opts.shouldCopyDefaults(true);
-                })
-                .path(file)
-                .build();
-        CommentedConfigurationNode node = loader.load();
-        LocaleConfiguration config = LocaleConfiguration.loadFrom(node);
 
         config.saveTo(node);
         loader.save(node);

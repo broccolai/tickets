@@ -1,4 +1,4 @@
-package broccolai.tickets.core.service.message.moonshine;
+package broccolai.tickets.core.service.message;
 
 import broccolai.tickets.api.model.ticket.Ticket;
 import broccolai.tickets.api.model.user.OnlineSoul;
@@ -40,7 +40,7 @@ public final class BasicReceiverResolver implements IReceiverLocatorResolver<Aud
         }
 
         @Override
-        public Audience locate(
+        public @Nullable Audience locate(
                 final Method method,
                 final Object proxy,
                 final @Nullable Object[] parameters
@@ -48,8 +48,7 @@ public final class BasicReceiverResolver implements IReceiverLocatorResolver<Aud
             Object presentValue = ReflectionHelper.parameterAnnotatedBy(Receiver.class, method, parameters);
 
             if (presentValue == null) {
-                throw new ReceiverMissingException("Receiver parameter not found") {
-                };
+                return null;
             }
 
             if (presentValue instanceof Audience audience) {

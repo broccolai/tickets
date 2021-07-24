@@ -21,8 +21,8 @@ notify :
   note : "<prefix> <player> has added a note to your ticket <note>"
 
 announce :
-  creation : "<prefix> <player> opened a new ticket <ticket><white> - <message>"
-  update : "<prefix> <player> updated ticket <ticket><white> - <message>"
+  creation : "<prefix> <player> opened a new ticket <ticket><white> - <ticket_message>"
+  update : "<prefix> <player> updated ticket <ticket><white> - <ticket_message>"
   close : "<prefix> <player> closed their ticket <ticket>"
   claim : "<prefix> <player> claimed ticket <ticket>"
   unclaim : "<prefix> <player> unclaimed ticket <ticket>"
@@ -39,6 +39,27 @@ exception :
   ticketClosed : "<prefix> <color:#ff1744>This ticket is closed"
   ticketNotFound : "<prefix> <color:#ff1744>Ticket could not be found"
   tooManyTicketsOpen : "<prefix> <color:#ff1744>You already have too many open tickets"
+
+format :
+  list :
+    title :
+      all : "   <color:#f5a5a5><bold>TICKETS"
+      personal : "   <color:#f5a5a5><bold>TICKETS"
+    header : "<green><player>"
+    entry : "<ticket> <dark_gray>- <white><ticket_message>"
+  highscore :
+    title : "   <color:#f5a5a5>HIGHSCORES"
+    entry : "<yellow><bold><action> - <white><player>"
+  log :
+    title : "    <color:#f5a5a5>LOG"
+    entry : "<yellow><bold><action> - <white><player>"
+  show :
+    title : "   <color:#f5a5a5>TICKET <ticket>"
+    field :
+      status : "<white>Status<dark_gray>: <yellow><status>"
+      creator : "<white>Created<dark_gray>: <yellow><creator>"
+      claimer : "<white>Claimer<dark_gray>: <yellow><claimer>"
+      message : "<white>Message<dark_gray>: <yellow><message>"
 
 task :
   reminder : "<prefix> There are <count> ticket(s) currently open"

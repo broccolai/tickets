@@ -16,12 +16,12 @@ import org.spongepowered.configurate.yaml.NodeStyle;
 import org.spongepowered.configurate.yaml.YamlConfigurationLoader;
 
 @Singleton
-public final class NewLocaleConfiguration {
+public final class LocaleConfiguration {
 
     private final Map<String, String> entries;
 
     @Inject
-    public NewLocaleConfiguration(
+    public LocaleConfiguration(
             final @ForTickets Path folder,
             final MainConfiguration configuration
     ) throws ConfigurateException {
