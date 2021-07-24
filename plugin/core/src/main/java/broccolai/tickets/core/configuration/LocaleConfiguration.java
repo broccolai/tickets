@@ -1,98 +1,122 @@
 package broccolai.tickets.core.configuration;
 
-import broccolai.tickets.core.model.locale.LocaleEntry;
-import org.checkerframework.checker.nullness.qual.NonNull;
+import broccolai.tickets.core.PureTickets;
+import broccolai.tickets.core.inject.ForTickets;
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
+import java.nio.file.Path;
+import java.util.HashMap;
+import java.util.Map;
+import org.spongepowered.configurate.CommentedConfigurationNode;
+import org.spongepowered.configurate.ConfigurateException;
 import org.spongepowered.configurate.ConfigurationNode;
-import org.spongepowered.configurate.ScopedConfigurationNode;
-import org.spongepowered.configurate.objectmapping.ConfigSerializable;
-import org.spongepowered.configurate.objectmapping.ObjectMapper;
-import org.spongepowered.configurate.serialize.SerializationException;
+import org.spongepowered.configurate.ConfigurationVisitor;
+import org.spongepowered.configurate.NodePath;
+import org.spongepowered.configurate.yaml.NodeStyle;
+import org.spongepowered.configurate.yaml.YamlConfigurationLoader;
 
-@ConfigSerializable
-@SuppressWarnings("CanBeFinal")
-public final class LocaleConfiguration {
+@Singleton
+public final class NewLocaleConfiguration {
 
-    public LocaleEntry prefix = new LocaleEntry("<color:#f5a5a5><bold>T <dark_gray>»<reset>");
+    private final Map<String, String> entries;
 
-    public TitleLocaleConfiguration title = new TitleLocaleConfiguration();
+    @Inject
+    public NewLocaleConfiguration(
+            final @ForTickets Path folder,
+            final MainConfiguration configuration
+    ) throws ConfigurateException {
+        Path localeFolder = folder.resolve("locales");
+        Path file = localeFolder.resolve(this.makeLocaleFileName(configuration.locale));
 
-    public ShowLocaleConfiguration show = new ShowLocaleConfiguration();
+        YamlConfigurationLoader loader = YamlConfigurationLoader.builder()
+                .nodeStyle(NodeStyle.BLOCK)
+                .path(file)
+                .build();
 
-    public FormatLocaleConfiguration format = new FormatLocaleConfiguration();
+        CommentedConfigurationNode node = loader.load();
+        node = node.mergeFrom(this.loadDefault(configuration.locale));
 
-    @ConfigSerializable
-    public static final class TitleLocaleConfiguration {
-
-        public LocaleEntry wrapper = new LocaleEntry(" <dark_gray><bold><strikethrough>====<reset> ");
-
-        public LocaleEntry allTickets = new LocaleEntry("<wrapper><color:#f5a5a5>Tickets<wrapper>");
-
-        public LocaleEntry yourTickets = new LocaleEntry("<wrapper><color:#f5a5a5>Tickets<wrapper>");
-
-        public LocaleEntry showTicket = new LocaleEntry("<wrapper><color:#f5a5a5>Ticket <ticket><wrapper>");
-
-        public LocaleEntry highscores = new LocaleEntry("<wrapper><color:#f5a5a5>Highscores<wrapper>");
-
-        public LocaleEntry log = new LocaleEntry("<wrapper><color:#f5a5a5>Log<wrapper>");
-
+        loader.save(node);
+        this.entries = node.visit(new LocaleVisitor());
     }
 
-    @ConfigSerializable
-    public static final class ShowLocaleConfiguration {
-
-        public LocaleEntry status = new LocaleEntry("<white>Status<dark_gray>: <yellow><status>");
-
-        public LocaleEntry player = new LocaleEntry("<white>Created<dark_gray>: <yellow><player>");
-
-        public LocaleEntry position = new LocaleEntry("<white>Position<dark_gray>: <yellow><position>");
-
-        public LocaleEntry claimed = new LocaleEntry("<white>Claimer<dark_gray>: <yellow><claimer>");
-
-        public LocaleEntry unclaimed = new LocaleEntry("<white>Claimer<dark_gray>: <yellow>NONE");
-
-        public LocaleEntry message = new LocaleEntry("<white>Message<dark_gray>: <yellow><message>");
-
+    public String get(final String key) {
+        return this.entries.get(key);
     }
 
-    @ConfigSerializable
-    public static final class FormatLocaleConfiguration {
+    //todo: NEEDS TO COPY ALL LOCALES REGARDLESS
+    private CommentedConfigurationNode loadDefault(final String locale) throws ConfigurateException {
+        YamlConfigurationLoader loader = YamlConfigurationLoader.builder()
+                .nodeStyle(NodeStyle.BLOCK)
+                .url(PureTickets.class.getResource("/locales/" + this.makeLocaleFileName(locale)))
+                .build();
 
-        public LocaleEntry list = new LocaleEntry("<ticket> <dark_gray>- <white><message>");
-
-        public LocaleEntry listHeader = new LocaleEntry("<green><player>");
-
-        public LocaleEntry log = new LocaleEntry("<yellow><bold><action> - <white><player>");
-
-        public LocaleEntry hs = new LocaleEntry("<green><player> <dark_gray>- <white><bold><amount>");
-
+        return loader.load();
     }
 
-    //region Configurate
-    private static final @NonNull ObjectMapper<LocaleConfiguration> MAPPER;
+    private String makeLocaleFileName(final String locale) {
+        return "locale_" + locale + ".yml";
+    }
 
-    static {
-        try {
-            MAPPER = ObjectMapper.factory().get(LocaleConfiguration.class);
-        } catch (final SerializationException e) {
-            throw new ExceptionInInitializerError(e);
+    private static final class LocaleVisitor implements ConfigurationVisitor.Safe<Map<String, String>, Map<String, String>> {
+
+        @Override
+        public Map<String, String> newState() {
+            return new HashMap<>();
+        }
+
+        @Override
+        public void beginVisit(final ConfigurationNode node, final Map<String, String> state) {
+            // no-op
+        }
+
+        @Override
+        public void enterNode(final ConfigurationNode node, final Map<String, String> state) {
+            // no-op
+        }
+
+        @Override
+        public void enterMappingNode(final ConfigurationNode node, final Map<String, String> state) {
+            // no-op
+        }
+
+        @Override
+        public void enterListNode(final ConfigurationNode node, final Map<String, String> state) {
+            // no-op
+        }
+
+        @Override
+        public void enterScalarNode(final ConfigurationNode node, final Map<String, String> state) {
+            state.put(this.path(node), node.getString());
+        }
+
+        @Override
+        public void exitMappingNode(final ConfigurationNode node, final Map<String, String> state) {
+            // no-op
+        }
+
+        @Override
+        public void exitListNode(final ConfigurationNode node, final Map<String, String> state) {
+            // no-op
+        }
+
+        @Override
+        public Map<String, String> endVisit(final Map<String, String> state) {
+            return state;
+        }
+
+        private String path(final ConfigurationNode node) {
+            NodePath path = node.path();
+            if (path.size() == 0) {
+                return "";
+            }
+
+            StringBuilder sb = new StringBuilder(path.get(0).toString());
+            for (int i = 1; i < path.size(); i++) {
+                sb.append(".").append(path.get(i));
+            }
+            return sb.toString();
         }
     }
-
-    public static LocaleConfiguration loadFrom(final @NonNull ConfigurationNode node) {
-        try {
-            return MAPPER.load(node);
-        } catch (final SerializationException e) {
-            throw new ExceptionInInitializerError(e);
-        }
-    }
-
-    public <N extends ScopedConfigurationNode<N>> void saveTo(final @NonNull N node) {
-        try {
-            MAPPER.save(this, node);
-        } catch (final SerializationException e) {
-            throw new ExceptionInInitializerError(e);
-        }
-    }
-    //endregion
 
 }
