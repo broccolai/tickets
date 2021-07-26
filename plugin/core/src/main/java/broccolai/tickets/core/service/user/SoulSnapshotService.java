@@ -1,9 +1,9 @@
 package broccolai.tickets.core.service.user;
 
 import broccolai.tickets.api.model.user.SoulSnapshot;
-import broccolai.tickets.api.utilities.Either;
 import cloud.commandframework.services.types.Service;
 import java.util.UUID;
+import net.kyori.moonshine.util.Either;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
@@ -11,7 +11,10 @@ public interface SoulSnapshotService extends Service<Either<UUID, String>, SoulS
 
     @Override
     default @Nullable SoulSnapshot handle(@NonNull Either<UUID, String> context) {
-        return context.map(this::handleUniqueId, this::handleName);
+        return context.right()
+                .map(this::handleName)
+                .or(() -> context.left().map(this::handleUniqueId))
+                .orElseThrow();
     }
 
     @Nullable SoulSnapshot handleUniqueId(@NonNull UUID uuid);
