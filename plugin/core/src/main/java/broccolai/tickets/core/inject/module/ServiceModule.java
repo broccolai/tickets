@@ -11,6 +11,7 @@ import broccolai.tickets.api.service.message.MessageService;
 import broccolai.tickets.api.service.storage.StorageService;
 import broccolai.tickets.api.service.template.TemplateService;
 import broccolai.tickets.api.service.ticket.TicketService;
+import broccolai.tickets.core.configuration.LocaleConfiguration;
 import broccolai.tickets.core.service.context.MappedContextService;
 import broccolai.tickets.core.service.event.KyoriEventService;
 import broccolai.tickets.core.service.interaction.EventInteractionService;
@@ -18,8 +19,6 @@ import broccolai.tickets.core.service.intergrations.HttpDiscordService;
 import broccolai.tickets.core.service.message.BasicReceiverResolver;
 import broccolai.tickets.core.service.message.InteractionPlaceholderResolver;
 import broccolai.tickets.core.service.message.MessageRenderer;
-import broccolai.tickets.core.service.message.MessageSender;
-import broccolai.tickets.core.service.message.MessageSource;
 import broccolai.tickets.core.service.message.NumberPlaceholderResolver;
 import broccolai.tickets.core.service.message.SoulPlaceholderResolver;
 import broccolai.tickets.core.service.message.PermissionReceiverResolver;
@@ -53,11 +52,10 @@ public final class ServiceModule extends AbstractModule {
 
     @Provides
     public MessageService messageService(
+            final @NonNull LocaleConfiguration localeConfiguration,
             final @NonNull BasicReceiverResolver basicReceiverResolver,
             final @NonNull PermissionReceiverResolver permissionReceiverResolver,
-            final @NonNull MessageSource messageSource,
             final @NonNull MessageRenderer messageRenderer,
-            final @NonNull MessageSender messageSender,
             final @NonNull StringPlaceholderResolver stringPlaceholderResolver,
             final @NonNull NumberPlaceholderResolver numberPlaceholderResolver,
             final @NonNull TicketPlaceholderResolver ticketPlaceholderResolver,
@@ -67,9 +65,9 @@ public final class ServiceModule extends AbstractModule {
         return Moonshine.<MessageService, Audience>builder(TypeToken.get(MessageService.class))
                 .receiverLocatorResolver(basicReceiverResolver, 0)
                 .receiverLocatorResolver(permissionReceiverResolver, 1)
-                .sourced(messageSource)
+                .sourced((audience, key) -> localeConfiguration.get(key))
                 .rendered(messageRenderer)
-                .sent(messageSender)
+                .sent(Audience::sendMessage)
                 .resolvingWithStrategy(
                         new StandardPlaceholderResolverStrategy<>(new StandardSupertypeThenInterfaceSupertypeStrategy(true))
                 )
