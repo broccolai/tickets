@@ -4,7 +4,6 @@ import broccolai.tickets.api.model.user.ConsoleSoul;
 import broccolai.tickets.api.model.user.Soul;
 import broccolai.tickets.api.model.user.SoulSnapshot;
 import broccolai.tickets.api.service.user.UserService;
-import broccolai.tickets.api.utilities.Either;
 import broccolai.tickets.core.service.user.snapshot.AshconSnapshotService;
 import broccolai.tickets.core.service.user.snapshot.CacheSnapshotService;
 import broccolai.tickets.core.service.user.snapshot.DatabaseSnapshotService;
@@ -12,6 +11,7 @@ import cloud.commandframework.services.ServicePipeline;
 import io.leangen.geantyref.TypeToken;
 import java.util.Collections;
 import java.util.UUID;
+import net.kyori.moonshine.util.Either;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 public abstract class SimpleUserService implements UserService {
