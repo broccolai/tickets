@@ -7,7 +7,7 @@ import java.util.UUID;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-public interface Ticket {
+public interface Ticket extends Comparable<Ticket> {
 
     int id();
 

@@ -10,6 +10,7 @@ import java.util.Optional;
 import java.util.UUID;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jetbrains.annotations.NotNull;
 
 public final class TicketImpl implements Ticket {
 
@@ -71,6 +72,11 @@ public final class TicketImpl implements Ticket {
     @Override
     public @NonNull Interactions interactions() {
         return this.interactions;
+    }
+
+    @Override
+    public int compareTo(final @NotNull Ticket target) {
+        return Integer.compare(this.id(), target.id());
     }
 
 }
