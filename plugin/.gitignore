@@ -155,4 +155,4 @@ gradle-app.setting
 # Custom Ignores
 build.sh
 .env
-**/run
+**/run/
