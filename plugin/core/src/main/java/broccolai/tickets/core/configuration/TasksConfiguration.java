@@ -10,6 +10,9 @@ public final class TasksConfiguration {
     @Comment("How often to remind staff of the current open tickets, in minutes")
     public ReminderTaskConfiguration reminder = new ReminderTaskConfiguration();
 
+    @Comment("How long to wait after a player joins to send the reminder message, in seconds")
+    public int joinReminderDelay = 5;
+
     @ConfigSerializable
     public static final class ReminderTaskConfiguration {
 

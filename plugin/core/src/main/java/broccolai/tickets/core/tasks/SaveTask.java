@@ -1,11 +1,11 @@
 package broccolai.tickets.core.tasks;
 
-import broccolai.tickets.api.model.task.Task;
+import broccolai.tickets.api.model.task.RepeatTask;
 import broccolai.tickets.api.service.storage.StorageService;
 import com.google.inject.Inject;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-public final class SaveTask implements Task {
+public final class SaveTask implements RepeatTask {
 
     private final StorageService storageService;
 

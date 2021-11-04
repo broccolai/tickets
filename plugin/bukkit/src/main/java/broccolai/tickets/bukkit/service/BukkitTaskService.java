@@ -1,5 +1,6 @@
 package broccolai.tickets.bukkit.service;
 
+import broccolai.tickets.api.model.task.RepeatTask;
 import broccolai.tickets.api.model.task.Task;
 import broccolai.tickets.api.service.tasks.TaskService;
 import com.google.inject.Inject;
@@ -30,6 +31,11 @@ public final class BukkitTaskService implements TaskService {
 
     @Override
     public void schedule(final @NonNull Task task) {
+        Bukkit.getScheduler().runTaskLaterAsynchronously(this.plugin, task, task.delay());
+    }
+
+    @Override
+    public void schedule(final @NonNull RepeatTask task) {
         Bukkit.getScheduler().runTaskTimerAsynchronously(this.plugin, task, task.delay(), task.repeat());
     }
 

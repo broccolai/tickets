@@ -1,6 +1,6 @@
 package broccolai.tickets.core.tasks;
 
-import broccolai.tickets.api.model.task.Task;
+import broccolai.tickets.api.model.task.RepeatTask;
 import broccolai.tickets.api.model.ticket.TicketStatus;
 import broccolai.tickets.api.model.user.PlayerSoul;
 import broccolai.tickets.api.service.message.MessageService;
@@ -14,7 +14,7 @@ import net.kyori.adventure.text.Component;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import java.util.EnumSet;
 
-public final class ReminderTask implements Task {
+public final class ReminderTask implements RepeatTask {
 
     private final TasksConfiguration.ReminderTaskConfiguration config;
     private final UserService userService;
