@@ -50,17 +50,8 @@ public final class SoulSubscriber implements Subscriber {
 
     public void onSoulJoin(final @NonNull SoulJoinEvent event) {
         PlayerSoul soul = event.soul();
-        Collection<Component> notifications = this.storageService.notifications(soul);
-
-        for (final Component notification : notifications) {
-            soul.sendMessage(notification);
-        }
-
-        if (!soul.permission(Constants.STAFF_PERMISSION + ".announce")) {
-            return;
-        }
-
         Task task = new LoginReminderTask(soul);
+
         this.taskService.schedule(task);
     }
 
@@ -76,14 +67,20 @@ public final class SoulSubscriber implements Subscriber {
         public void run() {
             int tickets = SoulSubscriber.this.ticketService.get(EnumSet.of(TicketStatus.OPEN, TicketStatus.CLAIMED)).size();
 
-            if (tickets != 0) {
+            if (this.soul.permission(Constants.STAFF_PERMISSION + ".announce") && tickets != 0) {
                 this.soul.sendMessage(SoulSubscriber.this.messageService.taskReminder(tickets));
+            }
+
+            Collection<Component> notifications = SoulSubscriber.this.storageService.notifications(this.soul);
+
+            for (final Component notification : notifications) {
+                this.soul.sendMessage(notification);
             }
         }
 
         @Override
         public long delay() {
-            return SoulSubscriber.this.tasksConfiguration.joinReminderDelay;
+            return (long) SoulSubscriber.this.tasksConfiguration.joinReminderDelay * 60 * 20;
         }
 
     }
