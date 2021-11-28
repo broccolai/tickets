@@ -18,8 +18,8 @@ router.post('/', async (req, res) => {
 
   const authReq = req as IBasicAuthedRequest;
   const { output } = servers.get(authReq.auth.user);
-  const { server, ticket, author, action } = req.body as MessageData;
-  const { id, player, location, status, note, message } = ticket;
+  const { server, ticket, author, action, note } = req.body as MessageData;
+  const { id, player, location, status, message } = ticket;
   const channel = (await client.channels.fetch(output)) as TextChannel;
 
   const serverText = server != null ? 'Server: ' + server : '';

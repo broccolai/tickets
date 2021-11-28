@@ -6,6 +6,7 @@ type MessageData = {
   ticket: Ticket;
   author: Player;
   action: string;
+  note?: string;
 };
 
 export default MessageData;

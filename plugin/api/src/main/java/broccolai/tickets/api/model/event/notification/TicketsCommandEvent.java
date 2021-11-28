@@ -13,7 +13,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 public abstract class TicketsCommandEvent implements SenderNotificationEvent, TargetNotificationEvent, StaffNotificationEvent,
         DiscordNotificationEvent, TicketEvent, SoulEvent {
 
-    private final NotificationReason notificationReason;
+    protected final NotificationReason notificationReason;
     protected final OnlineSoul soul;
     protected final Ticket ticket;
 
@@ -37,8 +37,14 @@ public abstract class TicketsCommandEvent implements SenderNotificationEvent, Ta
         return this.ticket;
     }
 
+    /**
+     * Serialize this event as a json object
+     *
+     * @param userService the user service
+     * @return json object containing data
+     */
     @Override
-    public final @NonNull JsonObject discord(final @NonNull UserService userService) {
+    public @NonNull JsonObject discord(final @NonNull UserService userService) {
         JsonObject json = new JsonObject();
 
         json.add("ticket", JsonUtility.ticket(userService, this.ticket));
