@@ -80,7 +80,7 @@ public final class SoulSubscriber implements Subscriber {
 
         @Override
         public long delay() {
-            return (long) SoulSubscriber.this.tasksConfiguration.joinReminderDelay * 60 * 20;
+            return (long) SoulSubscriber.this.tasksConfiguration.joinReminderDelay * 20;
         }
 
     }
