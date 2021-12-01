@@ -17,7 +17,7 @@ plugins {
     id("net.ltgt.errorprone")
 }
 
-group = "broccolai.tickets"
+group = "love.broccolai.tickets"
 version = "6.0.0-SNAPSHOT"
 
 subprojects {
@@ -41,6 +41,11 @@ subprojects {
 
     dependencies {
         errorprone(rootProject.libs.errorprone)
+
+        testImplementation(rootProject.libs.truth)
+
+        testImplementation(rootProject.libs.junit.api)
+        testImplementation(rootProject.libs.junit.engine)
     }
 
     tasks {
