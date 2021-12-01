@@ -6,6 +6,7 @@ import net.kyori.indra.IndraPlugin
 import net.kyori.indra.IndraPublishingPlugin
 import net.kyori.indra.repository.sonatypeSnapshots
 import net.ltgt.gradle.errorprone.ErrorPronePlugin
+import com.adarshr.gradle.testlogger.TestLoggerPlugin
 
 plugins {
     id("net.kyori.indra")
@@ -15,6 +16,7 @@ plugins {
     id("com.github.johnrengelman.shadow")
     id("com.github.ben-manes.versions")
     id("net.ltgt.errorprone")
+    id("com.adarshr.test-logger")
 }
 
 group = "love.broccolai.tickets"
@@ -26,6 +28,7 @@ subprojects {
     apply<IndraCheckstylePlugin>()
     apply<IndraPublishingPlugin>()
     apply<ErrorPronePlugin>()
+    apply<TestLoggerPlugin>()
 
     repositories {
         mavenCentral()
@@ -56,12 +59,18 @@ subprojects {
 
             javaVersions {
                 target(17)
+                testWith(17)
             }
 
             github("broccolai", "tickets") {
                 ci(true)
                 issues(true)
             }
+        }
+
+        testlogger {
+            theme = com.adarshr.gradle.testlogger.theme.ThemeType.MOCHA_PARALLEL
+            showPassed = true
         }
 
         compileJava {
