@@ -4,9 +4,9 @@ import broccolai.corn.core.Lists;
 import broccolai.corn.core.Numbers;
 import broccolai.tickets.api.model.ticket.Ticket;
 import broccolai.tickets.api.model.ticket.TicketStatus;
-import broccolai.tickets.api.model.user.OnlineSoul;
-import broccolai.tickets.api.model.user.PlayerSoul;
-import broccolai.tickets.api.model.user.Soul;
+import broccolai.tickets.api.model.user.OnlineUser;
+import broccolai.tickets.api.model.user.PlayerUser;
+import broccolai.tickets.api.model.user.User;
 import broccolai.tickets.api.service.ticket.TicketService;
 import broccolai.tickets.api.service.user.UserService;
 import broccolai.tickets.core.exceptions.TicketNotFound;
@@ -24,7 +24,7 @@ import java.util.Queue;
 import java.util.Set;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-public final class TicketArgument extends CommandArgument<OnlineSoul, Ticket> {
+public final class TicketArgument extends CommandArgument<OnlineUser, Ticket> {
 
     @Inject
     public TicketArgument(
@@ -38,7 +38,7 @@ public final class TicketArgument extends CommandArgument<OnlineSoul, Ticket> {
         super(true, name, new TicketParser(userService, ticketService, mode, suggestions, padding), Ticket.class);
     }
 
-    public static final class TicketParser implements ArgumentParser<OnlineSoul, Ticket> {
+    public static final class TicketParser implements ArgumentParser<OnlineUser, Ticket> {
 
         private final UserService userService;
         private final TicketService ticketService;
@@ -62,7 +62,7 @@ public final class TicketArgument extends CommandArgument<OnlineSoul, Ticket> {
 
         @Override
         public @NonNull ArgumentParseResult<Ticket> parse(
-                final @NonNull CommandContext<OnlineSoul> commandContext,
+                final @NonNull CommandContext<OnlineUser> commandContext,
                 final @NonNull Queue<String> inputQueue
         ) {
             return switch (this.parserMode) {
@@ -73,7 +73,7 @@ public final class TicketArgument extends CommandArgument<OnlineSoul, Ticket> {
 
         @Override
         public @NonNull List<String> suggestions(
-                final @NonNull CommandContext<OnlineSoul> commandContext,
+                final @NonNull CommandContext<OnlineUser> commandContext,
                 final @NonNull String input
         ) {
             if (this.parserMode == TicketParserMode.SENDERS) {
@@ -83,7 +83,7 @@ public final class TicketArgument extends CommandArgument<OnlineSoul, Ticket> {
             int current = commandContext.getRawInput().size() - 3 - this.padding;
 
             if (current == 0) {
-                return Lists.map(this.userService.players(), PlayerSoul::username);
+                return Lists.map(this.userService.players(), PlayerUser::username);
             }
 
             String firstArgument = commandContext.getRawInput().get(2);
@@ -93,12 +93,12 @@ public final class TicketArgument extends CommandArgument<OnlineSoul, Ticket> {
                 return new ArrayList<>();
             }
 
-            Soul target = this.userService.wrap(firstArgument);
+            User target = this.userService.wrap(firstArgument);
 
             return this.ticketIds(target);
         }
 
-        private List<String> ticketIds(final @NonNull Soul target) {
+        private List<String> ticketIds(final @NonNull User target) {
             return Lists.map(this.ticketService.get(target, this.suggestions), ticket -> String.valueOf(ticket.id()));
         }
 
@@ -108,7 +108,7 @@ public final class TicketArgument extends CommandArgument<OnlineSoul, Ticket> {
         }
 
         private ArgumentParseResult<Ticket> any(
-                final @NonNull CommandContext<OnlineSoul> commandContext,
+                final @NonNull CommandContext<OnlineUser> commandContext,
                 final @NonNull Queue<String> inputQueue
         ) {
             String input = inputQueue.peek();
@@ -152,7 +152,7 @@ public final class TicketArgument extends CommandArgument<OnlineSoul, Ticket> {
         }
 
         private ArgumentParseResult<Ticket> senders(
-                final @NonNull CommandContext<OnlineSoul> commandContext,
+                final @NonNull CommandContext<OnlineUser> commandContext,
                 final @NonNull Queue<String> inputQueue
         ) {
             ArgumentParseResult<Ticket> result = this.any(commandContext, inputQueue);
@@ -164,7 +164,7 @@ public final class TicketArgument extends CommandArgument<OnlineSoul, Ticket> {
 
             Ticket ticket = potentialTicket.get();
 
-            if (!ticket.player().equals(commandContext.getSender().uuid())) {
+            if (!ticket.uuid().equals(commandContext.getSender().uuid())) {
                 return ArgumentParseResult.failure(new TicketNotFound());
             }
 

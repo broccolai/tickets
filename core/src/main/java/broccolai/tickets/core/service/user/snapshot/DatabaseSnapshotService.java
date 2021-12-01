@@ -1,6 +1,6 @@
 package broccolai.tickets.core.service.user.snapshot;
 
-import broccolai.tickets.api.model.user.SoulSnapshot;
+import broccolai.tickets.api.model.user.UserSnapshot;
 import broccolai.tickets.api.service.storage.StorageService;
 import broccolai.tickets.core.service.user.SoulSnapshotService;
 import cloud.commandframework.services.ExecutionOrder;
@@ -23,12 +23,12 @@ public final class DatabaseSnapshotService implements SoulSnapshotService {
     }
 
     @Override
-    public @Nullable SoulSnapshot handleUniqueId(final @NonNull UUID uuid) {
+    public @Nullable UserSnapshot handleUniqueId(final @NonNull UUID uuid) {
         return this.storageService.snapshot(uuid);
     }
 
     @Override
-    public @Nullable SoulSnapshot handleName(final @NonNull String name) {
+    public @Nullable UserSnapshot handleName(final @NonNull String name) {
         return this.storageService.snapshot(name);
     }
 

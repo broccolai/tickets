@@ -1,7 +1,7 @@
 package broccolai.tickets.core.storage.mapper;
 
 import broccolai.tickets.api.model.ticket.Ticket;
-import broccolai.tickets.api.model.ticket.TicketStatus;
+import broccolai.tickets.api.model.ticket.Ticket.Status;
 import broccolai.tickets.core.model.ticket.TicketImpl;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -18,8 +18,8 @@ public final class TicketMapper implements RowMapper<Ticket> {
         ColumnMapper<UUID> uuidMapper = ctx.findColumnMapperFor(UUID.class).orElseThrow(IllegalStateException::new);
 
         int id = rs.getInt("id");
-        UUID player = uuidMapper.map(rs, "player", ctx);
-        TicketStatus status = EnumMapper.byName(TicketStatus.class).map(rs, "status", ctx);
+        UUID player = uuidMapper.map(rs, "uuid", ctx);
+        Status status = EnumMapper.byName(Status.class).map(rs, "status", ctx);
         UUID claimer = uuidMapper.map(rs, "claimer", ctx);
 
         return new TicketImpl(id, player, status, claimer);

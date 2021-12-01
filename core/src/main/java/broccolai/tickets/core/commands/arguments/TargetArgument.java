@@ -1,9 +1,9 @@
 package broccolai.tickets.core.commands.arguments;
 
 import broccolai.corn.core.Lists;
-import broccolai.tickets.api.model.user.OnlineSoul;
-import broccolai.tickets.api.model.user.PlayerSoul;
-import broccolai.tickets.api.model.user.Soul;
+import broccolai.tickets.api.model.user.OnlineUser;
+import broccolai.tickets.api.model.user.PlayerUser;
+import broccolai.tickets.api.model.user.User;
 import broccolai.tickets.api.service.user.UserService;
 import cloud.commandframework.arguments.CommandArgument;
 import cloud.commandframework.arguments.parser.ArgumentParseResult;
@@ -16,14 +16,14 @@ import java.util.List;
 import java.util.Queue;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-public final class TargetArgument extends CommandArgument<OnlineSoul, Soul> {
+public final class TargetArgument extends CommandArgument<OnlineUser, User> {
 
     @Inject
     public TargetArgument(final @NonNull UserService userService, final @Assisted("name") @NonNull String name) {
-        super(true, name, new TargetParser(userService), Soul.class);
+        super(true, name, new TargetParser(userService), User.class);
     }
 
-    private static final class TargetParser implements ArgumentParser<OnlineSoul, Soul> {
+    private static final class TargetParser implements ArgumentParser<OnlineUser, User> {
 
         private final UserService userService;
 
@@ -32,8 +32,8 @@ public final class TargetArgument extends CommandArgument<OnlineSoul, Soul> {
         }
 
         @Override
-        public @NonNull ArgumentParseResult<@NonNull Soul> parse(
-                final @NonNull CommandContext<@NonNull OnlineSoul> commandContext,
+        public @NonNull ArgumentParseResult<@NonNull User> parse(
+                final @NonNull CommandContext<@NonNull OnlineUser> commandContext,
                 final @NonNull Queue<@NonNull String> queue
         ) {
             String input = queue.peek();
@@ -51,9 +51,9 @@ public final class TargetArgument extends CommandArgument<OnlineSoul, Soul> {
 
         @Override
         public @NonNull List<@NonNull String> suggestions(
-                final @NonNull CommandContext<OnlineSoul> commandContext, final @NonNull String input
+                final @NonNull CommandContext<OnlineUser> commandContext, final @NonNull String input
         ) {
-            return Lists.map(this.userService.players(), PlayerSoul::username);
+            return Lists.map(this.userService.players(), PlayerUser::username);
         }
 
     }

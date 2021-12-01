@@ -1,6 +1,6 @@
 package broccolai.tickets.core.service.message;
 
-import broccolai.tickets.api.model.user.Soul;
+import broccolai.tickets.api.model.user.User;
 import broccolai.tickets.api.service.user.UserService;
 import com.google.inject.Inject;
 import net.kyori.adventure.audience.Audience;
@@ -35,7 +35,7 @@ public final class UUIDPlaceholderResolver implements IPlaceholderResolver<Audie
             final @Nullable Object[] parameters
     ) {
         return Map.of(
-            placeholderName, Either.right(ContinuanceValue.continuanceValue(this.userService.snapshot(value), Soul.class))
+            placeholderName, Either.right(ContinuanceValue.continuanceValue(this.userService.snapshot(value), User.class))
         );
     }
 

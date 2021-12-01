@@ -4,9 +4,9 @@ import broccolai.tickets.api.model.interaction.Action;
 import broccolai.tickets.api.model.interaction.MessageInteraction;
 import broccolai.tickets.api.model.ticket.Ticket;
 import broccolai.tickets.api.model.ticket.TicketStatus;
-import broccolai.tickets.api.model.user.OnlineSoul;
-import broccolai.tickets.api.model.user.Soul;
-import broccolai.tickets.api.service.interactions.InteractionService;
+import broccolai.tickets.api.model.user.OnlineUser;
+import broccolai.tickets.api.model.user.User;
+import broccolai.tickets.api.service.modification.ModificationService;
 import broccolai.tickets.api.service.message.MessageService;
 import broccolai.tickets.api.service.storage.StorageService;
 import broccolai.tickets.api.service.ticket.TicketService;
@@ -44,7 +44,7 @@ public final class TicketsCommand extends CommonCommands {
     private final CloudArgumentFactory argumentFactory;
     private final MessageService messageService;
     private final TicketService ticketService;
-    private final InteractionService interactionService;
+    private final ModificationService modificationService;
     private final UserService userService;
 
     @Inject
@@ -54,7 +54,7 @@ public final class TicketsCommand extends CommonCommands {
             final @NonNull MessageService messageService,
             final @NonNull StorageService storageService,
             final @NonNull TicketService ticketService,
-            final @NonNull InteractionService interactionService,
+            final @NonNull ModificationService modificationService,
             final @NonNull UserService userService
     ) {
         super(messageService, storageService, userService);
@@ -62,15 +62,15 @@ public final class TicketsCommand extends CommonCommands {
         this.argumentFactory = argumentFactory;
         this.messageService = messageService;
         this.ticketService = ticketService;
-        this.interactionService = interactionService;
+        this.modificationService = modificationService;
         this.userService = userService;
     }
 
     @Override
     public void register(
-            final @NonNull CommandManager<OnlineSoul> manager
+            final @NonNull CommandManager<OnlineUser> manager
     ) {
-        final Command.Builder<OnlineSoul> builder = manager.commandBuilder("tickets", "tis");
+        final Command.Builder<OnlineUser> builder = manager.commandBuilder("tickets", "tis");
 
         manager.command(builder.literal(
                 this.config.show.main,
@@ -180,7 +180,7 @@ public final class TicketsCommand extends CommonCommands {
                         .flag(manager.flagBuilder("status")
                                 .withArgument(EnumArgument.of(TicketStatus.class, "status"))
                         )
-                        .flag(manager.flagBuilder("player")
+                        .flag(manager.flagBuilder("uuid")
                                 .withArgument(this.argumentFactory.target("target"))
                         )
                         .handler(this::processList)
@@ -198,37 +198,37 @@ public final class TicketsCommand extends CommonCommands {
 
     }
 
-    private void processClaim(final @NonNull CommandContext<@NonNull OnlineSoul> c) {
-        OnlineSoul sender = c.getSender();
+    private void processClaim(final @NonNull CommandContext<@NonNull OnlineUser> c) {
+        OnlineUser sender = c.getSender();
         Ticket ticket = c.get("ticket");
 
-        this.interactionService.claim(sender, ticket);
+        this.modificationService.claim(sender, ticket);
     }
 
-    private void processAssign(final @NonNull CommandContext<@NonNull OnlineSoul> c) {
-        OnlineSoul sender = c.getSender();
+    private void processAssign(final @NonNull CommandContext<@NonNull OnlineUser> c) {
+        OnlineUser sender = c.getSender();
         Ticket ticket = c.get("ticket");
-        Soul target = c.get("target");
+        User target = c.get("target");
 
-        this.interactionService.assign(sender, target, ticket);
+        this.modificationService.assign(sender, target, ticket);
     }
 
-    private void processComplete(final @NonNull CommandContext<@NonNull OnlineSoul> c) {
-        OnlineSoul sender = c.getSender();
-        Ticket ticket = c.get("ticket");
-
-        this.interactionService.complete(sender, ticket);
-    }
-
-    private void processUnclaim(final @NonNull CommandContext<@NonNull OnlineSoul> c) {
-        OnlineSoul sender = c.getSender();
+    private void processComplete(final @NonNull CommandContext<@NonNull OnlineUser> c) {
+        OnlineUser sender = c.getSender();
         Ticket ticket = c.get("ticket");
 
-        this.interactionService.unclaim(sender, ticket);
+        this.modificationService.complete(sender, ticket);
     }
 
-    private void processNote(final @NonNull CommandContext<@NonNull OnlineSoul> c) {
-        OnlineSoul sender = c.getSender();
+    private void processUnclaim(final @NonNull CommandContext<@NonNull OnlineUser> c) {
+        OnlineUser sender = c.getSender();
+        Ticket ticket = c.get("ticket");
+
+        this.modificationService.unclaim(sender, ticket);
+    }
+
+    private void processNote(final @NonNull CommandContext<@NonNull OnlineUser> c) {
+        OnlineUser sender = c.getSender();
         Ticket ticket = c.get("ticket");
         String message = c.get("message");
         MessageInteraction interaction = new BasicMessageInteraction(
@@ -238,19 +238,19 @@ public final class TicketsCommand extends CommonCommands {
                 message
         );
 
-        this.interactionService.note(sender, ticket, interaction);
+        this.modificationService.note(sender, ticket, interaction);
     }
 
-    private void processReopen(final @NonNull CommandContext<@NonNull OnlineSoul> c) {
-        OnlineSoul sender = c.getSender();
+    private void processReopen(final @NonNull CommandContext<@NonNull OnlineUser> c) {
+        OnlineUser sender = c.getSender();
         Ticket ticket = c.get("ticket");
 
-        this.interactionService.reopen(sender, ticket);
+        this.modificationService.reopen(sender, ticket);
     }
 
-    private void processList(final @NonNull CommandContext<@NonNull OnlineSoul> c) {
-        OnlineSoul soul = c.getSender();
-        Optional<Soul> target = c.flags().getValue("player");
+    private void processList(final @NonNull CommandContext<@NonNull OnlineUser> c) {
+        OnlineUser soul = c.getSender();
+        Optional<User> target = c.flags().getValue("uuid");
         Set<TicketStatus> statuses = TicketStatus.from(c.flags());
 
         Map<UUID, Collection<Ticket>> tickets = target.map(value -> {
@@ -265,7 +265,7 @@ public final class TicketsCommand extends CommonCommands {
         results.add(this.messageService.listTitleAll());
 
         tickets.forEach((uuid, playersTickets) -> {
-            Soul player = this.userService.snapshot(uuid);
+            User player = this.userService.snapshot(uuid);
             results.add(this.messageService.listTitleHeader(player));
 
             for (final Ticket ticket : playersTickets) {
@@ -279,8 +279,8 @@ public final class TicketsCommand extends CommonCommands {
         ));
     }
 
-    private void processContext(final @NonNull CommandContext<@NonNull OnlineSoul> c) {
-        OnlineSoul soul = c.getSender();
+    private void processContext(final @NonNull CommandContext<@NonNull OnlineUser> c) {
+        OnlineUser soul = c.getSender();
         Ticket ticket = c.get("ticket");
 
         ticket.context().forEach((key, value) -> {

@@ -4,9 +4,9 @@ import broccolai.tickets.api.model.interaction.Interaction;
 import broccolai.tickets.api.model.interaction.MessageInteraction;
 import broccolai.tickets.api.model.service.Disposable;
 import broccolai.tickets.api.model.ticket.Ticket;
-import broccolai.tickets.api.model.ticket.TicketStatus;
-import broccolai.tickets.api.model.user.Soul;
-import broccolai.tickets.api.model.user.SoulSnapshot;
+import broccolai.tickets.api.model.ticket.Ticket.Status;
+import broccolai.tickets.api.model.user.User;
+import broccolai.tickets.api.model.user.UserSnapshot;
 import com.google.common.collect.Multimap;
 import java.time.temporal.ChronoUnit;
 import java.util.Collection;
@@ -18,15 +18,15 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 
 public interface StorageService extends Disposable {
 
-    int create(@NonNull Soul soul, @NonNull MessageInteraction messageInteraction);
+    @NonNull Ticket create(@NonNull User user, @NonNull MessageInteraction messageInteraction);
 
-    @NonNull Map<@NonNull Integer, @NonNull Ticket> tickets(@NonNull Collection<@NonNull Integer> ids);
+    @NonNull Collection<@NonNull Ticket> tickets(@NonNull Collection<@NonNull Integer> ids);
 
-    @NonNull Map<@NonNull Integer, @NonNull Ticket> findTickets(@NonNull Collection<TicketStatus> statuses);
+    @NonNull Collection<@NonNull Ticket> findTickets(@NonNull Collection<Status> statuses);
 
-    @NonNull Map<@NonNull Integer, @NonNull Ticket> findTickets(
-            @NonNull Soul soul,
-            @NonNull Collection<@NonNull TicketStatus> statuses
+    @NonNull Collection<@NonNull Ticket> findTickets(
+            @NonNull User user,
+            @NonNull Collection<@NonNull Status> statuses
     );
 
     void updateTickets(@NonNull Collection<Ticket> tickets);
@@ -35,17 +35,17 @@ public interface StorageService extends Disposable {
 
     @NonNull Collection<@NonNull Interaction> interactions(@NonNull Ticket ticket);
 
-    @NonNull Collection<@NonNull Component> notifications(@NonNull Soul soul);
+    @NonNull Collection<@NonNull Component> notifications(@NonNull User user);
 
-    void saveNotification(@NonNull Soul soul, @NonNull Component component);
+    void saveNotification(@NonNull User user, @NonNull Component component);
 
     @NonNull Map<@NonNull UUID, @NonNull Integer> highscores(@NonNull ChronoUnit chronoUnit);
 
-    void saveSnapshots(@NonNull Collection<@NonNull SoulSnapshot> snapshots);
+    void saveSnapshots(@NonNull Collection<@NonNull UserSnapshot> snapshots);
 
-    @Nullable SoulSnapshot snapshot(@NonNull String name);
+    @Nullable UserSnapshot snapshot(@NonNull String name);
 
-    @Nullable SoulSnapshot snapshot(@NonNull UUID uuid);
+    @Nullable UserSnapshot snapshot(@NonNull UUID uuid);
 
     void queue(@NonNull Ticket ticket, @NonNull Interaction interaction);
 

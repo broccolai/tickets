@@ -6,7 +6,7 @@ import broccolai.tickets.api.model.ticket.Ticket;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.Map;
-import broccolai.tickets.api.model.user.Soul;
+import broccolai.tickets.api.model.user.User;
 import broccolai.tickets.api.service.user.UserService;
 import com.google.inject.Inject;
 import net.kyori.adventure.audience.Audience;
@@ -40,7 +40,7 @@ public final class TicketPlaceholderResolver implements IPlaceholderResolver<Aud
             final Method method,
             final @Nullable Object[] parameters
     ) {
-        Soul soul = this.userService.snapshot(value.player());
+        User user = this.userService.snapshot(value.uuid());
         int id = value.id();
         String message = value.interactions().findLatestMessage(msg -> msg.action() == Action.MESSAGE)
                 .map(MessageInteraction::message)
@@ -48,23 +48,23 @@ public final class TicketPlaceholderResolver implements IPlaceholderResolver<Aud
 
         return Map.of(
                 placeholderName,
-                Either.left(ConclusionValue.conclusionValue(this.wholeTicket(value, soul))),
+                Either.left(ConclusionValue.conclusionValue(this.wholeTicket(value, user))),
                 placeholderName + "_id",
                 Either.right(ContinuanceValue.continuanceValue(id, Number.class)),
                 placeholderName + "_creator",
-                Either.right(ContinuanceValue.continuanceValue(soul.username(), String.class)),
+                Either.right(ContinuanceValue.continuanceValue(user.username(), String.class)),
                 placeholderName + "_message",
                 Either.right(ContinuanceValue.continuanceValue(message, String.class))
         );
     }
 
-    private @NonNull Component wholeTicket(final @NonNull Ticket ticket, final @NonNull Soul soul) {
+    private @NonNull Component wholeTicket(final @NonNull Ticket ticket, final @NonNull User user) {
         return Component.text('#', NamedTextColor.DARK_GRAY).append(Component.text(
                 ticket.id(), ticket.status().color(), TextDecoration.BOLD
         )).hoverEvent(HoverEvent.showText(Component.join(
                 Component.newline(),
                 Component.text("id: " + ticket.id()),
-                Component.text("player: " + soul.username()),
+                Component.text("uuid: " + user.username()),
                 Component.text("status: " + ticket.status().name())
         ))).clickEvent(ClickEvent.runCommand("/tickets show " + ticket.id()));
     }

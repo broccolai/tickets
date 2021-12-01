@@ -2,7 +2,7 @@ package broccolai.tickets.core.service.message;
 
 import broccolai.tickets.api.model.interaction.Interaction;
 import broccolai.tickets.api.model.interaction.MessageInteraction;
-import broccolai.tickets.api.model.user.Soul;
+import broccolai.tickets.api.model.user.User;
 import broccolai.tickets.api.service.user.UserService;
 import com.google.inject.Inject;
 import net.kyori.adventure.audience.Audience;
@@ -39,7 +39,7 @@ public final class InteractionPlaceholderResolver implements IPlaceholderResolve
             final Method method,
             final @Nullable Object[] parameters
     ) {
-        Soul soul = this.userService.snapshot(interaction.sender());
+        User user = this.userService.snapshot(interaction.sender());
 
         Component action = Component.text(interaction.action().toString());
         Component hover = Component.text("Time: " + FORMATTER.format(interaction.time()));
@@ -56,7 +56,7 @@ public final class InteractionPlaceholderResolver implements IPlaceholderResolve
                 placeholderName,
                 Either.left(ConclusionValue.conclusionValue(action.hoverEvent(hover))),
                 placeholderName + "_creator",
-                Either.right(ContinuanceValue.continuanceValue(soul, Soul.class))
+                Either.right(ContinuanceValue.continuanceValue(user, User.class))
         );
     }
 }

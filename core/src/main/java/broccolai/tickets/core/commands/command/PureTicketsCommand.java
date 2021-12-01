@@ -1,6 +1,6 @@
 package broccolai.tickets.core.commands.command;
 
-import broccolai.tickets.api.model.user.OnlineSoul;
+import broccolai.tickets.api.model.user.OnlineUser;
 import broccolai.tickets.api.service.message.MessageService;
 import broccolai.tickets.api.service.storage.StorageService;
 import broccolai.tickets.api.service.user.UserService;
@@ -35,8 +35,8 @@ public final class PureTicketsCommand implements BaseCommand {
     }
 
     @Override
-    public void register(final @NonNull CommandManager<OnlineSoul> manager) {
-        final Command.Builder<OnlineSoul> builder = manager.commandBuilder("puretickets");
+    public void register(final @NonNull CommandManager<OnlineUser> manager) {
+        final Command.Builder<OnlineUser> builder = manager.commandBuilder("puretickets");
 
         manager.command(builder.literal(
                                 "highscore",
@@ -50,8 +50,8 @@ public final class PureTicketsCommand implements BaseCommand {
         );
     }
 
-    private void processHighscore(final @NonNull CommandContext<@NonNull OnlineSoul> c) {
-        OnlineSoul sender = c.getSender();
+    private void processHighscore(final @NonNull CommandContext<@NonNull OnlineUser> c) {
+        OnlineUser sender = c.getSender();
         ChronoUnit timeUnit = c.<ChronoUnit>getOptional("amount").orElse(ChronoUnit.YEARS);
         List<Component> components = new ArrayList<>();
 

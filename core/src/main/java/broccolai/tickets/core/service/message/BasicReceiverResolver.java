@@ -1,8 +1,8 @@
 package broccolai.tickets.core.service.message;
 
 import broccolai.tickets.api.model.ticket.Ticket;
-import broccolai.tickets.api.model.user.OnlineSoul;
-import broccolai.tickets.api.model.user.Soul;
+import broccolai.tickets.api.model.user.OnlineUser;
+import broccolai.tickets.api.model.user.User;
 import broccolai.tickets.api.service.message.moonshine.Receiver;
 import broccolai.tickets.api.service.user.UserService;
 import broccolai.tickets.core.utilities.ReflectionHelper;
@@ -56,9 +56,9 @@ public final class BasicReceiverResolver implements IReceiverLocatorResolver<Aud
             }
 
             if (presentValue instanceof Ticket ticket) {
-                Soul soul = this.userService.wrap(ticket.player());
+                User user = this.userService.wrap(ticket.uuid());
 
-                if (soul instanceof OnlineSoul playerSoul) {
+                if (user instanceof OnlineUser playerSoul) {
                     return playerSoul;
                 }
 

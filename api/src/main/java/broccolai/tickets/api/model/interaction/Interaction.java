@@ -4,20 +4,20 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-public abstract class Interaction implements Comparable<Interaction> {
+public class Interaction {
 
     private final Action action;
     private final LocalDateTime time;
-    private final UUID sender;
+    private final UUID causer;
 
     public Interaction(
             final @NonNull Action action,
             final @NonNull LocalDateTime time,
-            final @NonNull UUID sender
+            final @NonNull UUID causer
     ) {
         this.action = action;
         this.time = time;
-        this.sender = sender;
+        this.causer = causer;
     }
 
     public final @NonNull Action action() {
@@ -29,12 +29,7 @@ public abstract class Interaction implements Comparable<Interaction> {
     }
 
     public final @NonNull UUID sender() {
-        return this.sender;
-    }
-
-    @Override
-    public final int compareTo(final @NonNull Interaction interaction) {
-        return this.time.compareTo(interaction.time);
+        return this.causer;
     }
 
 }

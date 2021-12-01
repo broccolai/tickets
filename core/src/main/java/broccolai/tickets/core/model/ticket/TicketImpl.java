@@ -16,7 +16,7 @@ public final class TicketImpl implements Ticket {
 
     private final int id;
     private final UUID player;
-    private TicketStatus status;
+    private Status status;
     private @Nullable UUID claimer;
 
     private final Context context = new MappedContext();
@@ -25,7 +25,7 @@ public final class TicketImpl implements Ticket {
     public TicketImpl(
             final int id,
             final @NonNull UUID player,
-            final @NonNull TicketStatus status,
+            final @NonNull Ticket.Status status,
             final @Nullable UUID claimer
     ) {
         this.id = id;
@@ -45,12 +45,12 @@ public final class TicketImpl implements Ticket {
     }
 
     @Override
-    public @NonNull TicketStatus status() {
+    public @NonNull Ticket.Status status() {
         return this.status;
     }
 
     @Override
-    public void status(final @NonNull TicketStatus status) {
+    public void status(final @NonNull Ticket.Status status) {
         this.status = status;
     }
 

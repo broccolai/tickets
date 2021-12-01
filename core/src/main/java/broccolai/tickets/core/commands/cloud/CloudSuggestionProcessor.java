@@ -1,17 +1,17 @@
 package broccolai.tickets.core.commands.cloud;
 
-import broccolai.tickets.api.model.user.OnlineSoul;
+import broccolai.tickets.api.model.user.OnlineUser;
 import cloud.commandframework.execution.CommandSuggestionProcessor;
 import cloud.commandframework.execution.preprocessor.CommandPreprocessingContext;
 import java.util.ArrayList;
 import java.util.List;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-public final class CloudSuggestionProcessor implements CommandSuggestionProcessor<OnlineSoul> {
+public final class CloudSuggestionProcessor implements CommandSuggestionProcessor<OnlineUser> {
 
     @Override
     public @NonNull List<String> apply(
-            final @NonNull CommandPreprocessingContext<OnlineSoul> context,
+            final @NonNull CommandPreprocessingContext<OnlineUser> context,
             final @NonNull List<String> strings
     ) {
         String input;

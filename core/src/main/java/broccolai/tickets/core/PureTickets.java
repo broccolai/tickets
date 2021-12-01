@@ -2,7 +2,7 @@ package broccolai.tickets.core;
 
 import broccolai.tickets.api.model.event.Subscriber;
 import broccolai.tickets.api.model.task.Task;
-import broccolai.tickets.api.model.user.OnlineSoul;
+import broccolai.tickets.api.model.user.OnlineUser;
 import broccolai.tickets.api.service.event.EventService;
 import broccolai.tickets.api.service.storage.StorageService;
 import broccolai.tickets.api.service.tasks.TaskService;
@@ -69,7 +69,7 @@ public final class PureTickets {
         }
     }
 
-    public void defaultCommandManagerSettings(final @NonNull CommandManager<OnlineSoul> commandManager) {
+    public void defaultCommandManagerSettings(final @NonNull CommandManager<OnlineUser> commandManager) {
         ExceptionHandler exceptionHandler = this.injector.getInstance(ExceptionHandler.class);
         CloudSuggestionProcessor suggestionProcessor = this.injector.getInstance(CloudSuggestionProcessor.class);
 
@@ -78,7 +78,7 @@ public final class PureTickets {
     }
 
     public void commands(
-            final @NonNull CommandManager<OnlineSoul> commandManager,
+            final @NonNull CommandManager<OnlineUser> commandManager,
             final @NonNull Class<? extends BaseCommand>[] commands
     ) {
         for (final Class<? extends BaseCommand> commandClazz : commands) {

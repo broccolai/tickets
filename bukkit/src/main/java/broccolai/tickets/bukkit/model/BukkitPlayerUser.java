@@ -1,18 +1,18 @@
 package broccolai.tickets.bukkit.model;
 
-import broccolai.tickets.api.model.user.PlayerSoul;
-import broccolai.tickets.api.model.user.Soul;
+import broccolai.tickets.api.model.user.PlayerUser;
+import broccolai.tickets.api.model.user.User;
 import java.util.UUID;
 import net.kyori.adventure.audience.Audience;
 import org.bukkit.entity.Player;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-public final class BukkitPlayerSoul extends Soul.Abstract implements PlayerSoul, BukkitOnlineSoul {
+public final class BukkitPlayerUser extends User.Abstract implements PlayerUser, BukkitOnlineUser {
 
     private final Player player;
     private final Audience audience;
 
-    public BukkitPlayerSoul(final @NonNull Player player, final @NonNull Audience audience) {
+    public BukkitPlayerUser(final @NonNull Player player, final @NonNull Audience audience) {
         this.player = player;
         this.audience = audience;
     }

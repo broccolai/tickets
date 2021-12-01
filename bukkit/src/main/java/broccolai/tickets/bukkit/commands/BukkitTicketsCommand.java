@@ -2,12 +2,12 @@ package broccolai.tickets.bukkit.commands;
 
 import broccolai.tickets.api.model.ticket.Ticket;
 import broccolai.tickets.api.model.ticket.TicketStatus;
-import broccolai.tickets.api.model.user.OnlineSoul;
-import broccolai.tickets.api.model.user.PlayerSoul;
+import broccolai.tickets.api.model.user.OnlineUser;
+import broccolai.tickets.api.model.user.PlayerUser;
 import broccolai.tickets.api.service.message.MessageService;
 import broccolai.tickets.api.service.tasks.TaskService;
 import broccolai.tickets.bukkit.context.BukkitTicketContextKeys;
-import broccolai.tickets.bukkit.model.BukkitPlayerSoul;
+import broccolai.tickets.bukkit.model.BukkitPlayerUser;
 import broccolai.tickets.core.commands.arguments.TicketParserMode;
 import broccolai.tickets.core.commands.command.BaseCommand;
 import broccolai.tickets.core.configuration.CommandsConfiguration;
@@ -48,16 +48,16 @@ public final class BukkitTicketsCommand implements BaseCommand {
 
     @Override
     public void register(
-            final @NonNull CommandManager<OnlineSoul> manager
+            final @NonNull CommandManager<OnlineUser> manager
     ) {
-        final Command.Builder<OnlineSoul> builder = manager.commandBuilder("tickets", "tis");
+        final Command.Builder<OnlineUser> builder = manager.commandBuilder("tickets", "tis");
 
         manager.command(builder.literal(
                                 this.config.teleport.main,
                                 ArgumentDescription.of("Teleport to a tickets creation location"),
                                 this.config.teleport.aliases
                         )
-                        .senderType(PlayerSoul.class)
+                        .senderType(PlayerUser.class)
                         .permission(Constants.STAFF_PERMISSION + ".teleport")
                         .argument(this.argumentFactory.ticket("ticket", TicketParserMode.ANY, EnumSet.allOf(TicketStatus.class), 0))
                         .handler(this::processTeleport)
@@ -65,8 +65,8 @@ public final class BukkitTicketsCommand implements BaseCommand {
         );
     }
 
-    private void processTeleport(final @NonNull CommandContext<@NonNull OnlineSoul> c) {
-        BukkitPlayerSoul soul = (BukkitPlayerSoul) c.getSender();
+    private void processTeleport(final @NonNull CommandContext<@NonNull OnlineUser> c) {
+        BukkitPlayerUser soul = (BukkitPlayerUser) c.getSender();
         Ticket ticket = c.get("ticket");
         Optional<Location> potentialLocation = ticket.context().get(BukkitTicketContextKeys.LOCATION);
 

@@ -3,7 +3,7 @@ package broccolai.tickets.api.service.message;
 import broccolai.tickets.api.model.interaction.Interaction;
 import broccolai.tickets.api.model.ticket.Ticket;
 import broccolai.tickets.api.model.ticket.TicketStatus;
-import broccolai.tickets.api.model.user.Soul;
+import broccolai.tickets.api.model.user.User;
 import broccolai.tickets.api.service.message.moonshine.Causer;
 import broccolai.tickets.api.service.message.moonshine.PermissionReceiver;
 import broccolai.tickets.api.service.message.moonshine.Receiver;
@@ -33,7 +33,7 @@ public interface MessageService {
     void feedbackUnclaim(@Receiver Audience receiver, @Placeholder Ticket ticket);
 
     @Message("feedback.assign")
-    void feedbackAssign(@Receiver Audience receiver, @Placeholder Soul target, @Placeholder Ticket ticket);
+    void feedbackAssign(@Receiver Audience receiver, @Placeholder User target, @Placeholder Ticket ticket);
 
     @Message("feedback.complete")
     void feedbackComplete(@Receiver Audience receiver, @Placeholder Ticket ticket);
@@ -45,58 +45,58 @@ public interface MessageService {
     void feedbackTeleport(@Receiver Audience receiver, @Placeholder Ticket ticket);
 
     @Message("notify.claim")
-    void notifyClaim(@Receiver @Placeholder Ticket ticket, @Placeholder Soul soul);
+    void notifyClaim(@Receiver @Placeholder Ticket ticket, @Placeholder User user);
 
     @Message("notify.unclaim")
-    void notifyUnclaim(@Receiver @Placeholder Ticket ticket, @Placeholder Soul soul);
+    void notifyUnclaim(@Receiver @Placeholder Ticket ticket, @Placeholder User user);
 
     @Message("notify.reopen")
-    void notifyReopen(@Receiver @Placeholder Ticket ticket, @Placeholder Soul soul);
+    void notifyReopen(@Receiver @Placeholder Ticket ticket, @Placeholder User user);
 
     @Message("notify.complete")
-    void notifyComplete(@Receiver @Placeholder Ticket ticket, @Placeholder Soul soul);
+    void notifyComplete(@Receiver @Placeholder Ticket ticket, @Placeholder User user);
 
     @Message("notify.note")
-    void notifyNote(@Receiver @Placeholder Ticket ticket, @Placeholder String note, @Placeholder Soul soul);
+    void notifyNote(@Receiver @Placeholder Ticket ticket, @Placeholder String note, @Placeholder User user);
 
     @Message("notify.assign")
-    void notifyAssign(@Receiver Soul soul, @Placeholder Ticket ticket);
+    void notifyAssign(@Receiver User user, @Placeholder Ticket ticket);
 
     @PermissionReceiver(permission = PermissionReceiver.STAFF)
     @Message("announce.creation")
-    void announceCreation(@Causer @Placeholder Soul causer, @Placeholder Ticket ticket);
+    void announceCreation(@Causer @Placeholder User causer, @Placeholder Ticket ticket);
 
     @PermissionReceiver(permission = PermissionReceiver.STAFF)
     @Message("announce.update")
-    void announceUpdate(@Causer @Placeholder Soul causer, @Placeholder Ticket ticket);
+    void announceUpdate(@Causer @Placeholder User causer, @Placeholder Ticket ticket);
 
     @PermissionReceiver(permission = PermissionReceiver.STAFF)
     @Message("announce.close")
-    void announceClose(@Causer @Placeholder Soul causer, @Placeholder Ticket ticket);
+    void announceClose(@Causer @Placeholder User causer, @Placeholder Ticket ticket);
 
     @PermissionReceiver(permission = PermissionReceiver.STAFF)
     @Message("announce.reopen")
-    void announceReopen(@Causer @Placeholder Soul causer, @Placeholder Ticket ticket);
+    void announceReopen(@Causer @Placeholder User causer, @Placeholder Ticket ticket);
 
     @PermissionReceiver(permission = PermissionReceiver.STAFF)
     @Message("announce.claim")
-    void announceClaim(@Causer @Placeholder Soul causer, @Placeholder Ticket ticket);
+    void announceClaim(@Causer @Placeholder User causer, @Placeholder Ticket ticket);
 
     @PermissionReceiver(permission = PermissionReceiver.STAFF)
     @Message("announce.unclaim")
-    void announceUnclaim(@Causer @Placeholder Soul causer, @Placeholder Ticket ticket);
+    void announceUnclaim(@Causer @Placeholder User causer, @Placeholder Ticket ticket);
 
     @PermissionReceiver(permission = PermissionReceiver.STAFF)
     @Message("announce.assign")
-    void announceAssign(@Causer @Placeholder Soul causer, @Causer @Placeholder Soul target, @Placeholder Ticket ticket);
+    void announceAssign(@Causer @Placeholder User causer, @Causer @Placeholder User target, @Placeholder Ticket ticket);
 
     @PermissionReceiver(permission = PermissionReceiver.STAFF)
     @Message("announce.complete")
-    void announceComplete(@Causer @Placeholder Soul causer, @Placeholder Ticket ticket);
+    void announceComplete(@Causer @Placeholder User causer, @Placeholder Ticket ticket);
 
     @PermissionReceiver(permission = PermissionReceiver.STAFF)
     @Message("announce.note")
-    void announceNote(@Causer @Placeholder Soul causer, @Placeholder Ticket ticket, @Placeholder String note);
+    void announceNote(@Causer @Placeholder User causer, @Placeholder Ticket ticket, @Placeholder String note);
 
     @Message("task.reminder")
     void taskReminder(@Receiver Audience receiver, @Placeholder Integer count);
@@ -112,7 +112,7 @@ public interface MessageService {
     Component listTitlePersonal();
 
     @Message("format.list.header")
-    Component listTitleHeader(@Placeholder Soul player);
+    Component listTitleHeader(@Placeholder User player);
 
     @Message("format.list.entry")
     Component listTitleEntry(@Placeholder Ticket ticket);
@@ -130,10 +130,10 @@ public interface MessageService {
     Component showFieldStatus(TicketStatus status);
 
     @Message("format.show.field.creator")
-    Component showFieldCreator(Soul creator);
+    Component showFieldCreator(User creator);
 
     @Message("format.show.field.claimer")
-    Component showFieldClaimer(Soul claimer);
+    Component showFieldClaimer(User claimer);
 
     @Message("format.show.field.message")
     Component showFieldMessage(String message);
@@ -142,7 +142,7 @@ public interface MessageService {
     Component highscoreTitle();
 
     @Message("format.highscore.entry")
-    Component highscoreEntry(Soul player, Number amount);
+    Component highscoreEntry(User player, Number amount);
 
     @Message("exception.noPermission")
     Component exceptionNoPermission();

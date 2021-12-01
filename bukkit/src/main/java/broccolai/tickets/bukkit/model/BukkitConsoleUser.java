@@ -1,14 +1,14 @@
 package broccolai.tickets.bukkit.model;
 
-import broccolai.tickets.api.model.user.ConsoleSoul;
+import broccolai.tickets.api.model.user.ConsoleUser;
 import net.kyori.adventure.audience.Audience;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-public final class BukkitConsoleSoul extends ConsoleSoul implements BukkitOnlineSoul {
+public final class BukkitConsoleUser extends ConsoleUser implements BukkitOnlineUser {
 
-    public BukkitConsoleSoul(final @NonNull Audience audience) {
+    public BukkitConsoleUser(final @NonNull Audience audience) {
         super(audience);
     }
 

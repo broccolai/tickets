@@ -3,9 +3,9 @@ package broccolai.tickets.core.commands.command;
 import broccolai.tickets.api.model.interaction.MessageInteraction;
 import broccolai.tickets.api.model.ticket.Ticket;
 import broccolai.tickets.api.model.ticket.TicketStatus;
-import broccolai.tickets.api.model.user.OnlineSoul;
-import broccolai.tickets.api.model.user.PlayerSoul;
-import broccolai.tickets.api.service.interactions.InteractionService;
+import broccolai.tickets.api.model.user.OnlineUser;
+import broccolai.tickets.api.model.user.PlayerUser;
+import broccolai.tickets.api.service.modification.ModificationService;
 import broccolai.tickets.api.service.message.MessageService;
 import broccolai.tickets.api.service.storage.StorageService;
 import broccolai.tickets.api.service.ticket.TicketService;
@@ -35,7 +35,7 @@ public final class TicketCommand extends CommonCommands {
     private final CloudArgumentFactory argumentFactory;
     private final MessageService messageService;
     private final TicketService ticketService;
-    private final InteractionService interactionService;
+    private final ModificationService modificationService;
 
     @Inject
     public TicketCommand(
@@ -44,7 +44,7 @@ public final class TicketCommand extends CommonCommands {
             final @NonNull MessageService messageService,
             final @NonNull StorageService storageService,
             final @NonNull TicketService ticketService,
-            final @NonNull InteractionService interactionService,
+            final @NonNull ModificationService modificationService,
             final @NonNull UserService userService
     ) {
         super(messageService, storageService, userService);
@@ -52,15 +52,15 @@ public final class TicketCommand extends CommonCommands {
         this.argumentFactory = argumentFactory;
         this.messageService = messageService;
         this.ticketService = ticketService;
-        this.interactionService = interactionService;
+        this.modificationService = modificationService;
     }
 
     @Override
     public void register(
-            final @NonNull CommandManager<@NonNull OnlineSoul> manager
+            final @NonNull CommandManager<@NonNull OnlineUser> manager
     ) {
-        final Command.Builder<OnlineSoul> builder = manager.commandBuilder("ticket", "ti")
-                .senderType(PlayerSoul.class);
+        final Command.Builder<OnlineUser> builder = manager.commandBuilder("ticket", "ti")
+                .senderType(PlayerUser.class);
 
         manager.command(builder.literal(
                                 this.config.create.main,
@@ -134,29 +134,29 @@ public final class TicketCommand extends CommonCommands {
         );
     }
 
-    private void processCreate(final @NonNull CommandContext<OnlineSoul> c) {
-        PlayerSoul soul = (PlayerSoul) c.getSender();
+    private void processCreate(final @NonNull CommandContext<OnlineUser> c) {
+        PlayerUser soul = (PlayerUser) c.getSender();
 
-        this.interactionService.create(soul, c.get("message"));
+        this.modificationService.create(soul, c.get("message"));
     }
 
-    private void processUpdate(final @NonNull CommandContext<OnlineSoul> c) {
-        PlayerSoul soul = (PlayerSoul) c.getSender();
+    private void processUpdate(final @NonNull CommandContext<OnlineUser> c) {
+        PlayerUser soul = (PlayerUser) c.getSender();
         Ticket ticket = c.get("ticket");
         MessageInteraction message = c.get("message");
 
-        this.interactionService.update(soul, ticket, message);
+        this.modificationService.update(soul, ticket, message);
     }
 
-    private void processClose(final @NonNull CommandContext<OnlineSoul> c) {
-        PlayerSoul soul = (PlayerSoul) c.getSender();
+    private void processClose(final @NonNull CommandContext<OnlineUser> c) {
+        PlayerUser soul = (PlayerUser) c.getSender();
         Ticket ticket = c.get("ticket");
 
-        this.interactionService.close(soul, ticket);
+        this.modificationService.close(soul, ticket);
     }
 
-    private void processList(final @NonNull CommandContext<OnlineSoul> c) {
-        OnlineSoul soul = c.getSender();
+    private void processList(final @NonNull CommandContext<OnlineUser> c) {
+        OnlineUser soul = c.getSender();
         Collection<Ticket> tickets = this.ticketService.get(
                 soul,
                 TicketStatus.from(c.flags())

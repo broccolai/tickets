@@ -1,13 +1,13 @@
 package broccolai.tickets.velocity.service;
 
-import broccolai.tickets.api.model.user.ConsoleSoul;
-import broccolai.tickets.api.model.user.PlayerSoul;
+import broccolai.tickets.api.model.user.ConsoleUser;
+import broccolai.tickets.api.model.user.PlayerUser;
 import broccolai.tickets.core.service.user.SimpleUserService;
 import broccolai.tickets.core.service.user.snapshot.AshconSnapshotService;
 import broccolai.tickets.core.service.user.snapshot.CacheSnapshotService;
 import broccolai.tickets.core.service.user.snapshot.DatabaseSnapshotService;
-import broccolai.tickets.velocity.model.VelocityConsoleSoul;
-import broccolai.tickets.velocity.model.VelocityPlayerSoul;
+import broccolai.tickets.velocity.model.VelocityConsoleUser;
+import broccolai.tickets.velocity.model.VelocityPlayerUser;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.velocitypowered.api.proxy.Player;
@@ -37,26 +37,26 @@ public final class VelocityUserService extends SimpleUserService {
         this.audienceProvider = audienceProvider;
     }
 
-    public @NonNull PlayerSoul player(final @NonNull Player player) {
-        return new VelocityPlayerSoul(player, this.audienceProvider.player(player.getUniqueId()));
+    public @NonNull PlayerUser player(final @NonNull Player player) {
+        return new VelocityPlayerUser(player, this.audienceProvider.player(player.getUniqueId()));
     }
 
     @Override
-    public @NonNull ConsoleSoul console() {
-        return new VelocityConsoleSoul(this.server.getConsoleCommandSource());
+    public @NonNull ConsoleUser console() {
+        return new VelocityConsoleUser(this.server.getConsoleCommandSource());
     }
 
     @Override
-    public @NonNull PlayerSoul player(final @NonNull UUID uuid) {
+    public @NonNull PlayerUser player(final @NonNull UUID uuid) {
         Player player = this.server.getPlayer(uuid)
                 .orElseThrow(IllegalArgumentException::new);
 
-        return new VelocityPlayerSoul(player, this.audienceProvider.player(uuid));
+        return new VelocityPlayerUser(player, this.audienceProvider.player(uuid));
     }
 
     @Override
-    public @NonNull Collection<PlayerSoul> players() {
-        Collection<PlayerSoul> players = new ArrayList<>();
+    public @NonNull Collection<PlayerUser> players() {
+        Collection<PlayerUser> players = new ArrayList<>();
 
         for (final Player player : this.server.getAllPlayers()) {
             players.add(this.player(player.getUniqueId()));

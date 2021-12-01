@@ -1,19 +1,19 @@
 package broccolai.tickets.velocity.model;
 
-import broccolai.tickets.api.model.user.PlayerSoul;
-import broccolai.tickets.api.model.user.Soul;
+import broccolai.tickets.api.model.user.PlayerUser;
+import broccolai.tickets.api.model.user.User;
 import com.velocitypowered.api.command.CommandSource;
 import com.velocitypowered.api.proxy.Player;
 import java.util.UUID;
 import net.kyori.adventure.audience.Audience;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-public final class VelocityPlayerSoul extends Soul.Abstract implements PlayerSoul, VelocityOnlineSoul {
+public final class VelocityPlayerUser extends User.Abstract implements PlayerUser, VelocityOnlineUser {
 
     private final Player player;
     private final Audience audience;
 
-    public VelocityPlayerSoul(final @NonNull Player player, final @NonNull Audience audience) {
+    public VelocityPlayerUser(final @NonNull Player player, final @NonNull Audience audience) {
         this.player = player;
         this.audience = audience;
     }

@@ -1,7 +1,7 @@
 package broccolai.tickets.velocity.subscribers;
 
 import broccolai.tickets.api.model.event.impl.SoulJoinEvent;
-import broccolai.tickets.api.model.user.PlayerSoul;
+import broccolai.tickets.api.model.user.PlayerUser;
 import broccolai.tickets.api.service.event.EventService;
 import broccolai.tickets.api.service.tasks.TaskService;
 import broccolai.tickets.api.service.user.UserService;
@@ -33,7 +33,7 @@ public final class PlayerJoinSubscriber implements VelocitySubscriber {
         UUID uuid = event.getPlayer().getUniqueId();
 
         this.taskService.async(() -> {
-            PlayerSoul soul = this.userService.player(uuid);
+            PlayerUser soul = this.userService.player(uuid);
             SoulJoinEvent soulEvent = new SoulJoinEvent(soul);
 
             this.eventService.post(soulEvent);

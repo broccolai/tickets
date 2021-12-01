@@ -1,7 +1,7 @@
 package broccolai.tickets.core.service.message;
 
-import broccolai.tickets.api.model.user.PlayerSoul;
-import broccolai.tickets.api.model.user.Soul;
+import broccolai.tickets.api.model.user.PlayerUser;
+import broccolai.tickets.api.model.user.User;
 import broccolai.tickets.api.service.message.moonshine.Causer;
 import broccolai.tickets.api.service.message.moonshine.PermissionReceiver;
 import broccolai.tickets.api.service.user.UserService;
@@ -49,13 +49,13 @@ public final class PermissionReceiverResolver implements IReceiverLocatorResolve
 
         @Override
         public Audience locate(final Method method, final Object proxy, final @Nullable Object[] parameters) {
-            final @Nullable Collection<Soul> causers = ReflectionHelper.parametersAnnotatedBy(
+            final @Nullable Collection<User> causers = ReflectionHelper.parametersAnnotatedBy(
                     Causer.class,
                     method,
                     parameters
             );
 
-            Collection<PlayerSoul> souls = this.userService.players();
+            Collection<PlayerUser> souls = this.userService.players();
             souls.removeIf(soul -> {
                 return causers.contains(soul) || !soul.permission(this.annotation.permission());
             });

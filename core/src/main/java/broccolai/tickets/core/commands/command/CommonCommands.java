@@ -4,7 +4,7 @@ import broccolai.tickets.api.model.interaction.Action;
 import broccolai.tickets.api.model.interaction.Interaction;
 import broccolai.tickets.api.model.interaction.MessageInteraction;
 import broccolai.tickets.api.model.ticket.Ticket;
-import broccolai.tickets.api.model.user.OnlineSoul;
+import broccolai.tickets.api.model.user.OnlineUser;
 import broccolai.tickets.api.service.message.MessageService;
 import broccolai.tickets.api.service.storage.StorageService;
 import java.util.ArrayList;
@@ -29,12 +29,12 @@ public abstract class CommonCommands implements BaseCommand {
         this.userService = userService;
     }
 
-    protected final void processShow(final @NonNull OnlineSoul soul, final @NonNull Ticket ticket) {
+    protected final void processShow(final @NonNull OnlineUser soul, final @NonNull Ticket ticket) {
         Collection<Component> components = new ArrayList<>();
 
         components.add(this.messageService.showTitle());
         components.add(this.messageService.showFieldStatus(ticket.status()));
-        components.add(this.messageService.showFieldCreator(this.userService.snapshot(ticket.player())));
+        components.add(this.messageService.showFieldCreator(this.userService.snapshot(ticket.uuid())));
 
         ticket.claimer().map(this.userService::snapshot)
                 .ifPresent(claimer -> {
@@ -56,7 +56,7 @@ public abstract class CommonCommands implements BaseCommand {
         );
     }
 
-    protected final void processLog(final @NonNull OnlineSoul soul, final @NonNull Ticket ticket) {
+    protected final void processLog(final @NonNull OnlineUser soul, final @NonNull Ticket ticket) {
         Collection<Interaction> interactions = this.storageService.interactions(ticket);
         Collection<Component> components = new ArrayList<>();
 

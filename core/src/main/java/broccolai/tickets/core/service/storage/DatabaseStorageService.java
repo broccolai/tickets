@@ -3,9 +3,9 @@ package broccolai.tickets.core.service.storage;
 import broccolai.tickets.api.model.interaction.Interaction;
 import broccolai.tickets.api.model.interaction.MessageInteraction;
 import broccolai.tickets.api.model.ticket.Ticket;
-import broccolai.tickets.api.model.ticket.TicketStatus;
-import broccolai.tickets.api.model.user.Soul;
-import broccolai.tickets.api.model.user.SoulSnapshot;
+import broccolai.tickets.api.model.ticket.Ticket.Status;
+import broccolai.tickets.api.model.user.User;
+import broccolai.tickets.api.model.user.UserSnapshot;
 import broccolai.tickets.api.service.context.ContextService;
 import broccolai.tickets.api.service.storage.StorageService;
 import broccolai.tickets.core.configuration.MainConfiguration;
@@ -73,22 +73,22 @@ public final class DatabaseStorageService implements StorageService {
                 .registerArgument(new UUIDArgumentFactory())
                 .registerColumnMapper(Component.class, new ComponentMapper())
                 .registerRowMapper(Interaction.class, new InteractionMapper())
-                .registerRowMapper(SoulSnapshot.class, new SoulSnapshotMapper())
+                .registerRowMapper(UserSnapshot.class, new SoulSnapshotMapper())
                 .registerRowMapper(ContextKeyValuePair.class, new ContextDatabaseMapper(this.contextService))
                 .registerRowMapper(Ticket.class, new TicketMapper());
     }
 
     @Override
-    public int create(
-            final @NonNull Soul soul,
+    public @NonNull Ticket create(
+            final @NonNull User user,
             final @NonNull MessageInteraction messageInteraction
     ) {
         return this.jdbi.withHandle(handle -> {
             String[] queries = SQLQueries.INSERT_TICKET.get();
 
             handle.createUpdate(queries[0])
-                    .bind("player", soul.uuid())
-                    .bind("status", TicketStatus.OPEN)
+                    .bind("uuid", user.uuid())
+                    .bind("status", Status.OPEN)
                     .bind("claimer", (UUID) null)
                     .execute();
 
@@ -105,12 +105,12 @@ public final class DatabaseStorageService implements StorageService {
                     .bind("message", messageInteraction.message())
                     .execute();
 
-            return id;
+            return new Ticket(id, user.uuid(), Status.OPEN, null);
         });
     }
 
     @Override
-    public @NonNull Map<@NonNull Integer, @NonNull Ticket> tickets(
+    public @NonNull Collection<@NonNull Ticket> tickets(
             final @NonNull Collection<@NonNull Integer> ids
     ) {
         return this.jdbi.withHandle(handle -> {
@@ -118,33 +118,36 @@ public final class DatabaseStorageService implements StorageService {
 
             return handle.createQuery(queries[0])
                     .bindList("ids", ids)
-                    .reduceRows(new LinkedHashMap<>(), new TicketAccumulator());
+                    .mapTo(Ticket.class)
+                    .list();
         });
     }
 
     @Override
-    public @NonNull Map<@NonNull Integer, @NonNull Ticket> findTickets(final @NonNull Collection<TicketStatus> statuses) {
+    public @NonNull Collection<@NonNull Ticket> findTickets(final @NonNull Collection<Status> statuses) {
         return this.jdbi.withHandle(handle -> {
             String[] queries = SQLQueries.SELECT_TICKETS_STATUSES.get();
 
             return handle.createQuery(queries[0])
                     .bindList("statuses", statuses)
-                    .reduceRows(new LinkedHashMap<>(), new TicketAccumulator());
+                    .mapTo(Ticket.class)
+                    .list();
         });
     }
 
     @Override
-    public @NonNull Map<@NonNull Integer, @NonNull Ticket> findTickets(
-            final @NonNull Soul soul,
-            final @NonNull Collection<TicketStatus> statuses
+    public @NonNull Collection<@NonNull Ticket> findTickets(
+            final @NonNull User user,
+            final @NonNull Collection<Status> statuses
     ) {
         return this.jdbi.withHandle(handle -> {
             String[] queries = SQLQueries.SELECT_TICKETS_SOUL_STATUSES.get();
 
             return handle.createQuery(queries[0])
-                    .bind("player", soul.uuid())
+                    .bind("uuid", user.uuid())
                     .bindList("statuses", statuses)
-                    .reduceRows(new LinkedHashMap<>(), new TicketAccumulator());
+                    .mapTo(Ticket.class)
+                    .list();
         });
     }
 
@@ -211,17 +214,17 @@ public final class DatabaseStorageService implements StorageService {
     }
 
     @Override
-    public @NonNull Collection<Component> notifications(final @NonNull Soul soul) {
+    public @NonNull Collection<Component> notifications(final @NonNull User user) {
         return this.jdbi.withHandle(handle -> {
             String[] queries = SQLQueries.NOTIFICATIONS.get();
 
             Collection<Component> components = handle.createQuery(queries[0])
-                    .bind("uuid", soul.uuid())
+                    .bind("uuid", user.uuid())
                     .mapTo(Component.class)
                     .list();
 
             handle.createUpdate(queries[1])
-                    .bind("uuid", soul.uuid())
+                    .bind("uuid", user.uuid())
                     .execute();
 
             return components;
@@ -229,10 +232,10 @@ public final class DatabaseStorageService implements StorageService {
     }
 
     @Override
-    public void saveNotification(final @NonNull Soul soul, final @NonNull Component component) {
+    public void saveNotification(final @NonNull User user, final @NonNull Component component) {
         this.jdbi.useHandle(handle -> {
             handle.createUpdate(SQLQueries.INSERT_NOTIFICATION.get()[0])
-                    .bind("uuid", soul.uuid())
+                    .bind("uuid", user.uuid())
                     .bind("message", ComponentMapper.MINI.serialize(component))
                     .execute();
         });
@@ -256,12 +259,12 @@ public final class DatabaseStorageService implements StorageService {
 
     @Override
     public void saveSnapshots(
-            final @NonNull Collection<@NonNull SoulSnapshot> snapshots
+            final @NonNull Collection<@NonNull UserSnapshot> snapshots
     ) {
         this.jdbi.useHandle(handle -> {
             PreparedBatch batch = handle.prepareBatch(SQLQueries.SAVE_SNAPSHOTS.get()[0]);
 
-            for (final SoulSnapshot snapshot : snapshots) {
+            for (final UserSnapshot snapshot : snapshots) {
                 batch.bind("uuid", snapshot.uuid())
                         .bind("username", snapshot.username())
                         .add();
@@ -272,24 +275,24 @@ public final class DatabaseStorageService implements StorageService {
     }
 
     @Override
-    public @Nullable SoulSnapshot snapshot(
+    public @Nullable UserSnapshot snapshot(
             final @NonNull String name
     ) {
         return this.jdbi.withHandle(handle -> {
             return handle.createQuery(SQLQueries.SNAPSHOT_NAME.get()[0])
                     .bind("username", name)
-                    .mapTo(SoulSnapshot.class)
+                    .mapTo(UserSnapshot.class)
                     .findFirst()
                     .orElse(null);
         });
     }
 
     @Override
-    public @Nullable SoulSnapshot snapshot(final @NonNull UUID uuid) {
+    public @Nullable UserSnapshot snapshot(final @NonNull UUID uuid) {
         return this.jdbi.withHandle(handle -> {
             return handle.createQuery(SQLQueries.SNAPSHOT_UUID.get()[0])
                     .bind("uuid", uuid)
-                    .mapTo(SoulSnapshot.class)
+                    .mapTo(UserSnapshot.class)
                     .findFirst()
                     .orElse(null);
         });

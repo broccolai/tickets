@@ -16,17 +16,17 @@ import org.jdbi.v3.core.statement.StatementContext;
 public final class InteractionMapper implements RowMapper<Interaction> {
 
     @Override
-    public Interaction map(final ResultSet rs, final StatementContext ctx) throws SQLException {
+    public Interaction map(final ResultSet resultSet, final StatementContext context) throws SQLException {
         ColumnMapper<Action> actionMapper = EnumMapper.byName(Action.class);
-        ColumnMapper<LocalDateTime> dateMapper = ctx.findColumnMapperFor(LocalDateTime.class)
+        ColumnMapper<LocalDateTime> dateMapper = context.findColumnMapperFor(LocalDateTime.class)
                 .orElseThrow(IllegalStateException::new);
-        ColumnMapper<UUID> uuidMapper = ctx.findColumnMapperFor(UUID.class)
+        ColumnMapper<UUID> uuidMapper = context.findColumnMapperFor(UUID.class)
                 .orElseThrow(IllegalStateException::new);
 
-        Action action = actionMapper.map(rs, "action", ctx);
-        LocalDateTime date = dateMapper.map(rs, "time", ctx);
-        UUID sender = uuidMapper.map(rs, "sender", ctx);
-        String message = rs.getString("message");
+        Action action = actionMapper.map(resultSet, "action", context);
+        LocalDateTime date = dateMapper.map(resultSet, "time", context);
+        UUID sender = uuidMapper.map(resultSet, "sender", context);
+        String message = resultSet.getString("message");
 
         if (message != null) {
             return new BasicMessageInteraction(action, date, sender, message);

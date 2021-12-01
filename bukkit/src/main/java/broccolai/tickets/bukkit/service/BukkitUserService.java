@@ -1,9 +1,9 @@
 package broccolai.tickets.bukkit.service;
 
-import broccolai.tickets.api.model.user.ConsoleSoul;
-import broccolai.tickets.api.model.user.PlayerSoul;
-import broccolai.tickets.bukkit.model.BukkitConsoleSoul;
-import broccolai.tickets.bukkit.model.BukkitPlayerSoul;
+import broccolai.tickets.api.model.user.ConsoleUser;
+import broccolai.tickets.api.model.user.PlayerUser;
+import broccolai.tickets.bukkit.model.BukkitConsoleUser;
+import broccolai.tickets.bukkit.model.BukkitPlayerUser;
 import broccolai.tickets.bukkit.service.snapshot.BukkitSnapshotService;
 import broccolai.tickets.bukkit.service.snapshot.PaperSnapshotService;
 import broccolai.tickets.core.service.user.SimpleUserService;
@@ -45,29 +45,29 @@ public final class BukkitUserService extends SimpleUserService {
         }
     }
 
-    public @NonNull PlayerSoul player(final @NonNull Player player) {
-        return new BukkitPlayerSoul(player, this.audienceProvider.player(player.getUniqueId()));
+    public @NonNull PlayerUser player(final @NonNull Player player) {
+        return new BukkitPlayerUser(player, this.audienceProvider.player(player.getUniqueId()));
     }
 
     @Override
-    public @NonNull ConsoleSoul console() {
-        return new BukkitConsoleSoul(this.audienceProvider.console());
+    public @NonNull ConsoleUser console() {
+        return new BukkitConsoleUser(this.audienceProvider.console());
     }
 
     @Override
-    public @NonNull PlayerSoul player(final @NonNull UUID uuid) {
+    public @NonNull PlayerUser player(final @NonNull UUID uuid) {
         Player player = Bukkit.getPlayer(uuid);
 
         if (player == null) {
             throw new IllegalArgumentException();
         }
 
-        return new BukkitPlayerSoul(player, this.audienceProvider.player(uuid));
+        return new BukkitPlayerUser(player, this.audienceProvider.player(uuid));
     }
 
     @Override
-    public @NonNull Collection<PlayerSoul> players() {
-        Collection<PlayerSoul> players = new ArrayList<>();
+    public @NonNull Collection<PlayerUser> players() {
+        Collection<PlayerUser> players = new ArrayList<>();
 
         for (final Player player : Bukkit.getOnlinePlayers()) {
             players.add(this.player(player.getUniqueId()));

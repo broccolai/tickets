@@ -1,7 +1,7 @@
 package broccolai.tickets.bukkit;
 
 import broccolai.tickets.api.model.event.Subscriber;
-import broccolai.tickets.api.model.user.OnlineSoul;
+import broccolai.tickets.api.model.user.OnlineUser;
 import broccolai.tickets.api.service.context.ContextService;
 import broccolai.tickets.api.service.user.UserService;
 import broccolai.tickets.bukkit.commands.BukkitTicketsCommand;
@@ -9,7 +9,7 @@ import broccolai.tickets.bukkit.context.BukkitTicketContextKeys;
 import broccolai.tickets.bukkit.context.LocationContextSerializer;
 import broccolai.tickets.bukkit.inject.BukkitModule;
 import broccolai.tickets.bukkit.listeners.PlayerJoinListener;
-import broccolai.tickets.bukkit.model.BukkitOnlineSoul;
+import broccolai.tickets.bukkit.model.BukkitOnlineUser;
 import broccolai.tickets.bukkit.service.BukkitUserService;
 import broccolai.tickets.bukkit.subscribers.TicketSubscriber;
 import broccolai.tickets.core.PureTickets;
@@ -61,7 +61,7 @@ public final class BukkitPlatform extends JavaPlugin implements PluginPlatform {
         this.pureTickets.load();
 
         try {
-            CommandManager<OnlineSoul> commandManager = this.commandManager(
+            CommandManager<OnlineUser> commandManager = this.commandManager(
                     this.injector.getInstance(UserService.class)
             );
             this.pureTickets.commands(commandManager, COMMANDS);
@@ -84,14 +84,14 @@ public final class BukkitPlatform extends JavaPlugin implements PluginPlatform {
         this.pureTickets.unload();
     }
 
-    private CommandManager<OnlineSoul> commandManager(
+    private CommandManager<OnlineUser> commandManager(
             final @NonNull UserService userService
     ) throws Exception {
         BukkitUserService bukkitUserService = (BukkitUserService) userService;
 
-        PaperCommandManager<@NonNull OnlineSoul> cloudManager = new PaperCommandManager<>(
+        PaperCommandManager<@NonNull OnlineUser> cloudManager = new PaperCommandManager<>(
                 this,
-                AsynchronousCommandExecutionCoordinator.<OnlineSoul>newBuilder().withAsynchronousParsing().build(),
+                AsynchronousCommandExecutionCoordinator.<OnlineUser>newBuilder().withAsynchronousParsing().build(),
                 sender -> {
                     if (sender instanceof ConsoleCommandSender) {
                         return userService.console();
@@ -101,7 +101,7 @@ public final class BukkitPlatform extends JavaPlugin implements PluginPlatform {
                     return bukkitUserService.player(player);
                 },
                 soul -> {
-                    BukkitOnlineSoul bukkitSoul = (BukkitOnlineSoul) soul;
+                    BukkitOnlineUser bukkitSoul = (BukkitOnlineUser) soul;
                     return bukkitSoul.sender();
                 }
         );

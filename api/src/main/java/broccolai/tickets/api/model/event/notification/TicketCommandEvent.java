@@ -3,18 +3,18 @@ package broccolai.tickets.api.model.event.notification;
 import broccolai.tickets.api.model.event.SoulEvent;
 import broccolai.tickets.api.model.event.TicketEvent;
 import broccolai.tickets.api.model.ticket.Ticket;
-import broccolai.tickets.api.model.user.PlayerSoul;
+import broccolai.tickets.api.model.user.PlayerUser;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 public abstract class TicketCommandEvent implements TicketEvent, SoulEvent {
 
     private final NotificationReason notificationReason;
-    protected final PlayerSoul soul;
+    protected final PlayerUser soul;
     protected final Ticket ticket;
 
     public TicketCommandEvent(
             final @NonNull NotificationReason notificationReason,
-            final @NonNull PlayerSoul soul,
+            final @NonNull PlayerUser soul,
             final @NonNull Ticket ticket
     ) {
         this.notificationReason = notificationReason;
@@ -23,7 +23,7 @@ public abstract class TicketCommandEvent implements TicketEvent, SoulEvent {
     }
 
     @Override
-    public final @NonNull PlayerSoul soul() {
+    public final @NonNull PlayerUser soul() {
         return this.soul;
     }
 

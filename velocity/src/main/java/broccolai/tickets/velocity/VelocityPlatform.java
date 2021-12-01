@@ -1,12 +1,12 @@
 package broccolai.tickets.velocity;
 
-import broccolai.tickets.api.model.user.OnlineSoul;
+import broccolai.tickets.api.model.user.OnlineUser;
 import broccolai.tickets.api.service.user.UserService;
 import broccolai.tickets.core.PureTickets;
 import broccolai.tickets.core.inject.platform.PluginPlatform;
 import broccolai.tickets.core.utilities.ArrayHelper;
 import broccolai.tickets.velocity.inject.VelocityModule;
-import broccolai.tickets.velocity.model.VelocityOnlineSoul;
+import broccolai.tickets.velocity.model.VelocityOnlineUser;
 import broccolai.tickets.velocity.service.VelocityUserService;
 import broccolai.tickets.velocity.subscribers.PlayerJoinSubscriber;
 import broccolai.tickets.velocity.subscribers.VelocitySubscriber;
@@ -62,7 +62,7 @@ public final class VelocityPlatform implements PluginPlatform {
         this.pureTickets.load();
 
         try {
-            CommandManager<OnlineSoul> commandManager = this.commandManager(injector);
+            CommandManager<OnlineUser> commandManager = this.commandManager(injector);
             this.pureTickets.commands(commandManager, COMMANDS);
         } catch (final Exception e) {
             throw new RuntimeException(e);
@@ -79,15 +79,15 @@ public final class VelocityPlatform implements PluginPlatform {
         this.pureTickets.unload();
     }
 
-    private CommandManager<OnlineSoul> commandManager(
+    private CommandManager<OnlineUser> commandManager(
             final @NonNull Injector injector
     ) {
         VelocityUserService velocityUserService = (VelocityUserService) injector.getInstance(UserService.class);
 
-        VelocityCommandManager<@NonNull OnlineSoul> cloudManager = new VelocityCommandManager<>(
+        VelocityCommandManager<@NonNull OnlineUser> cloudManager = new VelocityCommandManager<>(
                 injector.getInstance(PluginContainer.class),
                 injector.getInstance(ProxyServer.class),
-                AsynchronousCommandExecutionCoordinator.<OnlineSoul>newBuilder().build(),
+                AsynchronousCommandExecutionCoordinator.<OnlineUser>newBuilder().build(),
                 source -> {
                     VelocityUserService userService = (VelocityUserService) injector.getInstance(UserService.class);
 
@@ -98,7 +98,7 @@ public final class VelocityPlatform implements PluginPlatform {
                     return userService.console();
                 },
                 soul -> {
-                    VelocityOnlineSoul velocitySoul = (VelocityOnlineSoul) soul;
+                    VelocityOnlineUser velocitySoul = (VelocityOnlineUser) soul;
                     return velocitySoul.source();
                 }
         );

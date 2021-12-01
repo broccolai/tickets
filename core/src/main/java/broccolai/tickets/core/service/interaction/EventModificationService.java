@@ -15,11 +15,11 @@ import broccolai.tickets.api.model.interaction.Interaction;
 import broccolai.tickets.api.model.interaction.MessageInteraction;
 import broccolai.tickets.api.model.ticket.Ticket;
 import broccolai.tickets.api.model.ticket.TicketStatus;
-import broccolai.tickets.api.model.user.OnlineSoul;
-import broccolai.tickets.api.model.user.PlayerSoul;
-import broccolai.tickets.api.model.user.Soul;
+import broccolai.tickets.api.model.user.OnlineUser;
+import broccolai.tickets.api.model.user.PlayerUser;
+import broccolai.tickets.api.model.user.User;
 import broccolai.tickets.api.service.event.EventService;
-import broccolai.tickets.api.service.interactions.InteractionService;
+import broccolai.tickets.api.service.modification.ModificationService;
 import broccolai.tickets.api.service.message.MessageService;
 import broccolai.tickets.api.service.storage.StorageService;
 import broccolai.tickets.api.service.ticket.TicketService;
@@ -37,7 +37,7 @@ import java.util.EnumSet;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 @Singleton
-public final class EventInteractionService implements InteractionService {
+public final class EventModificationService implements ModificationService {
 
     private final StorageService storageService;
     private final EventService eventService;
@@ -46,7 +46,7 @@ public final class EventInteractionService implements InteractionService {
     private final int openTicketLimit;
 
     @Inject
-    public EventInteractionService(
+    public EventModificationService(
             final @NonNull MainConfiguration mainConfiguration,
             final @NonNull StorageService storageService,
             final @NonNull EventService eventService,
@@ -62,7 +62,7 @@ public final class EventInteractionService implements InteractionService {
 
     @Override
     public @NonNull Ticket create(
-            final @NonNull PlayerSoul soul,
+            final @NonNull PlayerUser soul,
             final @NonNull MessageInteraction interaction
     ) {
         TicketConstructionEvent constructionEvent = new TicketConstructionEvent(soul, interaction);
@@ -90,7 +90,7 @@ public final class EventInteractionService implements InteractionService {
 
     @Override
     public void update(
-            final @NonNull PlayerSoul soul,
+            final @NonNull PlayerUser soul,
             final @NonNull Ticket ticket,
             final @NonNull MessageInteraction interaction
     ) {
@@ -107,7 +107,7 @@ public final class EventInteractionService implements InteractionService {
     }
 
     @Override
-    public void close(final @NonNull PlayerSoul soul, final @NonNull Ticket ticket) {
+    public void close(final @NonNull PlayerUser soul, final @NonNull Ticket ticket) {
         this.requireOpen(ticket);
 
         Interaction interaction = new BasicInteraction(Action.CLOSE, LocalDateTime.now(ZoneId.systemDefault()), soul.uuid());
@@ -122,7 +122,7 @@ public final class EventInteractionService implements InteractionService {
     }
 
     @Override
-    public void claim(final @NonNull OnlineSoul soul, final @NonNull Ticket ticket) {
+    public void claim(final @NonNull OnlineUser soul, final @NonNull Ticket ticket) {
         this.requireOpenAndUnclaimed(ticket);
 
         Interaction interaction = new BasicInteraction(Action.CLAIM, LocalDateTime.now(ZoneId.systemDefault()), soul.uuid());
@@ -139,7 +139,7 @@ public final class EventInteractionService implements InteractionService {
     }
 
     @Override
-    public void complete(final @NonNull OnlineSoul soul, final @NonNull Ticket ticket) {
+    public void complete(final @NonNull OnlineUser soul, final @NonNull Ticket ticket) {
         this.requireOpen(ticket);
 
         Interaction interaction = new BasicInteraction(Action.COMPLETE, LocalDateTime.now(ZoneId.systemDefault()), soul.uuid());
@@ -156,7 +156,7 @@ public final class EventInteractionService implements InteractionService {
     }
 
     @Override
-    public void assign(final @NonNull OnlineSoul soul, final @NonNull Soul target, final @NonNull Ticket ticket) {
+    public void assign(final @NonNull OnlineUser soul, final @NonNull User target, final @NonNull Ticket ticket) {
         this.requireOpenAndUnclaimed(ticket);
 
         Interaction interaction = new BasicInteraction(Action.ASSIGN, LocalDateTime.now(ZoneId.systemDefault()), soul.uuid());
@@ -174,7 +174,7 @@ public final class EventInteractionService implements InteractionService {
     }
 
     @Override
-    public void unclaim(final @NonNull OnlineSoul soul, final @NonNull Ticket ticket) {
+    public void unclaim(final @NonNull OnlineUser soul, final @NonNull Ticket ticket) {
         this.requireOpen(ticket);
 
         Interaction interaction = new BasicInteraction(Action.UNCLAIM, LocalDateTime.now(ZoneId.systemDefault()), soul.uuid());
@@ -191,7 +191,7 @@ public final class EventInteractionService implements InteractionService {
     }
 
     @Override
-    public void reopen(final @NonNull OnlineSoul soul, final @NonNull Ticket ticket) {
+    public void reopen(final @NonNull OnlineUser soul, final @NonNull Ticket ticket) {
         this.requireClosed(ticket);
 
         Interaction interaction = new BasicInteraction(Action.REOPEN, LocalDateTime.now(ZoneId.systemDefault()), soul.uuid());
@@ -207,7 +207,7 @@ public final class EventInteractionService implements InteractionService {
     }
 
     @Override
-    public void note(final @NonNull OnlineSoul soul, final @NonNull Ticket ticket, final @NonNull MessageInteraction message) {
+    public void note(final @NonNull OnlineUser soul, final @NonNull Ticket ticket, final @NonNull MessageInteraction message) {
         Interaction interaction = new BasicInteraction(Action.NOTE, LocalDateTime.now(ZoneId.systemDefault()), soul.uuid());
 
         this.storageService.queue(ticket, interaction);

@@ -1,28 +1,52 @@
 package broccolai.tickets.api.model.ticket;
 
-import broccolai.corn.context.Context;
-import broccolai.tickets.api.model.interaction.Interactions;
 import java.util.Optional;
 import java.util.UUID;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-public interface Ticket extends Comparable<Ticket> {
+public final class Ticket {
 
-    int id();
+    private final int id;
+    private final UUID uuid;
+    private final Status status;
+    private final UUID claimer;
 
-    @NonNull UUID player();
+    public Ticket(final int id, final @NonNull UUID uuid, final @NonNull Status status, final @Nullable UUID claimer) {
+        this.id = id;
+        this.uuid = uuid;
+        this.status = status;
+        this.claimer = claimer;
+    }
 
-    @NonNull TicketStatus status();
+    public int id() {
+        return this.id;
+    }
 
-    void status(@NonNull TicketStatus status);
+    public @NonNull UUID uuid() {
+        return this.uuid;
+    }
 
-    @NonNull Optional<@NonNull UUID> claimer();
+    public @NonNull Status status() {
+        return this.status;
+    }
 
-    void claimer(@Nullable UUID claimer);
+    public @NonNull Optional<UUID> claimer() {
+        return Optional.ofNullable(this.claimer);
+    }
 
-    @NonNull Context context();
+    public Ticket withStatus(@NonNull Status status) {
+        return new Ticket(this.id, this.uuid, status, this.claimer);
+    }
 
-    @NonNull Interactions interactions();
+    public Ticket withClaimer(@Nullable UUID claimer) {
+        return new Ticket(this.id, this.uuid, this.status, claimer);
+    }
+
+    public enum Status {
+        OPEN,
+        CLAIMED,
+        CLOSED;
+    }
 
 }

@@ -1,6 +1,6 @@
 package broccolai.tickets.core.commands.cloud;
 
-import broccolai.tickets.api.model.user.OnlineSoul;
+import broccolai.tickets.api.model.user.OnlineUser;
 import broccolai.tickets.api.service.message.MessageService;
 import broccolai.tickets.core.exceptions.PureException;
 import cloud.commandframework.CommandManager;
@@ -16,7 +16,7 @@ public final class ExceptionHandler {
 
     private final MessageService messageService;
 
-    private final MinecraftExceptionHandler<OnlineSoul> adventureHandler;
+    private final MinecraftExceptionHandler<OnlineUser> adventureHandler;
 
     @Inject
     public ExceptionHandler(final @NonNull MessageService messageService) {
@@ -24,8 +24,8 @@ public final class ExceptionHandler {
         this.adventureHandler = this.generateAdventureHandler();
     }
 
-    private MinecraftExceptionHandler<OnlineSoul> generateAdventureHandler() {
-        return new MinecraftExceptionHandler<@NonNull OnlineSoul>()
+    private MinecraftExceptionHandler<OnlineUser> generateAdventureHandler() {
+        return new MinecraftExceptionHandler<@NonNull OnlineUser>()
                 .withDefaultHandlers()
                 .withHandler(MinecraftExceptionHandler.ExceptionType.INVALID_SENDER, ex -> {
                     InvalidCommandSenderException icse = (InvalidCommandSenderException) ex;
@@ -55,7 +55,7 @@ public final class ExceptionHandler {
                 });
     }
 
-    public void apply(final @NonNull CommandManager<OnlineSoul> commandManager) {
+    public void apply(final @NonNull CommandManager<OnlineUser> commandManager) {
         this.adventureHandler.apply(commandManager, ForwardingAudience.Single::audience);
     }
 

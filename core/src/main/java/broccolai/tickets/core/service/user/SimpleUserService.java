@@ -1,8 +1,8 @@
 package broccolai.tickets.core.service.user;
 
-import broccolai.tickets.api.model.user.ConsoleSoul;
-import broccolai.tickets.api.model.user.Soul;
-import broccolai.tickets.api.model.user.SoulSnapshot;
+import broccolai.tickets.api.model.user.ConsoleUser;
+import broccolai.tickets.api.model.user.User;
+import broccolai.tickets.api.model.user.UserSnapshot;
 import broccolai.tickets.api.service.user.UserService;
 import broccolai.tickets.core.service.user.snapshot.AshconSnapshotService;
 import broccolai.tickets.core.service.user.snapshot.CacheSnapshotService;
@@ -34,8 +34,8 @@ public abstract class SimpleUserService implements UserService {
     }
 
     @Override
-    public final @NonNull Soul wrap(final @NonNull UUID uuid) {
-        if (uuid.equals(ConsoleSoul.UNIQUE_ID)) {
+    public final @NonNull User wrap(final @NonNull UUID uuid) {
+        if (uuid.equals(ConsoleUser.UNIQUE_ID)) {
             return this.console();
         }
 
@@ -47,7 +47,7 @@ public abstract class SimpleUserService implements UserService {
     }
 
     @Override
-    public final @NonNull Soul wrap(final @NonNull String name) {
+    public final @NonNull User wrap(final @NonNull String name) {
         if (name.equalsIgnoreCase("CONSOLE")) {
             return this.console();
         }
@@ -56,10 +56,10 @@ public abstract class SimpleUserService implements UserService {
     }
 
     @Override
-    public final @NonNull SoulSnapshot snapshot(@NonNull final UUID uuid) {
+    public final @NonNull UserSnapshot snapshot(@NonNull final UUID uuid) {
         Either<UUID, String> context = Either.left(uuid);
 
-        SoulSnapshot snapshot = this.soulSnapshotPipeline.pump(context)
+        UserSnapshot snapshot = this.soulSnapshotPipeline.pump(context)
                 .through(SoulSnapshotService.class)
                 .getResult();
         this.cacheSnapshotService.cache(snapshot);
@@ -68,10 +68,10 @@ public abstract class SimpleUserService implements UserService {
     }
 
     @Override
-    public final @NonNull SoulSnapshot snapshot(@NonNull final String name) {
+    public final @NonNull UserSnapshot snapshot(@NonNull final String name) {
         Either<UUID, String> context = Either.right(name);
 
-        SoulSnapshot snapshot = this.soulSnapshotPipeline.pump(context)
+        UserSnapshot snapshot = this.soulSnapshotPipeline.pump(context)
                 .through(SoulSnapshotService.class)
                 .getResult();
         this.cacheSnapshotService.cache(snapshot);

@@ -28,16 +28,16 @@ announcement :
   reopen_ticket : "<prefix> <user> a réouvert le ticket <ticket>"
   note_ticket : "<prefix> <user> a ajouté une note au ticket <ticket><white> - <note>"
 title :
-  specific_tickets : " <dark_gray><bold><strikethrough>====<reset> <aqua>TOUT LES TICKETS <white>POUR <player> <dark_gray><bold><strikethrough>====<reset> "
+  specific_tickets : " <dark_gray><bold><strikethrough>====<reset> <aqua>TOUT LES TICKETS <white>POUR <uuid> <dark_gray><bold><strikethrough>====<reset> "
   all_tickets : " <dark_gray><bold><strikethrough>====<reset> <aqua>TOUT LES TICKETS <dark_gray><bold><strikethrough>====<reset>"
   your_tickets : " <dark_gray><bold><strikethrough>====<reset> <aqua>VOS TICKETS <dark_gray><bold><strikethrough>====<reset>"
-  specific_status : " <dark_gray><bold><strikethrough>====<reset> <aqua>TICKET TICKETS <white>POUR <player> <dark_gray><bold><strikethrough>====<reset>"
+  specific_status : " <dark_gray><bold><strikethrough>====<reset> <aqua>TICKET TICKETS <white>POUR <uuid> <dark_gray><bold><strikethrough>====<reset>"
   ticket_status : " <dark_gray><bold><strikethrough>====<reset> <aqua>STATUS DU TICKET <dark_gray><bold><strikethrough>====<reset>"
   show_ticket : " <dark_gray><bold><strikethrough>====<reset> <aqua>TICKET <ticket> <dark_gray><bold><strikethrough>====<reset>"
   ticket_log : " <dark_gray><bold><strikethrough>====<reset> <aqua>HISTORIQUE DU TICKET <ticket> <dark_gray><bold><strikethrough>====<reset>"
   highscores : " <dark_gray><bold><strikethrough>====<reset> <aqua>MEILLEUR SCORES <dark_gray><bold><strikethrough>====<reset>"
 show :
-  sender : "<aqua>Crée: <white><date> par <player>"
+  sender : "<aqua>Crée: <white><date> par <uuid>"
   picker : "<aqua>Assigné: <white><pickerDate> par <picker>"
   unpicked : "<aqua>Assigné: <white>non assigné"
   message : "<aqua>Message actuel: <white><message>"
@@ -52,7 +52,7 @@ exception :
   ticket_open : "<prefix> Ce ticket est déjà ouvert"
 format :
   list : "<ticket> <dark_gray>- <white><message>"
-  list_header : "<green><player>"
+  list_header : "<green><uuid>"
   log : "<white><bold><reason> <dark_gray>@ <white><date><dark_gray>"
   status : "<amount> <status>"
   hs : "<green><target> <dark_gray>- <white><bold><amount>"

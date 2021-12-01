@@ -4,7 +4,7 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-public abstract class MessageInteraction extends Interaction {
+public final class MessageInteraction extends Interaction {
 
     private final String message;
 

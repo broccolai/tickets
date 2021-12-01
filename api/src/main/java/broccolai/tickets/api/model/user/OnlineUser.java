@@ -7,7 +7,7 @@ import net.kyori.adventure.identity.Identity;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.dataflow.qual.Pure;
 
-public interface OnlineSoul extends Soul, Identified, Identity, ForwardingAudience.Single {
+public interface OnlineUser extends User, Identified, Identity, ForwardingAudience.Single {
 
     @Override
     @Pure

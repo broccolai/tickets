@@ -2,7 +2,7 @@ package broccolai.tickets.core.commands.arguments;
 
 import broccolai.tickets.api.model.interaction.Action;
 import broccolai.tickets.api.model.interaction.MessageInteraction;
-import broccolai.tickets.api.model.user.OnlineSoul;
+import broccolai.tickets.api.model.user.OnlineUser;
 import broccolai.tickets.core.model.interaction.BasicMessageInteraction;
 import cloud.commandframework.arguments.CommandArgument;
 import cloud.commandframework.arguments.parser.ArgumentParseResult;
@@ -14,7 +14,7 @@ import java.util.Queue;
 import java.util.StringJoiner;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-public final class MessageArgument extends CommandArgument<OnlineSoul, MessageInteraction> {
+public final class MessageArgument extends CommandArgument<OnlineUser, MessageInteraction> {
 
     private MessageArgument(final boolean required, final @NonNull String name) {
         super(required, name, new MessageParser(), MessageInteraction.class);
@@ -24,11 +24,11 @@ public final class MessageArgument extends CommandArgument<OnlineSoul, MessageIn
         return new MessageArgument(true, name);
     }
 
-    private static final class MessageParser implements ArgumentParser<OnlineSoul, MessageInteraction> {
+    private static final class MessageParser implements ArgumentParser<OnlineUser, MessageInteraction> {
 
         @Override
         public @NonNull ArgumentParseResult<MessageInteraction> parse(
-                final @NonNull CommandContext<OnlineSoul> commandContext,
+                final @NonNull CommandContext<OnlineUser> commandContext,
                 final @NonNull Queue<String> inputQueue
         ) {
             String input = inputQueue.peek();

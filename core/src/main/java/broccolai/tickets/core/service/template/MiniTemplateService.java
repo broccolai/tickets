@@ -2,7 +2,7 @@ package broccolai.tickets.core.service.template;
 
 import broccolai.tickets.api.model.interaction.MessageInteraction;
 import broccolai.tickets.api.model.ticket.Ticket;
-import broccolai.tickets.api.model.user.Soul;
+import broccolai.tickets.api.model.user.User;
 import broccolai.tickets.api.service.template.TemplateService;
 import broccolai.tickets.api.service.user.UserService;
 import com.google.inject.Inject;
@@ -31,29 +31,29 @@ public final class MiniTemplateService implements TemplateService {
     @Override
     public @NonNull List<@NonNull Template> player(
             final @NonNull String prefix,
-            final @NonNull Soul soul
+            final @NonNull User user
     ) {
         return Arrays.asList(
-                Template.of(prefix, this.userComponent(soul.username(), soul.uuid())),
-                Template.of(prefix + "_name", soul.username()),
-                Template.of(prefix + "_uuid", soul.uuid().toString())
+                Template.of(prefix, this.userComponent(user.username(), user.uuid())),
+                Template.of(prefix + "_name", user.username()),
+                Template.of(prefix + "_uuid", user.uuid().toString())
         );
     }
 
     @Override
     public @NonNull List<@NonNull Template> ticket(final @NonNull Ticket ticket) {
-        String name = this.userService.snapshot(ticket.player()).username();
+        String name = this.userService.snapshot(ticket.uuid()).username();
         return Arrays.asList(
                 Template.of("ticket", Component.text('#', NamedTextColor.DARK_GRAY).append(Component.text(
                         ticket.id(), ticket.status().color(), TextDecoration.BOLD
                 )).hoverEvent(HoverEvent.showText(Component.join(
                         Component.newline(),
                         Component.text("id: " + ticket.id()),
-                        Component.text("player: " + name),
+                        Component.text("uuid: " + name),
                         Component.text("status: " + ticket.status().name())
                 ))).clickEvent(ClickEvent.runCommand("/tickets show " + ticket.id()))),
                 Template.of("status", ticket.status().name()),
-                Template.of("player", this.userComponent(name, ticket.player())),
+                Template.of("uuid", this.userComponent(name, ticket.uuid())),
                 Template.of("context", Component.text("context")
                         .clickEvent(ClickEvent.runCommand("/tickets context " + ticket.id()))),
                 Template.of(

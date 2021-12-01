@@ -4,7 +4,7 @@ import broccolai.tickets.api.model.event.Subscriber;
 import broccolai.tickets.api.model.event.impl.SoulJoinEvent;
 import broccolai.tickets.api.model.ticket.Ticket;
 import broccolai.tickets.api.model.ticket.TicketStatus;
-import broccolai.tickets.api.model.user.PlayerSoul;
+import broccolai.tickets.api.model.user.PlayerUser;
 import broccolai.tickets.api.service.event.EventService;
 import broccolai.tickets.api.service.message.MessageService;
 import broccolai.tickets.api.service.storage.StorageService;
@@ -41,7 +41,7 @@ public final class SoulSubscriber implements Subscriber {
     }
 
     public void onSoulJoin(final @NonNull SoulJoinEvent event) {
-        PlayerSoul soul = event.soul();
+        PlayerUser soul = event.soul();
 
         Collection<Component> notifications = this.storageService.notifications(soul);
 
