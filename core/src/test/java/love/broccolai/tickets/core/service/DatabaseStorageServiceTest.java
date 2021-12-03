@@ -1,13 +1,10 @@
 package love.broccolai.tickets.core.service;
 
-import java.time.Instant;
-import java.util.HashSet;
 import java.util.UUID;
 import love.broccolai.tickets.api.model.Ticket;
 import love.broccolai.tickets.api.service.StorageService;
 import love.broccolai.tickets.core.utilities.TicketsJdbiPlugin;
 import org.jdbi.v3.core.locator.ClasspathSqlLocator;
-import org.jdbi.v3.core.mapper.RowMappers;
 import org.jdbi.v3.testing.junit5.JdbiExtension;
 import org.jdbi.v3.testing.junit5.JdbiH2Extension;
 import org.junit.jupiter.api.BeforeEach;
@@ -20,7 +17,6 @@ import org.junit.jupiter.api.extension.RegisterExtension;
 
 import static com.google.common.truth.Truth.assertThat;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 //todo: REPLACE MIGRATE WITH FLYWAY
 // - https://github.com/flyway/flyway/issues/3334
