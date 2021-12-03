@@ -45,6 +45,7 @@ subprojects {
     dependencies {
         errorprone(rootProject.libs.errorprone)
 
+        testImplementation(rootProject.libs.mockito)
         testImplementation(rootProject.libs.truth)
 
         testImplementation(rootProject.libs.junit.api)

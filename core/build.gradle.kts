@@ -3,7 +3,6 @@ dependencies {
 
     api(libs.adventure.platform)
     api(libs.jdbi.core)
-    api(libs.jdbi.testing)
     api(libs.caffeine)
     api(libs.corn.core)
     api(libs.cloud.extras)
@@ -15,4 +14,6 @@ dependencies {
     api(libs.configurate)
 
     api(libs.bundles.guice)
+
+    testImplementation(libs.jdbi.testing)
 }
