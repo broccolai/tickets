@@ -24,7 +24,7 @@ class DatabaseStorageServiceTest {
         public String getUrl() {
             return super.getUrl() + ";MODE=MySQL;DATABASE_TO_LOWER=TRUE;DB_CLOSE_DELAY=2";
         }
-    };
+    }.withPlugin(new TicketsJdbiPlugin());
 
     private StorageService storageService;
 
