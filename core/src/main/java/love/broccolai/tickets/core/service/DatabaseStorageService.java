@@ -1,9 +1,13 @@
 package love.broccolai.tickets.core.service;
 
+import com.google.common.primitives.Ints;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import java.time.Instant;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import love.broccolai.tickets.api.model.Ticket;
 import love.broccolai.tickets.api.service.StorageService;
@@ -41,7 +45,32 @@ public final class DatabaseStorageService implements StorageService {
                     .mapTo(Integer.class)
                     .first();
 
-            return new Ticket(id, creator, timestamp, message, new HashSet<>());
+            return new Ticket(id, creator, timestamp, null, message, new HashSet<>());
+        });
+    }
+
+    @Override
+    public void saveTicket(final @NonNull Ticket ticket) {
+        this.jdbi.useHandle(handle -> {
+            handle.createUpdate(this.locator.query("save-ticket"))
+                    .bind("id", ticket.id())
+                    .bind("assignee", ticket.assignee())
+                    .bind("message", ticket.message())
+                    .execute();
+        });
+    }
+
+    @Override
+    public @NonNull Ticket selectTicket(final int id) {
+        return this.selectTickets(id).get(id);
+    }
+
+    @Override
+    public @NonNull Map<@NonNull Integer, @NonNull Ticket> selectTickets(final int... ids) {
+        return this.jdbi.withHandle(handle -> {
+            return handle.createQuery(this.locator.query("select-tickets"))
+                    .bindList("ids", Ints.asList(ids))
+                    .reduceRows(new LinkedHashMap<>(), new TicketAccumulator());
         });
     }
 
