@@ -7,14 +7,15 @@ import java.util.HashSet;
 import java.util.UUID;
 import love.broccolai.tickets.api.model.Ticket;
 import love.broccolai.tickets.api.service.StorageService;
+import love.broccolai.tickets.core.storage.TicketAccumulator;
+import love.broccolai.tickets.core.utilities.QueriesLocator;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.jdbi.v3.core.Jdbi;
-import org.jdbi.v3.core.locator.ClasspathSqlLocator;
 
 @Singleton
 public final class DatabaseStorageService implements StorageService {
 
-    private final ClasspathSqlLocator locator = ClasspathSqlLocator.create();
+    private final QueriesLocator locator = new QueriesLocator();
 
     private final Jdbi jdbi;
 
@@ -28,15 +29,15 @@ public final class DatabaseStorageService implements StorageService {
         Instant timestamp = Instant.now();
 
         return this.jdbi.withHandle(handle -> {
-            String[] queries = this.locator.locate("queries/insert-ticket").split(";");
+            List<String> queries = this.locator.queries("insert-ticket");
 
-            handle.createUpdate(queries[0])
+            handle.createUpdate(queries.get(0))
                     .bind("creator", creator)
                     .bind("creationDate", timestamp)
                     .bind("message", message)
                     .execute();
 
-            int id = handle.createQuery(queries[1])
+            int id = handle.createQuery(queries.get(1))
                     .mapTo(Integer.class)
                     .first();
 
