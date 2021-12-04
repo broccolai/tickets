@@ -17,6 +17,7 @@ plugins {
     id("com.github.ben-manes.versions")
     id("net.ltgt.errorprone")
     id("com.adarshr.test-logger")
+    id("jacoco")
 }
 
 group = "love.broccolai.tickets"
@@ -29,6 +30,7 @@ subprojects {
     apply<IndraPublishingPlugin>()
     apply<ErrorPronePlugin>()
     apply<TestLoggerPlugin>()
+    apply<JacocoPlugin>()
 
     repositories {
         mavenCentral()
@@ -66,6 +68,12 @@ subprojects {
             github("broccolai", "tickets") {
                 ci(true)
                 issues(true)
+            }
+        }
+
+        jacocoTestReport {
+            reports {
+                html.outputLocation.set(layout.buildDirectory.dir("jacocoHtml"))
             }
         }
 
