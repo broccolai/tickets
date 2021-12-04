@@ -5,10 +5,11 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import java.time.Instant;
 import java.util.HashSet;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 import love.broccolai.tickets.api.model.Ticket;
 import love.broccolai.tickets.api.service.StorageService;
 import love.broccolai.tickets.core.storage.TicketAccumulator;
@@ -70,7 +71,8 @@ public final class DatabaseStorageService implements StorageService {
         return this.jdbi.withHandle(handle -> {
             return handle.createQuery(this.locator.query("select-tickets"))
                     .bindList("ids", Ints.asList(ids))
-                    .reduceRows(new LinkedHashMap<>(), new TicketAccumulator());
+                    .reduceRows(new TicketAccumulator())
+                    .collect(Collectors.toMap(Ticket::id, Function.identity()));
         });
     }
 

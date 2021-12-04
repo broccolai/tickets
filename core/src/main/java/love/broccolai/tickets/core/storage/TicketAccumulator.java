@@ -1,20 +1,32 @@
 package love.broccolai.tickets.core.storage;
 
+import java.util.HashMap;
 import java.util.Map;
-import java.util.function.BiFunction;
+import java.util.stream.Stream;
 import love.broccolai.tickets.api.model.Ticket;
+import org.jdbi.v3.core.result.RowReducer;
 import org.jdbi.v3.core.result.RowView;
 
-public final class TicketAccumulator implements BiFunction<Map<Integer, Ticket>, RowView, Map<Integer, Ticket>> {
+public final class TicketAccumulator implements RowReducer<Map<Integer, Ticket.Builder>, Ticket> {
 
     @Override
-    public Map<Integer, Ticket> apply(final Map<Integer, Ticket> container, final RowView row) {
-        Ticket ticket = container.computeIfAbsent(
-                row.getColumn("id", Integer.class),
-                id -> row.getRow(Ticket.class)
-        );
+    public Map<Integer, Ticket.Builder> container() {
+        return new HashMap<>();
+    }
 
-        return container;
+    @Override
+    public void accumulate(final Map<Integer, Ticket.Builder> container, final RowView row) {
+        Ticket.Builder ticket = container.computeIfAbsent(
+                row.getColumn("id", Integer.class),
+                id -> row.getRow(Ticket.Builder.class)
+        );
+    }
+
+    @Override
+    public Stream<Ticket> stream(final Map<Integer, Ticket.Builder> container) {
+        return container.values()
+                .stream()
+                .map(Ticket.Builder::build);
     }
 
 }
