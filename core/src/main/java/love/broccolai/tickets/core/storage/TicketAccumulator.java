@@ -9,8 +9,10 @@ public final class TicketAccumulator implements BiFunction<Map<Integer, Ticket>,
 
     @Override
     public Map<Integer, Ticket> apply(final Map<Integer, Ticket> container, final RowView row) {
-        Ticket ticket = row.getRow(Ticket.class);
-        container.put(ticket.id(), ticket);
+        Ticket ticket = container.computeIfAbsent(
+                row.getColumn("id", Integer.class),
+                id -> row.getRow(Ticket.class)
+        );
 
         return container;
     }
