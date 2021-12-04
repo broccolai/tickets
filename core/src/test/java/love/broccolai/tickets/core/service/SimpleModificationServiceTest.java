@@ -11,12 +11,14 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static com.google.common.truth.Truth.assertThat;
+import static com.google.common.truth.Truth8.assertThat;
 import static org.mockito.Mockito.mock;
 
 class SimpleModificationServiceTest {
 
     private final StorageService storageService = mock(StorageService.class);
     private final ModificationService modificationService = new SimpleModificationService(this.storageService);
+
     private Ticket ticket;
 
     @BeforeEach
@@ -46,6 +48,16 @@ class SimpleModificationServiceTest {
         EditAction action = this.modificationService.edit(this.ticket, creator, "New message");
 
         assertThat(this.ticket.message()).isEqualTo(action.message());
+    }
+
+    @Test
+    void assign() {
+        UUID creator = UUID.randomUUID();
+        UUID assignee = UUID.randomUUID();
+
+        this.modificationService.assign(this.ticket, creator, assignee);
+
+        assertThat(this.ticket.assignee()).hasValue(assignee);
     }
 
 }

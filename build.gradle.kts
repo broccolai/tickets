@@ -48,7 +48,8 @@ subprojects {
         errorprone(rootProject.libs.errorprone)
 
         testImplementation(rootProject.libs.mockito)
-        testImplementation(rootProject.libs.truth)
+        testImplementation(rootProject.libs.truth.core)
+        testImplementation(rootProject.libs.truth.java.eight)
 
         testImplementation(rootProject.libs.junit.api)
         testImplementation(rootProject.libs.junit.engine)
