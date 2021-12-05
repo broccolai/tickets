@@ -5,7 +5,7 @@ import java.util.UUID;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 public record AssignAction(
-        @NonNull Instant creationDate,
+        @NonNull Instant date,
         @NonNull UUID creator,
         @NonNull UUID assignee
 ) implements Action {

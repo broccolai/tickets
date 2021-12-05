@@ -17,7 +17,7 @@ public final class Ticket {
 
     private final int id;
     private final @NonNull UUID creator;
-    private final @NonNull Instant creationDate;
+    private final @NonNull Instant date;
     private @Nullable UUID assignee;
     private @NonNull String message;
     private final @NonNull Set<Action> actions;
@@ -25,14 +25,14 @@ public final class Ticket {
     public Ticket(
             final int id,
             final @NonNull UUID creator,
-            final @NonNull Instant creationDate,
+            final @NonNull Instant date,
             final @Nullable UUID assignee,
             final @NonNull String message,
             final @NonNull Set<Action> actions
     ) {
         this.id = id;
         this.creator = creator;
-        this.creationDate = creationDate.truncatedTo(ChronoUnit.SECONDS);
+        this.date = date.truncatedTo(ChronoUnit.SECONDS);
         this.assignee = assignee;
         this.message = message;
         this.actions = actions;
@@ -46,8 +46,8 @@ public final class Ticket {
         return this.creator;
     }
 
-    public @NonNull Instant creationDate() {
-        return this.creationDate;
+    public @NonNull Instant date() {
+        return this.date;
     }
 
     public @NonNull Optional<@NonNull UUID> assignee() {
@@ -81,20 +81,20 @@ public final class Ticket {
 
         return this.id == that.id
                 && Objects.equals(this.creator, that.creator)
-                && Objects.equals(this.creationDate, that.creationDate)
+                && Objects.equals(this.date, that.date)
                 && Objects.equals(this.message, that.message);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.id, this.creator, this.creationDate, this.message);
+        return Objects.hash(this.id, this.creator, this.date, this.message);
     }
 
     public static final class Builder {
 
         private final int id;
         private final UUID creator;
-        private final Instant creationDate;
+        private final Instant date;
         private final UUID assignee;
         private final String message;
         private final Set<Action> actions;
@@ -102,13 +102,13 @@ public final class Ticket {
         public Builder(
                 final int id,
                 final @NonNull UUID creator,
-                final @NonNull Instant creationDate,
+                final @NonNull Instant date,
                 final @NonNull UUID assignee,
                 final @NonNull String message
         ) {
             this.id = id;
             this.creator = creator;
-            this.creationDate = creationDate;
+            this.date = date;
             this.assignee = assignee;
             this.message = message;
             this.actions = new HashSet<>();
@@ -123,7 +123,7 @@ public final class Ticket {
             return new Ticket(
                     this.id,
                     this.creator,
-                    this.creationDate,
+                    this.date,
                     this.assignee,
                     this.message,
                     Collections.unmodifiableSet(this.actions)

@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Stream;
 import love.broccolai.tickets.api.model.Ticket;
+import love.broccolai.tickets.api.model.action.Action;
 import org.jdbi.v3.core.result.RowReducer;
 import org.jdbi.v3.core.result.RowView;
 
@@ -20,6 +21,11 @@ public final class TicketAccumulator implements RowReducer<Map<Integer, Ticket.B
                 row.getColumn("id", Integer.class),
                 id -> row.getRow(Ticket.Builder.class)
         );
+
+        if (row.getColumn("type", String.class) != null) {
+            Action action = row.getRow(Action.class);
+            ticket.withAction(action);
+        }
     }
 
     @Override

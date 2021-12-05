@@ -1,7 +1,10 @@
 package love.broccolai.tickets.core.service;
 
+import java.time.Instant;
 import java.util.UUID;
 import love.broccolai.tickets.api.model.Ticket;
+import love.broccolai.tickets.api.model.action.Action;
+import love.broccolai.tickets.api.model.action.AssignAction;
 import love.broccolai.tickets.api.service.StorageService;
 import love.broccolai.tickets.core.utilities.TicketsJdbiPlugin;
 import org.jdbi.v3.core.locator.ClasspathSqlLocator;
@@ -16,7 +19,6 @@ import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.api.extension.RegisterExtension;
 
 import static com.google.common.truth.Truth.assertThat;
-import static org.mockito.Mockito.mock;
 
 //todo: REPLACE MIGRATE WITH FLYWAY
 // - https://github.com/flyway/flyway/issues/3334
@@ -57,10 +59,27 @@ class DatabaseStorageServiceTest {
     @Test
     @Order(2)
     void saveTicket() {
-        Ticket ticket = mock(Ticket.class);
+        Ticket ticket = this.storageService.createTicket(UUID.randomUUID(), "Hello!");
         ticket.message("Hey!");
 
         this.storageService.saveTicket(ticket);
+        Ticket loadedTicket = this.storageService.selectTicket(ticket.id());
+
+        assertThat(ticket.message()).isEqualTo(loadedTicket.message());
+    }
+
+    @Test
+    @Order(2)
+    void saveTicketWithAssignAction() {
+        Ticket ticket = this.storageService.createTicket(UUID.randomUUID(), "Hello!");
+        Action action = new AssignAction(Instant.now(), UUID.randomUUID(), UUID.randomUUID());
+
+        ticket.actions().add(action);
+
+        this.storageService.saveTicket(ticket);
+        Ticket loadedTicket = this.storageService.selectTicket(ticket.id());
+
+        assertThat(ticket.actions()).containsExactly(action);
     }
 
     @Test

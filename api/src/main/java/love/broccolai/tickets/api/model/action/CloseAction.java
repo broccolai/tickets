@@ -6,7 +6,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 public record CloseAction(
-        @NonNull Instant creationDate,
+        @NonNull Instant date,
         @NonNull UUID creator,
         @Nullable String message
 ) implements Action {

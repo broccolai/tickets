@@ -17,11 +17,11 @@ public final class TicketMapper implements RowMapper<Ticket.Builder> {
 
         int id = rs.getInt("id");
         UUID creator = uuidMapper.map(rs, "creator", ctx);
-        Instant creationDate = rs.getTimestamp("creationDate").toInstant();
+        Instant date = rs.getTimestamp("date").toInstant();
         UUID assignee = uuidMapper.map(rs, "assignee", ctx);
         String message = rs.getString("message");
 
-        return new Ticket.Builder(id, creator, creationDate, assignee, message);
+        return new Ticket.Builder(id, creator, date, assignee, message);
     }
 
 }

@@ -11,15 +11,19 @@ import java.util.UUID;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import love.broccolai.tickets.api.model.Ticket;
+import love.broccolai.tickets.api.model.action.Action;
 import love.broccolai.tickets.api.service.StorageService;
+import love.broccolai.tickets.core.storage.DelegatingActionMapper;
 import love.broccolai.tickets.core.storage.TicketAccumulator;
 import love.broccolai.tickets.core.utilities.QueriesLocator;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.jdbi.v3.core.Jdbi;
+import org.jdbi.v3.core.statement.PreparedBatch;
 
 @Singleton
 public final class DatabaseStorageService implements StorageService {
 
+    private final DelegatingActionMapper actionMapper = new DelegatingActionMapper();
     private final QueriesLocator locator = new QueriesLocator();
 
     private final Jdbi jdbi;
@@ -38,7 +42,7 @@ public final class DatabaseStorageService implements StorageService {
 
             handle.createUpdate(queries.get(0))
                     .bind("creator", creator)
-                    .bind("creationDate", timestamp)
+                    .bind("date", timestamp)
                     .bind("message", message)
                     .execute();
 
@@ -58,6 +62,20 @@ public final class DatabaseStorageService implements StorageService {
                     .bind("assignee", ticket.assignee())
                     .bind("message", ticket.message())
                     .execute();
+
+            PreparedBatch batch = handle.prepareBatch(this.locator.query("insert-action"));
+
+            for (final Action action : ticket.actions()) {
+                String identifier = this.actionMapper.typeIdentifier(action);
+                Map<String, ?> bindables = this.actionMapper.bindables(action);
+
+                batch.bind("ticket", ticket.id())
+                        .bind("type", identifier)
+                        .bindMap(bindables)
+                        .add();
+            }
+
+            batch.execute();
         });
     }
 

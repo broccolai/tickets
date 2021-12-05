@@ -6,7 +6,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 
 public interface Action {
 
-    @NonNull Instant creationDate();
+    @NonNull Instant date();
 
     @NonNull UUID creator();
 
