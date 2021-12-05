@@ -77,7 +77,7 @@ class DatabaseStorageServiceTest {
         ticket.actions().add(action);
 
         this.storageService.saveTicket(ticket);
-        Ticket loadedTicket = this.storageService.selectTicket(ticket.id());
+        this.storageService.selectTicket(ticket.id());
 
         assertThat(ticket.actions()).containsExactly(action);
     }
