@@ -1,7 +1,6 @@
 dependencies {
     api(projects.ticketsApi)
 
-    api(libs.adventure.platform)
     api(libs.jdbi.core)
     api(libs.caffeine)
     api(libs.corn.core)
