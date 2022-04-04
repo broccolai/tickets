@@ -11,26 +11,15 @@ jobs:
       - uses: actions/checkout@v2
         with:
           fetch-depth: 0
-      - uses: actions/cache@v2
-        with:
-          path: ~/.gradle/caches
-          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*') }}
-          restore-keys: |
-            ${{ runner.os }}-gradle-
       - name: Setup java
         uses: actions/setup-java@v2
         with:
-          distribution: 'adopt'
-          java-version: '16'
-      - name: Grant execute permission for gradlew
-        run: |
-          cd plugin
-          chmod +x gradlew
+          distribution: 'temurin'
+          java-version: '17'
+          cache: 'gradle'
       - name: Build with Gradle
-        run: |
-          cd plugin
-          ./gradlew build
+        run: ./gradlew build
       - uses: actions/upload-artifact@v2
         with:
           name: tickets.jar
-          path: plugin/build/libs/tickets-bukkit.jar
+          path: build/libs/tickets-bukkit.jar
