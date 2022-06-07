@@ -30,6 +30,8 @@ public final class SimpleModificationService implements ModificationService {
         CloseAction action = new CloseAction(Instant.now(), creator, null);
         ticket.actions().add(action);
 
+        this.storageService.saveTicket(ticket);
+
         return action;
     }
 
