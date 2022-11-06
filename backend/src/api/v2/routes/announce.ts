@@ -9,7 +9,7 @@ import MessageData from '@constructs/MessageData';
 import TicketStatus from '@constructs/TicketStatus';
 import db from '@lib/providers/database';
 import { serialiseLocation } from '@constructs/Location';
-import { MessageEmbed, TextChannel } from 'discord.js';
+import { EmbedBuilder, TextChannel } from 'discord.js';
 
 const router = express.Router();
 
@@ -24,9 +24,9 @@ router.post('/', async (req, res) => {
 
   const serverText = server != null ? 'Server: ' + server : '';
 
-  const embed = new MessageEmbed()
+  const embed = new EmbedBuilder()
     .setColor(TicketStatus[status])
-    .setAuthor(player.name, 'https://crafatar.com/avatars/' + player.uuid)
+    .setAuthor({ name: player.name, iconURL: 'https://crafatar.com/avatars/' + player.uuid })
     .setTitle(Action[action].title + ' - #' + id)
     .setDescription(
       `\`\`\`YAML
@@ -36,16 +36,20 @@ World: ${location.world}
 Location: X: ${location.x}, Y: ${location.y}, Z: ${location.z}\`\`\``,
     );
 
+  const fields = [];
+
   if (note != null) {
-    embed.addField('LAST NOTE', note);
+    fields.push({ name: 'LAST NOTE', value: note });
   }
 
-  embed
-    .addField('MESSAGE', wrap(message, 65))
-    .setTimestamp(Date.now())
-    .setFooter(Action[action].author + author.name, 'https://crafatar.com/avatars/' + author.uuid);
+  fields.push({ name: 'MESSAGE', value: wrap(message, 65) });
 
-  channel.send(embed);
+  embed
+    .addFields(fields)
+    .setTimestamp(Date.now())
+    .setFooter({ text: Action[action].author + author.name, iconURL: 'https://crafatar.com/avatars/' + author.uuid });
+
+  channel.send({ embeds: [embed] });
 
   db.run('INSERT INTO player(uuid, name) values(?, ?) ON CONFLICT(uuid) DO UPDATE set name = ?', [player.uuid, player.name, player.name]);
 

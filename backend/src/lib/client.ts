@@ -1,39 +1,42 @@
-import { Client, Message } from 'discord.js';
-import setup from './commands/setup';
+import { Client, Events, IntentsBitField, REST, Routes } from 'discord.js';
+import { ActivityType } from 'discord-api-types/v10';
+import { create, invoke } from '@lib/commands/setup';
 
-const client = new Client();
-const PREFIX = process.env.DISCORD_PREFIX || '!';
+const client = new Client({
+  intents: [IntentsBitField.Flags.Guilds],
+});
 
 client.on('ready', () => {
   const update = () => {
     client.user.setPresence({
       status: 'online',
-      activity: {
-        name: 'Tickets',
-        type: 'WATCHING',
-      }
-    })
+      activities: [
+        {
+          name: 'Tickets',
+          type: ActivityType.Watching,
+        },
+      ],
+    });
   };
 
   update();
   setInterval(update, 300000);
 });
 
-client.on('message', async (message: Message) => {
-  if (message.author.bot || !message.content.startsWith(PREFIX)) {
+client.on(Events.InteractionCreate, async (interaction) => {
+  if (!interaction.isChatInputCommand()) {
     return;
   }
 
-  const cmd = message.content.slice(1).trim().split(' ').shift().toLowerCase();
-
-  switch (cmd) {
-    case 'setup':
-      setup(message);
-      break;
-
-    default:
-      break;
+  if (interaction.commandName == 'setup') {
+    await invoke(interaction);
   }
+});
+
+const rest = new REST({ version: '10' }).setToken(process.env.DISCORD_ACCESS_TOKEN);
+
+rest.put(Routes.applicationCommands(process.env.DISCORD_CLIENT_ID), {
+  body: [create()],
 });
 
 export default client;

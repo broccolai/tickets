@@ -3,43 +3,53 @@ import * as crypto from 'crypto';
 import PureGuild from '../constructs/PureGuild';
 import db from '../providers/database';
 import { servers } from '../providers/storage';
-import { Message, MessageEmbed } from 'discord.js';
+import { CommandInteraction, EmbedBuilder, SlashCommandBuilder } from 'discord.js';
 
-export default (message: Message): void => {
-  if (!message.member.permissions.has('ADMINISTRATOR')) {
-    message.channel.send('Only administrators can use this command');
-    return;
-  }
+const create = () => {
+  const command = new SlashCommandBuilder()
+    .setName('setup')
+    .setDescription('setup pure tickets discord bot')
+    .setDefaultMemberPermissions(0)
+    .setDMPermission(false);
 
+  return command.toJSON();
+};
+
+const invoke = async (interaction: CommandInteraction) => {
   let token: string;
   let output: string;
 
-  if (servers.has(message.guild.id)) {
-    const data = servers.get(message.guild.id);
+  if (servers.has(interaction.guild.id)) {
+    const data = servers.get(interaction.guild.id);
 
     token = data['token'];
-    output = message.channel.id;
+    output = interaction.channel.id;
 
-    db.run('UPDATE server SET outputChannel = ? WHERE guild = ?', output, message.guild.id);
+    db.run('UPDATE server SET outputChannel = ? WHERE guild = ?', output, interaction.guild.id);
   } else {
     token = crypto.randomBytes(30).toString('hex');
-    output = message.channel.id;
-    db.run('INSERT INTO server(guild, token, outputChannel) VALUES(?, ?, ?)', message.guild.id, token, output);
+    output = interaction.channel.id;
+    db.run('INSERT INTO server(guild, token, outputChannel) VALUES(?, ?, ?)', interaction.guild.id, token, output);
   }
 
-  const guild = new PureGuild(message.guild.id, token, output);
+  const guild = new PureGuild(interaction.guild.id, token, output);
 
   servers.set(guild.id, guild);
 
-  const embed = new MessageEmbed()
+  const embed = new EmbedBuilder()
     .setColor(0x0099ff)
     .setTitle('Pure Tickets Integration Setup')
-    .addField(':ticket:  Your Token', guild.token)
-    .addField(':house:  Guild Id', guild.id, true)
-    .addField(':office:  Output Channel', guild.output, true);
+    .addFields(
+      { name: ':ticket:  Your Token', value: guild.token },
+      { name: ':house:  Guild Id', value: guild.id, inline: true },
+      { name: ':office:  Output Channel', value: guild.output, inline: true },
+    );
 
-  message.author.send(embed);
-  message.author.send('Keep your guilds token secret. if you need to change the broadcast channel, re-run setup in the desired channel');
-
-  message.channel.send(':envelope: You have been sent a private message with setup information');
+  await interaction.reply({
+    content: 'Keep your guilds token secret. if you need to change the broadcast channel, re-run setup in the desired channel',
+    embeds: [embed],
+    ephemeral: true,
+  });
 };
+
+export { create, invoke };
