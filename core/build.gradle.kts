@@ -3,7 +3,6 @@ dependencies {
 
     api(libs.jdbi.core)
     api(libs.caffeine)
-    api(libs.corn.core)
     api(libs.cloud.extras)
     api(libs.http4j)
     api(libs.slf4j)

@@ -22,7 +22,8 @@ import static com.google.common.truth.Truth.assertThat;
 class DatabaseStorageServiceTest {
 
     private static final JdbiExtensionInitializer FLYWAY_INITIALIZER = JdbiFlywayMigration.flywayMigration()
-            .withPath("queries/migrations");
+            .withPath("queries/migrations")
+            .cleanAfter();
 
     @RegisterExtension
     private static final JdbiExtension H2_EXTENSION = new JdbiH2Extension() {

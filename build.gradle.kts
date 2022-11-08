@@ -1,10 +1,7 @@
-import ca.stellardrift.build.common.paper
-import ca.stellardrift.build.common.spigot
 import com.github.jengelman.gradle.plugins.shadow.ShadowPlugin
 import net.kyori.indra.IndraCheckstylePlugin
 import net.kyori.indra.IndraPlugin
 import net.kyori.indra.IndraPublishingPlugin
-import net.kyori.indra.repository.sonatypeSnapshots
 import net.ltgt.gradle.errorprone.ErrorPronePlugin
 import com.adarshr.gradle.testlogger.TestLoggerPlugin
 
@@ -34,11 +31,10 @@ subprojects {
 
     repositories {
         mavenCentral()
-        sonatypeSnapshots()
-        spigot()
-        paper()
+        sonatype.ossSnapshots()
 
-        maven("https://mvn.intellectualsites.com/content/repositories/snapshots")
+        maven("https://hub.spigotmc.org/nexus/content/repositories/snapshots")
+        maven("https://repo.papermc.io/repository/maven-public")
         maven("https://nexus.velocitypowered.com/repository/maven-public/")
         maven("https://repo.broccol.ai/releases")
         maven("https://repo.broccol.ai/snapshots")
