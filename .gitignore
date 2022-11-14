@@ -156,3 +156,4 @@ gradle-app.setting
 build.sh
 .env
 **/run/
+.fleet
