@@ -1,3 +1,3 @@
 UPDATE tickets_ticket
-SET assignee = :assignee, message = :message
+SET status = :status, assignee = :assignee, message = :message
 WHERE id = :id

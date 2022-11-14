@@ -4,6 +4,7 @@ import java.time.Instant;
 import java.util.HashSet;
 import java.util.UUID;
 import love.broccolai.tickets.api.model.Ticket;
+import love.broccolai.tickets.api.model.TicketStatus;
 import love.broccolai.tickets.api.model.action.EditAction;
 import love.broccolai.tickets.api.service.ModificationService;
 import love.broccolai.tickets.api.service.StorageService;
@@ -23,7 +24,15 @@ class SimpleModificationServiceTest {
 
     @BeforeEach
     void setup() {
-        this.ticket = new Ticket(1, UUID.randomUUID(), Instant.now(), null, "Test Message", new HashSet<>());
+        this.ticket = new Ticket(
+                1,
+                TicketStatus.OPEN,
+                UUID.randomUUID(),
+                Instant.now(),
+                null,
+                "Test Message",
+                new HashSet<>()
+        );
     }
 
     @Test

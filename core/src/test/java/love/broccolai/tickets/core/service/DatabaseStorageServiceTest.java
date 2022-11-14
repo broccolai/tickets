@@ -1,9 +1,11 @@
 package love.broccolai.tickets.core.service;
 
 import java.time.Instant;
+import java.util.Collection;
 import java.util.UUID;
 import javax.sql.DataSource;
 import love.broccolai.tickets.api.model.Ticket;
+import love.broccolai.tickets.api.model.TicketStatus;
 import love.broccolai.tickets.api.model.action.Action;
 import love.broccolai.tickets.api.model.action.AssignAction;
 import love.broccolai.tickets.api.service.StorageService;
@@ -80,6 +82,19 @@ class DatabaseStorageServiceTest {
         Ticket loadedTicket = this.storageService.selectTicket(ticket.id());
 
         assertThat(ticket).isEqualTo(loadedTicket);
+    }
+
+    @Test
+    void findTickets() {
+        Ticket closedTicket = this.storageService.createTicket(UUID.randomUUID(), "Test Message");
+        closedTicket.status(TicketStatus.CLOSED);
+        this.storageService.saveTicket(closedTicket);
+
+        this.storageService.createTicket(UUID.randomUUID(), "TEST");
+        this.storageService.createTicket(UUID.randomUUID(), "TEST");
+
+        Collection<Ticket> foundTickets = this.storageService.findTickets(TicketStatus.OPEN, null);
+        assertThat(foundTickets).hasSize(2);
     }
 
 }

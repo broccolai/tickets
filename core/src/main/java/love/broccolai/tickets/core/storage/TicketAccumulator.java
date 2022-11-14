@@ -5,21 +5,22 @@ import java.util.Map;
 import java.util.stream.Stream;
 import love.broccolai.tickets.api.model.Ticket;
 import love.broccolai.tickets.api.model.action.Action;
+import love.broccolai.tickets.core.model.TicketBuilder;
 import org.jdbi.v3.core.result.RowReducer;
 import org.jdbi.v3.core.result.RowView;
 
-public final class TicketAccumulator implements RowReducer<Map<Integer, Ticket.Builder>, Ticket> {
+public final class TicketAccumulator implements RowReducer<Map<Integer, TicketBuilder>, Ticket> {
 
     @Override
-    public Map<Integer, Ticket.Builder> container() {
+    public Map<Integer, TicketBuilder> container() {
         return new HashMap<>();
     }
 
     @Override
-    public void accumulate(final Map<Integer, Ticket.Builder> container, final RowView row) {
-        Ticket.Builder ticket = container.computeIfAbsent(
+    public void accumulate(final Map<Integer, TicketBuilder> container, final RowView row) {
+        TicketBuilder ticket = container.computeIfAbsent(
                 row.getColumn("id", Integer.class),
-                id -> row.getRow(Ticket.Builder.class)
+                id -> row.getRow(TicketBuilder.class)
         );
 
         if (row.getColumn("type", String.class) != null) {
@@ -29,10 +30,10 @@ public final class TicketAccumulator implements RowReducer<Map<Integer, Ticket.B
     }
 
     @Override
-    public Stream<Ticket> stream(final Map<Integer, Ticket.Builder> container) {
+    public Stream<Ticket> stream(final Map<Integer, TicketBuilder> container) {
         return container.values()
                 .stream()
-                .map(Ticket.Builder::build);
+                .map(TicketBuilder::build);
     }
 
 }

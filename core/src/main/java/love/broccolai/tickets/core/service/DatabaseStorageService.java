@@ -4,6 +4,7 @@ import com.google.common.primitives.Ints;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import java.time.Instant;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -11,12 +12,14 @@ import java.util.UUID;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import love.broccolai.tickets.api.model.Ticket;
+import love.broccolai.tickets.api.model.TicketStatus;
 import love.broccolai.tickets.api.model.action.Action;
 import love.broccolai.tickets.api.service.StorageService;
 import love.broccolai.tickets.core.storage.DelegatingActionMapper;
 import love.broccolai.tickets.core.storage.TicketAccumulator;
 import love.broccolai.tickets.core.utilities.QueriesLocator;
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.jdbi.v3.core.Jdbi;
 import org.jdbi.v3.core.statement.PreparedBatch;
 
@@ -50,7 +53,7 @@ public final class DatabaseStorageService implements StorageService {
                     .mapTo(Integer.class)
                     .first();
 
-            return new Ticket(id, creator, timestamp, null, message, new HashSet<>());
+            return new Ticket(id, TicketStatus.OPEN, creator, timestamp, null, message, new HashSet<>());
         });
     }
 
@@ -59,6 +62,7 @@ public final class DatabaseStorageService implements StorageService {
         this.jdbi.useHandle(handle -> {
             handle.createUpdate(this.locator.query("save-ticket"))
                     .bind("id", ticket.id())
+                    .bind("status", ticket.status())
                     .bind("assignee", ticket.assignee())
                     .bind("message", ticket.message())
                     .execute();
@@ -91,6 +95,20 @@ public final class DatabaseStorageService implements StorageService {
                     .bindList("ids", Ints.asList(ids))
                     .reduceRows(new TicketAccumulator())
                     .collect(Collectors.toMap(Ticket::id, Function.identity()));
+        });
+    }
+
+    @Override
+    public @NonNull Collection<@NonNull Ticket> findTickets(
+            @NonNull final TicketStatus status,
+            @Nullable final UUID assignee
+    ) {
+        return this.jdbi.withHandle(handle -> {
+            return handle.createQuery(this.locator.query("find-tickets"))
+                    .bind("status", status)
+                    .bind("assignee", assignee)
+                    .reduceRows(new TicketAccumulator())
+                    .toList();
         });
     }
 

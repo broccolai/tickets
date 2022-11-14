@@ -3,4 +3,4 @@ SELECT t.id, t.status, t.creator, t.date, t.assignee, t.message,
 FROM tickets_ticket as t
          LEFT JOIN tickets_action as a
                    ON (t.id = a.ticket)
-WHERE t.id IN (<ids>);
+WHERE t.status = :status AND (:assignee IS NULL OR t.assignee = :assignee);
