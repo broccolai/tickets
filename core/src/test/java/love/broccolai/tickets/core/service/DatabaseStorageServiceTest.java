@@ -93,7 +93,7 @@ class DatabaseStorageServiceTest {
         this.storageService.createTicket(UUID.randomUUID(), "TEST");
         this.storageService.createTicket(UUID.randomUUID(), "TEST");
 
-        Collection<Ticket> foundTickets = this.storageService.findTickets(TicketStatus.OPEN, null);
+        Collection<Ticket> foundTickets = this.storageService.findTickets(TicketStatus.OPEN, null, null);
         assertThat(foundTickets).hasSize(2);
     }
 

@@ -100,13 +100,15 @@ public final class DatabaseStorageService implements StorageService {
 
     @Override
     public @NonNull Collection<@NonNull Ticket> findTickets(
-            @NonNull final TicketStatus status,
-            @Nullable final UUID assignee
+            final @NonNull TicketStatus status,
+            final @Nullable UUID assignee,
+            final @Nullable Instant since
     ) {
         return this.jdbi.withHandle(handle -> {
             return handle.createQuery(this.locator.query("find-tickets"))
                     .bind("status", status)
                     .bind("assignee", assignee)
+                    .bind("since", since)
                     .reduceRows(new TicketAccumulator())
                     .toList();
         });

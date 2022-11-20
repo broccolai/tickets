@@ -1,5 +1,6 @@
 package love.broccolai.tickets.api.service;
 
+import java.time.Instant;
 import java.util.Collection;
 import java.util.Map;
 import java.util.UUID;
@@ -19,5 +20,9 @@ public interface StorageService {
 
     @NonNull Map<@NonNull Integer, @NonNull Ticket> selectTickets(int... ids);
 
-    @NonNull Collection<@NonNull Ticket> findTickets(@NonNull TicketStatus status, @Nullable UUID assignee);
+    @NonNull Collection<@NonNull Ticket> findTickets(
+            @NonNull TicketStatus status,
+            @Nullable UUID assignee,
+            @Nullable Instant since
+    );
 }
