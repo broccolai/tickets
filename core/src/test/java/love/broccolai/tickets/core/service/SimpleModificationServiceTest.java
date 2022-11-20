@@ -1,7 +1,7 @@
 package love.broccolai.tickets.core.service;
 
 import java.time.Instant;
-import java.util.HashSet;
+import java.util.ArrayList;
 import java.util.UUID;
 import love.broccolai.tickets.api.model.Ticket;
 import love.broccolai.tickets.api.model.TicketStatus;
@@ -31,7 +31,7 @@ class SimpleModificationServiceTest {
                 Instant.now(),
                 null,
                 "Test Message",
-                new HashSet<>()
+                new ArrayList<>()
         );
     }
 

@@ -7,9 +7,9 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.common.returnsreceiver.qual.This;
 
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 import java.util.UUID;
 
 public final class TicketBuilder {
@@ -20,7 +20,7 @@ public final class TicketBuilder {
     private final Instant date;
     private final UUID assignee;
     private final String message;
-    private final Set<Action> actions;
+    private final List<Action> actions;
 
     public TicketBuilder(
             final int id,
@@ -36,7 +36,7 @@ public final class TicketBuilder {
         this.date = date;
         this.assignee = assignee;
         this.message = message;
-        this.actions = new HashSet<>();
+        this.actions = new ArrayList<>();
     }
 
     public @This TicketBuilder withAction(final @NonNull Action action) {
@@ -52,7 +52,7 @@ public final class TicketBuilder {
                 this.date,
                 this.assignee,
                 this.message,
-                Collections.unmodifiableSet(this.actions)
+                Collections.unmodifiableList(this.actions)
         );
     }
 

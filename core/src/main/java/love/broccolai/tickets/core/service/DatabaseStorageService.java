@@ -4,8 +4,8 @@ import com.google.common.primitives.Ints;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -53,7 +53,7 @@ public final class DatabaseStorageService implements StorageService {
                     .mapTo(Integer.class)
                     .first();
 
-            return new Ticket(id, TicketStatus.OPEN, creator, timestamp, null, message, new HashSet<>());
+            return new Ticket(id, TicketStatus.OPEN, creator, timestamp, null, message, new ArrayList<>());
         });
     }
 

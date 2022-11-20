@@ -2,9 +2,9 @@ package love.broccolai.tickets.api.model;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.Set;
 import java.util.UUID;
 import love.broccolai.tickets.api.model.action.Action;
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -18,7 +18,7 @@ public final class Ticket {
     private final @NonNull Instant date;
     private @Nullable UUID assignee;
     private @NonNull String message;
-    private final @NonNull Set<Action> actions;
+    private final @NonNull List<Action> actions;
 
     public Ticket(
             final int id,
@@ -27,7 +27,7 @@ public final class Ticket {
             final @NonNull Instant date,
             final @Nullable UUID assignee,
             final @NonNull String message,
-            final @NonNull Set<Action> actions
+            final @NonNull List<Action> actions
     ) {
         this.id = id;
         this.status = status;
@@ -74,7 +74,7 @@ public final class Ticket {
         this.message = message;
     }
 
-    public @NonNull Set<Action> actions() {
+    public @NonNull List<Action> actions() {
         return this.actions;
     }
 
