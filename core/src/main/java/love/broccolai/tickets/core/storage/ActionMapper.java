@@ -15,7 +15,7 @@ public interface ActionMapper<A extends Action> extends RowMapper<Action> {
     @Override
     default Action map(ResultSet rs, StatementContext ctx) throws SQLException {
         ColumnMapper<UUID> uuidMapper = ctx.findColumnMapperFor(UUID.class).orElseThrow(IllegalStateException::new);
-        Instant date = rs.getTimestamp("date").toInstant();
+        Instant date = rs.getTimestamp("action_date").toInstant();
 
         return this.map(uuidMapper, date, rs, ctx);
     }

@@ -19,8 +19,8 @@ public final class EditActionMapper implements ActionMapper<EditAction> {
             final ResultSet rs,
             final StatementContext ctx
     ) throws SQLException {
-        UUID creator = mapper.map(rs, "creator", ctx);
-        String message = rs.getString("message");
+        UUID creator = mapper.map(rs, "action_creator", ctx);
+        String message = rs.getString("action_message");
 
         return new EditAction(date, creator, message);
     }

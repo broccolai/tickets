@@ -19,8 +19,8 @@ public final class AssignActionMapper implements ActionMapper<AssignAction> {
             final ResultSet rs,
             final StatementContext ctx
     ) throws SQLException {
-        UUID creator = mapper.map(rs, "creator", ctx);
-        UUID assignee = mapper.map(rs, "assignee", ctx);
+        UUID creator = mapper.map(rs, "action_creator", ctx);
+        UUID assignee = mapper.map(rs, "action_assignee", ctx);
 
         return new AssignAction(date, creator, assignee);
     }
