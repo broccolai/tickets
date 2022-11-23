@@ -30,7 +30,6 @@ public final class CloseActionMapper implements ActionMapper<CloseAction> {
     public Map<Entries, Object> processBindables(final CloseAction action) {
         Map<Entries, Object> result = new HashMap<>();
 
-        result.put(Entries.DATE, action.date());
         result.put(Entries.CREATOR, action.creator());
 
         if (action.message() != null) {

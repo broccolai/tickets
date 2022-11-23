@@ -76,6 +76,7 @@ public final class DatabaseStorageService implements StorageService {
 
                 batch.bind("ticket", ticket.id())
                         .bind("type", identifier)
+                        .bind("date", action.date())
                         .bindMap(bindables)
                         .add();
             }

@@ -28,7 +28,6 @@ public final class AssignActionMapper implements ActionMapper<AssignAction> {
     @Override
     public Map<Entries, Object> processBindables(final AssignAction action) {
         return Map.of(
-                Entries.DATE, action.date(),
                 Entries.CREATOR, action.creator(),
                 Entries.ASSIGNEE, action.assignee()
         );

@@ -28,7 +28,6 @@ public final class EditActionMapper implements ActionMapper<EditAction> {
     @Override
     public Map<Entries, Object> processBindables(final EditAction action) {
         return Map.of(
-                Entries.DATE, action.date(),
                 Entries.CREATOR, action.creator(),
                 Entries.MESSAGE, action.message()
         );
