@@ -2,19 +2,14 @@ package love.broccolai.tickets.core.service;
 
 import java.util.Collection;
 import java.util.UUID;
-import javax.sql.DataSource;
 import love.broccolai.tickets.api.model.Ticket;
 import love.broccolai.tickets.api.model.TicketStatus;
 import love.broccolai.tickets.api.model.action.Action;
 import love.broccolai.tickets.api.model.action.AssignAction;
 import love.broccolai.tickets.api.service.StorageService;
-import love.broccolai.tickets.core.utilities.TicketsJdbiPlugin;
 import love.broccolai.tickets.core.utilities.TimeUtilities;
-import org.h2.jdbcx.JdbcDataSource;
+import love.broccolai.tickets.core.utilities.TicketsH2Extension;
 import org.jdbi.v3.testing.junit5.JdbiExtension;
-import org.jdbi.v3.testing.junit5.JdbiExtensionInitializer;
-import org.jdbi.v3.testing.junit5.JdbiFlywayMigration;
-import org.jdbi.v3.testing.junit5.JdbiH2Extension;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
@@ -23,21 +18,8 @@ import static com.google.common.truth.Truth.assertThat;
 
 class DatabaseStorageServiceTest {
 
-    private static final JdbiExtensionInitializer FLYWAY_INITIALIZER = JdbiFlywayMigration.flywayMigration()
-            .withPath("queries/migrations")
-            .cleanAfter();
-
     @RegisterExtension
-    private static final JdbiExtension H2_EXTENSION = new JdbiH2Extension() {
-        @Override
-        protected DataSource createDataSource() {
-            JdbcDataSource ds = new JdbcDataSource();
-            ds.setURL("jdbc:h2:mem:" + UUID.randomUUID() + ";MODE=MySQL;DATABASE_TO_LOWER=TRUE");
-            ds.setUser("user");
-
-            return ds;
-        }
-    }.withPlugin(new TicketsJdbiPlugin()).withInitializer(FLYWAY_INITIALIZER);
+    private static final JdbiExtension H2_EXTENSION = TicketsH2Extension.instance();
 
     private StorageService storageService;
 
