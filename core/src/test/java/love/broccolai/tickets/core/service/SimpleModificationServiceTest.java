@@ -42,16 +42,6 @@ class SimpleModificationServiceTest {
     }
 
     @Test
-    void closeDuplicates() {
-        UUID creator = UUID.randomUUID();
-
-        this.modificationService.close(this.ticket, creator, null);
-        this.modificationService.close(this.ticket, creator, null);
-
-        assertThat(this.ticket.actions()).containsNoDuplicates();
-    }
-
-    @Test
     void edit() {
         UUID creator = UUID.randomUUID();
         EditAction action = this.modificationService.edit(this.ticket, creator, "New message");
