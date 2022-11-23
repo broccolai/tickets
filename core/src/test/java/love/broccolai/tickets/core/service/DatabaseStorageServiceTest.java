@@ -19,13 +19,13 @@ import static com.google.common.truth.Truth.assertThat;
 class DatabaseStorageServiceTest {
 
     @RegisterExtension
-    private static final JdbiExtension H2_EXTENSION = TicketsH2Extension.instance();
+    private final JdbiExtension h2Extension = TicketsH2Extension.instance();
 
     private StorageService storageService;
 
     @BeforeEach
     void setupEach() {
-        this.storageService = new DatabaseStorageService(H2_EXTENSION.getJdbi());
+        this.storageService = new DatabaseStorageService(h2Extension.getJdbi());
     }
 
     @Test
