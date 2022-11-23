@@ -1,6 +1,5 @@
 package love.broccolai.tickets.core.service;
 
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.UUID;
 import love.broccolai.tickets.api.model.Ticket;
@@ -8,6 +7,7 @@ import love.broccolai.tickets.api.model.TicketStatus;
 import love.broccolai.tickets.api.model.action.EditAction;
 import love.broccolai.tickets.api.service.ModificationService;
 import love.broccolai.tickets.api.service.StorageService;
+import love.broccolai.tickets.core.utilities.TimeUtilities;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -28,7 +28,7 @@ class SimpleModificationServiceTest {
                 1,
                 TicketStatus.OPEN,
                 UUID.randomUUID(),
-                Instant.now(),
+                TimeUtilities.nowTruncated(),
                 null,
                 "Test Message",
                 new ArrayList<>()

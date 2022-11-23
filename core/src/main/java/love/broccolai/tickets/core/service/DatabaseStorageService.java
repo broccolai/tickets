@@ -18,6 +18,7 @@ import love.broccolai.tickets.api.service.StorageService;
 import love.broccolai.tickets.core.storage.DelegatingActionMapper;
 import love.broccolai.tickets.core.storage.TicketAccumulator;
 import love.broccolai.tickets.core.utilities.QueriesLocator;
+import love.broccolai.tickets.core.utilities.TimeUtilities;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.jdbi.v3.core.Jdbi;
@@ -38,7 +39,7 @@ public final class DatabaseStorageService implements StorageService {
 
     @Override
     public @NonNull Ticket createTicket(final @NonNull UUID creator, final @NonNull String message) {
-        Instant timestamp = Instant.now();
+        Instant timestamp = TimeUtilities.nowTruncated();
 
         return this.jdbi.withHandle(handle -> {
             List<String> queries = this.locator.queries("insert-ticket");

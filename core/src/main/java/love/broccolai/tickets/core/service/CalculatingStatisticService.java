@@ -8,6 +8,7 @@ import love.broccolai.tickets.api.model.action.Action;
 import love.broccolai.tickets.api.model.action.CloseAction;
 import love.broccolai.tickets.api.service.StatisticService;
 import love.broccolai.tickets.api.service.StorageService;
+import love.broccolai.tickets.core.utilities.TimeUtilities;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import java.time.Duration;
 import java.time.Instant;
@@ -24,7 +25,7 @@ public final class CalculatingStatisticService implements StatisticService {
 
     @Override
     public Duration averageTicketsLifespan(final @NonNull Duration duration) {
-        Instant since = Instant.now().minus(duration);
+        Instant since = TimeUtilities.nowTruncated().minus(duration);
 
         Collection<Ticket> closedTickets = this.storageService.findTickets(TicketStatus.CLOSED, null, since);
         Collection<Duration> ticketLifespans = Lists.map(closedTickets, this::calculateAverageTicketLifespan);

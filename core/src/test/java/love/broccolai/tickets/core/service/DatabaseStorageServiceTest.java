@@ -1,6 +1,5 @@
 package love.broccolai.tickets.core.service;
 
-import java.time.Instant;
 import java.util.Collection;
 import java.util.UUID;
 import javax.sql.DataSource;
@@ -10,6 +9,7 @@ import love.broccolai.tickets.api.model.action.Action;
 import love.broccolai.tickets.api.model.action.AssignAction;
 import love.broccolai.tickets.api.service.StorageService;
 import love.broccolai.tickets.core.utilities.TicketsJdbiPlugin;
+import love.broccolai.tickets.core.utilities.TimeUtilities;
 import org.h2.jdbcx.JdbcDataSource;
 import org.jdbi.v3.testing.junit5.JdbiExtension;
 import org.jdbi.v3.testing.junit5.JdbiExtensionInitializer;
@@ -66,7 +66,7 @@ class DatabaseStorageServiceTest {
     @Test
     void saveTicketWithAssignAction() {
         Ticket ticket = this.storageService.createTicket(UUID.randomUUID(), "Hello!");
-        Action action = new AssignAction(Instant.now(), UUID.randomUUID(), UUID.randomUUID());
+        Action action = new AssignAction(TimeUtilities.nowTruncated(), UUID.randomUUID(), UUID.randomUUID());
 
         ticket.actions().add(action);
 
