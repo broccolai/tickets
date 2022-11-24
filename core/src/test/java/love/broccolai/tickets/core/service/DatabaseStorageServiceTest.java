@@ -25,7 +25,7 @@ class DatabaseStorageServiceTest {
 
     @BeforeEach
     void setupEach() {
-        this.storageService = new DatabaseStorageService(h2Extension.getJdbi());
+        this.storageService = new DatabaseStorageService(this.h2Extension.getJdbi());
     }
 
     @Test
