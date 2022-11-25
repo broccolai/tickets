@@ -21,14 +21,14 @@ import static com.google.common.truth.Truth.assertThat;
 class CalculatingStatisticServiceTest {
 
     @RegisterExtension
-    private static final JdbiExtension H2_EXTENSION = TicketsH2Extension.instance();
+    private final JdbiExtension h2Extension = TicketsH2Extension.instance();
 
     private StorageService storageService;
     private StatisticService statisticService;
 
     @BeforeEach
     void setupEach() {
-        this.storageService = new DatabaseStorageService(H2_EXTENSION.getJdbi());
+        this.storageService = new DatabaseStorageService(this.h2Extension.getJdbi());
         this.statisticService = new CalculatingStatisticService(this.storageService);
     }
 
