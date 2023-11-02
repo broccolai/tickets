@@ -1,21 +1,20 @@
 pluginManagement {
     repositories {
         gradlePluginPortal()
-        maven("https://repo.stellardrift.ca/repository/snapshots/")
+        maven("https://repo.jpenilla.xyz/snapshots/")
     }
 }
 
 plugins {
-    id("ca.stellardrift.polyglot-version-catalogs") version "5.0.0-SNAPSHOT"
+    id("ca.stellardrift.polyglot-version-catalogs") version "6.0.0"
 }
 
 rootProject.name = "tickets"
 
-include("api", "core", "bukkit")
+include("api", "core", "paper")
 
 project(":api").name = "tickets-api"
 project(":core").name = "tickets-core"
-project(":bukkit").name = "tickets-bukkit"
+project(":paper").name = "tickets-paper"
 
-enableFeaturePreview("VERSION_CATALOGS")
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")

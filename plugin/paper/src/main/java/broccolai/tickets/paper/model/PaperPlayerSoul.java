@@ -1,9 +1,8 @@
-package broccolai.tickets.bukkit.model;
+package broccolai.tickets.paper.model;
 
 import broccolai.tickets.api.model.position.Position;
 import broccolai.tickets.api.model.user.PlayerSoul;
 import broccolai.tickets.api.service.tasks.TaskService;
-import io.papermc.lib.PaperLib;
 import net.kyori.adventure.audience.Audience;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -15,14 +14,12 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import java.util.UUID;
 
 @SuppressWarnings("ConstantConditions")
-public final class BukkitPlayerSoul implements PlayerSoul, BukkitOnlineSoul {
+public final class PaperPlayerSoul implements PlayerSoul, PaperOnlineSoul {
 
     private final Player player;
-    private final Audience audience;
 
-    public BukkitPlayerSoul(final @NonNull Player player, final @NonNull Audience audience) {
+    public PaperPlayerSoul(final @NonNull Player player) {
         this.player = player;
-        this.audience = audience;
     }
 
     @Override
@@ -42,7 +39,7 @@ public final class BukkitPlayerSoul implements PlayerSoul, BukkitOnlineSoul {
 
     @Override
     public @NonNull Audience audience() {
-        return this.audience;
+        return this.player;
     }
 
     @Override
@@ -59,7 +56,7 @@ public final class BukkitPlayerSoul implements PlayerSoul, BukkitOnlineSoul {
         World world = position.world() != null ? Bukkit.getWorld(position.world()) : null;
         Location bukkitLocation = new Location(world, position.x(), position.y(), position.z());
 
-        taskService.sync(() -> PaperLib.teleportAsync(this.player, bukkitLocation));
+        this.player.teleportAsync(bukkitLocation);
     }
 
     @Override

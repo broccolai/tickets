@@ -1,7 +1,8 @@
-name : PureTickets
-main : broccolai.tickets.bukkit.BukkitPlatform
+name : Tickets
+main : broccolai.tickets.paper.PaperPlatform
+loader: broccolai.tickets.lib.xyz.jpenilla.gremlin.runtime.platformsupport.DefaultsPaperPluginLoader
 version : $version
-api-version : 1.13
+api-version : "1.20"
 
 permissions :
   tickets.user.* :

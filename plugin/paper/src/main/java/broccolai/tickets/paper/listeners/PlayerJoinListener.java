@@ -1,4 +1,4 @@
-package broccolai.tickets.bukkit.listeners;
+package broccolai.tickets.paper.listeners;
 
 import broccolai.tickets.api.model.event.impl.SoulJoinEvent;
 import broccolai.tickets.api.model.user.PlayerSoul;

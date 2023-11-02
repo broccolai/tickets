@@ -1,16 +1,14 @@
-package broccolai.tickets.bukkit.service;
+package broccolai.tickets.paper.service;
 
 import broccolai.tickets.api.model.user.ConsoleSoul;
 import broccolai.tickets.api.model.user.PlayerSoul;
 import broccolai.tickets.api.model.user.Soul;
-import broccolai.tickets.bukkit.model.BukkitConsoleSoul;
-import broccolai.tickets.bukkit.model.BukkitOfflineSoul;
-import broccolai.tickets.bukkit.model.BukkitPlayerSoul;
+import broccolai.tickets.paper.model.PaperConsoleSoul;
+import broccolai.tickets.paper.model.PaperOfflineSoul;
+import broccolai.tickets.paper.model.PaperPlayerSoul;
 import broccolai.tickets.core.service.user.SimpleUserService;
-import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import java.util.ArrayList;
-import net.kyori.adventure.platform.AudienceProvider;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
@@ -19,22 +17,15 @@ import java.util.Collection;
 import java.util.UUID;
 
 @Singleton
-public final class BukkitUserService extends SimpleUserService {
-
-    private final AudienceProvider audienceProvider;
-
-    @Inject
-    public BukkitUserService(final @NonNull AudienceProvider audienceProvider) {
-        this.audienceProvider = audienceProvider;
-    }
+public final class PaperUserService extends SimpleUserService {
 
     public @NonNull PlayerSoul player(final @NonNull Player player) {
-        return new BukkitPlayerSoul(player, this.audienceProvider.player(player.getUniqueId()));
+        return new PaperPlayerSoul(player);
     }
 
     @Override
     public @NonNull ConsoleSoul console() {
-        return new BukkitConsoleSoul(this.audienceProvider.console());
+        return new PaperConsoleSoul(Bukkit.getConsoleSender());
     }
 
     @Override
@@ -45,13 +36,13 @@ public final class BukkitUserService extends SimpleUserService {
             throw new IllegalArgumentException();
         }
 
-        return new BukkitPlayerSoul(player, this.audienceProvider.player(uuid));
+        return new PaperPlayerSoul(player);
     }
 
     @Override
     public @NonNull Soul offlinePlayer(final @NonNull UUID uuid) {
         OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(uuid);
-        return new BukkitOfflineSoul(offlinePlayer);
+        return new PaperOfflineSoul(offlinePlayer);
     }
 
     @Override

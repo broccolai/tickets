@@ -1,4 +1,4 @@
-package broccolai.tickets.bukkit.service;
+package broccolai.tickets.paper.service;
 
 import broccolai.tickets.api.model.task.RepeatTask;
 import broccolai.tickets.api.model.task.Task;
@@ -10,12 +10,12 @@ import org.bukkit.plugin.Plugin;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 @Singleton
-public final class BukkitTaskService implements TaskService {
+public final class PaperTaskService implements TaskService {
 
     private final Plugin plugin;
 
     @Inject
-    public BukkitTaskService(final @NonNull Plugin plugin) {
+    public PaperTaskService(final @NonNull Plugin plugin) {
         this.plugin = plugin;
     }
 

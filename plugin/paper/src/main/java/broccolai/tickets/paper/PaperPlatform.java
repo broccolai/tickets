@@ -1,12 +1,12 @@
-package broccolai.tickets.bukkit;
+package broccolai.tickets.paper;
 
 import broccolai.tickets.api.model.user.OnlineSoul;
 import broccolai.tickets.api.service.message.MessageService;
 import broccolai.tickets.api.service.user.UserService;
-import broccolai.tickets.bukkit.inject.BukkitModule;
-import broccolai.tickets.bukkit.listeners.PlayerJoinListener;
-import broccolai.tickets.bukkit.model.BukkitOnlineSoul;
-import broccolai.tickets.bukkit.service.BukkitUserService;
+import broccolai.tickets.paper.inject.PaperModule;
+import broccolai.tickets.paper.listeners.PlayerJoinListener;
+import broccolai.tickets.paper.model.PaperOnlineSoul;
+import broccolai.tickets.paper.service.PaperUserService;
 import broccolai.tickets.core.PureTickets;
 import broccolai.tickets.core.exceptions.PureException;
 import broccolai.tickets.core.inject.platform.PluginPlatform;
@@ -21,7 +21,6 @@ import cloud.commandframework.paper.PaperCommandManager;
 
 import com.google.inject.Guice;
 import com.google.inject.Injector;
-import net.kyori.adventure.audience.ForwardingAudience;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
@@ -33,7 +32,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 @SuppressWarnings("unused")
-public final class BukkitPlatform extends JavaPlugin implements PluginPlatform {
+public final class PaperPlatform extends JavaPlugin implements PluginPlatform {
 
     private static final Class<? extends Listener>[] LISTENERS = ArrayHelper.create(
             PlayerJoinListener.class
@@ -47,7 +46,7 @@ public final class BukkitPlatform extends JavaPlugin implements PluginPlatform {
         this.getDataFolder().mkdirs();
 
         Injector injector = Guice.createInjector(
-                new BukkitModule(this, this)
+                new PaperModule(this, this)
         );
 
         this.pureTickets = injector.getInstance(PureTickets.class);
@@ -80,26 +79,26 @@ public final class BukkitPlatform extends JavaPlugin implements PluginPlatform {
             final @NonNull UserService userService,
             final @NonNull MessageService messageService
     ) throws Exception {
-        BukkitUserService bukkitUserService = (BukkitUserService) userService;
+        PaperUserService paperUserService = (PaperUserService) userService;
 
         PaperCommandManager<@NonNull OnlineSoul> cloudManager = new PaperCommandManager<>(
                 this,
-                AsynchronousCommandExecutionCoordinator.<OnlineSoul>newBuilder().withAsynchronousParsing().build(),
+                AsynchronousCommandExecutionCoordinator.<OnlineSoul>builder().withAsynchronousParsing().build(),
                 sender -> {
                     if (sender instanceof ConsoleCommandSender) {
                         return userService.console();
                     }
 
                     Player player = (Player) sender;
-                    return bukkitUserService.player(player);
+                    return paperUserService.player(player);
                 },
                 soul -> {
-                    BukkitOnlineSoul bukkitSoul = (BukkitOnlineSoul) soul;
+                    PaperOnlineSoul bukkitSoul = (PaperOnlineSoul) soul;
                     return bukkitSoul.sender();
                 }
         );
 
-        if (cloudManager.queryCapability(CloudBukkitCapabilities.ASYNCHRONOUS_COMPLETION)) {
+        if (cloudManager.hasCapability(CloudBukkitCapabilities.ASYNCHRONOUS_COMPLETION)) {
             cloudManager.registerAsynchronousCompletions();
         }
 
@@ -113,26 +112,24 @@ public final class BukkitPlatform extends JavaPlugin implements PluginPlatform {
                 .withHandler(MinecraftExceptionHandler.ExceptionType.ARGUMENT_PARSING, (ex) -> {
                     Throwable cause = ex.getCause();
 
-                    if (!(cause instanceof PureException)) {
+                    if (!(cause instanceof PureException pureException)) {
                         return MinecraftExceptionHandler.DEFAULT_ARGUMENT_PARSING_FUNCTION.apply(ex);
                     }
 
-                    PureException pureException = (PureException) cause;
                     return pureException.message(messageService);
                 })
                 .withHandler(MinecraftExceptionHandler.ExceptionType.COMMAND_EXECUTION, (ex) -> {
                     Throwable cause = ex.getCause();
 
-                    if (!(cause instanceof PureException)) {
+                    if (!(cause instanceof PureException pureException)) {
                         return MinecraftExceptionHandler.DEFAULT_COMMAND_EXECUTION_FUNCTION.apply(ex);
                     }
 
-                    PureException pureException = (PureException) cause;
                     return pureException.message(messageService);
                 })
-                .apply(cloudManager, ForwardingAudience.Single::audience);
+                .apply(cloudManager, soul -> soul);
 
-        cloudManager.setCommandSuggestionProcessor((context, strings) -> {
+        cloudManager.commandSuggestionProcessor((context, strings) -> {
             String input;
 
             if (context.getInputQueue().isEmpty()) {

@@ -10,7 +10,7 @@ import java.sql.SQLException;
 
 public final class ComponentMapper implements ColumnMapper<Component> {
 
-    public static final MiniMessage MINI = MiniMessage.get();
+    public static final MiniMessage MINI = MiniMessage.miniMessage();
 
     @Override
     public Component map(final ResultSet r, final int columnNumber, final StatementContext ctx) throws SQLException {

@@ -1,4 +1,4 @@
-package broccolai.tickets.bukkit.model;
+package broccolai.tickets.paper.model;
 
 import broccolai.tickets.api.model.user.Soul;
 import org.bukkit.OfflinePlayer;
@@ -6,11 +6,11 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.util.UUID;
 
-public final class BukkitOfflineSoul implements Soul {
+public final class PaperOfflineSoul implements Soul {
 
     private final OfflinePlayer offlinePlayer;
 
-    public BukkitOfflineSoul(final @NonNull OfflinePlayer offlinePlayer) {
+    public PaperOfflineSoul(final @NonNull OfflinePlayer offlinePlayer) {
         this.offlinePlayer = offlinePlayer;
     }
 

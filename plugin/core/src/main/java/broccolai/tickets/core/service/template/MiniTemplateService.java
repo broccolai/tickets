@@ -12,7 +12,8 @@ import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
-import net.kyori.adventure.text.minimessage.Template;
+import net.kyori.adventure.text.minimessage.tag.Tag;
+import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.jetbrains.annotations.NotNull;
 
@@ -31,41 +32,51 @@ public final class MiniTemplateService implements TemplateService {
     }
 
     @Override
-    public @NotNull List<@NonNull Template> player(
+    public @NotNull List<@NonNull TagResolver> player(
             final @NonNull String prefix,
             final @NonNull Soul soul
     ) {
         return Arrays.asList(
-                Template.of(prefix, this.userComponent(soul.username(), soul.uuid())),
-                Template.of(prefix + "_name", soul.username()),
-                Template.of(prefix + "_uuid", soul.uuid().toString())
+                TagResolver.resolver(prefix, Tag.selfClosingInserting(this.userComponent(soul.username(), soul.uuid()))),
+                TagResolver.resolver(prefix + "_name", Tag.preProcessParsed(soul.username())),
+                TagResolver.resolver(prefix + "_uuid", Tag.preProcessParsed(soul.uuid().toString()))
         );
     }
 
     @Override
-    public @NonNull List<@NonNull Template> ticket(final @NonNull Ticket ticket) {
+    public @NonNull List<@NonNull TagResolver> ticket(final @NonNull Ticket ticket) {
         String name = this.userService.name(ticket.player());
+
+        TagResolver ticketResolver = TagResolver.resolver("ticket", Tag.selfClosingInserting(
+                Component.text('#', NamedTextColor.DARK_GRAY)
+                        .append(Component.text(
+                                ticket.id(), ticket.status().color(), TextDecoration.BOLD
+                        ))
+                        .hoverEvent(HoverEvent.showText(Component.join(
+                                Component.newline(),
+                                Component.text("id: " + ticket.id()),
+                                Component.text("player: " + name),
+                                Component.text("status: " + ticket.status().name())
+                        )))
+                        .clickEvent(ClickEvent.runCommand("/tickets show " + ticket.id()))
+        ));
+
+        TagResolver positionResolver = TagResolver.resolver("position", Tag.selfClosingInserting(TextComponent.ofChildren(
+                Component.text("[", NamedTextColor.DARK_GRAY),
+                Component.text(ticket.position().x(), NamedTextColor.YELLOW),
+                Component.text(',', NamedTextColor.DARK_GRAY),
+                Component.text(ticket.position().y(), NamedTextColor.YELLOW),
+                Component.text(',', NamedTextColor.DARK_GRAY),
+                Component.text(ticket.position().z(), NamedTextColor.YELLOW),
+                Component.text("]", NamedTextColor.DARK_GRAY)
+        )));
+
         return Arrays.asList(
-                Template.of("ticket", Component.text('#', NamedTextColor.DARK_GRAY).append(Component.text(
-                        ticket.id(), ticket.status().color(), TextDecoration.BOLD
-                )).hoverEvent(HoverEvent.showText(Component.join(
-                        Component.newline(),
-                        Component.text("id: " + ticket.id()),
-                        Component.text("player: " + name),
-                        Component.text("status: " + ticket.status().name())
-                ))).clickEvent(ClickEvent.runCommand("/tickets show " + ticket.id()))),
-                Template.of("status", ticket.status().name()),
-                Template.of("player", this.userComponent(name, ticket.player())),
-                Template.of("position", TextComponent.ofChildren(
-                        Component.text("[", NamedTextColor.DARK_GRAY),
-                        Component.text(ticket.position().x(), NamedTextColor.YELLOW),
-                        Component.text(',', NamedTextColor.DARK_GRAY),
-                        Component.text(ticket.position().y(), NamedTextColor.YELLOW),
-                        Component.text(',', NamedTextColor.DARK_GRAY),
-                        Component.text(ticket.position().z(), NamedTextColor.YELLOW),
-                        Component.text("]", NamedTextColor.DARK_GRAY)
-                )),
-                Template.of("message", ticket.message().message())
+                ticketResolver,
+                positionResolver,
+                TagResolver.resolver("status", Tag.preProcessParsed(ticket.status().name())),
+                TagResolver.resolver("player", Tag.selfClosingInserting(this.userComponent(name, ticket.player()))),
+                TagResolver.resolver("message", Tag.preProcessParsed(ticket.message().message()))
         );
     }
 
