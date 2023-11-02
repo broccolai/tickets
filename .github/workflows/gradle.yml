@@ -1,36 +1,14 @@
-name: Java CI with Gradle
+name: "build"
 
-on: [ push, pull_request ]
+on:
+    push:
+    pull_request:
+    release:
+        types: [ released ]
 
 jobs:
-  build:
-
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v2
+    call-build:
+        uses: "broccolai/actions/.github/workflows/shared-ci.yml@master"
+        secrets: inherit
         with:
-          fetch-depth: 0
-      - uses: actions/cache@v2
-        with:
-          path: ~/.gradle/caches
-          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*') }}
-          restore-keys: |
-            ${{ runner.os }}-gradle-
-      - name: Setup java
-        uses: actions/setup-java@v2
-        with:
-          distribution: 'adopt'
-          java-version: '16'
-      - name: Grant execute permission for gradlew
-        run: |
-          cd plugin
-          chmod +x gradlew
-      - name: Build with Gradle
-        run: |
-          cd plugin
-          ./gradlew build
-      - uses: actions/upload-artifact@v2
-        with:
-          name: tickets.jar
-          path: plugin/build/libs/tickets-bukkit.jar
+            artifacts-path: 'build/libs/tickets-paper.jar'
