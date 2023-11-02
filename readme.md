@@ -1,5 +1,5 @@
 <div align=center>
-    <img src="https://broccol.ai/PureTicketsLogo.svg" width="128">
+    <img src="https://svgur.com/i/zE5.svg" width="128">
     <br />
     <p>Ticket plugin for Paper with Discord Integration.</p>
     <img src="https://img.shields.io/discord/656662012364849183?style=for-the-badge" />
