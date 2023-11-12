@@ -9,7 +9,9 @@ import love.broccolai.tickets.api.model.action.AssignAction;
 import love.broccolai.tickets.core.storage.ActionMapper;
 import org.jdbi.v3.core.mapper.ColumnMapper;
 import org.jdbi.v3.core.statement.StatementContext;
+import org.jspecify.annotations.NullMarked;
 
+@NullMarked
 public final class AssignActionMapper implements ActionMapper<AssignAction> {
 
     @Override

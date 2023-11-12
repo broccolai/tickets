@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 import love.broccolai.tickets.api.model.action.Action;
 import love.broccolai.tickets.api.model.action.AssignAction;
@@ -17,10 +18,11 @@ import love.broccolai.tickets.core.storage.ActionMapper.Entries;
 import love.broccolai.tickets.core.storage.actions.AssignActionMapper;
 import love.broccolai.tickets.core.storage.actions.CloseActionMapper;
 import love.broccolai.tickets.core.storage.actions.EditActionMapper;
-import org.checkerframework.checker.nullness.qual.NonNull;
 import org.jdbi.v3.core.mapper.RowMapper;
 import org.jdbi.v3.core.statement.StatementContext;
+import org.jspecify.annotations.NullMarked;
 
+@NullMarked
 public final class DelegatingActionMapper implements RowMapper<Action> {
 
     private static final BiMap<Class<? extends Action>, String> NAME_MAPPINGS = HashBiMap.create(Map.of(
@@ -44,20 +46,20 @@ public final class DelegatingActionMapper implements RowMapper<Action> {
         Map<String, Object> result = new HashMap<>();
 
         processedBindings.forEach((key, value) -> {
-            result.put(key.name().toLowerCase(), value);
+            result.put(key.name().toLowerCase(Locale.ROOT), value);
         });
 
         Collection<Entries> entries = new ArrayList<>(Arrays.asList(Entries.values()));
         entries.removeAll(processedBindings.keySet());
 
         for (final Entries entry : entries) {
-            result.put(entry.name().toLowerCase(), null);
+            result.put(entry.name().toLowerCase(Locale.ROOT), null);
         }
 
         return result;
     }
 
-    public @NonNull String typeIdentifier(final Action action) {
+    public String typeIdentifier(final Action action) {
         return NAME_MAPPINGS.get(action.getClass());
     }
 

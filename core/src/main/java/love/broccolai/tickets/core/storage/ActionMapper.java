@@ -9,7 +9,9 @@ import love.broccolai.tickets.api.model.action.Action;
 import org.jdbi.v3.core.mapper.ColumnMapper;
 import org.jdbi.v3.core.mapper.RowMapper;
 import org.jdbi.v3.core.statement.StatementContext;
+import org.jspecify.annotations.NullMarked;
 
+@NullMarked
 public interface ActionMapper<A extends Action> extends RowMapper<Action> {
 
     @Override

@@ -2,12 +2,13 @@ package love.broccolai.tickets.api.model.action;
 
 import java.time.Instant;
 import java.util.UUID;
-import org.checkerframework.checker.nullness.qual.NonNull;
+import org.jspecify.annotations.NullMarked;
 
+@NullMarked
 public record EditAction(
-        @NonNull Instant date,
-        @NonNull UUID creator,
-        @NonNull String message
+        Instant date,
+        UUID creator,
+        String message
 ) implements Action {
 
 }

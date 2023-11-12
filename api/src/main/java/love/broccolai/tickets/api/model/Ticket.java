@@ -7,27 +7,28 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 import love.broccolai.tickets.api.model.action.Action;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
+@NullMarked
 public final class Ticket {
 
     private final int id;
     private TicketStatus status;
-    private final @NonNull UUID creator;
-    private final @NonNull Instant date;
+    private final UUID creator;
+    private final Instant date;
     private @Nullable UUID assignee;
-    private @NonNull String message;
-    private final @NonNull List<Action> actions;
+    private String message;
+    private final List<Action> actions;
 
     public Ticket(
             final int id,
             final TicketStatus status,
-            final @NonNull UUID creator,
-            final @NonNull Instant date,
+            final UUID creator,
+            final Instant date,
             final @Nullable UUID assignee,
-            final @NonNull String message,
-            final @NonNull List<Action> actions
+            final String message,
+            final List<Action> actions
     ) {
         this.id = id;
         this.status = status;
@@ -42,39 +43,39 @@ public final class Ticket {
         return this.id;
     }
 
-    public @NonNull UUID creator() {
+    public UUID creator() {
         return this.creator;
     }
 
-    public @NonNull TicketStatus status() {
+    public TicketStatus status() {
         return this.status;
     }
 
-    public void status(final @NonNull TicketStatus status) {
+    public void status(final TicketStatus status) {
         this.status = status;
     }
 
-    public @NonNull Instant date() {
+    public Instant date() {
         return this.date;
     }
 
-    public @NonNull Optional<@NonNull UUID> assignee() {
+    public Optional<UUID> assignee() {
         return Optional.ofNullable(this.assignee);
     }
 
-    public void assignee(final @NonNull UUID assignee) {
+    public void assignee(final UUID assignee) {
         this.assignee = assignee;
     }
 
-    public @NonNull String message() {
+    public String message() {
         return this.message;
     }
 
-    public void message(final @NonNull String message) {
+    public void message(final String message) {
         this.message = message;
     }
 
-    public @NonNull List<Action> actions() {
+    public List<Action> actions() {
         return this.actions;
     }
 

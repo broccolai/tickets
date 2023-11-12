@@ -1,5 +1,6 @@
 package love.broccolai.tickets.core.service;
 
+import static com.google.common.truth.Truth.assertThat;
 import java.util.Collection;
 import java.util.UUID;
 import love.broccolai.tickets.api.model.Ticket;
@@ -7,19 +8,17 @@ import love.broccolai.tickets.api.model.TicketStatus;
 import love.broccolai.tickets.api.model.action.Action;
 import love.broccolai.tickets.api.model.action.AssignAction;
 import love.broccolai.tickets.api.service.StorageService;
-import love.broccolai.tickets.core.utilities.TimeUtilities;
 import love.broccolai.tickets.core.utilities.TicketsH2Extension;
+import love.broccolai.tickets.core.utilities.TimeUtilities;
 import org.jdbi.v3.testing.junit5.JdbiExtension;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 
-import static com.google.common.truth.Truth.assertThat;
-
 class DatabaseStorageServiceTest {
 
     @RegisterExtension
-    private final JdbiExtension h2Extension = TicketsH2Extension.instance();
+    JdbiExtension h2Extension = TicketsH2Extension.instance();
 
     private StorageService storageService;
 

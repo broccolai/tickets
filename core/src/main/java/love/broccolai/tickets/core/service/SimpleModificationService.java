@@ -9,23 +9,23 @@ import love.broccolai.tickets.api.model.action.EditAction;
 import love.broccolai.tickets.api.service.ModificationService;
 import love.broccolai.tickets.api.service.StorageService;
 import love.broccolai.tickets.core.utilities.TimeUtilities;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jspecify.annotations.NullMarked;
 
+@NullMarked
 public final class SimpleModificationService implements ModificationService {
 
     private final StorageService storageService;
 
     @Inject
-    public SimpleModificationService(final @NonNull StorageService storageService) {
+    public SimpleModificationService(final StorageService storageService) {
         this.storageService = storageService;
     }
 
     @Override
-    public @NonNull CloseAction close(
-            final @NonNull Ticket ticket,
-            final @NonNull UUID creator,
-            final @Nullable String message
+    public CloseAction close(
+            final Ticket ticket,
+            final UUID creator,
+            final String message
     ) {
         CloseAction action = new CloseAction(TimeUtilities.nowTruncated(), creator, null);
         ticket.actions().add(action);
@@ -36,10 +36,10 @@ public final class SimpleModificationService implements ModificationService {
     }
 
     @Override
-    public @NonNull EditAction edit(
-            final @NonNull Ticket ticket,
-            final @NonNull UUID creator,
-            final @NonNull String message
+    public EditAction edit(
+            final Ticket ticket,
+            final UUID creator,
+            final String message
     ) {
         EditAction action = new EditAction(TimeUtilities.nowTruncated(), creator, message);
 
@@ -52,10 +52,10 @@ public final class SimpleModificationService implements ModificationService {
     }
 
     @Override
-    public @NonNull AssignAction assign(
-            final @NonNull Ticket ticket,
-            final @NonNull UUID creator,
-            final @NonNull UUID assignee
+    public AssignAction assign(
+            final Ticket ticket,
+            final UUID creator,
+            final UUID assignee
     ) {
         AssignAction action = new AssignAction(TimeUtilities.nowTruncated(), creator, assignee);
 

@@ -1,17 +1,16 @@
 package love.broccolai.tickets.core.model;
 
-import love.broccolai.tickets.api.model.Ticket;
-import love.broccolai.tickets.api.model.TicketStatus;
-import love.broccolai.tickets.api.model.action.Action;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.common.returnsreceiver.qual.This;
-
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
+import love.broccolai.tickets.api.model.Ticket;
+import love.broccolai.tickets.api.model.TicketStatus;
+import love.broccolai.tickets.api.model.action.Action;
+import org.jspecify.annotations.NullMarked;
 
+@NullMarked
 public final class TicketBuilder {
 
     private final int id;
@@ -24,11 +23,11 @@ public final class TicketBuilder {
 
     public TicketBuilder(
             final int id,
-            final @NonNull TicketStatus status,
-            final @NonNull UUID creator,
-            final @NonNull Instant date,
-            final @NonNull UUID assignee,
-            final @NonNull String message
+            final TicketStatus status,
+            final UUID creator,
+            final Instant date,
+            final UUID assignee,
+            final String message
     ) {
         this.id = id;
         this.status = status;
@@ -39,12 +38,12 @@ public final class TicketBuilder {
         this.actions = new ArrayList<>();
     }
 
-    public @This TicketBuilder withAction(final @NonNull Action action) {
+    public TicketBuilder withAction(final Action action) {
         this.actions.add(action);
         return this;
     }
 
-    public @NonNull Ticket build() {
+    public Ticket build() {
         return new Ticket(
                 this.id,
                 this.status,

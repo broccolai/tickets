@@ -19,12 +19,13 @@ import love.broccolai.tickets.core.storage.DelegatingActionMapper;
 import love.broccolai.tickets.core.storage.TicketAccumulator;
 import love.broccolai.tickets.core.utilities.QueriesLocator;
 import love.broccolai.tickets.core.utilities.TimeUtilities;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
 import org.jdbi.v3.core.Jdbi;
 import org.jdbi.v3.core.statement.PreparedBatch;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 @Singleton
+@NullMarked
 public final class DatabaseStorageService implements StorageService {
 
     private final DelegatingActionMapper actionMapper = new DelegatingActionMapper();
@@ -33,12 +34,12 @@ public final class DatabaseStorageService implements StorageService {
     private final Jdbi jdbi;
 
     @Inject
-    public DatabaseStorageService(final @NonNull Jdbi jdbi) {
+    public DatabaseStorageService(final Jdbi jdbi) {
         this.jdbi = jdbi;
     }
 
     @Override
-    public @NonNull Ticket createTicket(final @NonNull UUID creator, final @NonNull String message) {
+    public Ticket createTicket(final UUID creator, final String message) {
         Instant timestamp = TimeUtilities.nowTruncated();
 
         return this.jdbi.withHandle(handle -> {
@@ -59,7 +60,7 @@ public final class DatabaseStorageService implements StorageService {
     }
 
     @Override
-    public void saveTicket(final @NonNull Ticket ticket) {
+    public void saveTicket(final Ticket ticket) {
         this.jdbi.useHandle(handle -> {
             handle.createUpdate(this.locator.query("save-ticket"))
                     .bind("id", ticket.id())
@@ -86,12 +87,12 @@ public final class DatabaseStorageService implements StorageService {
     }
 
     @Override
-    public @NonNull Ticket selectTicket(final int id) {
+    public Ticket selectTicket(final int id) {
         return this.selectTickets(id).get(id);
     }
 
     @Override
-    public @NonNull Map<@NonNull Integer, @NonNull Ticket> selectTickets(final int... ids) {
+    public Map<Integer, Ticket> selectTickets(final int... ids) {
         return this.jdbi.withHandle(handle -> {
             return handle.createQuery(this.locator.query("select-tickets"))
                     .bindList("ids", Ints.asList(ids))
@@ -101,8 +102,8 @@ public final class DatabaseStorageService implements StorageService {
     }
 
     @Override
-    public @NonNull Collection<@NonNull Ticket> findTickets(
-            final @NonNull TicketStatus status,
+    public Collection<Ticket> findTickets(
+            final TicketStatus status,
             final @Nullable UUID assignee,
             final @Nullable Instant since
     ) {

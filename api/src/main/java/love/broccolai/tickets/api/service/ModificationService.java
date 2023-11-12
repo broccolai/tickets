@@ -5,15 +5,16 @@ import love.broccolai.tickets.api.model.Ticket;
 import love.broccolai.tickets.api.model.action.AssignAction;
 import love.broccolai.tickets.api.model.action.CloseAction;
 import love.broccolai.tickets.api.model.action.EditAction;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
+@NullMarked
 public interface ModificationService {
 
-    @NonNull CloseAction close(@NonNull Ticket ticket, @NonNull UUID creator, @Nullable String message);
+    CloseAction close(Ticket ticket, UUID creator, @Nullable String message);
 
-    @NonNull EditAction edit(@NonNull Ticket ticket, @NonNull UUID creator, @NonNull String message);
+    EditAction edit(Ticket ticket, UUID creator, String message);
 
-    @NonNull AssignAction assign(@NonNull Ticket ticket, @NonNull UUID creator, @NonNull UUID assignee);
+    AssignAction assign(Ticket ticket, UUID creator, UUID assignee);
 
 }
