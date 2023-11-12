@@ -16,10 +16,10 @@ public final class EditActionMapper implements ActionMapper<EditAction> {
 
     @Override
     public EditAction map(
-            final ColumnMapper<UUID> mapper,
-            final Instant date,
-            final ResultSet rs,
-            final StatementContext ctx
+        final ColumnMapper<UUID> mapper,
+        final Instant date,
+        final ResultSet rs,
+        final StatementContext ctx
     ) throws SQLException {
         UUID creator = mapper.map(rs, "action_creator", ctx);
         String message = rs.getString("action_message");
@@ -30,8 +30,8 @@ public final class EditActionMapper implements ActionMapper<EditAction> {
     @Override
     public Map<Entries, Object> processBindables(final EditAction action) {
         return Map.of(
-                Entries.CREATOR, action.creator(),
-                Entries.MESSAGE, action.message()
+            Entries.CREATOR, action.creator(),
+            Entries.MESSAGE, action.message()
         );
     }
 

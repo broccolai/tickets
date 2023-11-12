@@ -22,12 +22,12 @@ public final class TicketBuilder {
     private final List<Action> actions;
 
     public TicketBuilder(
-            final int id,
-            final TicketStatus status,
-            final UUID creator,
-            final Instant date,
-            final UUID assignee,
-            final String message
+        final int id,
+        final TicketStatus status,
+        final UUID creator,
+        final Instant date,
+        final UUID assignee,
+        final String message
     ) {
         this.id = id;
         this.status = status;
@@ -45,13 +45,13 @@ public final class TicketBuilder {
 
     public Ticket build() {
         return new Ticket(
-                this.id,
-                this.status,
-                this.creator,
-                this.date,
-                this.assignee,
-                this.message,
-                Collections.unmodifiableList(this.actions)
+            this.id,
+            this.status,
+            this.creator,
+            this.date,
+            this.assignee,
+            this.message,
+            Collections.unmodifiableList(this.actions)
         );
     }
 

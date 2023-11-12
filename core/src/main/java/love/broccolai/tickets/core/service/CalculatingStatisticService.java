@@ -42,8 +42,8 @@ public final class CalculatingStatisticService implements StatisticService {
 
     private Duration calculateAverageTicketLifespan(final Ticket ticket) {
         Action closeAction = Lists.last(
-                ticket.actions(),
-                action -> action instanceof CloseAction
+            ticket.actions(),
+            action -> action instanceof CloseAction
         );
 
         return Duration.between(ticket.date(), closeAction.date());

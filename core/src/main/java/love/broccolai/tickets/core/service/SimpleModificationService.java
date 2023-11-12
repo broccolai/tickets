@@ -23,9 +23,9 @@ public final class SimpleModificationService implements ModificationService {
 
     @Override
     public CloseAction close(
-            final Ticket ticket,
-            final UUID creator,
-            final String message
+        final Ticket ticket,
+        final UUID creator,
+        final String message
     ) {
         CloseAction action = new CloseAction(TimeUtilities.nowTruncated(), creator, null);
         ticket.actions().add(action);
@@ -37,9 +37,9 @@ public final class SimpleModificationService implements ModificationService {
 
     @Override
     public EditAction edit(
-            final Ticket ticket,
-            final UUID creator,
-            final String message
+        final Ticket ticket,
+        final UUID creator,
+        final String message
     ) {
         EditAction action = new EditAction(TimeUtilities.nowTruncated(), creator, message);
 
@@ -53,9 +53,9 @@ public final class SimpleModificationService implements ModificationService {
 
     @Override
     public AssignAction assign(
-            final Ticket ticket,
-            final UUID creator,
-            final UUID assignee
+        final Ticket ticket,
+        final UUID creator,
+        final UUID assignee
     ) {
         AssignAction action = new AssignAction(TimeUtilities.nowTruncated(), creator, assignee);
 

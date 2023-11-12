@@ -16,10 +16,10 @@ public final class AssignActionMapper implements ActionMapper<AssignAction> {
 
     @Override
     public AssignAction map(
-            final ColumnMapper<UUID> mapper,
-            final Instant date,
-            final ResultSet rs,
-            final StatementContext ctx
+        final ColumnMapper<UUID> mapper,
+        final Instant date,
+        final ResultSet rs,
+        final StatementContext ctx
     ) throws SQLException {
         UUID creator = mapper.map(rs, "action_creator", ctx);
         UUID assignee = mapper.map(rs, "action_assignee", ctx);
@@ -30,8 +30,8 @@ public final class AssignActionMapper implements ActionMapper<AssignAction> {
     @Override
     public Map<Entries, Object> processBindables(final AssignAction action) {
         return Map.of(
-                Entries.CREATOR, action.creator(),
-                Entries.ASSIGNEE, action.assignee()
+            Entries.CREATOR, action.creator(),
+            Entries.ASSIGNEE, action.assignee()
         );
     }
 

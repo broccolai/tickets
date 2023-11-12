@@ -7,8 +7,8 @@ import org.jspecify.annotations.Nullable;
 
 @NullMarked
 public record CloseAction(
-        Instant date,
-        UUID creator,
-        @Nullable String message
+    Instant date,
+    UUID creator,
+    @Nullable String message
 ) implements Action {
 }

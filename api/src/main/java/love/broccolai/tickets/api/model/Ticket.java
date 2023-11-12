@@ -22,13 +22,13 @@ public final class Ticket {
     private final List<Action> actions;
 
     public Ticket(
-            final int id,
-            final TicketStatus status,
-            final UUID creator,
-            final Instant date,
-            final @Nullable UUID assignee,
-            final String message,
-            final List<Action> actions
+        final int id,
+        final TicketStatus status,
+        final UUID creator,
+        final Instant date,
+        final @Nullable UUID assignee,
+        final String message,
+        final List<Action> actions
     ) {
         this.id = id;
         this.status = status;
@@ -89,9 +89,9 @@ public final class Ticket {
         }
 
         return this.id == that.id
-                && Objects.equals(this.creator, that.creator)
-                && Objects.equals(this.date, that.date)
-                && Objects.equals(this.message, that.message);
+            && Objects.equals(this.creator, that.creator)
+            && Objects.equals(this.date, that.date)
+            && Objects.equals(this.message, that.message);
     }
 
     @Override

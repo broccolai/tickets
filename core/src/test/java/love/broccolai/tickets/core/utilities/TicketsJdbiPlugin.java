@@ -10,8 +10,8 @@ public final class TicketsJdbiPlugin implements JdbiPlugin {
     @Override
     public void customizeJdbi(final Jdbi jdbi) {
         jdbi
-                .registerRowMapper(new TicketMapper())
-                .registerRowMapper(new DelegatingActionMapper());
+            .registerRowMapper(new TicketMapper())
+            .registerRowMapper(new DelegatingActionMapper());
     }
 
 }

@@ -6,9 +6,9 @@ import org.jspecify.annotations.NullMarked;
 
 @NullMarked
 public record AssignAction(
-        Instant date,
-        UUID creator,
-        UUID assignee
+    Instant date,
+    UUID creator,
+    UUID assignee
 ) implements Action {
 
 }

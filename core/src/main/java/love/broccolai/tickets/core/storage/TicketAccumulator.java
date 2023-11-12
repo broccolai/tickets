@@ -22,8 +22,8 @@ public final class TicketAccumulator implements RowReducer<Map<Integer, TicketBu
     @Override
     public void accumulate(final Map<Integer, TicketBuilder> container, final RowView row) {
         TicketBuilder ticket = container.computeIfAbsent(
-                row.getColumn("id", Integer.class),
-                id -> row.getRow(TicketBuilder.class)
+            row.getColumn("id", Integer.class),
+            id -> row.getRow(TicketBuilder.class)
         );
 
         String type = row.<@Nullable String>getColumn("type", String.class);
@@ -39,8 +39,8 @@ public final class TicketAccumulator implements RowReducer<Map<Integer, TicketBu
     @Override
     public Stream<Ticket> stream(final Map<Integer, TicketBuilder> container) {
         return container.values()
-                .stream()
-                .map(TicketBuilder::build);
+            .stream()
+            .map(TicketBuilder::build);
     }
 
 }

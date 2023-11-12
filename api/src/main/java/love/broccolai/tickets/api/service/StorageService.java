@@ -22,8 +22,8 @@ public interface StorageService {
     Map<Integer, Ticket> selectTickets(int... ids);
 
     Collection<Ticket> findTickets(
-            TicketStatus status,
-            @Nullable UUID assignee,
-            @Nullable Instant since
+        TicketStatus status,
+        @Nullable UUID assignee,
+        @Nullable Instant since
     );
 }

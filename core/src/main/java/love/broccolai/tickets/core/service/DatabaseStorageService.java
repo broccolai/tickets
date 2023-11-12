@@ -46,14 +46,14 @@ public final class DatabaseStorageService implements StorageService {
             List<String> queries = this.locator.queries("insert-ticket");
 
             handle.createUpdate(queries.get(0))
-                    .bind("creator", creator)
-                    .bind("date", timestamp)
-                    .bind("message", message)
-                    .execute();
+                .bind("creator", creator)
+                .bind("date", timestamp)
+                .bind("message", message)
+                .execute();
 
             int id = handle.createQuery(queries.get(1))
-                    .mapTo(Integer.class)
-                    .first();
+                .mapTo(Integer.class)
+                .first();
 
             return new Ticket(id, TicketStatus.OPEN, creator, timestamp, null, message, new ArrayList<>());
         });
@@ -63,11 +63,11 @@ public final class DatabaseStorageService implements StorageService {
     public void saveTicket(final Ticket ticket) {
         this.jdbi.useHandle(handle -> {
             handle.createUpdate(this.locator.query("save-ticket"))
-                    .bind("id", ticket.id())
-                    .bind("status", ticket.status())
-                    .bind("assignee", ticket.assignee())
-                    .bind("message", ticket.message())
-                    .execute();
+                .bind("id", ticket.id())
+                .bind("status", ticket.status())
+                .bind("assignee", ticket.assignee())
+                .bind("message", ticket.message())
+                .execute();
 
             PreparedBatch batch = handle.prepareBatch(this.locator.query("insert-action"));
 
@@ -76,10 +76,10 @@ public final class DatabaseStorageService implements StorageService {
                 Map<String, ?> bindables = this.actionMapper.bindables(action);
 
                 batch.bind("ticket", ticket.id())
-                        .bind("type", identifier)
-                        .bind("date", action.date())
-                        .bindMap(bindables)
-                        .add();
+                    .bind("type", identifier)
+                    .bind("date", action.date())
+                    .bindMap(bindables)
+                    .add();
             }
 
             batch.execute();
@@ -95,25 +95,25 @@ public final class DatabaseStorageService implements StorageService {
     public Map<Integer, Ticket> selectTickets(final int... ids) {
         return this.jdbi.withHandle(handle -> {
             return handle.createQuery(this.locator.query("select-tickets"))
-                    .bindList("ids", Ints.asList(ids))
-                    .reduceRows(new TicketAccumulator())
-                    .collect(Collectors.toMap(Ticket::id, Function.identity()));
+                .bindList("ids", Ints.asList(ids))
+                .reduceRows(new TicketAccumulator())
+                .collect(Collectors.toMap(Ticket::id, Function.identity()));
         });
     }
 
     @Override
     public Collection<Ticket> findTickets(
-            final TicketStatus status,
-            final @Nullable UUID assignee,
-            final @Nullable Instant since
+        final TicketStatus status,
+        final @Nullable UUID assignee,
+        final @Nullable Instant since
     ) {
         return this.jdbi.withHandle(handle -> {
             return handle.createQuery(this.locator.query("find-tickets"))
-                    .bind("status", status)
-                    .bind("assignee", assignee)
-                    .bind("since", since)
-                    .reduceRows(new TicketAccumulator())
-                    .toList();
+                .bind("status", status)
+                .bind("assignee", assignee)
+                .bind("since", since)
+                .reduceRows(new TicketAccumulator())
+                .toList();
         });
     }
 

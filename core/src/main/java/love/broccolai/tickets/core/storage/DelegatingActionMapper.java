@@ -26,15 +26,15 @@ import org.jspecify.annotations.NullMarked;
 public final class DelegatingActionMapper implements RowMapper<Action> {
 
     private static final BiMap<Class<? extends Action>, String> NAME_MAPPINGS = HashBiMap.create(Map.of(
-            AssignAction.class, "ASSIGN",
-            CloseAction.class, "CLOSE",
-            EditAction.class, "EDIT"
+        AssignAction.class, "ASSIGN",
+        CloseAction.class, "CLOSE",
+        EditAction.class, "EDIT"
     ));
 
     private static final Map<Class<? extends Action>, ? extends ActionMapper<?>> MAPPERS = Map.of(
-            AssignAction.class, new AssignActionMapper(),
-            CloseAction.class, new CloseActionMapper(),
-            EditAction.class, new EditActionMapper()
+        AssignAction.class, new AssignActionMapper(),
+        CloseAction.class, new CloseActionMapper(),
+        EditAction.class, new EditActionMapper()
     );
 
     @SuppressWarnings("unchecked")

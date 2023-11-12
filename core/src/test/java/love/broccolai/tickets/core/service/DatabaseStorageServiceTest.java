@@ -1,6 +1,7 @@
 package love.broccolai.tickets.core.service;
 
 import static com.google.common.truth.Truth.assertThat;
+
 import java.util.Collection;
 import java.util.UUID;
 import love.broccolai.tickets.api.model.Ticket;

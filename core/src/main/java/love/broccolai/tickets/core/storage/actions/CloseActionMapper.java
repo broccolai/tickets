@@ -17,10 +17,10 @@ public final class CloseActionMapper implements ActionMapper<CloseAction> {
 
     @Override
     public CloseAction map(
-            final ColumnMapper<UUID> mapper,
-            final Instant date,
-            final ResultSet rs,
-            final StatementContext ctx
+        final ColumnMapper<UUID> mapper,
+        final Instant date,
+        final ResultSet rs,
+        final StatementContext ctx
     ) throws SQLException {
         UUID creator = mapper.map(rs, "action_creator", ctx);
         String message = rs.getString("action_message");

@@ -1,6 +1,7 @@
 package love.broccolai.tickets.core.service;
 
 import static com.google.common.truth.Truth.assertThat;
+
 import java.time.Duration;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
