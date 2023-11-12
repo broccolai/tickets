@@ -29,15 +29,13 @@ public final class CalculatingStatisticService implements StatisticService {
         Instant since = TimeUtilities.nowTruncated().minus(duration);
 
         Collection<Ticket> closedTickets = this.storageService.findTickets(TicketStatus.CLOSED, null, since);
-        Collection<Duration> ticketLifespans = Lists.map(closedTickets, this::calculateAverageTicketLifespan);
 
-        Duration result = Duration.ZERO;
-
-        for (final Duration lifespan : ticketLifespans) {
-            result = result.plus(lifespan);
-        }
-
-        return result.dividedBy(ticketLifespans.size());
+        return closedTickets
+            .stream()
+            .map(this::calculateAverageTicketLifespan)
+            .reduce(Duration::plus)
+            .map(sum -> sum.dividedBy(closedTickets.size()))
+            .orElse(Duration.ZERO);
     }
 
     private Duration calculateAverageTicketLifespan(final Ticket ticket) {
