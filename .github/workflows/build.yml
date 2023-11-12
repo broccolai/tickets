@@ -12,4 +12,3 @@ jobs:
     call-build:
         uses: "broccolai/actions/.github/workflows/shared-ci.yml@master"
         secrets: inherit
-t
