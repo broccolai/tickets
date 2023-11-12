@@ -1,7 +1,5 @@
 package love.broccolai.tickets.core.service;
 
-import static com.google.common.truth.Truth.assertThat;
-
 import java.time.Duration;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -18,6 +16,8 @@ import org.jdbi.v3.testing.junit5.JdbiExtension;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
+
+import static com.google.common.truth.Truth.assertThat;
 
 class CalculatingStatisticServiceTest {
 

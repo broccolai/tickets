@@ -1,8 +1,5 @@
 package love.broccolai.tickets.core.service;
 
-import static com.google.common.truth.Truth.assertThat;
-import static com.google.common.truth.Truth8.assertThat;
-
 import java.util.ArrayList;
 import java.util.UUID;
 import love.broccolai.tickets.api.model.Ticket;
@@ -14,6 +11,8 @@ import love.broccolai.tickets.core.utilities.TimeUtilities;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import static com.google.common.truth.Truth.assertThat;
+import static com.google.common.truth.Truth8.assertThat;
 import static org.mockito.Mockito.mock;
 
 class SimpleModificationServiceTest {
