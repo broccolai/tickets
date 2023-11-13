@@ -1,0 +1,94 @@
+[plugins]
+indra-base = { id = "net.kyori.indra", version.ref = "indra" }
+indra-publishing = { id = "net.kyori.indra.publishing", version.ref = "indra" }
+indra-checkstyle = { id = "net.kyori.indra.checkstyle", version.ref = "indra" }
+errorprone = { id = "net.ltgt.errorprone", version = "3.1.0" }
+run-paper = { id = "xyz.jpenilla.run-paper", version = "2.2.0" }
+test-logger = { id = "com.adarshr.test-logger", version = "4.0.0" }
+versions = { id = "com.github.ben-manes.versions", version = "0.49.0" }
+
+[versions]
+# Tooling
+indra = "3.1.3"
+jspecify = "0.3.0"
+errorprone = "2.23.0"
+
+# Testing
+truth = "1.1.5"
+junit = "5.10.1"
+mockito = "5.7.0"
+
+# Google
+guice = "7.0.0"
+
+# Incendo
+cloud = "1.8.4"
+
+# Kyori
+adventure = "4.14.0"
+moonshine = "2.0.4"
+
+# Storage
+jdbi = "3.41.3"
+hikari = "5.1.0"
+flyway = "10.0.0"
+h2 = "2.2.224"
+configurate = "4.1.2"
+
+# Misc
+corn = "3.2.0"
+slf4j = "2.0.9"
+caffeine = "3.1.8"
+
+# Bukkit
+paper-api = "1.20.2-R0.1-SNAPSHOT"
+
+[libraries]
+# Tooling
+jspecify = { group = "org.jspecify", name = "jspecify", version.ref = "jspecify" }
+errorprone = { group = "com.google.errorprone", name = "error_prone_core", version.ref = "errorprone" }
+
+# Google
+guice-core = { group = "com.google.inject", name = "guice", version.ref = "guice" }
+guice-assisted = { group = "com.google.inject.extensions", name = "guice-assistedinject", version.ref = "guice" }
+
+# Incendo
+cloud-core = { group = "cloud.commandframework", name = "cloud-core", version.ref = "cloud" }
+cloud-paper = { group = "cloud.commandframework", name = "cloud-paper", version.ref = "cloud" }
+cloud-velocity = { group = "cloud.commandframework", name = "cloud-velocity", version.ref = "cloud" }
+cloud-extras = { group = "cloud.commandframework", name = "cloud-minecraft-extras", version.ref = "cloud" }
+
+# Kyori
+adventure-api = { group = "net.kyori", name = "adventure-api", version.ref = "adventure" }
+minimessage = { group = "net.kyori", name = "adventure-text-minimessage", version.ref = "adventure" }
+moonshine-core = { group = "net.kyori.moonshine", name = "moonshine-core", version.ref = "moonshine" }
+moonshine-standard = { group = "net.kyori.moonshine", name = "moonshine-standard", version.ref = "moonshine" }
+
+# Storage
+jdbi-core = { group = "org.jdbi", name = "jdbi3-core", version.ref = "jdbi" }
+jdbi-testing = { group = "org.jdbi", name = "jdbi3-testing", version.ref = "jdbi" }
+hikari = { group = "com.zaxxer", name = "HikariCP", version.ref = "hikari" }
+flyway = { group = "org.flywaydb", name = "flyway-core", version.ref = "flyway" }
+h2 = { group = "com.h2database", name = "h2", version.ref = "h2" }
+configurate = { group = "org.spongepowered", name = "configurate-yaml", version.ref = "configurate" }
+
+# Misc
+corn-misc = { group = "broccolai.corn", name = "corn-misc", version.ref = "corn" }
+corn-context = { group = "broccolai.corn", name = "corn-context", version.ref = "corn" }
+slf4j = { group = "org.slf4j", name = "slf4j-simple", version.ref = "slf4j" }
+caffeine = { group = "com.github.ben-manes.caffeine", name = "caffeine", version.ref = "caffeine" }
+
+# Paper
+paper-api = { group = "com.destroystokyo.paper", name = "paper-api", version.ref = "paper-api" }
+
+# Testing
+truth-core = { group = "com.google.truth", name = "truth", version.ref = "truth" }
+truth-java-eight = { group = "com.google.truth.extensions", name = "truth-java8-extension", version.ref = "truth" }
+junit-api = { group = "org.junit.jupiter", name = "junit-jupiter-api", version.ref = "junit" }
+junit-engine = { group = "org.junit.jupiter", name = "junit-jupiter-engine", version.ref = "junit" }
+junit-platform = { group = "org.junit.platform", name = "junit-platform-launcher" }
+mockito = { group = "org.mockito", name = "mockito-core", version.ref = "mockito" }
+
+[bundles]
+guice = ["guice-core", "guice-assisted"]
+truth = ["truth-core", "truth-java-eight"]
