@@ -1,8 +1,8 @@
 rootProject.name = "tickets"
 
-include("api", "core")
+include("api", "common")
 
 project(":api").name = "tickets-api"
-project(":core").name = "tickets-core"
+project(":common").name = "tickets-common"
 
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
