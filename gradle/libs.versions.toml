@@ -3,7 +3,7 @@ indra-base = { id = "net.kyori.indra", version.ref = "indra" }
 indra-publishing = { id = "net.kyori.indra.publishing", version.ref = "indra" }
 indra-checkstyle = { id = "net.kyori.indra.checkstyle", version.ref = "indra" }
 errorprone = { id = "net.ltgt.errorprone", version = "3.1.0" }
-run-paper = { id = "xyz.jpenilla.run-paper", version = "2.2.0" }
+run-paper = { id = "xyz.jpenilla.run-paper", version = "2.2.2" }
 test-logger = { id = "com.adarshr.test-logger", version = "4.0.0" }
 versions = { id = "com.github.ben-manes.versions", version = "0.49.0" }
 
