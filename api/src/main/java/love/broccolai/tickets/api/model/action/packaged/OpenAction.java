@@ -14,6 +14,6 @@ public record OpenAction(
 
     @Override
     public TicketStatus status() {
-        return TicketStatus.CLOSED;
+        return TicketStatus.OPEN;
     }
 }
