@@ -5,7 +5,7 @@ import java.sql.SQLException;
 import java.time.Instant;
 import java.util.Map;
 import java.util.UUID;
-import love.broccolai.tickets.api.model.action.AssignAction;
+import love.broccolai.tickets.api.model.action.packaged.AssignAction;
 import love.broccolai.tickets.core.storage.ActionMapper;
 import org.jdbi.v3.core.mapper.ColumnMapper;
 import org.jdbi.v3.core.statement.StatementContext;
@@ -30,7 +30,6 @@ public final class AssignActionMapper implements ActionMapper<AssignAction> {
     @Override
     public Map<Entries, Object> processBindables(final AssignAction action) {
         return Map.of(
-            Entries.CREATOR, action.creator(),
             Entries.ASSIGNEE, action.assignee()
         );
     }

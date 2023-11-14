@@ -1,14 +1,15 @@
-package love.broccolai.tickets.api.model.action;
+package love.broccolai.tickets.api.model.action.packaged;
 
 import java.time.Instant;
 import java.util.UUID;
+import love.broccolai.tickets.api.model.action.Action;
 import org.jspecify.annotations.NullMarked;
-import org.jspecify.annotations.Nullable;
 
 @NullMarked
-public record CloseAction(
+public record AssignAction(
     Instant date,
     UUID creator,
-    @Nullable String message
+    UUID assignee
 ) implements Action {
+
 }

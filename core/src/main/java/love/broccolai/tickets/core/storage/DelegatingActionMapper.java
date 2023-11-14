@@ -11,13 +11,15 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 import love.broccolai.tickets.api.model.action.Action;
-import love.broccolai.tickets.api.model.action.AssignAction;
-import love.broccolai.tickets.api.model.action.CloseAction;
-import love.broccolai.tickets.api.model.action.EditAction;
+import love.broccolai.tickets.api.model.action.packaged.AssignAction;
+import love.broccolai.tickets.api.model.action.packaged.CloseAction;
+import love.broccolai.tickets.api.model.action.packaged.CommentAction;
+import love.broccolai.tickets.api.model.action.packaged.OpenAction;
 import love.broccolai.tickets.core.storage.ActionMapper.Entries;
 import love.broccolai.tickets.core.storage.actions.AssignActionMapper;
 import love.broccolai.tickets.core.storage.actions.CloseActionMapper;
-import love.broccolai.tickets.core.storage.actions.EditActionMapper;
+import love.broccolai.tickets.core.storage.actions.CommentActionMapper;
+import love.broccolai.tickets.core.storage.actions.OpenActionMapper;
 import org.jdbi.v3.core.mapper.RowMapper;
 import org.jdbi.v3.core.statement.StatementContext;
 import org.jspecify.annotations.NullMarked;
@@ -26,15 +28,17 @@ import org.jspecify.annotations.NullMarked;
 public final class DelegatingActionMapper implements RowMapper<Action> {
 
     private static final BiMap<Class<? extends Action>, String> NAME_MAPPINGS = HashBiMap.create(Map.of(
+        OpenAction.class, "OPEN",
         AssignAction.class, "ASSIGN",
         CloseAction.class, "CLOSE",
-        EditAction.class, "EDIT"
+        CommentAction.class, "EDIT"
     ));
 
     private static final Map<Class<? extends Action>, ? extends ActionMapper<?>> MAPPERS = Map.of(
+        OpenAction.class, new OpenActionMapper(),
         AssignAction.class, new AssignActionMapper(),
         CloseAction.class, new CloseActionMapper(),
-        EditAction.class, new EditActionMapper()
+        CommentAction.class, new CommentActionMapper()
     );
 
     @SuppressWarnings("unchecked")

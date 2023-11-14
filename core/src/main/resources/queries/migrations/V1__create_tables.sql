@@ -1,11 +1,8 @@
 CREATE TABLE tickets_ticket
 (
     `id`       int         NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    `status`   varchar(36) NOT NULL,
     `creator`  varchar(36) NOT NULL,
-    `date`     timestamp,
-    `assignee` varchar(36),
-    `message`  varchar(1024)
+    `date`     timestamp
 );
 
 CREATE TABLE tickets_action

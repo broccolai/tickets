@@ -27,7 +27,6 @@ public interface ActionMapper<A extends Action> extends RowMapper<Action> {
     Map<Entries, Object> processBindables(A action);
 
     enum Entries {
-        CREATOR,
         ASSIGNEE,
         MESSAGE
     }

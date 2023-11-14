@@ -23,7 +23,6 @@ public interface StorageService {
 
     Collection<Ticket> findTickets(
         TicketStatus status,
-        @Nullable UUID assignee,
         @Nullable Instant since
     );
 }

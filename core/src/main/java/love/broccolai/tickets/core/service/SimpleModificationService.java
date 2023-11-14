@@ -3,9 +3,9 @@ package love.broccolai.tickets.core.service;
 import com.google.inject.Inject;
 import java.util.UUID;
 import love.broccolai.tickets.api.model.Ticket;
-import love.broccolai.tickets.api.model.action.AssignAction;
-import love.broccolai.tickets.api.model.action.CloseAction;
-import love.broccolai.tickets.api.model.action.EditAction;
+import love.broccolai.tickets.api.model.action.packaged.AssignAction;
+import love.broccolai.tickets.api.model.action.packaged.CloseAction;
+import love.broccolai.tickets.api.model.action.packaged.CommentAction;
 import love.broccolai.tickets.api.service.ModificationService;
 import love.broccolai.tickets.api.service.StorageService;
 import love.broccolai.tickets.core.utilities.TimeUtilities;
@@ -24,10 +24,9 @@ public final class SimpleModificationService implements ModificationService {
     @Override
     public CloseAction close(
         final Ticket ticket,
-        final UUID creator,
-        final String message
+        final UUID creator
     ) {
-        CloseAction action = new CloseAction(TimeUtilities.nowTruncated(), creator, null);
+        CloseAction action = new CloseAction(TimeUtilities.nowTruncated(), creator);
         ticket.actions().add(action);
 
         this.storageService.saveTicket(ticket);
@@ -36,14 +35,13 @@ public final class SimpleModificationService implements ModificationService {
     }
 
     @Override
-    public EditAction edit(
+    public CommentAction comment(
         final Ticket ticket,
         final UUID creator,
         final String message
     ) {
-        EditAction action = new EditAction(TimeUtilities.nowTruncated(), creator, message);
+        CommentAction action = new CommentAction(TimeUtilities.nowTruncated(), creator, message);
 
-        ticket.message(message);
         ticket.actions().add(action);
 
         this.storageService.saveTicket(ticket);
@@ -59,7 +57,6 @@ public final class SimpleModificationService implements ModificationService {
     ) {
         AssignAction action = new AssignAction(TimeUtilities.nowTruncated(), creator, assignee);
 
-        ticket.assignee(assignee);
         ticket.actions().add(action);
 
         this.storageService.saveTicket(ticket);

@@ -5,4 +5,5 @@ dependencies {
     api(libs.adventure.api)
     api(libs.minimessage)
     api(libs.corn.context)
+    api(libs.corn.properties)
 }

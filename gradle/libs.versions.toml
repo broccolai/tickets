@@ -36,9 +36,10 @@ h2 = "2.2.224"
 configurate = "4.1.2"
 
 # Misc
-corn = "3.2.0"
+corn = "4.0.0-SNAPSHOT"
 slf4j = "2.0.9"
 caffeine = "3.1.8"
+seiama-commons = "1.0.0-SNAPSHOT"
 
 # Bukkit
 paper-api = "1.20.2-R0.1-SNAPSHOT"
@@ -73,10 +74,12 @@ h2 = { group = "com.h2database", name = "h2", version.ref = "h2" }
 configurate = { group = "org.spongepowered", name = "configurate-yaml", version.ref = "configurate" }
 
 # Misc
-corn-misc = { group = "broccolai.corn", name = "corn-misc", version.ref = "corn" }
-corn-context = { group = "broccolai.corn", name = "corn-context", version.ref = "corn" }
+corn-misc = { group = "love.broccolai.corn", name = "corn-misc", version.ref = "corn" }
+corn-context = { group = "love.broccolai.corn", name = "corn-context", version.ref = "corn" }
+corn-properties = { group = "love.broccolai.corn", name = "corn-properties", version.ref = "corn" }
 slf4j = { group = "org.slf4j", name = "slf4j-simple", version.ref = "slf4j" }
 caffeine = { group = "com.github.ben-manes.caffeine", name = "caffeine", version.ref = "caffeine" }
+seiama-commons = { group = "com.seiama", name = "commons", version.ref = "seiama-commons" }
 
 # Paper
 paper-api = { group = "com.destroystokyo.paper", name = "paper-api", version.ref = "paper-api" }

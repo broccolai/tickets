@@ -1,14 +1,14 @@
 package love.broccolai.tickets.core.service;
 
-import broccolai.corn.core.Lists;
 import com.google.inject.Inject;
+import com.seiama.common.Streams;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Collection;
+import java.util.List;
 import love.broccolai.tickets.api.model.Ticket;
 import love.broccolai.tickets.api.model.TicketStatus;
-import love.broccolai.tickets.api.model.action.Action;
-import love.broccolai.tickets.api.model.action.CloseAction;
+import love.broccolai.tickets.api.model.action.packaged.CloseAction;
 import love.broccolai.tickets.api.service.StatisticService;
 import love.broccolai.tickets.api.service.StorageService;
 import love.broccolai.tickets.core.utilities.TimeUtilities;
@@ -28,7 +28,7 @@ public final class CalculatingStatisticService implements StatisticService {
     public Duration averageTicketsLifespan(final Duration duration) {
         Instant since = TimeUtilities.nowTruncated().minus(duration);
 
-        Collection<Ticket> closedTickets = this.storageService.findTickets(TicketStatus.CLOSED, null, since);
+        Collection<Ticket> closedTickets = this.storageService.findTickets(TicketStatus.CLOSED, since);
 
         return closedTickets
             .stream()
@@ -39,12 +39,15 @@ public final class CalculatingStatisticService implements StatisticService {
     }
 
     private Duration calculateAverageTicketLifespan(final Ticket ticket) {
-        Action closeAction = Lists.last(
-            ticket.actions(),
-            action -> action instanceof CloseAction
-        );
+        //todo: add utility for all of this?
+        List<CloseAction> closeActions = Streams.instancesOf(
+            ticket.actions().stream(),
+            CloseAction.class
+        ).toList();
 
-        return Duration.between(ticket.date(), closeAction.date());
+        CloseAction finalCloseAction = closeActions.getLast();
+
+        return Duration.between(ticket.date(), finalCloseAction.date());
     }
 
 }

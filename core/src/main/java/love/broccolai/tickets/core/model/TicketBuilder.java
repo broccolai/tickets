@@ -1,12 +1,9 @@
 package love.broccolai.tickets.core.model;
 
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.SortedSet;
+import java.util.TreeSet;
 import java.util.UUID;
-import love.broccolai.tickets.api.model.Ticket;
-import love.broccolai.tickets.api.model.TicketStatus;
 import love.broccolai.tickets.api.model.action.Action;
 import org.jspecify.annotations.NullMarked;
 
@@ -14,28 +11,19 @@ import org.jspecify.annotations.NullMarked;
 public final class TicketBuilder {
 
     private final int id;
-    private final TicketStatus status;
     private final UUID creator;
     private final Instant date;
-    private final UUID assignee;
-    private final String message;
-    private final List<Action> actions;
+    private final SortedSet<Action> actions;
 
     public TicketBuilder(
         final int id,
-        final TicketStatus status,
         final UUID creator,
-        final Instant date,
-        final UUID assignee,
-        final String message
+        final Instant date
     ) {
         this.id = id;
-        this.status = status;
         this.creator = creator;
         this.date = date;
-        this.assignee = assignee;
-        this.message = message;
-        this.actions = new ArrayList<>();
+        this.actions = new TreeSet<>(Action.SORTER);
     }
 
     public TicketBuilder withAction(final Action action) {
@@ -43,15 +31,12 @@ public final class TicketBuilder {
         return this;
     }
 
-    public Ticket build() {
-        return new Ticket(
+    public SimpleTicket build() {
+        return new SimpleTicket(
             this.id,
-            this.status,
             this.creator,
             this.date,
-            this.assignee,
-            this.message,
-            Collections.unmodifiableList(this.actions)
+            this.actions
         );
     }
 

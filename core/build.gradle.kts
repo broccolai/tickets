@@ -11,6 +11,8 @@ dependencies {
     api(libs.h2)
     api(libs.configurate)
 
+    api(libs.seiama.commons)
+
     api(libs.bundles.guice)
 
     testImplementation(libs.jdbi.testing)

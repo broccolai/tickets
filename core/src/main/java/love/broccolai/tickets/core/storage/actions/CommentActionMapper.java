@@ -5,17 +5,17 @@ import java.sql.SQLException;
 import java.time.Instant;
 import java.util.Map;
 import java.util.UUID;
-import love.broccolai.tickets.api.model.action.EditAction;
+import love.broccolai.tickets.api.model.action.packaged.CommentAction;
 import love.broccolai.tickets.core.storage.ActionMapper;
 import org.jdbi.v3.core.mapper.ColumnMapper;
 import org.jdbi.v3.core.statement.StatementContext;
 import org.jspecify.annotations.NullMarked;
 
 @NullMarked
-public final class EditActionMapper implements ActionMapper<EditAction> {
+public final class CommentActionMapper implements ActionMapper<CommentAction> {
 
     @Override
-    public EditAction map(
+    public CommentAction map(
         final ColumnMapper<UUID> mapper,
         final Instant date,
         final ResultSet rs,
@@ -24,13 +24,12 @@ public final class EditActionMapper implements ActionMapper<EditAction> {
         UUID creator = mapper.map(rs, "action_creator", ctx);
         String message = rs.getString("action_message");
 
-        return new EditAction(date, creator, message);
+        return new CommentAction(date, creator, message);
     }
 
     @Override
-    public Map<Entries, Object> processBindables(final EditAction action) {
+    public Map<Entries, Object> processBindables(final CommentAction action) {
         return Map.of(
-            Entries.CREATOR, action.creator(),
             Entries.MESSAGE, action.message()
         );
     }

@@ -5,9 +5,8 @@ import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.UUID;
 import love.broccolai.tickets.api.model.Ticket;
-import love.broccolai.tickets.api.model.TicketStatus;
 import love.broccolai.tickets.api.model.action.Action;
-import love.broccolai.tickets.api.model.action.CloseAction;
+import love.broccolai.tickets.api.model.action.packaged.CloseAction;
 import love.broccolai.tickets.api.service.StatisticService;
 import love.broccolai.tickets.api.service.StorageService;
 import love.broccolai.tickets.core.utilities.TicketsH2Extension;
@@ -36,15 +35,12 @@ class CalculatingStatisticServiceTest {
     @Test
     void averageTicketsLifespan() {
         Instant fiveMinutes = TimeUtilities.nowTruncated().plus(5, ChronoUnit.MINUTES);
-        Action close = new CloseAction(fiveMinutes, UUID.randomUUID(), "");
+        Action close = new CloseAction(fiveMinutes, UUID.randomUUID());
 
         Ticket ticket1 = this.storageService.createTicket(UUID.randomUUID(), "");
         Ticket ticket2 = this.storageService.createTicket(UUID.randomUUID(), "");
 
-        ticket1.status(TicketStatus.CLOSED);
         ticket1.actions().add(close);
-
-        ticket2.status(TicketStatus.CLOSED);
         ticket2.actions().add(close);
 
         this.storageService.saveTicket(ticket1);

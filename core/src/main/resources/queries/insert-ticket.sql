@@ -1,3 +1,3 @@
-INSERT INTO tickets_ticket(`status`, `creator`, `date`, `message`)
-VALUES ('OPEN', :creator, :date, :message);
+INSERT INTO tickets_ticket(`creator`, `date`)
+VALUES (:creator, :date);
 SELECT LAST_INSERT_ID();
