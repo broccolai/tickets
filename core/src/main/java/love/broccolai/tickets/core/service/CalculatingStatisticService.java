@@ -1,11 +1,11 @@
 package love.broccolai.tickets.core.service;
 
 import com.google.inject.Inject;
-import com.seiama.common.Streams;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Collection;
-import java.util.List;
+import java.util.Optional;
+import love.broccolai.corn.trove.Trove;
 import love.broccolai.tickets.api.model.Ticket;
 import love.broccolai.tickets.api.model.TicketStatus;
 import love.broccolai.tickets.api.model.action.packaged.CloseAction;
@@ -30,24 +30,16 @@ public final class CalculatingStatisticService implements StatisticService {
 
         Collection<Ticket> closedTickets = this.storageService.findTickets(TicketStatus.CLOSED, since);
 
-        return closedTickets
-            .stream()
-            .map(this::calculateAverageTicketLifespan)
-            .reduce(Duration::plus)
-            .map(sum -> sum.dividedBy(closedTickets.size()))
-            .orElse(Duration.ZERO);
+        return Trove.of(closedTickets)
+            .mapIfPresent(this::calculateAverageTicketLifespan)
+            .average(Duration.ZERO, Duration::plus, Duration::dividedBy);
     }
 
-    private Duration calculateAverageTicketLifespan(final Ticket ticket) {
-        //todo: add utility for all of this?
-        List<CloseAction> closeActions = Streams.instancesOf(
-            ticket.actions().stream(),
-            CloseAction.class
-        ).toList();
-
-        CloseAction finalCloseAction = closeActions.getLast();
-
-        return Duration.between(ticket.date(), finalCloseAction.date());
+    private Optional<Duration> calculateAverageTicketLifespan(final Ticket ticket) {
+        return Trove.of(ticket.actions())
+            .filterIsInstance(CloseAction.class)
+            .last()
+            .map(action -> Duration.between(ticket.date(), action.date()));
     }
 
 }

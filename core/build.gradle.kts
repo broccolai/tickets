@@ -3,7 +3,7 @@ dependencies {
 
     api(libs.jdbi.core)
     api(libs.caffeine)
-    api(libs.corn.misc)
+    api(libs.corn.trove)
     api(libs.cloud.extras)
     api(libs.slf4j)
     api(libs.hikari)

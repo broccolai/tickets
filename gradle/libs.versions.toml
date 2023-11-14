@@ -74,7 +74,7 @@ h2 = { group = "com.h2database", name = "h2", version.ref = "h2" }
 configurate = { group = "org.spongepowered", name = "configurate-yaml", version.ref = "configurate" }
 
 # Misc
-corn-misc = { group = "love.broccolai.corn", name = "corn-misc", version.ref = "corn" }
+corn-trove = { group = "love.broccolai.corn", name = "corn-trove", version.ref = "corn" }
 corn-context = { group = "love.broccolai.corn", name = "corn-context", version.ref = "corn" }
 corn-properties = { group = "love.broccolai.corn", name = "corn-properties", version.ref = "corn" }
 slf4j = { group = "org.slf4j", name = "slf4j-simple", version.ref = "slf4j" }

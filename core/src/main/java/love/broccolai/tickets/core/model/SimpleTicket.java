@@ -3,6 +3,7 @@ package love.broccolai.tickets.core.model;
 import java.time.Instant;
 import java.util.SortedSet;
 import java.util.UUID;
+import love.broccolai.corn.trove.Trove;
 import love.broccolai.tickets.api.model.Ticket;
 import love.broccolai.tickets.api.model.TicketStatus;
 import love.broccolai.tickets.api.model.action.Action;
@@ -19,14 +20,10 @@ public record SimpleTicket(
 
     @Override
     public TicketStatus status() {
-        return this.actions
-            .stream()
-            .filter(StatusModificationAction.class::isInstance)
-            .map(StatusModificationAction.class::cast)
-            .findFirst()
+        return Trove.of(this.actions)
+            .filterIsInstance(StatusModificationAction.class)
+            .first()
             .orElseThrow()
             .status();
     }
 }
-
-//todo implement status for actions and message retrieving
