@@ -12,23 +12,25 @@ import org.jdbi.v3.core.statement.StatementContext;
 import org.jspecify.annotations.NullMarked;
 
 @NullMarked
-public final class AssignActionMapper implements ActionMapper<AssignAction> {
+public final class AssignActionMapper extends ActionMapper<AssignAction> {
+
+    public static final AssignActionMapper INSTANCE = new AssignActionMapper();
 
     @Override
     public AssignAction map(
         final ColumnMapper<UUID> mapper,
+        final UUID creator,
         final Instant date,
         final ResultSet rs,
         final StatementContext ctx
     ) throws SQLException {
-        UUID creator = mapper.map(rs, "action_creator", ctx);
         UUID assignee = mapper.map(rs, "action_assignee", ctx);
 
         return new AssignAction(date, creator, assignee);
     }
 
     @Override
-    public Map<Entries, Object> processBindables(final AssignAction action) {
+    protected Map<Entries, Object> processBindables(final AssignAction action) {
         return Map.of(
             Entries.ASSIGNEE, action.assignee()
         );

@@ -12,23 +12,25 @@ import org.jdbi.v3.core.statement.StatementContext;
 import org.jspecify.annotations.NullMarked;
 
 @NullMarked
-public final class OpenActionMapper implements ActionMapper<OpenAction> {
+public final class OpenActionMapper extends ActionMapper<OpenAction> {
+
+    public static final OpenActionMapper INSTANCE = new OpenActionMapper();
 
     @Override
     public OpenAction map(
         final ColumnMapper<UUID> mapper,
+        final UUID creator,
         final Instant date,
         final ResultSet rs,
         final StatementContext ctx
     ) throws SQLException {
-        UUID creator = mapper.map(rs, "action_creator", ctx);
         String message = rs.getString("action_message");
 
         return new OpenAction(date, creator, message);
     }
 
     @Override
-    public Map<Entries, Object> processBindables(final OpenAction action) {
+    protected Map<Entries, Object> processBindables(final OpenAction action) {
         return Map.of(
             Entries.MESSAGE, action.message()
         );

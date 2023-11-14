@@ -12,22 +12,23 @@ import org.jdbi.v3.core.statement.StatementContext;
 import org.jspecify.annotations.NullMarked;
 
 @NullMarked
-public final class CloseActionMapper implements ActionMapper<CloseAction> {
+public final class CloseActionMapper extends ActionMapper<CloseAction> {
+
+    public static final CloseActionMapper INSTANCE = new CloseActionMapper();
 
     @Override
     public CloseAction map(
         final ColumnMapper<UUID> mapper,
+        final UUID creator,
         final Instant date,
         final ResultSet rs,
         final StatementContext ctx
     ) throws SQLException {
-        UUID creator = mapper.map(rs, "action_creator", ctx);
-
         return new CloseAction(date, creator);
     }
 
     @Override
-    public Map<Entries, Object> processBindables(final CloseAction action) {
+    protected Map<Entries, Object> processBindables(final CloseAction action) {
         return Map.of();
     }
 

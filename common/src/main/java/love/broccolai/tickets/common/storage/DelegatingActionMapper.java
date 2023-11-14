@@ -4,18 +4,12 @@ import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
 import love.broccolai.tickets.api.model.action.Action;
 import love.broccolai.tickets.api.model.action.packaged.AssignAction;
 import love.broccolai.tickets.api.model.action.packaged.CloseAction;
 import love.broccolai.tickets.api.model.action.packaged.CommentAction;
 import love.broccolai.tickets.api.model.action.packaged.OpenAction;
-import love.broccolai.tickets.common.storage.ActionMapper.Entries;
 import love.broccolai.tickets.common.storage.actions.AssignActionMapper;
 import love.broccolai.tickets.common.storage.actions.CloseActionMapper;
 import love.broccolai.tickets.common.storage.actions.CommentActionMapper;
@@ -35,10 +29,10 @@ public final class DelegatingActionMapper implements RowMapper<Action> {
     ));
 
     private static final Map<Class<? extends Action>, ? extends ActionMapper<?>> MAPPERS = Map.of(
-        OpenAction.class, new OpenActionMapper(),
-        AssignAction.class, new AssignActionMapper(),
-        CloseAction.class, new CloseActionMapper(),
-        CommentAction.class, new CommentActionMapper()
+        OpenAction.class, OpenActionMapper.INSTANCE,
+        AssignAction.class, AssignActionMapper.INSTANCE,
+        CloseAction.class, CloseActionMapper.INSTANCE,
+        CommentAction.class, CommentActionMapper.INSTANCE
     );
 
     @SuppressWarnings("unchecked")
@@ -46,21 +40,7 @@ public final class DelegatingActionMapper implements RowMapper<Action> {
         Class<? extends Action> clazz = action.getClass();
         ActionMapper<T> mapper = (ActionMapper<T>) MAPPERS.get(clazz);
 
-        Map<Entries, Object> processedBindings = mapper.processBindables(action);
-        Map<String, Object> result = new HashMap<>();
-
-        processedBindings.forEach((key, value) -> {
-            result.put(key.name().toLowerCase(Locale.ROOT), value);
-        });
-
-        Collection<Entries> entries = new ArrayList<>(Arrays.asList(Entries.values()));
-        entries.removeAll(processedBindings.keySet());
-
-        for (final Entries entry : entries) {
-            result.put(entry.name().toLowerCase(Locale.ROOT), null);
-        }
-
-        return result;
+        return mapper.bindables(action);
     }
 
     public String typeIdentifier(final Action action) {

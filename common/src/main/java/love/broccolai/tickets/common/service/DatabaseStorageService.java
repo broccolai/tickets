@@ -19,6 +19,7 @@ import love.broccolai.tickets.api.service.StorageService;
 import love.broccolai.tickets.common.model.SimpleTicket;
 import love.broccolai.tickets.common.storage.DelegatingActionMapper;
 import love.broccolai.tickets.common.storage.TicketAccumulator;
+import love.broccolai.tickets.common.storage.actions.OpenActionMapper;
 import love.broccolai.tickets.common.utilities.QueriesLocator;
 import love.broccolai.tickets.common.utilities.TimeUtilities;
 import org.jdbi.v3.core.Jdbi;
@@ -62,15 +63,12 @@ public final class DatabaseStorageService implements StorageService {
             ticket.actions().add(action);
 
             //todo: extract
-            UUID assignee = null;
-
             handle.createUpdate(this.locator.query("insert-action"))
                 .bind("ticket", ticket.id())
                 .bind("type", "OPEN")
                 .bind("date", action.date())
                 .bind("creator", action.creator())
-                .bind("message", message)
-                .bind("assignee", assignee)
+                .bindMap(OpenActionMapper.INSTANCE.bindables(action))
                 .execute();
 
             return ticket;
@@ -119,13 +117,16 @@ public final class DatabaseStorageService implements StorageService {
         final TicketStatus status,
         final @Nullable Instant since
     ) {
-        return this.jdbi.withHandle(handle -> {
+        List<Ticket> filteredTickets = this.jdbi.withHandle(handle -> {
             return handle.createQuery(this.locator.query("find-tickets"))
-                .bind("status", status)
                 .bind("since", since)
                 .reduceRows(new TicketAccumulator())
-                .toList();
+                .collect(Collectors.toList());
         });
+
+        filteredTickets.removeIf(ticket -> ticket.status() != status);
+
+        return filteredTickets;
     }
 
 }
