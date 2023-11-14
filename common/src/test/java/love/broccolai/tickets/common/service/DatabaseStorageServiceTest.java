@@ -13,7 +13,6 @@ import love.broccolai.tickets.common.utilities.TicketsH2Extension;
 import love.broccolai.tickets.common.utilities.TimeUtilities;
 import org.jdbi.v3.testing.junit5.JdbiExtension;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 
@@ -71,9 +70,7 @@ class DatabaseStorageServiceTest {
         assertThat(ticket).isEqualTo(loadedTicket);
     }
 
-    // todo: reimplement this when find by status is reimplemented
     @Test
-    @Disabled
     void findTickets() {
         Ticket ticket = this.storageService.createTicket(UUID.randomUUID(), "Test Message");
         Action closeAction = new CloseAction(Instant.now(), UUID.randomUUID());

@@ -11,7 +11,7 @@ public final class TimeUtilities {
     }
 
     public static Instant nowTruncated() {
-        return Instant.now().truncatedTo(ChronoUnit.SECONDS);
+        return Instant.now().truncatedTo(ChronoUnit.MILLIS);
     }
 
 }

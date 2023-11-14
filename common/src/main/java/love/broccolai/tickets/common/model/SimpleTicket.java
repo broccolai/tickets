@@ -23,7 +23,7 @@ public record SimpleTicket(
     public TicketStatus status() {
         return Trove.of(this.actions)
             .filterIsInstance(StatusModificationAction.class)
-            .first()
+            .last()
             .orElseThrow()
             .status();
     }
