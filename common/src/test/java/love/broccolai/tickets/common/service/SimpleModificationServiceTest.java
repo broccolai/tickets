@@ -43,17 +43,15 @@ class SimpleModificationServiceTest {
         assertThat(this.ticket.actions().size()).isEqualTo(2);
     }
 
-    // todo: reimplement this when #message is added
     @Test
-    @Disabled
     void edit() {
         UUID creator = UUID.randomUUID();
         CommentAction action = this.modificationService.comment(this.ticket, creator, "New message");
 
-        // assertThat(this.ticket.message()).isEqualTo(action.message());
+        assertThat(this.ticket.message()).isEqualTo(action.message());
     }
 
-    // todo: reimplement this when #message is added
+    // todo: reimplement this when #assign is added
     @Test
     @Disabled
     void assign() {

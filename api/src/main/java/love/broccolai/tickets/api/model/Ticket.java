@@ -16,4 +16,6 @@ public interface Ticket {
     SortedSet<Action> actions();
 
     TicketStatus status();
+
+    String message();
 }

@@ -7,6 +7,7 @@ import love.broccolai.corn.trove.Trove;
 import love.broccolai.tickets.api.model.Ticket;
 import love.broccolai.tickets.api.model.TicketStatus;
 import love.broccolai.tickets.api.model.action.Action;
+import love.broccolai.tickets.api.model.action.MessageAction;
 import love.broccolai.tickets.api.model.action.StatusModificationAction;
 import org.jspecify.annotations.NullMarked;
 
@@ -25,5 +26,14 @@ public record SimpleTicket(
             .first()
             .orElseThrow()
             .status();
+    }
+
+    @Override
+    public String message() {
+        return Trove.of(this.actions)
+            .filterIsInstance(MessageAction.class)
+            .last()
+            .orElseThrow()
+            .message();
     }
 }
