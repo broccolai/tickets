@@ -17,13 +17,14 @@ import love.broccolai.tickets.api.model.action.Action;
 import love.broccolai.tickets.api.model.action.packaged.OpenAction;
 import love.broccolai.tickets.api.service.StorageService;
 import love.broccolai.tickets.common.model.SimpleTicket;
-import love.broccolai.tickets.common.storage.DelegatingActionMapper;
+import love.broccolai.tickets.common.storage.ActionMapper;
 import love.broccolai.tickets.common.storage.TicketAccumulator;
-import love.broccolai.tickets.common.storage.actions.OpenActionMapper;
 import love.broccolai.tickets.common.utilities.QueriesLocator;
 import love.broccolai.tickets.common.utilities.TimeUtilities;
 import org.jdbi.v3.core.Jdbi;
-import org.jdbi.v3.core.statement.PreparedBatch;
+import org.jdbi.v3.core.qualifier.QualifiedType;
+import org.jdbi.v3.core.statement.Update;
+import org.jdbi.v3.json.Json;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
@@ -31,69 +32,54 @@ import org.jspecify.annotations.Nullable;
 @NullMarked
 public final class DatabaseStorageService implements StorageService {
 
-    private final DelegatingActionMapper actionMapper = new DelegatingActionMapper();
     private final QueriesLocator locator = new QueriesLocator();
 
     private final Jdbi jdbi;
+    private final ActionMapper actionMapper;
 
     @Inject
-    public DatabaseStorageService(final Jdbi jdbi) {
+    public DatabaseStorageService(final Jdbi jdbi, ActionMapper actionMapper) {
         this.jdbi = jdbi;
+        this.actionMapper = actionMapper;
     }
 
     @Override
     public Ticket createTicket(final UUID creator, final String message) {
         Instant timestamp = TimeUtilities.nowTruncated();
+        OpenAction action = new OpenAction(timestamp, creator, message);
+        QualifiedType<OpenAction> type = QualifiedType.of(OpenAction.class).with(Json.class);
 
-        return this.jdbi.withHandle(handle -> {
+        return this.jdbi.inTransaction(handle -> {
             List<String> queries = this.locator.queries("insert-ticket");
 
-            handle.createUpdate(queries.get(0))
+            int id = handle.createUpdate(queries.get(0))
                 .bind("creator", creator)
                 .bind("date", timestamp)
-                .execute();
-
-            int id = handle.createQuery(queries.get(1))
+                .executeAndReturnGeneratedKeys()
                 .mapTo(Integer.class)
-                .first();
+                .one();
+
+            handle.createUpdate(queries.get(1))
+                .bindByType("data", action, type)
+                .execute();
 
             Ticket ticket = new SimpleTicket(id, creator, timestamp, new TreeSet<>(Action.SORTER));
-            OpenAction action = new OpenAction(timestamp, creator, message);
-
             ticket.actions().add(action);
-
-            //todo: extract
-            handle.createUpdate(this.locator.query("insert-action"))
-                .bind("ticket", ticket.id())
-                .bind("type", "OPEN")
-                .bind("date", action.date())
-                .bind("creator", action.creator())
-                .bindMap(OpenActionMapper.INSTANCE.bindables(action))
-                .execute();
 
             return ticket;
         });
     }
 
-    // todo: improve this now that tickets are immutable?
     @Override
-    public void saveTicket(final Ticket ticket) {
+    public void saveAction(final Ticket ticket, final Action action) {
         this.jdbi.useHandle(handle -> {
-            PreparedBatch batch = handle.prepareBatch(this.locator.query("insert-action"));
+            Update statement = handle.createUpdate(this.locator.query("insert-action"))
+                .bind("ticket", ticket.id());
 
-            for (final Action action : ticket.actions()) {
-                String identifier = this.actionMapper.typeIdentifier(action);
-                Map<String, ?> bindables = this.actionMapper.bindables(action);
+            //todo: remove type column and include identifier inside of data?
+            this.actionMapper.bindToStatement(statement, action);
 
-                batch.bind("ticket", ticket.id())
-                    .bind("type", identifier)
-                    .bind("date", action.date())
-                    .bind("creator", action.creator())
-                    .bindMap(bindables)
-                    .add();
-            }
-
-            batch.execute();
+            statement.execute();
         });
     }
 

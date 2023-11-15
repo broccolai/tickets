@@ -9,7 +9,6 @@ import love.broccolai.tickets.common.model.TicketBuilder;
 import org.jdbi.v3.core.result.RowReducer;
 import org.jdbi.v3.core.result.RowView;
 import org.jspecify.annotations.NullMarked;
-import org.jspecify.annotations.Nullable;
 
 @NullMarked
 public final class TicketAccumulator implements RowReducer<Map<Integer, TicketBuilder>, Ticket> {
@@ -25,12 +24,6 @@ public final class TicketAccumulator implements RowReducer<Map<Integer, TicketBu
             row.getColumn("id", Integer.class),
             id -> row.getRow(TicketBuilder.class)
         );
-
-        String type = row.<@Nullable String>getColumn("type", String.class);
-
-        if (type == null) {
-            return;
-        }
 
         Action action = row.getRow(Action.class);
         ticket.withAction(action);

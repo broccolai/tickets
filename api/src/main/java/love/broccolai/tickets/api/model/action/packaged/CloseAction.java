@@ -12,6 +12,8 @@ public record CloseAction(
     UUID creator
 ) implements StatusModificationAction {
 
+    public static final String IDENTIFIER = "close";
+
     @Override
     public TicketStatus status() {
         return TicketStatus.CLOSED;

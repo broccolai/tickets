@@ -1,58 +1,47 @@
+
 package love.broccolai.tickets.common.storage;
 
-import java.sql.ResultSet;
+import com.google.inject.Inject;
 import java.sql.SQLException;
-import java.time.Instant;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
 import love.broccolai.tickets.api.model.action.Action;
-import org.jdbi.v3.core.mapper.ColumnMapper;
-import org.jdbi.v3.core.mapper.RowMapper;
-import org.jdbi.v3.core.statement.StatementContext;
-import org.jspecify.annotations.NullMarked;
-import org.jspecify.annotations.Nullable;
+import love.broccolai.tickets.api.registry.ActionRegistry;
+import org.jdbi.v3.core.qualifier.QualifiedType;
+import org.jdbi.v3.core.result.RowView;
+import org.jdbi.v3.core.statement.SqlStatement;
+import org.jdbi.v3.json.Json;
 
-import static java.util.Locale.ROOT;
+public final class ActionMapper implements TwoWayRowMapper<Action> {
 
-@NullMarked
-public abstract class ActionMapper<A extends Action> implements RowMapper<Action> {
+    private final ActionRegistry registry;
+
+    @Inject
+    public ActionMapper(final ActionRegistry registry) {
+        this.registry = registry;
+    }
 
     @Override
-    public final Action map(ResultSet rs, StatementContext ctx) throws SQLException {
-        ColumnMapper<UUID> uuidMapper = ctx.findColumnMapperFor(UUID.class).orElseThrow(IllegalStateException::new);
-        UUID creator = uuidMapper.map(rs, "action_creator", ctx);
-        Instant date = rs.getTimestamp("action_date").toInstant();
+    public Action map(RowView rowView) throws SQLException {
+        String identifier = rowView.getColumn("type", String.class);
 
-        return this.map(uuidMapper, creator, date, rs, ctx);
+        QualifiedType<? extends Action> qualifiedType = this.qualifiedType(
+            this.registry.typeFromIdentifier(identifier)
+        );
+
+        return rowView.getColumn("data", qualifiedType);
     }
 
-    protected abstract A map(
-        ColumnMapper<UUID> mapper,
-        UUID creator,
-        Instant date,
-        ResultSet rs,
-        StatementContext ctx
-    ) throws SQLException;
+    @Override
+    public <S extends SqlStatement<S>> SqlStatement<S> bindToStatement(S statement, Action action) {
+        String identifier = this.registry.identifierFromType(action.getClass());
 
-    public Map<String, @Nullable Object> bindables(A action) {
-        Map<String, @Nullable Object> binds = new HashMap<>();
+        QualifiedType<? extends Action> qualifiedType = this.qualifiedType(action.getClass());
 
-        for (Entries value : Entries.values()) {
-            binds.put(value.name().toLowerCase(ROOT), null);
-        }
-
-        this.processBindables(action).forEach((entry, value) -> {
-            binds.put(entry.name().toLowerCase(ROOT), value);
-        });
-
-        return binds;
+        return statement
+            .bind("type", identifier)
+            .bindByType("data", action, qualifiedType);
     }
 
-    protected abstract Map<Entries, Object> processBindables(A action);
-
-    protected enum Entries {
-        ASSIGNEE,
-        MESSAGE
+    private QualifiedType<? extends Action> qualifiedType(Class<? extends Action> type) {
+        return QualifiedType.of(type).with(Json.class);
     }
 }

@@ -2,6 +2,7 @@ dependencies {
     api(projects.ticketsApi)
 
     api(libs.jdbi.core)
+    api(libs.jdbi.gson)
     api(libs.caffeine)
     api(libs.corn.trove)
     api(libs.cloud.extras)

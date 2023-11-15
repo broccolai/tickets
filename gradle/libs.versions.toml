@@ -67,6 +67,7 @@ moonshine-standard = { group = "net.kyori.moonshine", name = "moonshine-standard
 
 # Storage
 jdbi-core = { group = "org.jdbi", name = "jdbi3-core", version.ref = "jdbi" }
+jdbi-gson = { group = "org.jdbi", name = "jdbi3-gson2", version.ref = "jdbi" }
 jdbi-testing = { group = "org.jdbi", name = "jdbi3-testing", version.ref = "jdbi" }
 hikari = { group = "com.zaxxer", name = "HikariCP", version.ref = "hikari" }
 flyway = { group = "org.flywaydb", name = "flyway-core", version.ref = "flyway" }

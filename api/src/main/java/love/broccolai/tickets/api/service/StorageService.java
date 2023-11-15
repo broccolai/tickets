@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.UUID;
 import love.broccolai.tickets.api.model.Ticket;
 import love.broccolai.tickets.api.model.TicketStatus;
+import love.broccolai.tickets.api.model.action.Action;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
@@ -14,8 +15,7 @@ public interface StorageService {
 
     Ticket createTicket(UUID creator, String message);
 
-    //todo(josh): rework into transaction based system.
-    void saveTicket(Ticket ticket);
+    void saveAction(Ticket ticket, Action action);
 
     Ticket selectTicket(int id);
 

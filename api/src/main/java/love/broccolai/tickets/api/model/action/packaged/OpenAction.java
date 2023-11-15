@@ -12,6 +12,8 @@ public record OpenAction(
     String message
 ) implements StatusModificationAction, MessageAction {
 
+    public static final String IDENTIFIER = "open";
+
     @Override
     public TicketStatus status() {
         return TicketStatus.OPEN;

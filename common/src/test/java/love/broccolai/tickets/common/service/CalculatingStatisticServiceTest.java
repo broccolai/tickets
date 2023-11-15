@@ -9,6 +9,8 @@ import love.broccolai.tickets.api.model.action.Action;
 import love.broccolai.tickets.api.model.action.packaged.CloseAction;
 import love.broccolai.tickets.api.service.StatisticService;
 import love.broccolai.tickets.api.service.StorageService;
+import love.broccolai.tickets.common.storage.ActionMapper;
+import love.broccolai.tickets.common.utilities.PremadeActionRegistry;
 import love.broccolai.tickets.common.utilities.TicketsH2Extension;
 import love.broccolai.tickets.common.utilities.TimeUtilities;
 import org.jdbi.v3.testing.junit5.JdbiExtension;
@@ -28,7 +30,7 @@ class CalculatingStatisticServiceTest {
 
     @BeforeEach
     void setupEach() {
-        this.storageService = new DatabaseStorageService(this.h2Extension.getJdbi());
+        this.storageService = new DatabaseStorageService(this.h2Extension.getJdbi(), new ActionMapper(PremadeActionRegistry.create()));
         this.statisticService = new CalculatingStatisticService(this.storageService);
     }
 
@@ -43,8 +45,8 @@ class CalculatingStatisticServiceTest {
         ticket1.actions().add(close);
         ticket2.actions().add(close);
 
-        this.storageService.saveTicket(ticket1);
-        this.storageService.saveTicket(ticket2);
+        this.storageService.saveAction(ticket1, close);
+        this.storageService.saveAction(ticket2, close);
 
         Duration duration = this.statisticService.averageTicketsLifespan(Duration.ofHours(1));
         assertThat(duration).isGreaterThan(Duration.ofMinutes(4));

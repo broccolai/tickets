@@ -12,4 +12,6 @@ public record CommentAction(
     String message
 ) implements MessageAction {
 
+    public static final String IDENTIFIER = "comment";
+
 }
