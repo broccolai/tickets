@@ -93,6 +93,9 @@ subprojects {
         processResources {
             expand("version" to rootProject.version)
         }
-
     }
+}
+
+tasks.withType<Jar> {
+    onlyIf { false }
 }
