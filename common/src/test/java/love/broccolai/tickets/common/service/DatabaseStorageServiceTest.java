@@ -9,6 +9,8 @@ import love.broccolai.tickets.api.model.action.Action;
 import love.broccolai.tickets.api.model.action.packaged.AssignAction;
 import love.broccolai.tickets.api.model.action.packaged.CloseAction;
 import love.broccolai.tickets.api.service.StorageService;
+import love.broccolai.tickets.common.serialization.jdbi.ActionMapper;
+import love.broccolai.tickets.common.utilities.PremadeActionRegistry;
 import love.broccolai.tickets.common.utilities.TicketsH2Extension;
 import love.broccolai.tickets.common.utilities.TimeUtilities;
 import org.jdbi.v3.testing.junit5.JdbiExtension;
@@ -27,7 +29,7 @@ class DatabaseStorageServiceTest {
 
     @BeforeEach
     void setupEach() {
-        this.storageService = new DatabaseStorageService(this.h2Extension.getJdbi());
+        this.storageService = new DatabaseStorageService(this.h2Extension.getJdbi(), new ActionMapper(PremadeActionRegistry.create()));
     }
 
     @Test
@@ -39,11 +41,11 @@ class DatabaseStorageServiceTest {
     @Test
     void saveTicket() {
         Ticket ticket = this.storageService.createTicket(UUID.randomUUID(), "Hello!");
+
         Action closeAction = new CloseAction(Instant.now(), UUID.randomUUID());
+        ticket.withAction(closeAction);
 
-        ticket.actions().add(closeAction);
-
-        this.storageService.saveTicket(ticket);
+        this.storageService.saveAction(ticket, closeAction);
         Ticket loadedTicket = this.storageService.selectTicket(ticket.id());
 
         assertThat(ticket.status()).isEqualTo(loadedTicket.status());
@@ -54,9 +56,9 @@ class DatabaseStorageServiceTest {
         Ticket ticket = this.storageService.createTicket(UUID.randomUUID(), "Hello!");
         Action action = new AssignAction(TimeUtilities.nowTruncated(), UUID.randomUUID(), UUID.randomUUID());
 
-        ticket.actions().add(action);
+        ticket.withAction(action);
 
-        this.storageService.saveTicket(ticket);
+        this.storageService.saveAction(ticket, action);
         Ticket loadedTicket = this.storageService.selectTicket(ticket.id());
 
         assertThat(loadedTicket.actions()).contains(action);
@@ -77,7 +79,8 @@ class DatabaseStorageServiceTest {
 
         ticket.actions().add(closeAction);
 
-        this.storageService.saveTicket(ticket);
+        this.storageService.saveAction(ticket, closeAction);
+        this.storageService.saveAction(ticket, closeAction);
 
         this.storageService.createTicket(UUID.randomUUID(), "TEST");
         this.storageService.createTicket(UUID.randomUUID(), "TEST");

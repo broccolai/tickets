@@ -4,7 +4,7 @@ import love.broccolai.tickets.api.model.TicketStatus;
 import org.jspecify.annotations.NullMarked;
 
 @NullMarked
-public interface StatusModificationAction extends Action {
+public interface StatusAction extends Action {
 
     TicketStatus status();
 

@@ -12,4 +12,5 @@ public record AssignAction(
     UUID assignee
 ) implements Action {
 
+    public static final String IDENTIFIER = "assign";
 }

@@ -22,7 +22,7 @@ mockito = "5.7.0"
 guice = "7.0.0"
 
 # Incendo
-cloud = "1.8.4"
+cloud = "2.0.0-SNAPSHOT"
 
 # Kyori
 adventure = "4.14.0"
@@ -39,7 +39,6 @@ configurate = "4.1.2"
 corn = "4.0.0-SNAPSHOT"
 slf4j = "2.0.9"
 caffeine = "3.1.8"
-seiama-commons = "1.0.0-SNAPSHOT"
 
 # Bukkit
 paper-api = "1.20.2-R0.1-SNAPSHOT"
@@ -56,7 +55,6 @@ guice-assisted = { group = "com.google.inject.extensions", name = "guice-assiste
 # Incendo
 cloud-core = { group = "cloud.commandframework", name = "cloud-core", version.ref = "cloud" }
 cloud-paper = { group = "cloud.commandframework", name = "cloud-paper", version.ref = "cloud" }
-cloud-velocity = { group = "cloud.commandframework", name = "cloud-velocity", version.ref = "cloud" }
 cloud-extras = { group = "cloud.commandframework", name = "cloud-minecraft-extras", version.ref = "cloud" }
 
 # Kyori
@@ -67,6 +65,7 @@ moonshine-standard = { group = "net.kyori.moonshine", name = "moonshine-standard
 
 # Storage
 jdbi-core = { group = "org.jdbi", name = "jdbi3-core", version.ref = "jdbi" }
+jdbi-gson = { group = "org.jdbi", name = "jdbi3-gson2", version.ref = "jdbi" }
 jdbi-testing = { group = "org.jdbi", name = "jdbi3-testing", version.ref = "jdbi" }
 hikari = { group = "com.zaxxer", name = "HikariCP", version.ref = "hikari" }
 flyway = { group = "org.flywaydb", name = "flyway-core", version.ref = "flyway" }
@@ -79,7 +78,6 @@ corn-context = { group = "love.broccolai.corn", name = "corn-context", version.r
 corn-properties = { group = "love.broccolai.corn", name = "corn-properties", version.ref = "corn" }
 slf4j = { group = "org.slf4j", name = "slf4j-simple", version.ref = "slf4j" }
 caffeine = { group = "com.github.ben-manes.caffeine", name = "caffeine", version.ref = "caffeine" }
-seiama-commons = { group = "com.seiama", name = "commons", version.ref = "seiama-commons" }
 
 # Paper
 paper-api = { group = "com.destroystokyo.paper", name = "paper-api", version.ref = "paper-api" }

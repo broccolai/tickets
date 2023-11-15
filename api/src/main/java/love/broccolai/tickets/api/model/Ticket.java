@@ -1,10 +1,13 @@
 package love.broccolai.tickets.api.model;
 
 import java.time.Instant;
-import java.util.SortedSet;
+import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 import love.broccolai.tickets.api.model.action.Action;
+import org.jspecify.annotations.NullMarked;
 
+@NullMarked
 public interface Ticket {
 
     int id();
@@ -13,9 +16,13 @@ public interface Ticket {
 
     Instant date();
 
-    SortedSet<Action> actions();
+    Set<Action> actions();
+
+    void withAction(Action action);
 
     TicketStatus status();
 
     String message();
+
+    Optional<UUID> assignee();
 }

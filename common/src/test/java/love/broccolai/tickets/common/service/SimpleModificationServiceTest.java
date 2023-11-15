@@ -1,8 +1,8 @@
 package love.broccolai.tickets.common.service;
 
-import java.time.Instant;
-import java.util.TreeSet;
+import java.util.LinkedHashSet;
 import java.util.UUID;
+import love.broccolai.tickets.api.model.TicketStatus;
 import love.broccolai.tickets.api.model.action.Action;
 import love.broccolai.tickets.api.model.action.packaged.CommentAction;
 import love.broccolai.tickets.api.model.action.packaged.OpenAction;
@@ -11,10 +11,10 @@ import love.broccolai.tickets.api.service.StorageService;
 import love.broccolai.tickets.common.model.SimpleTicket;
 import love.broccolai.tickets.common.utilities.TimeUtilities;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import static com.google.common.truth.Truth.assertThat;
+import static com.google.common.truth.Truth8.assertThat;
 import static org.mockito.Mockito.mock;
 
 class SimpleModificationServiceTest {
@@ -30,37 +30,40 @@ class SimpleModificationServiceTest {
             1,
             UUID.randomUUID(),
             TimeUtilities.nowTruncated(),
-            new TreeSet<>(Action.SORTER)
+            new LinkedHashSet<>()
         );
 
-        Action openAction = new OpenAction(Instant.now(), UUID.randomUUID(), "Test Message");
-        this.ticket.actions().add(openAction);
+        Action openAction = new OpenAction(TimeUtilities.nowTruncated(), UUID.randomUUID(), "Test Message");
+        this.ticket.withAction(openAction);
     }
 
     @Test
     void close() {
         this.modificationService.close(this.ticket, UUID.randomUUID());
-        assertThat(this.ticket.actions().size()).isEqualTo(2);
+
+        assertThat(this.ticket.actions()).hasSize(2);
+        assertThat(this.ticket.status()).isEqualTo(TicketStatus.CLOSED);
     }
 
     @Test
     void edit() {
-        UUID creator = UUID.randomUUID();
-        CommentAction action = this.modificationService.comment(this.ticket, creator, "New message");
+        CommentAction action = this.modificationService.comment(
+            this.ticket,
+            UUID.randomUUID(),
+            "New message"
+        );
 
+        assertThat(this.ticket.actions()).hasSize(2);
         assertThat(this.ticket.message()).isEqualTo(action.message());
     }
 
-    // todo: reimplement this when #assign is added
     @Test
-    @Disabled
     void assign() {
-        UUID creator = UUID.randomUUID();
         UUID assignee = UUID.randomUUID();
 
-        this.modificationService.assign(this.ticket, creator, assignee);
+        this.modificationService.assign(this.ticket, assignee, assignee);
 
-        // assertThat(this.ticket.assignee()).hasValue(assignee);
+        assertThat(this.ticket.assignee()).hasValue(assignee);
     }
 
 }

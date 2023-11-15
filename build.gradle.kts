@@ -30,12 +30,8 @@ subprojects {
     repositories {
         mavenCentral()
         sonatype.ossSnapshots()
-        sonatype.s01Snapshots()
 
-        maven("https://hub.spigotmc.org/nexus/content/repositories/snapshots")
         maven("https://repo.papermc.io/repository/maven-public")
-        maven("https://nexus.velocitypowered.com/repository/maven-public/")
-        maven("https://repo.broccol.ai/releases")
         maven("https://repo.broccol.ai/snapshots")
     }
 

@@ -27,9 +27,9 @@ public final class SimpleModificationService implements ModificationService {
         final UUID creator
     ) {
         CloseAction action = new CloseAction(TimeUtilities.nowTruncated(), creator);
-        ticket.actions().add(action);
+        ticket.withAction(action);
 
-        this.storageService.saveTicket(ticket);
+        this.storageService.saveAction(ticket, action);
 
         return action;
     }
@@ -41,10 +41,9 @@ public final class SimpleModificationService implements ModificationService {
         final String message
     ) {
         CommentAction action = new CommentAction(TimeUtilities.nowTruncated(), creator, message);
+        ticket.withAction(action);
 
-        ticket.actions().add(action);
-
-        this.storageService.saveTicket(ticket);
+        this.storageService.saveAction(ticket, action);
 
         return action;
     }
@@ -56,10 +55,9 @@ public final class SimpleModificationService implements ModificationService {
         final UUID assignee
     ) {
         AssignAction action = new AssignAction(TimeUtilities.nowTruncated(), creator, assignee);
+        ticket.withAction(action);
 
-        ticket.actions().add(action);
-
-        this.storageService.saveTicket(ticket);
+        this.storageService.saveAction(ticket, action);
 
         return action;
     }
