@@ -1,15 +1,15 @@
+plugins {
+    id("tickets.base")
+    id("tickets.testing")
+}
+
 dependencies {
     api(projects.ticketsApi)
 
-    api(libs.jdbi.core)
-    api(libs.jdbi.gson)
+    api(libs.bundles.guice)
+    api(libs.bundles.jdbi)
+    api(libs.bundles.database)
+
     api(libs.corn.trove)
     api(libs.slf4j)
-    api(libs.hikari)
-    api(libs.flyway)
-    api(libs.h2)
-
-    api(libs.bundles.guice)
-
-    testImplementation(libs.jdbi.testing)
 }

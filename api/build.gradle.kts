@@ -1,1 +1,3 @@
-
+plugins {
+    id("tickets.base")
+}

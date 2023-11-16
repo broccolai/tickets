@@ -1,17 +1,9 @@
-[plugins]
-indra-base = { id = "net.kyori.indra", version.ref = "indra" }
-indra-publishing = { id = "net.kyori.indra.publishing", version.ref = "indra" }
-indra-checkstyle = { id = "net.kyori.indra.checkstyle", version.ref = "indra" }
-errorprone = { id = "net.ltgt.errorprone", version = "3.1.0" }
-run-paper = { id = "xyz.jpenilla.run-paper", version = "2.2.0" }
-test-logger = { id = "com.adarshr.test-logger", version = "4.0.0" }
-versions = { id = "com.github.ben-manes.versions", version = "0.49.0" }
-
 [versions]
 # Tooling
 indra = "3.1.3"
 jspecify = "0.3.0"
-errorprone = "2.23.0"
+shadow = "8.1.1"
+test-logger = "4.0.0"
 
 # Testing
 truth = "1.1.5"
@@ -31,7 +23,7 @@ moonshine = "2.0.4"
 # Storage
 jdbi = "3.41.3"
 hikari = "5.1.0"
-flyway = "10.0.0"
+flyway = "10.0.1"
 h2 = "2.2.224"
 configurate = "4.1.2"
 
@@ -46,7 +38,9 @@ paper-api = "1.20.2-R0.1-SNAPSHOT"
 [libraries]
 # Tooling
 jspecify = { group = "org.jspecify", name = "jspecify", version.ref = "jspecify" }
-errorprone = { group = "com.google.errorprone", name = "error_prone_core", version.ref = "errorprone" }
+indra-common = { group = "net.kyori", name = "indra-common", version.ref = "indra" }
+shadow = { group = "com.github.johnrengelman", name = "shadow", version.ref = "shadow" }
+test-logger = { group = "com.adarshr", name = "gradle-test-logger-plugin", version.ref = "test-logger" }
 
 # Google
 guice-core = { group = "com.google.inject", name = "guice", version.ref = "guice" }
@@ -74,8 +68,6 @@ configurate = { group = "org.spongepowered", name = "configurate-yaml", version.
 
 # Misc
 corn-trove = { group = "love.broccolai.corn", name = "corn-trove", version.ref = "corn" }
-corn-context = { group = "love.broccolai.corn", name = "corn-context", version.ref = "corn" }
-corn-properties = { group = "love.broccolai.corn", name = "corn-properties", version.ref = "corn" }
 slf4j = { group = "org.slf4j", name = "slf4j-simple", version.ref = "slf4j" }
 caffeine = { group = "com.github.ben-manes.caffeine", name = "caffeine", version.ref = "caffeine" }
 
@@ -92,4 +84,13 @@ mockito = { group = "org.mockito", name = "mockito-core", version.ref = "mockito
 
 [bundles]
 guice = ["guice-core", "guice-assisted"]
-truth = ["truth-core", "truth-java-eight"]
+jdbi = ["jdbi-core", "jdbi-gson"]
+database = ["hikari", "flyway", "h2"]
+testing = [
+    "junit-api",
+    "junit-engine",
+    "truth-core",
+    "truth-java-eight",
+    "mockito",
+    "jdbi-testing"
+]
