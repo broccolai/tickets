@@ -3,6 +3,7 @@
 indra = "3.1.3"
 jspecify = "0.3.0"
 shadow = "8.1.1"
+gremlin = "0.0.3"
 test-logger = "4.0.0"
 
 # Testing
@@ -40,6 +41,7 @@ paper-api = "1.20.2-R0.1-SNAPSHOT"
 jspecify = { group = "org.jspecify", name = "jspecify", version.ref = "jspecify" }
 indra-common = { group = "net.kyori", name = "indra-common", version.ref = "indra" }
 shadow = { group = "com.github.johnrengelman", name = "shadow", version.ref = "shadow" }
+gremlin-gradle = { group = "xyz.jpenilla", name = "gremlin-gradle", version.ref = "gremlin" }
 test-logger = { group = "com.adarshr", name = "gradle-test-logger-plugin", version.ref = "test-logger" }
 
 # Google
@@ -72,7 +74,7 @@ slf4j = { group = "org.slf4j", name = "slf4j-simple", version.ref = "slf4j" }
 caffeine = { group = "com.github.ben-manes.caffeine", name = "caffeine", version.ref = "caffeine" }
 
 # Paper
-paper-api = { group = "com.destroystokyo.paper", name = "paper-api", version.ref = "paper-api" }
+paper-api = { group = "io.papermc.paper", name = "paper-api", version.ref = "paper-api" }
 
 # Testing
 truth-core = { group = "com.google.truth", name = "truth", version.ref = "truth" }

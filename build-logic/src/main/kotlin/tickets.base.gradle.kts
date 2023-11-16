@@ -1,5 +1,3 @@
-import org.gradle.kotlin.dsl.exclude
-
 plugins {
     id("java-library")
     id("net.kyori.indra")
@@ -24,7 +22,3 @@ dependencies {
     compileOnlyApi(libs.jspecify)
 }
 
-configurations.all {
-    exclude(group = "org.checkerframework", module = "checker-qual")
-    exclude(group = "org.jetbrains", module = "annotations")
-}

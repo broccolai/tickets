@@ -12,10 +12,6 @@ dependencyResolutionManagement {
             }
         }
 
-        maven("https://oss.sonatype.org/content/repositories/snapshots/") {
-            mavenContent { snapshotsOnly() }
-        }
-
         maven("https://repo.papermc.io/repository/maven-public/")
     }
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
@@ -31,6 +27,7 @@ setupSubproject(name = "api")
 setupSubproject(name = "common")
 
 setupSubproject(folder = "minecraft", name = "common")
+setupSubproject(folder = "minecraft", name = "paper")
 
 fun setupSubproject(folder: String? = null, name: String) {
     val formattedName = listOfNotNull("tickets", folder, name)

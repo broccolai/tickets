@@ -3,5 +3,8 @@ plugins {
 }
 
 dependencies {
+    api(projects.ticketsCommon)
+
     api(libs.cloud.core)
+    api(libs.adventure.api)
 }
