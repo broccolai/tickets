@@ -4,6 +4,7 @@ import com.google.inject.Inject;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Collection;
+import java.util.EnumSet;
 import java.util.Optional;
 import love.broccolai.corn.trove.Trove;
 import love.broccolai.tickets.api.model.Ticket;
@@ -28,7 +29,7 @@ public final class CalculatingStatisticService implements StatisticService {
     public Duration averageTicketsLifespan(final Duration duration) {
         Instant since = TimeUtilities.nowTruncated().minus(duration);
 
-        Collection<Ticket> closedTickets = this.storageService.findTickets(TicketStatus.CLOSED, since);
+        Collection<Ticket> closedTickets = this.storageService.findTickets(EnumSet.of(TicketStatus.CLOSED), null, since);
 
         return Trove.of(closedTickets)
             .mapIfPresent(this::calculateAverageTicketLifespan)

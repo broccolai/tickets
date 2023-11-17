@@ -36,7 +36,7 @@ public final class ConfigurationModule extends AbstractModule {
         }
 
         hikariConfig.setDriverClassName("org.h2.Driver");
-        hikariConfig.setJdbcUrl("jdbc:h2:" + file.toAbsolutePath() + ";MODE=MySQL;DATABASE_TO_LOWER=TRUE");
+        hikariConfig.setJdbcUrl("jdbc:h2:" + file.toAbsolutePath() + ";MODE=PostgreSQL;DATABASE_TO_LOWER=TRUE");
 
         hikariConfig.setMaximumPoolSize(10);
 

@@ -10,7 +10,7 @@ import com.google.inject.Provides;
 import com.google.inject.Singleton;
 import java.nio.file.Path;
 import love.broccolai.tickets.minecraft.common.model.Commander;
-import love.broccolai.tickets.minecraft.paper.model.PaperCommander;
+import love.broccolai.tickets.minecraft.paper.model.PaperConsoleCommander;
 import org.bukkit.plugin.Plugin;
 import org.jspecify.annotations.NullMarked;
 
@@ -37,8 +37,8 @@ public final class PaperPlatformModule extends AbstractModule {
         PaperCommandManager<Commander> commandManager = new PaperCommandManager<>(
             plugin,
             AsynchronousCommandExecutionCoordinator.<Commander>builder().withAsynchronousParsing().build(),
-            PaperCommander::of,
-            PaperCommander::sender
+            PaperConsoleCommander::of,
+            PaperConsoleCommander::sender
         );
 
         if (commandManager.hasCapability(CloudBukkitCapabilities.ASYNCHRONOUS_COMPLETION)) {

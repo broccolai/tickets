@@ -8,6 +8,8 @@ import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -83,8 +85,8 @@ public final class DatabaseStorageService implements StorageService {
     }
 
     @Override
-    public Ticket selectTicket(final int id) {
-        return this.selectTickets(id).get(id);
+    public Optional<Ticket> selectTicket(final int id) {
+        return Optional.ofNullable(this.selectTickets(id).get(id));
     }
 
     @Override
@@ -99,17 +101,19 @@ public final class DatabaseStorageService implements StorageService {
 
     @Override
     public Collection<Ticket> findTickets(
-        final TicketStatus status,
+        final Set<TicketStatus> statuses,
+        final @Nullable UUID creator,
         final @Nullable Instant since
     ) {
         List<Ticket> filteredTickets = this.jdbi.withHandle(handle -> {
             return handle.createQuery(this.locator.query("find-tickets"))
+                .bind("creator", creator)
                 .bind("since", since)
                 .reduceRows(new TicketAccumulator())
                 .collect(Collectors.toList());
         });
 
-        filteredTickets.removeIf(ticket -> ticket.status() != status);
+        filteredTickets.removeIf(ticket -> !statuses.contains(ticket.status()));
 
         return filteredTickets;
     }

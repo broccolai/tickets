@@ -11,7 +11,8 @@ import love.broccolai.tickets.common.inject.ConfigurationModule;
 import love.broccolai.tickets.common.inject.ServiceModule;
 import love.broccolai.tickets.common.packaged.PackagedActions;
 import love.broccolai.tickets.common.packaged.PackagedMigrations;
-import love.broccolai.tickets.minecraft.common.command.TicketCommand;
+import love.broccolai.tickets.minecraft.common.command.StaffCommands;
+import love.broccolai.tickets.minecraft.common.command.UserCommands;
 import love.broccolai.tickets.minecraft.common.model.Commander;
 import love.broccolai.tickets.minecraft.paper.inject.PaperPlatformModule;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -31,7 +32,7 @@ public final class PaperTicketsPlugin extends JavaPlugin {
         );
 
         PackagedMigrations.migrate(
-            PaperTicketsPlugin.class.getClassLoader(),
+            this.getClass().getClassLoader(),
             injector.getInstance(DataSource.class)
         );
 
@@ -39,8 +40,9 @@ public final class PaperTicketsPlugin extends JavaPlugin {
             injector.getInstance(ActionRegistry.class)
         );
 
-        injector.getInstance(COMMAND_MANAGER_KEY).command(
-            injector.getInstance(TicketCommand.class)
-        );
+        CommandManager<Commander> commandManager = injector.getInstance(COMMAND_MANAGER_KEY);
+
+        injector.getInstance(UserCommands.class).register(commandManager);
+        injector.getInstance(StaffCommands.class).register(commandManager);
     }
 }

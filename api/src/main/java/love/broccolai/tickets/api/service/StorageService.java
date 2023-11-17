@@ -3,6 +3,8 @@ package love.broccolai.tickets.api.service;
 import java.time.Instant;
 import java.util.Collection;
 import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 import love.broccolai.tickets.api.model.Ticket;
 import love.broccolai.tickets.api.model.TicketStatus;
@@ -17,12 +19,14 @@ public interface StorageService {
 
     void saveAction(Ticket ticket, Action action);
 
-    Ticket selectTicket(int id);
+    Optional<Ticket> selectTicket(int id);
 
     Map<Integer, Ticket> selectTickets(int... ids);
 
+    //todo: create search context?
     Collection<Ticket> findTickets(
-        TicketStatus status,
+        Set<TicketStatus> statuses,
+        @Nullable UUID creator,
         @Nullable Instant since
     );
 }

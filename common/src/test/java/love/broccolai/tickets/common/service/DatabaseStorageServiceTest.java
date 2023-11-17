@@ -2,6 +2,9 @@ package love.broccolai.tickets.common.service;
 
 import java.time.Instant;
 import java.util.Collection;
+import java.util.EnumSet;
+import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 import love.broccolai.tickets.api.model.Ticket;
 import love.broccolai.tickets.api.model.TicketStatus;
@@ -19,6 +22,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 
 import static com.google.common.truth.Truth.assertThat;
+import static com.google.common.truth.Truth8.assertThat;
 
 class DatabaseStorageServiceTest {
 
@@ -46,9 +50,11 @@ class DatabaseStorageServiceTest {
         ticket.withAction(closeAction);
 
         this.storageService.saveAction(ticket, closeAction);
-        Ticket loadedTicket = this.storageService.selectTicket(ticket.id());
 
-        assertThat(ticket.status()).isEqualTo(loadedTicket.status());
+        Optional<TicketStatus> loadedTicket = this.storageService.selectTicket(ticket.id())
+            .map(Ticket::status);
+
+        assertThat(loadedTicket).hasValue(ticket.status());
     }
 
     @Test
@@ -59,17 +65,20 @@ class DatabaseStorageServiceTest {
         ticket.withAction(action);
 
         this.storageService.saveAction(ticket, action);
-        Ticket loadedTicket = this.storageService.selectTicket(ticket.id());
 
-        assertThat(loadedTicket.actions()).contains(action);
+        Set<Action> loadedActions = this.storageService.selectTicket(ticket.id())
+            .map(Ticket::actions)
+            .orElseGet(Set::of);
+
+        assertThat(loadedActions).contains(action);
     }
 
     @Test
     void selectTickets() {
         Ticket ticket = this.storageService.createTicket(UUID.randomUUID(), "Test Message");
-        Ticket loadedTicket = this.storageService.selectTicket(ticket.id());
+        Optional<Ticket> loadedTicket = this.storageService.selectTicket(ticket.id());
 
-        assertThat(ticket).isEqualTo(loadedTicket);
+        assertThat(loadedTicket).hasValue(ticket);
     }
 
     @Test
@@ -85,7 +94,7 @@ class DatabaseStorageServiceTest {
         this.storageService.createTicket(UUID.randomUUID(), "TEST");
         this.storageService.createTicket(UUID.randomUUID(), "TEST");
 
-        Collection<Ticket> foundTickets = this.storageService.findTickets(TicketStatus.OPEN, null);
+        Collection<Ticket> foundTickets = this.storageService.findTickets(EnumSet.of(TicketStatus.OPEN), null, null);
         assertThat(foundTickets).hasSize(2);
     }
 

@@ -7,4 +7,5 @@ dependencies {
 
     api(libs.cloud.core)
     api(libs.adventure.api)
+    api(libs.adventure.minimessage)
 }

@@ -55,7 +55,7 @@ cloud-extras = { group = "cloud.commandframework", name = "cloud-minecraft-extra
 
 # Kyori
 adventure-api = { group = "net.kyori", name = "adventure-api", version.ref = "adventure" }
-minimessage = { group = "net.kyori", name = "adventure-text-minimessage", version.ref = "adventure" }
+adventure-minimessage = { group = "net.kyori", name = "adventure-text-minimessage", version.ref = "adventure" }
 moonshine-core = { group = "net.kyori.moonshine", name = "moonshine-core", version.ref = "moonshine" }
 moonshine-standard = { group = "net.kyori.moonshine", name = "moonshine-standard", version.ref = "moonshine" }
 
