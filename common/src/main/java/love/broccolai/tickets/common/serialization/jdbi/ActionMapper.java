@@ -1,4 +1,3 @@
-
 package love.broccolai.tickets.common.serialization.jdbi;
 
 import com.google.inject.Inject;

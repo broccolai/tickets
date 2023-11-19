@@ -19,7 +19,8 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public final class PaperTicketsPlugin extends JavaPlugin {
 
-    private static final Key<CommandManager<Commander>> COMMAND_MANAGER_KEY = Key.get(new TypeLiteral<>() {});
+    private static final Key<CommandManager<Commander>> COMMAND_MANAGER_KEY = Key.get(new TypeLiteral<>() {
+    });
 
     @Override
     public void onEnable() {

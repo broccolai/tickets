@@ -58,8 +58,8 @@ public final class TicketIdentifierParser implements ArgumentParser<Commander, T
     ) {
         if (!commandInput.isValidInteger(MINIMUM_ID, MAXIMUM_ID)) {
             return ArgumentParseResult.failure(new TicketIdentifierParseException(
-                    commandInput.peekString(),
-                    commandContext
+                commandInput.peekString(),
+                commandContext
             ));
         }
 
