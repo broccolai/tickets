@@ -13,6 +13,7 @@ import love.broccolai.tickets.common.packaged.PackagedActions;
 import love.broccolai.tickets.common.packaged.PackagedMigrations;
 import love.broccolai.tickets.minecraft.common.command.StaffCommands;
 import love.broccolai.tickets.minecraft.common.command.UserCommands;
+import love.broccolai.tickets.minecraft.common.inject.CommandArgumentModule;
 import love.broccolai.tickets.minecraft.common.model.Commander;
 import love.broccolai.tickets.minecraft.paper.inject.PaperPlatformModule;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -29,6 +30,7 @@ public final class PaperTicketsPlugin extends JavaPlugin {
         Injector injector = Guice.createInjector(
             new ConfigurationModule(),
             new ServiceModule(),
+            new CommandArgumentModule(),
             new PaperPlatformModule(this)
         );
 

@@ -7,23 +7,29 @@ import com.google.inject.Inject;
 import java.util.EnumSet;
 import love.broccolai.corn.trove.Trove;
 import love.broccolai.tickets.api.model.Ticket;
-import love.broccolai.tickets.api.model.TicketStatus;
 import love.broccolai.tickets.api.service.ModificationService;
 import love.broccolai.tickets.api.service.StorageService;
-import love.broccolai.tickets.minecraft.common.arguments.ProfileTicketArgument;
+import love.broccolai.tickets.minecraft.common.factory.CommandArgumentFactory;
 import love.broccolai.tickets.minecraft.common.model.Commander;
 import org.jspecify.annotations.NullMarked;
 
+import static love.broccolai.tickets.api.model.TicketStatus.OPEN;
 import static net.kyori.adventure.text.Component.text;
 
 @NullMarked
 public final class StaffCommands extends AbstractCommand {
 
+    private final CommandArgumentFactory argumentFactory;
     private final StorageService storageService;
     private final ModificationService modificationService;
 
     @Inject
-    public StaffCommands(final StorageService storageService, ModificationService modificationService) {
+    public StaffCommands(
+        final CommandArgumentFactory argumentFactory,
+        final StorageService storageService,
+        final ModificationService modificationService
+    ) {
+        this.argumentFactory = argumentFactory;
         this.storageService = storageService;
         this.modificationService = modificationService;
     }
@@ -40,7 +46,7 @@ public final class StaffCommands extends AbstractCommand {
 
         commandManager.command(
             root.literal("close")
-                .required(new ProfileTicketArgument(this.storageService, null, "ticket", EnumSet.of(TicketStatus.OPEN)))
+                .required(this.argumentFactory.profileTicket("ticket", EnumSet.of(OPEN)))
                 .handler(this::handleClose)
         );
     }
@@ -50,7 +56,7 @@ public final class StaffCommands extends AbstractCommand {
 
         commander.sendMessage(text("all tickets"));
 
-        Trove.of(this.storageService.findTickets(EnumSet.of(TicketStatus.OPEN), null, null))
+        Trove.of(this.storageService.findTickets(EnumSet.of(OPEN), null, null))
             .map(ticket -> text(ticket.id() + " with status + " + ticket.status().name()))
             .forEach(commander::sendMessage);
     }
