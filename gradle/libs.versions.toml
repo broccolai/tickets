@@ -22,7 +22,7 @@ adventure = "4.14.0"
 moonshine = "2.0.4"
 
 # Storage
-jdbi = "3.41.3"
+jdbi = "3.42.0"
 hikari = "5.1.0"
 flyway = "10.0.1"
 h2 = "2.2.224"
