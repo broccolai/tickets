@@ -9,7 +9,7 @@ test-logger = "4.0.0"
 # Testing
 truth = "1.1.5"
 junit = "5.10.1"
-mockito = "5.7.0"
+mockito = "5.8.0"
 
 # Google
 guice = "7.0.0"
