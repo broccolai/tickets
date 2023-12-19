@@ -18,7 +18,7 @@ guice = "7.0.0"
 cloud = "2.0.0-SNAPSHOT"
 
 # Kyori
-adventure = "4.14.0"
+adventure = "4.15.0"
 moonshine = "2.0.4"
 
 # Storage
