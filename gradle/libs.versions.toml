@@ -7,7 +7,7 @@ gremlin = "0.0.3"
 test-logger = "4.0.0"
 
 # Testing
-truth = "1.1.5"
+truth = "1.2.0"
 junit = "5.10.1"
 mockito = "5.7.0"
 
