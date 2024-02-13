@@ -1,0 +1,11 @@
+---
+spring:
+    profiles:
+        active: local
+
+    application:
+        name: tickets-spring
+
+    main:
+        log-startup-info: false
+        banner-mode: off

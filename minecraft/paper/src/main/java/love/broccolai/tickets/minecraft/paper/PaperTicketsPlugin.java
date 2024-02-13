@@ -1,6 +1,5 @@
 package love.broccolai.tickets.minecraft.paper;
 
-import cloud.commandframework.CommandManager;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Key;
@@ -17,6 +16,7 @@ import love.broccolai.tickets.minecraft.common.inject.CommandArgumentModule;
 import love.broccolai.tickets.minecraft.common.model.Commander;
 import love.broccolai.tickets.minecraft.paper.inject.PaperPlatformModule;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.incendo.cloud.CommandManager;
 
 public final class PaperTicketsPlugin extends JavaPlugin {
 
@@ -34,13 +34,13 @@ public final class PaperTicketsPlugin extends JavaPlugin {
             new PaperPlatformModule(this)
         );
 
+        PackagedActions.register(
+            injector.getInstance(ActionRegistry.class)
+        );
+
         PackagedMigrations.migrate(
             this.getClass().getClassLoader(),
             injector.getInstance(DataSource.class)
-        );
-
-        PackagedActions.register(
-            injector.getInstance(ActionRegistry.class)
         );
 
         CommandManager<Commander> commandManager = injector.getInstance(COMMAND_MANAGER_KEY);

@@ -25,6 +25,11 @@
     <!-- https://checkstyle.org/config_filters.html#SuppressWithPlainTextCommentFilter -->
     <module name="SuppressWithPlainTextCommentFilter"/>
 
+    <module name="SuppressionFilter">
+        <property name="file" value="${config_loc}/checkstyle-suppressions.xml"/>
+        <property name="optional" value="false"/>
+    </module>
+
     <module name="TreeWalker">
         <!-- https://checkstyle.org/config_misc.html#ArrayTypeStyle -->
         <module name="ArrayTypeStyle"/>
