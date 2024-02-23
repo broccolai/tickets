@@ -29,10 +29,14 @@ import org.jdbi.v3.core.statement.Update;
 import org.jdbi.v3.json.Json;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Singleton
 @NullMarked
 public final class DatabaseStorageService implements StorageService {
+
+    private static final Logger logger = LoggerFactory.getLogger(DatabaseStorageService.class);
 
     private final QueriesLocator locator = new QueriesLocator();
 
@@ -51,7 +55,7 @@ public final class DatabaseStorageService implements StorageService {
         OpenAction action = new OpenAction(timestamp, creator, message);
         QualifiedType<OpenAction> type = QualifiedType.of(OpenAction.class).with(Json.class);
 
-        return this.jdbi.inTransaction(handle -> {
+        Ticket createdTicket = this.jdbi.inTransaction(handle -> {
             List<String> queries = this.locator.queries("insert-ticket");
 
             int id = handle.createUpdate(queries.get(0))
@@ -70,6 +74,10 @@ public final class DatabaseStorageService implements StorageService {
 
             return ticket;
         });
+
+        logger.info("user {} created ticket {} with message {}", creator, createdTicket.id(), message);
+
+        return createdTicket;
     }
 
     @Override
