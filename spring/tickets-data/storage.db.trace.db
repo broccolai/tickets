@@ -1,0 +1,4 @@
+2024-02-23 19:59:28.659865Z jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "tickets_ticket" not found (this database is empty); SQL statement:
+INSERT INTO tickets_ticket(creator, date)
+VALUES (?, ?) [42104-224]
