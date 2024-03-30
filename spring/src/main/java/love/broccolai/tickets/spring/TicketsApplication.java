@@ -1,13 +1,13 @@
 package love.broccolai.tickets.spring;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 
 @SpringBootApplication
 public class TicketsApplication {

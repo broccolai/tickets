@@ -2,6 +2,7 @@ package love.broccolai.tickets.spring.configuration;
 
 import com.google.inject.Guice;
 import com.google.inject.Injector;
+import javax.sql.DataSource;
 import love.broccolai.tickets.api.registry.ActionRegistry;
 import love.broccolai.tickets.common.inject.ConfigurationModule;
 import love.broccolai.tickets.common.inject.ServiceModule;
@@ -10,7 +11,6 @@ import love.broccolai.tickets.common.packaged.PackagedMigrations;
 import love.broccolai.tickets.spring.inject.SpringPlatformModule;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import javax.sql.DataSource;
 
 @Configuration
 public class GuiceBeanConfig {
@@ -25,12 +25,12 @@ public class GuiceBeanConfig {
         );
 
         PackagedActions.register(
-            injector.getInstance(ActionRegistry.class)
+            this.injector.getInstance(ActionRegistry.class)
         );
 
         PackagedMigrations.migrate(
             this.getClass().getClassLoader(),
-            injector.getInstance(DataSource.class)
+            this.injector.getInstance(DataSource.class)
         );
     }
 
