@@ -7,24 +7,24 @@ gremlin = "0.0.6"
 test-logger = "4.0.0"
 
 # Testing
-truth = "1.4.0"
+truth = "1.4.2"
 junit = "5.10.2"
-mockito = "5.10.0"
+mockito = "5.11.0"
 
 # Google
 guice = "7.0.0"
 
 # Incendo
-cloud = "2.0.0-beta.2"
+cloud = "2.0.0-beta.4"
 
 # Kyori
-adventure = "4.15.0"
+adventure = "4.16.0"
 moonshine = "2.0.4"
 
 # Storage
-jdbi = "3.44.1"
+jdbi = "3.45.1"
 hikari = "5.1.0"
-flyway = "10.7.2"
+flyway = "10.10.0"
 h2 = "2.2.224"
 configurate = "4.1.2"
 
@@ -37,9 +37,9 @@ caffeine = "3.1.8"
 paper-api = "1.20.2-R0.1-SNAPSHOT"
 
 # Web
-springBoot = "3.2.2"
-springShellBom = "3.2.1"
-graal = "0.9.28"
+springBoot = "3.2.4"
+springShellBom = "3.2.3"
+graal = "0.10.1"
 
 [plugins]
 spring-plugin-boot = { id = "org.springframework.boot", version.ref = "springBoot" }
@@ -59,7 +59,7 @@ guice-assisted = { group = "com.google.inject.extensions", name = "guice-assiste
 
 # Incendo
 cloud-core = { group = "org.incendo", name = "cloud-core", version.ref = "cloud" }
-cloud-paper = { group = "org.incendo", name = "cloud-paper", version.ref = "cloud" }
+cloud-paper = { group = "org.incendo", name = "cloud-paper", version = "2.0.0-beta.5" }
 cloud-extras = { group = "org.incendo", name = "cloud-minecraft-extras", version.ref = "cloud" }
 
 # Kyori
