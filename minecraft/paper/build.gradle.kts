@@ -2,6 +2,8 @@ plugins {
     id("tickets.base")
     id("tickets.gremlin")
     id("xyz.jpenilla.run-paper") version "2.2.3"
+    id("xyz.jpenilla.resource-factory") version "0.0.8"
+    id("xyz.jpenilla.resource-factory-paper-convention") version "0.0.8"
 }
 
 fun DependencyHandler.runtimeDownloadApi(dependencyNotation: Any) {
@@ -31,4 +33,13 @@ tasks {
             )
         )
     }
+}
+
+paperPluginYaml {
+    name = rootProject.name
+    main = "love.broccolai.tickets.minecraft.paper.PaperTicketsPlugin"
+    loader = "love.broccolai.tickets.lib.xyz.jpenilla.gremlin.runtime.platformsupport.DefaultsPaperPluginLoader"
+    apiVersion = "1.20"
+    authors = listOf("broccolai")
+    version = rootProject.version.toString()
 }
