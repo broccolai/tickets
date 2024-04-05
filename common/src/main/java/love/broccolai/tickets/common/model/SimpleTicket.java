@@ -7,6 +7,7 @@ import java.util.UUID;
 import love.broccolai.corn.trove.Trove;
 import love.broccolai.tickets.api.model.Ticket;
 import love.broccolai.tickets.api.model.TicketStatus;
+import love.broccolai.tickets.api.model.TicketType;
 import love.broccolai.tickets.api.model.action.Action;
 import love.broccolai.tickets.api.model.action.MessageAction;
 import love.broccolai.tickets.api.model.action.StatusAction;
@@ -16,6 +17,7 @@ import org.jspecify.annotations.NullMarked;
 @NullMarked
 public record SimpleTicket(
     int id,
+    TicketType type,
     UUID creator,
     Instant date,
     Set<Action> actions

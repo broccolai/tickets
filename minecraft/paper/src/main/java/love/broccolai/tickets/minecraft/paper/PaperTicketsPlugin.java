@@ -6,6 +6,8 @@ import com.google.inject.Key;
 import com.google.inject.TypeLiteral;
 import javax.sql.DataSource;
 import love.broccolai.tickets.api.registry.ActionRegistry;
+import love.broccolai.tickets.api.registry.TicketTypeRegistry;
+import love.broccolai.tickets.common.TicketsPackage;
 import love.broccolai.tickets.common.inject.ConfigurationModule;
 import love.broccolai.tickets.common.inject.ServiceModule;
 import love.broccolai.tickets.common.packaged.PackagedActions;
@@ -27,20 +29,11 @@ public final class PaperTicketsPlugin extends JavaPlugin {
     public void onEnable() {
         this.getDataFolder().mkdirs();
 
-        Injector injector = Guice.createInjector(
-            new ConfigurationModule(),
-            new ServiceModule(),
+        TicketsPackage ticketsPackage = new TicketsPackage();
+
+        Injector injector = ticketsPackage.startup(
             new CommandArgumentModule(),
             new PaperPlatformModule(this)
-        );
-
-        PackagedActions.register(
-            injector.getInstance(ActionRegistry.class)
-        );
-
-        PackagedMigrations.migrate(
-            this.getClass().getClassLoader(),
-            injector.getInstance(DataSource.class)
         );
 
         CommandManager<Commander> commandManager = injector.getInstance(COMMAND_MANAGER_KEY);

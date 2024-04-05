@@ -13,14 +13,24 @@ import java.nio.file.Path;
 import java.time.Instant;
 import javax.sql.DataSource;
 import love.broccolai.tickets.api.registry.ActionRegistry;
-import love.broccolai.tickets.common.registry.MappedActionRegistry;
+import love.broccolai.tickets.api.registry.TicketTypeRegistry;
+import love.broccolai.tickets.common.configuration.Configuration;
+import love.broccolai.tickets.common.configuration.DatabaseConfiguration;
+import love.broccolai.tickets.common.configuration.TicketsConfiguration;
+import love.broccolai.tickets.common.registry.SimpleActionRegistry;
+import love.broccolai.tickets.common.registry.SimpleTicketTypeRegistry;
 import love.broccolai.tickets.common.serialization.gson.InstantAdapter;
 import love.broccolai.tickets.common.serialization.jdbi.ActionMapper;
 import love.broccolai.tickets.common.serialization.jdbi.TicketMapper;
+import love.broccolai.tickets.common.serialization.jdbi.TicketTypeMapper;
 import org.jdbi.v3.core.Jdbi;
 import org.jdbi.v3.gson2.Gson2Config;
 import org.jdbi.v3.gson2.Gson2Plugin;
 import org.jspecify.annotations.NullMarked;
+import org.spongepowered.configurate.ConfigurationNode;
+import org.spongepowered.configurate.hocon.HoconConfigurationLoader;
+import org.spongepowered.configurate.loader.ConfigurationLoader;
+import org.spongepowered.configurate.objectmapping.ObjectMapper;
 
 @NullMarked
 public final class ConfigurationModule extends AbstractModule {
@@ -31,15 +41,19 @@ public final class ConfigurationModule extends AbstractModule {
 
     @Override
     protected void configure() {
-        this.bind(ActionRegistry.class).to(MappedActionRegistry.class);
+        this.bind(ActionRegistry.class).to(SimpleActionRegistry.class);
+        this.bind(TicketTypeRegistry.class).to(SimpleTicketTypeRegistry.class);
     }
 
     @Provides
     @Singleton
-    public DataSource provideDataSource(final Path folder) throws IOException {
+    public DataSource provideDataSource(
+        final Path folder,
+        final DatabaseConfiguration configuration
+    ) throws IOException {
         HikariConfig hikariConfig = new HikariConfig();
 
-        Path file = folder.resolve("storage.db");
+        Path file = folder.resolve(configuration.path);
 
         if (!Files.exists(file)) {
             Files.createFile(file);
@@ -58,16 +72,61 @@ public final class ConfigurationModule extends AbstractModule {
     public Jdbi provideJdbi(
         final DataSource dataSource,
         final ActionMapper actionMapper,
-        final TicketMapper ticketMapper
+        final TicketMapper ticketMapper,
+        final TicketTypeMapper ticketTypeMapper
     ) {
         Jdbi jdbi = Jdbi.create(dataSource)
             .installPlugin(new Gson2Plugin())
             .registerRowMapper(actionMapper)
-            .registerRowMapper(ticketMapper);
+            .registerRowMapper(ticketMapper)
+            .registerColumnMapper(ticketTypeMapper);
 
         jdbi.getConfig(Gson2Config.class).setGson(GSON);
 
         return jdbi;
     }
 
+    @Provides
+    @Singleton
+    public TicketsConfiguration provideTicketsConfiguration(final Path folder) throws IOException {
+        Path file = folder.resolve("tickets.conf");
+
+        return this.configuration(TicketsConfiguration.class, file);
+    }
+
+    @Provides
+    @Singleton
+    public DatabaseConfiguration provideDatabaseConfiguration(final Path folder) throws IOException {
+        Path file = folder.resolve("database.conf");
+
+        return this.configuration(DatabaseConfiguration.class, file);
+    }
+
+    private <T extends Configuration> T configuration(
+        final Class<T> clazz,
+        final Path file
+    ) throws IOException {
+        ObjectMapper<T> MAPPER = ObjectMapper.factory().get(clazz);
+
+        if (Files.notExists(file)) {
+            Files.createFile(file);
+        }
+
+        ConfigurationLoader<?> loader = this.pathConfigurationLoader(file);
+
+        ConfigurationNode node = loader.load();
+        T config = MAPPER.load(node);
+
+        MAPPER.save(config, node);
+        loader.save(node);
+
+        return config;
+    }
+
+    private ConfigurationLoader<?> pathConfigurationLoader(final Path path) {
+        return HoconConfigurationLoader.builder()
+            .defaultOptions(opts -> opts.shouldCopyDefaults(true))
+            .path(path)
+            .build();
+    }
 }

@@ -21,8 +21,6 @@ public class UserRequestController {
 
     @GetMapping("/user/create")
     public int create() {
-        Ticket createdTicket = this.storageService.createTicket(UUID.randomUUID(), "test");
-
-        return createdTicket.id();
+        return -1;
     }
 }

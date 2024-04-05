@@ -1,0 +1,1 @@
+add more database configuration to allow postgres properly

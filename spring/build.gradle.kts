@@ -35,7 +35,14 @@ dependencies {
     api(platform(libs.spring.shell.dependencies))
 }
 
-tasks.compileAotJava {
-    // I couldn't figure out the warnings in generated code
-    options.compilerArgs.clear()
+
+tasks {
+    compileAotJava {
+        // I couldn't figure out the warnings in generated code
+        options.compilerArgs.clear()
+    }
+
+    bootRun {
+        workingDir = projectDir.resolve("run")
+    }
 }

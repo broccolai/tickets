@@ -1,4 +1,5 @@
 SELECT t.id,
+       t.type_identifier,
        t.creator,
        t.date,
        a.type,

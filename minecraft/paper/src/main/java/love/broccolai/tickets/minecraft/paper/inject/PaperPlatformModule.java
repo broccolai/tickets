@@ -53,7 +53,7 @@ public final class PaperPlatformModule extends AbstractModule {
         }
 
         if (commandManager.hasCapability(CloudBukkitCapabilities.NATIVE_BRIGADIER)) {
-            commandManager.registerBrigadier();
+            // commandManager.registerBrigadier();
         }
 
         commandManager.suggestionProcessor(

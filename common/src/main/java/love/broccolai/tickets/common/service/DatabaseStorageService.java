@@ -15,6 +15,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import love.broccolai.tickets.api.model.Ticket;
 import love.broccolai.tickets.api.model.TicketStatus;
+import love.broccolai.tickets.api.model.TicketType;
 import love.broccolai.tickets.api.model.action.Action;
 import love.broccolai.tickets.api.model.action.packaged.OpenAction;
 import love.broccolai.tickets.api.service.StorageService;
@@ -50,15 +51,16 @@ public final class DatabaseStorageService implements StorageService {
     }
 
     @Override
-    public Ticket createTicket(final UUID creator, final String message) {
+    public Ticket createTicket(final TicketType type, final UUID creator, final String message) {
         Instant timestamp = TimeUtilities.nowTruncated();
         OpenAction action = new OpenAction(timestamp, creator, message);
-        QualifiedType<OpenAction> type = QualifiedType.of(OpenAction.class).with(Json.class);
+        QualifiedType<OpenAction> actionType = QualifiedType.of(OpenAction.class).with(Json.class);
 
         Ticket createdTicket = this.jdbi.inTransaction(handle -> {
             List<String> queries = this.locator.queries("insert-ticket");
 
             int id = handle.createUpdate(queries.get(0))
+                .bind("type_identifier", type.identifier())
                 .bind("creator", creator)
                 .bind("date", timestamp)
                 .executeAndReturnGeneratedKeys()
@@ -66,16 +68,16 @@ public final class DatabaseStorageService implements StorageService {
                 .one();
 
             handle.createUpdate(queries.get(1))
-                .bindByType("data", action, type)
+                .bindByType("data", action, actionType)
                 .execute();
 
-            Ticket ticket = new SimpleTicket(id, creator, timestamp, new LinkedHashSet<>());
+            Ticket ticket = new SimpleTicket(id, type, creator, timestamp, new LinkedHashSet<>());
             ticket.withAction(action);
 
             return ticket;
         });
 
-        logger.info("user {} created ticket {} with message {}", creator, createdTicket.id(), message);
+        logger.info("user {} created ticket {} - {} with message {}", creator, createdTicket.type().identifier(), createdTicket.id(), message);
 
         return createdTicket;
     }

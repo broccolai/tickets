@@ -75,7 +75,7 @@ jdbi-testing = { group = "org.jdbi", name = "jdbi3-testing", version.ref = "jdbi
 hikari = { group = "com.zaxxer", name = "HikariCP", version.ref = "hikari" }
 flyway = { group = "org.flywaydb", name = "flyway-core", version.ref = "flyway" }
 h2 = { group = "com.h2database", name = "h2", version.ref = "h2" }
-configurate = { group = "org.spongepowered", name = "configurate-yaml", version.ref = "configurate" }
+configurate = { group = "org.spongepowered", name = "configurate-hocon", version.ref = "configurate" }
 
 # Misc
 corn-trove = { group = "love.broccolai.corn", name = "corn-trove", version.ref = "corn" }
