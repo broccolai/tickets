@@ -26,6 +26,7 @@ import love.broccolai.tickets.common.serialization.jdbi.TicketTypeMapper;
 import org.jdbi.v3.core.Jdbi;
 import org.jdbi.v3.gson2.Gson2Config;
 import org.jdbi.v3.gson2.Gson2Plugin;
+import org.jdbi.v3.postgres.PostgresPlugin;
 import org.jspecify.annotations.NullMarked;
 import org.spongepowered.configurate.ConfigurationNode;
 import org.spongepowered.configurate.hocon.HoconConfigurationLoader;
@@ -48,19 +49,22 @@ public final class ConfigurationModule extends AbstractModule {
     @Provides
     @Singleton
     public DataSource provideDataSource(
-        final Path folder,
         final DatabaseConfiguration configuration
     ) throws IOException {
         HikariConfig hikariConfig = new HikariConfig();
 
-        Path file = folder.resolve(configuration.path);
-
-        if (!Files.exists(file)) {
-            Files.createFile(file);
+        switch (configuration.type) {
+            case H2 -> {
+                hikariConfig.setDriverClassName("org.h2.Driver");
+                hikariConfig.setJdbcUrl(configuration.h2.url);
+            }
+            case POSTGRES -> {
+                hikariConfig.setDriverClassName("org.postgresql.Driver");
+                hikariConfig.setJdbcUrl(configuration.postgres.url);
+                hikariConfig.setUsername(configuration.postgres.username);
+                hikariConfig.setPassword(configuration.postgres.password);
+            }
         }
-
-        hikariConfig.setDriverClassName("org.h2.Driver");
-        hikariConfig.setJdbcUrl("jdbc:h2:" + file.toAbsolutePath() + ";MODE=PostgreSQL;DATABASE_TO_LOWER=TRUE");
 
         hikariConfig.setMaximumPoolSize(10);
 
@@ -77,9 +81,11 @@ public final class ConfigurationModule extends AbstractModule {
     ) {
         Jdbi jdbi = Jdbi.create(dataSource)
             .installPlugin(new Gson2Plugin())
+            .installPlugin(new PostgresPlugin())
             .registerRowMapper(actionMapper)
             .registerRowMapper(ticketMapper)
-            .registerColumnMapper(ticketTypeMapper);
+            .registerColumnMapper(ticketTypeMapper)
+            .registerArgument(ticketTypeMapper);
 
         jdbi.getConfig(Gson2Config.class).setGson(GSON);
 

@@ -1,2 +1,2 @@
-INSERT INTO tickets_action(ticket, type_identifier, data)
-VALUES (:ticket, :type_identifier, :data FORMAT JSON);
+INSERT INTO tickets_action(ticket, type, data)
+VALUES (:ticket, :type, :data FORMAT JSON);

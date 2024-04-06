@@ -68,6 +68,7 @@ public final class DatabaseStorageService implements StorageService {
                 .one();
 
             handle.createUpdate(queries.get(1))
+                .bind("id", id)
                 .bindByType("data", action, actionType)
                 .execute();
 
@@ -117,8 +118,8 @@ public final class DatabaseStorageService implements StorageService {
     ) {
         List<Ticket> filteredTickets = this.jdbi.withHandle(handle -> {
             return handle.createQuery(this.locator.query("find-tickets"))
-                .bind("creator", creator)
-                .bind("since", since)
+                .bindByType("creator", creator, UUID.class)
+                .bindByType("since", since, Instant.class)
                 .reduceRows(new TicketAccumulator())
                 .collect(Collectors.toList());
         });

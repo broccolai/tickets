@@ -15,6 +15,7 @@ public class GuiceBeanConfig {
         TicketsPackage ticketsPackage = new TicketsPackage();
 
         this.injector = ticketsPackage.startup(
+            this.getClass().getClassLoader(),
             new SpringPlatformModule()
         );
     }

@@ -7,6 +7,8 @@ plugins {
 
 plugins.apply("io.spring.dependency-management")
 
+extra["flyway.version"] = "10.11.0"
+
 graalvmNative {
     binaries.all {
         resources.autodetect()
@@ -34,7 +36,6 @@ dependencies {
     api(libs.spring.shell)
     api(platform(libs.spring.shell.dependencies))
 }
-
 
 tasks {
     compileAotJava {

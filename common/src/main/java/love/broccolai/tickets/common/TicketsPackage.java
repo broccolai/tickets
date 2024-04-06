@@ -18,7 +18,10 @@ import love.broccolai.tickets.common.packaged.PackagedMigrations;
 
 public final class TicketsPackage {
 
-    public Injector startup(final Module... additionalModules) {
+    public Injector startup(
+        final ClassLoader classLoader,
+        final Module... additionalModules
+    ) {
         Collection<Module> modules = this.integrateModules(
             additionalModules,
             new ConfigurationModule(),
@@ -32,7 +35,7 @@ public final class TicketsPackage {
         );
 
         PackagedMigrations.migrate(
-            this.getClass().getClassLoader(),
+            classLoader,
             injector.getInstance(DataSource.class)
         );
 

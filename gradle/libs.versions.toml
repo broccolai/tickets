@@ -24,9 +24,10 @@ moonshine = "2.0.4"
 # Storage
 jdbi = "3.45.1"
 hikari = "5.1.0"
-flyway = "10.10.0"
+flyway = "10.11.0"
 h2 = "2.2.224"
 configurate = "4.1.2"
+postgresql = "42.7.3"
 
 # Misc
 corn = "4.0.0-SNAPSHOT"
@@ -70,12 +71,15 @@ moonshine-standard = { group = "net.kyori.moonshine", name = "moonshine-standard
 
 # Storage
 jdbi-core = { group = "org.jdbi", name = "jdbi3-core", version.ref = "jdbi" }
+jdbi-postgres = { group = "org.jdbi", name = "jdbi3-postgres", version.ref = "jdbi" }
 jdbi-gson = { group = "org.jdbi", name = "jdbi3-gson2", version.ref = "jdbi" }
 jdbi-testing = { group = "org.jdbi", name = "jdbi3-testing", version.ref = "jdbi" }
 hikari = { group = "com.zaxxer", name = "HikariCP", version.ref = "hikari" }
 flyway = { group = "org.flywaydb", name = "flyway-core", version.ref = "flyway" }
+flyway-database-postgresql = { group = "org.flywaydb", name = "flyway-database-postgresql", version.ref = "flyway" }
 h2 = { group = "com.h2database", name = "h2", version.ref = "h2" }
 configurate = { group = "org.spongepowered", name = "configurate-hocon", version.ref = "configurate" }
+postgresql = { group = "org.postgresql", name = "postgresql", version.ref = "postgresql" }
 
 # Misc
 corn-trove = { group = "love.broccolai.corn", name = "corn-trove", version.ref = "corn" }
@@ -104,8 +108,14 @@ mockito = { group = "org.mockito", name = "mockito-core", version.ref = "mockito
 
 [bundles]
 guice = ["guice-core", "guice-assisted"]
-jdbi = ["jdbi-core", "jdbi-gson"]
-database = ["hikari", "flyway", "h2"]
+jdbi = ["jdbi-core", "jdbi-postgres", "jdbi-gson"]
+database = [
+    "hikari",
+    "flyway",
+    "flyway-database-postgresql",
+    "h2",
+    "postgresql"
+]
 testing = [
     "junit-api",
     "junit-engine",

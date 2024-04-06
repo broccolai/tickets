@@ -1,1 +1,3 @@
-add more database configuration to allow postgres properly
+add more database configuration to allow postgres properly done
+
+fix errors with h2 / psql compat. split queries or find a way of bypassing needing format json

@@ -36,7 +36,7 @@ tasks {
 }
 
 paperPluginYaml {
-    name = rootProject.name
+    name = "tickets"
     main = "love.broccolai.tickets.minecraft.paper.PaperTicketsPlugin"
     loader = "love.broccolai.tickets.lib.xyz.jpenilla.gremlin.runtime.platformsupport.DefaultsPaperPluginLoader"
     apiVersion = "1.20"
