@@ -19,6 +19,7 @@ import love.broccolai.tickets.api.model.TicketType;
 import love.broccolai.tickets.api.model.action.Action;
 import love.broccolai.tickets.api.model.action.packaged.OpenAction;
 import love.broccolai.tickets.api.service.StorageService;
+import love.broccolai.tickets.common.configuration.DatabaseConfiguration;
 import love.broccolai.tickets.common.model.SimpleTicket;
 import love.broccolai.tickets.common.serialization.jdbi.ActionMapper;
 import love.broccolai.tickets.common.serialization.jdbi.TicketAccumulator;
@@ -39,15 +40,19 @@ public final class DatabaseStorageService implements StorageService {
 
     private static final Logger logger = LoggerFactory.getLogger(DatabaseStorageService.class);
 
-    private final QueriesLocator locator = new QueriesLocator();
-
     private final Jdbi jdbi;
     private final ActionMapper actionMapper;
+    private final QueriesLocator locator;
 
     @Inject
-    public DatabaseStorageService(final Jdbi jdbi, ActionMapper actionMapper) {
+    public DatabaseStorageService(
+        final Jdbi jdbi,
+        final ActionMapper actionMapper,
+        final DatabaseConfiguration configuration
+    ) {
         this.jdbi = jdbi;
         this.actionMapper = actionMapper;
+        this.locator = new QueriesLocator(configuration.type);
     }
 
     @Override

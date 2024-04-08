@@ -12,9 +12,9 @@ public final class PremadeTickets {
 
     public static TicketType ticketType() {
         return new TicketType(
-            "placeholder",
-            "Placeholder",
-            "Placeholder Ticket Type."
+            "question",
+            "Question",
+            "Ask a general question!"
         );
     }
 

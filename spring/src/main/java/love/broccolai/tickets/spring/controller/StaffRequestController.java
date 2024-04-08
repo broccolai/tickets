@@ -3,6 +3,8 @@ package love.broccolai.tickets.spring.controller;
 import com.google.inject.Injector;
 import java.util.Collection;
 import java.util.EnumSet;
+import java.util.Map;
+import love.broccolai.corn.trove.Trove;
 import love.broccolai.tickets.api.model.Ticket;
 import love.broccolai.tickets.api.model.TicketStatus;
 import love.broccolai.tickets.api.service.StorageService;
@@ -19,11 +21,13 @@ public class StaffRequestController {
     }
 
     @GetMapping("/staff/list")
-    public Collection<Ticket> list() {
-        return this.storageService.findTickets(
-            EnumSet.of(TicketStatus.OPEN),
+    public Map<TicketStatus, Collection<Ticket>> list() {
+        Collection<Ticket> tickets = this.storageService.findTickets(
+            EnumSet.of(TicketStatus.OPEN, TicketStatus.CLOSED),
             null,
             null
         );
+
+        return Trove.of(tickets).group(Ticket::status);
     }
 }

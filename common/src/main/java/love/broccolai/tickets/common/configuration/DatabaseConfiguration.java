@@ -28,4 +28,9 @@ public class DatabaseConfiguration implements Configuration {
 
         public String password = "password";
     }
+
+    public enum Type {
+        H2,
+        POSTGRES
+    }
 }

@@ -12,6 +12,7 @@ import love.broccolai.tickets.api.model.action.Action;
 import love.broccolai.tickets.api.model.action.packaged.AssignAction;
 import love.broccolai.tickets.api.model.action.packaged.CloseAction;
 import love.broccolai.tickets.api.service.StorageService;
+import love.broccolai.tickets.common.configuration.DatabaseConfiguration;
 import love.broccolai.tickets.common.serialization.jdbi.ActionMapper;
 import love.broccolai.tickets.common.utilities.PremadeActionRegistry;
 import love.broccolai.tickets.common.utilities.PremadeTickets;
@@ -33,7 +34,7 @@ class DatabaseStorageServiceTest {
 
     @BeforeEach
     void setupEach() {
-        this.storageService = new DatabaseStorageService(this.h2Extension.getJdbi(), new ActionMapper(PremadeActionRegistry.create()));
+        this.storageService = new DatabaseStorageService(this.h2Extension.getJdbi(), new ActionMapper(PremadeActionRegistry.create()), new DatabaseConfiguration());
     }
 
     @Test

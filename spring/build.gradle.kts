@@ -35,6 +35,8 @@ dependencies {
     api(libs.spring.boot.autoconfigure)
     api(libs.spring.shell)
     api(platform(libs.spring.shell.dependencies))
+
+    api(libs.gson)
 }
 
 tasks {

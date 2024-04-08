@@ -80,6 +80,7 @@ flyway-database-postgresql = { group = "org.flywaydb", name = "flyway-database-p
 h2 = { group = "com.h2database", name = "h2", version.ref = "h2" }
 configurate = { group = "org.spongepowered", name = "configurate-hocon", version.ref = "configurate" }
 postgresql = { group = "org.postgresql", name = "postgresql", version.ref = "postgresql" }
+gson = { group = "com.google.code.gson", name = "gson", version = "2.10.1" }
 
 # Misc
 corn-trove = { group = "love.broccolai.corn", name = "corn-trove", version.ref = "corn" }

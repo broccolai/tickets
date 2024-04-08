@@ -9,3 +9,7 @@ spring:
     main:
         log-startup-info: false
         banner-mode: off
+
+    mvc:
+        converters:
+            preferred-json-mapper: gson
