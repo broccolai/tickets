@@ -1,11 +1,9 @@
 package love.broccolai.tickets.common.serialization.jdbi;
 
-import com.google.common.base.Objects;
 import com.google.inject.Inject;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
-import love.broccolai.corn.trove.Trove;
 import love.broccolai.tickets.api.model.TicketType;
 import love.broccolai.tickets.api.registry.TicketTypeRegistry;
 import org.jdbi.v3.core.argument.AbstractArgumentFactory;

@@ -11,7 +11,6 @@ import org.jdbi.v3.core.Jdbi;
 import org.jdbi.v3.core.spi.JdbiPlugin;
 import org.jdbi.v3.gson2.Gson2Config;
 import org.jdbi.v3.gson2.Gson2Plugin;
-import org.jdbi.v3.postgres.PostgresPlugin;
 
 public final class TicketsJdbiPlugin implements JdbiPlugin {
 
