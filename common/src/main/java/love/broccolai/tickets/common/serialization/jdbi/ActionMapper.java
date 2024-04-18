@@ -22,7 +22,7 @@ public final class ActionMapper implements TwoWayRowMapper<Action> {
         String identifier = rowView.getColumn("type", String.class);
 
         QualifiedType<? extends Action> qualifiedType = this.qualifiedType(
-            this.registry.typeFromIdentifier(identifier)
+            this.registry.fromIdentifier(identifier)
         );
 
         return rowView.getColumn("data", qualifiedType);
@@ -30,7 +30,7 @@ public final class ActionMapper implements TwoWayRowMapper<Action> {
 
     @Override
     public <S extends SqlStatement<S>> SqlStatement<S> bindToStatement(S statement, Action action) {
-        String identifier = this.registry.identifierFromType(action.getClass());
+        String identifier = this.registry.fromData(action.getClass());
 
         QualifiedType<? extends Action> qualifiedType = this.qualifiedType(action.getClass());
 

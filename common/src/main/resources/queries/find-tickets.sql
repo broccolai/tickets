@@ -1,4 +1,5 @@
 SELECT t.id,
+       t.type_identifier,
        t.creator,
        t.date,
        a.type,
@@ -6,6 +7,6 @@ SELECT t.id,
 FROM tickets_ticket as t
          LEFT JOIN tickets_action as a
                    ON (t.id = a.ticket)
-WHERE (:creator IS NULL OR t.creator = :creator)
-   OR (:since IS NULL OR t.date > :since)
+WHERE t.creator = COALESCE(:creator, t.creator)
+   OR t.date > COALESCE(:since, '1900-01-01'::DATE)
 ORDER BY a.id;

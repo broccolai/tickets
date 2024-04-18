@@ -15,9 +15,11 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import love.broccolai.tickets.api.model.Ticket;
 import love.broccolai.tickets.api.model.TicketStatus;
+import love.broccolai.tickets.api.model.TicketType;
 import love.broccolai.tickets.api.model.action.Action;
 import love.broccolai.tickets.api.model.action.packaged.OpenAction;
 import love.broccolai.tickets.api.service.StorageService;
+import love.broccolai.tickets.common.configuration.DatabaseConfiguration;
 import love.broccolai.tickets.common.model.SimpleTicket;
 import love.broccolai.tickets.common.serialization.jdbi.ActionMapper;
 import love.broccolai.tickets.common.serialization.jdbi.TicketAccumulator;
@@ -29,32 +31,41 @@ import org.jdbi.v3.core.statement.Update;
 import org.jdbi.v3.json.Json;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Singleton
 @NullMarked
 public final class DatabaseStorageService implements StorageService {
 
-    private final QueriesLocator locator = new QueriesLocator();
+    private static final Logger logger = LoggerFactory.getLogger(DatabaseStorageService.class);
 
     private final Jdbi jdbi;
     private final ActionMapper actionMapper;
+    private final QueriesLocator locator;
 
     @Inject
-    public DatabaseStorageService(final Jdbi jdbi, ActionMapper actionMapper) {
+    public DatabaseStorageService(
+        final Jdbi jdbi,
+        final ActionMapper actionMapper,
+        final DatabaseConfiguration configuration
+    ) {
         this.jdbi = jdbi;
         this.actionMapper = actionMapper;
+        this.locator = new QueriesLocator(configuration.type);
     }
 
     @Override
-    public Ticket createTicket(final UUID creator, final String message) {
+    public Ticket createTicket(final TicketType type, final UUID creator, final String message) {
         Instant timestamp = TimeUtilities.nowTruncated();
         OpenAction action = new OpenAction(timestamp, creator, message);
-        QualifiedType<OpenAction> type = QualifiedType.of(OpenAction.class).with(Json.class);
+        QualifiedType<OpenAction> actionType = QualifiedType.of(OpenAction.class).with(Json.class);
 
-        return this.jdbi.inTransaction(handle -> {
+        Ticket createdTicket = this.jdbi.inTransaction(handle -> {
             List<String> queries = this.locator.queries("insert-ticket");
 
             int id = handle.createUpdate(queries.get(0))
+                .bind("type_identifier", type.identifier())
                 .bind("creator", creator)
                 .bind("date", timestamp)
                 .executeAndReturnGeneratedKeys()
@@ -62,14 +73,19 @@ public final class DatabaseStorageService implements StorageService {
                 .one();
 
             handle.createUpdate(queries.get(1))
-                .bindByType("data", action, type)
+                .bind("id", id)
+                .bindByType("data", action, actionType)
                 .execute();
 
-            Ticket ticket = new SimpleTicket(id, creator, timestamp, new LinkedHashSet<>());
+            Ticket ticket = new SimpleTicket(id, type, creator, timestamp, new LinkedHashSet<>());
             ticket.withAction(action);
 
             return ticket;
         });
+
+        logger.info("user {} created ticket {} - {} with message {}", creator, createdTicket.type().identifier(), createdTicket.id(), message);
+
+        return createdTicket;
     }
 
     @Override
@@ -107,8 +123,8 @@ public final class DatabaseStorageService implements StorageService {
     ) {
         List<Ticket> filteredTickets = this.jdbi.withHandle(handle -> {
             return handle.createQuery(this.locator.query("find-tickets"))
-                .bind("creator", creator)
-                .bind("since", since)
+                .bindByType("creator", creator, UUID.class)
+                .bindByType("since", since, Instant.class)
                 .reduceRows(new TicketAccumulator())
                 .collect(Collectors.toList());
         });

@@ -6,9 +6,11 @@ import java.time.Instant;
 import love.broccolai.tickets.common.serialization.gson.InstantAdapter;
 import love.broccolai.tickets.common.serialization.jdbi.ActionMapper;
 import love.broccolai.tickets.common.serialization.jdbi.TicketMapper;
+import love.broccolai.tickets.common.serialization.jdbi.TicketTypeMapper;
 import org.jdbi.v3.core.Jdbi;
 import org.jdbi.v3.core.spi.JdbiPlugin;
 import org.jdbi.v3.gson2.Gson2Config;
+import org.jdbi.v3.gson2.Gson2Plugin;
 
 public final class TicketsJdbiPlugin implements JdbiPlugin {
 
@@ -18,9 +20,14 @@ public final class TicketsJdbiPlugin implements JdbiPlugin {
 
     @Override
     public void customizeJdbi(final Jdbi jdbi) {
+        TicketTypeMapper ticketTypeMapper = new TicketTypeMapper(PremadeTicketTypeRegistry.create());
+
         jdbi
+            .installPlugin(new Gson2Plugin())
             .registerRowMapper(new TicketMapper())
-            .registerRowMapper(new ActionMapper(PremadeActionRegistry.create()));
+            .registerRowMapper(new ActionMapper(PremadeActionRegistry.create()))
+            .registerColumnMapper(ticketTypeMapper)
+            .registerArgument(ticketTypeMapper);
 
         jdbi.getConfig(Gson2Config.class).setGson(GSON);
     }

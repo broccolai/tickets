@@ -25,6 +25,7 @@ rootProject.name = "tickets-parent"
 
 setupSubproject(name = "api")
 setupSubproject(name = "common")
+setupSubproject(name = "spring")
 
 setupSubproject(folder = "minecraft", name = "common")
 setupSubproject(folder = "minecraft", name = "paper")
