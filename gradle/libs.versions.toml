@@ -24,7 +24,7 @@ moonshine = "2.0.4"
 # Storage
 jdbi = "3.45.1"
 hikari = "5.1.0"
-flyway = "10.11.0"
+flyway = "10.11.1"
 h2 = "2.2.224"
 configurate = "4.1.2"
 postgresql = "42.7.3"
