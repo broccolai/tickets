@@ -9,8 +9,10 @@ import love.broccolai.tickets.api.model.action.Action;
 import love.broccolai.tickets.api.model.action.packaged.CloseAction;
 import love.broccolai.tickets.api.service.StatisticService;
 import love.broccolai.tickets.api.service.StorageService;
+import love.broccolai.tickets.common.configuration.DatabaseConfiguration;
 import love.broccolai.tickets.common.serialization.jdbi.ActionMapper;
 import love.broccolai.tickets.common.utilities.PremadeActionRegistry;
+import love.broccolai.tickets.common.utilities.PremadeTickets;
 import love.broccolai.tickets.common.utilities.TicketsH2Extension;
 import love.broccolai.tickets.common.utilities.TimeUtilities;
 import org.jdbi.v3.testing.junit5.JdbiExtension;
@@ -30,7 +32,7 @@ class CalculatingStatisticServiceTest {
 
     @BeforeEach
     void setupEach() {
-        this.storageService = new DatabaseStorageService(this.h2Extension.getJdbi(), new ActionMapper(PremadeActionRegistry.create()));
+        this.storageService = new DatabaseStorageService(this.h2Extension.getJdbi(), new ActionMapper(PremadeActionRegistry.create()), new DatabaseConfiguration());
         this.statisticService = new CalculatingStatisticService(this.storageService);
     }
 
@@ -39,8 +41,8 @@ class CalculatingStatisticServiceTest {
         Instant fiveMinutes = TimeUtilities.nowTruncated().plus(5, ChronoUnit.MINUTES);
         Action close = new CloseAction(fiveMinutes, UUID.randomUUID());
 
-        Ticket ticket1 = this.storageService.createTicket(UUID.randomUUID(), "");
-        Ticket ticket2 = this.storageService.createTicket(UUID.randomUUID(), "");
+        Ticket ticket1 = this.storageService.createTicket(PremadeTickets.ticketType(), UUID.randomUUID(), "");
+        Ticket ticket2 = this.storageService.createTicket(PremadeTickets.ticketType(), UUID.randomUUID(), "");
 
         ticket1.actions().add(close);
         ticket2.actions().add(close);

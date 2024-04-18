@@ -12,6 +12,8 @@ public interface Ticket {
 
     int id();
 
+    TicketType type();
+
     UUID creator();
 
     Instant date();

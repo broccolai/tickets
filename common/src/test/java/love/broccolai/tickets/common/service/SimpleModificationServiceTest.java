@@ -9,12 +9,12 @@ import love.broccolai.tickets.api.model.action.packaged.OpenAction;
 import love.broccolai.tickets.api.service.ModificationService;
 import love.broccolai.tickets.api.service.StorageService;
 import love.broccolai.tickets.common.model.SimpleTicket;
+import love.broccolai.tickets.common.utilities.PremadeTickets;
 import love.broccolai.tickets.common.utilities.TimeUtilities;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static com.google.common.truth.Truth.assertThat;
-import static com.google.common.truth.Truth8.assertThat;
 import static org.mockito.Mockito.mock;
 
 class SimpleModificationServiceTest {
@@ -28,6 +28,7 @@ class SimpleModificationServiceTest {
     void setup() {
         this.ticket = new SimpleTicket(
             1,
+            PremadeTickets.ticketType(),
             UUID.randomUUID(),
             TimeUtilities.nowTruncated(),
             new LinkedHashSet<>()

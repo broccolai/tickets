@@ -1,7 +1,7 @@
 package love.broccolai.tickets.minecraft.common.command;
 
-import cloud.commandframework.CommandManager;
 import love.broccolai.tickets.minecraft.common.model.Commander;
+import org.incendo.cloud.CommandManager;
 import org.jspecify.annotations.NullMarked;
 
 @NullMarked

@@ -27,6 +27,7 @@ hikari = "5.1.0"
 flyway = "10.11.0"
 h2 = "2.2.224"
 configurate = "4.1.2"
+postgresql = "42.7.3"
 
 # Misc
 corn = "4.0.0-SNAPSHOT"
@@ -35,6 +36,15 @@ caffeine = "3.1.8"
 
 # Bukkit
 paper-api = "1.20.2-R0.1-SNAPSHOT"
+
+# Web
+springBoot = "3.2.4"
+springShellBom = "3.2.3"
+graal = "0.10.1"
+
+[plugins]
+spring-plugin-boot = { id = "org.springframework.boot", version.ref = "springBoot" }
+graal-native-buildtools = { id = "org.graalvm.buildtools.native", version.ref = "graal" }
 
 [libraries]
 # Tooling
@@ -61,24 +71,37 @@ moonshine-standard = { group = "net.kyori.moonshine", name = "moonshine-standard
 
 # Storage
 jdbi-core = { group = "org.jdbi", name = "jdbi3-core", version.ref = "jdbi" }
+jdbi-postgres = { group = "org.jdbi", name = "jdbi3-postgres", version.ref = "jdbi" }
 jdbi-gson = { group = "org.jdbi", name = "jdbi3-gson2", version.ref = "jdbi" }
 jdbi-testing = { group = "org.jdbi", name = "jdbi3-testing", version.ref = "jdbi" }
 hikari = { group = "com.zaxxer", name = "HikariCP", version.ref = "hikari" }
 flyway = { group = "org.flywaydb", name = "flyway-core", version.ref = "flyway" }
+flyway-database-postgresql = { group = "org.flywaydb", name = "flyway-database-postgresql", version.ref = "flyway" }
 h2 = { group = "com.h2database", name = "h2", version.ref = "h2" }
-configurate = { group = "org.spongepowered", name = "configurate-yaml", version.ref = "configurate" }
+configurate = { group = "org.spongepowered", name = "configurate-hocon", version.ref = "configurate" }
+postgresql = { group = "org.postgresql", name = "postgresql", version.ref = "postgresql" }
+gson = { group = "com.google.code.gson", name = "gson", version = "2.10.1" }
 
 # Misc
 corn-trove = { group = "love.broccolai.corn", name = "corn-trove", version.ref = "corn" }
-slf4j = { group = "org.slf4j", name = "slf4j-simple", version.ref = "slf4j" }
+slf4j-api = { group = "org.slf4j", name = "slf4j-api", version.ref = "slf4j" }
+slf4j-impl = { group = "org.slf4j", name = "slf4j-simple", version.ref = "slf4j" }
 caffeine = { group = "com.github.ben-manes.caffeine", name = "caffeine", version.ref = "caffeine" }
 
 # Paper
 paper-api = { group = "io.papermc.paper", name = "paper-api", version.ref = "paper-api" }
 
+# Web
+spring-shell = { group = "org.springframework.shell", name = "spring-shell-starter" }
+spring-shell-dependencies = { group = "org.springframework.shell", name = "spring-shell-dependencies", version.ref = "springShellBom" }
+spring-boot-autoconfigure = { group = "org.springframework.boot", name = "spring-boot-autoconfigure" }
+spring-boot-starter-test = { group = "org.springframework.boot", name = "spring-boot-starter-test" }
+spring-boot-starter-web = { group = "org.springframework.boot", name = "spring-boot-starter-web" }
+spring-shell-test = { group = "org.springframework.shell", name = "spring-shell-test" }
+spring-shell-test-autoconfiguration = { group = "org.springframework.shell", name = "spring-shell-test-autoconfigure" }
+
 # Testing
 truth-core = { group = "com.google.truth", name = "truth", version.ref = "truth" }
-truth-java-eight = { group = "com.google.truth.extensions", name = "truth-java8-extension", version.ref = "truth" }
 junit-api = { group = "org.junit.jupiter", name = "junit-jupiter-api", version.ref = "junit" }
 junit-engine = { group = "org.junit.jupiter", name = "junit-jupiter-engine", version.ref = "junit" }
 junit-platform = { group = "org.junit.platform", name = "junit-platform-launcher" }
@@ -86,13 +109,18 @@ mockito = { group = "org.mockito", name = "mockito-core", version.ref = "mockito
 
 [bundles]
 guice = ["guice-core", "guice-assisted"]
-jdbi = ["jdbi-core", "jdbi-gson"]
-database = ["hikari", "flyway", "h2"]
+jdbi = ["jdbi-core", "jdbi-postgres", "jdbi-gson"]
+database = [
+    "hikari",
+    "flyway",
+    "flyway-database-postgresql",
+    "h2",
+    "postgresql"
+]
 testing = [
     "junit-api",
     "junit-engine",
     "truth-core",
-    "truth-java-eight",
     "mockito",
     "jdbi-testing"
 ]

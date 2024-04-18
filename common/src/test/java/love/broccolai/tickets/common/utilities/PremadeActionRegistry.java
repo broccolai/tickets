@@ -5,14 +5,14 @@ import love.broccolai.tickets.api.model.action.packaged.CloseAction;
 import love.broccolai.tickets.api.model.action.packaged.CommentAction;
 import love.broccolai.tickets.api.model.action.packaged.OpenAction;
 import love.broccolai.tickets.api.registry.ActionRegistry;
-import love.broccolai.tickets.common.registry.MappedActionRegistry;
+import love.broccolai.tickets.common.registry.SimpleActionRegistry;
 
 public final class PremadeActionRegistry {
     private PremadeActionRegistry() {
     }
 
     public static ActionRegistry create() {
-        ActionRegistry actionRegistry = new MappedActionRegistry();
+        ActionRegistry actionRegistry = new SimpleActionRegistry();
 
         actionRegistry.register(
             OpenAction.IDENTIFIER,

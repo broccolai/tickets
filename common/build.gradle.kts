@@ -11,5 +11,5 @@ dependencies {
     api(libs.bundles.database)
 
     api(libs.corn.trove)
-    api(libs.slf4j)
+    api(libs.slf4j.api)
 }
