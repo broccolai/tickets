@@ -3,28 +3,28 @@
 indra = "3.1.3"
 jspecify = "0.3.0"
 shadow = "8.1.1"
-gremlin = "0.0.3"
+gremlin = "0.0.6"
 test-logger = "4.0.0"
 
 # Testing
-truth = "1.1.5"
-junit = "5.10.1"
-mockito = "5.7.0"
+truth = "1.4.2"
+junit = "5.10.2"
+mockito = "5.11.0"
 
 # Google
 guice = "7.0.0"
 
 # Incendo
-cloud = "2.0.0-SNAPSHOT"
+cloud = "2.0.0-beta.4"
 
 # Kyori
-adventure = "4.14.0"
+adventure = "4.16.0"
 moonshine = "2.0.4"
 
 # Storage
-jdbi = "3.41.3"
+jdbi = "3.45.1"
 hikari = "5.1.0"
-flyway = "10.0.1"
+flyway = "10.11.0"
 h2 = "2.2.224"
 configurate = "4.1.2"
 
@@ -49,9 +49,9 @@ guice-core = { group = "com.google.inject", name = "guice", version.ref = "guice
 guice-assisted = { group = "com.google.inject.extensions", name = "guice-assistedinject", version.ref = "guice" }
 
 # Incendo
-cloud-core = { group = "cloud.commandframework", name = "cloud-core", version.ref = "cloud" }
-cloud-paper = { group = "cloud.commandframework", name = "cloud-paper", version.ref = "cloud" }
-cloud-extras = { group = "cloud.commandframework", name = "cloud-minecraft-extras", version.ref = "cloud" }
+cloud-core = { group = "org.incendo", name = "cloud-core", version.ref = "cloud" }
+cloud-paper = { group = "org.incendo", name = "cloud-paper", version = "2.0.0-beta.5" }
+cloud-extras = { group = "org.incendo", name = "cloud-minecraft-extras", version.ref = "cloud" }
 
 # Kyori
 adventure-api = { group = "net.kyori", name = "adventure-api", version.ref = "adventure" }
