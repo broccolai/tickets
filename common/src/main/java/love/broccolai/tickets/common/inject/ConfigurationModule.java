@@ -26,7 +26,6 @@ import love.broccolai.tickets.common.serialization.jdbi.TicketTypeMapper;
 import org.jdbi.v3.core.Jdbi;
 import org.jdbi.v3.gson2.Gson2Config;
 import org.jdbi.v3.gson2.Gson2Plugin;
-import org.jdbi.v3.postgres.PostgresPlugin;
 import org.jspecify.annotations.NullMarked;
 import org.spongepowered.configurate.ConfigurationNode;
 import org.spongepowered.configurate.hocon.HoconConfigurationLoader;
@@ -59,7 +58,7 @@ public final class ConfigurationModule extends AbstractModule {
                 hikariConfig.setJdbcUrl(configuration.h2.url);
             }
             case POSTGRES -> {
-                hikariConfig.setDriverClassName("org.postgresql.Driver");
+                hikariConfig.setDriverClassName("com.impossibl.postgres.jdbc.PGDriver");
                 hikariConfig.setJdbcUrl(configuration.postgres.url);
                 hikariConfig.setUsername(configuration.postgres.username);
                 hikariConfig.setPassword(configuration.postgres.password);
@@ -81,7 +80,6 @@ public final class ConfigurationModule extends AbstractModule {
     ) {
         Jdbi jdbi = Jdbi.create(dataSource)
             .installPlugin(new Gson2Plugin())
-            .installPlugin(new PostgresPlugin())
             .registerRowMapper(actionMapper)
             .registerRowMapper(ticketMapper)
             .registerColumnMapper(ticketTypeMapper)

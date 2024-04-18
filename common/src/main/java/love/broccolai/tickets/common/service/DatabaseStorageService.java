@@ -3,6 +3,10 @@ package love.broccolai.tickets.common.service;
 import com.google.common.primitives.Ints;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import com.impossibl.postgres.api.jdbc.PGConnection;
+import com.impossibl.postgres.api.jdbc.PGNotificationListener;
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.time.Instant;
 import java.util.Collection;
 import java.util.LinkedHashSet;
@@ -25,6 +29,7 @@ import love.broccolai.tickets.common.serialization.jdbi.ActionMapper;
 import love.broccolai.tickets.common.serialization.jdbi.TicketAccumulator;
 import love.broccolai.tickets.common.utilities.QueriesLocator;
 import love.broccolai.tickets.common.utilities.TimeUtilities;
+import org.jdbi.v3.core.Handle;
 import org.jdbi.v3.core.Jdbi;
 import org.jdbi.v3.core.qualifier.QualifiedType;
 import org.jdbi.v3.core.statement.Update;
@@ -53,6 +58,25 @@ public final class DatabaseStorageService implements StorageService {
         this.jdbi = jdbi;
         this.actionMapper = actionMapper;
         this.locator = new QueriesLocator(configuration.type);
+    }
+
+    //todo: implement listen / channel via statements.
+    @Override
+    public void addNotificationListener(final PGNotificationListener listener) {
+        this.jdbi.useHandle(handle -> {
+            PGConnection connection = this.connectionFromHandle(handle);
+            logger.trace("Adding notification listener: {}", listener.getClass().getSimpleName());
+
+            connection.addNotificationListener(listener);
+        });
+    }
+
+    private PGConnection connectionFromHandle(final Handle handle) {
+        try (Connection conn = handle.getConnection()) {
+            return conn.unwrap(PGConnection.class);
+        } catch (SQLException e) {
+            throw new RuntimeException("Error obtaining PGConnection", e);
+        }
     }
 
     @Override

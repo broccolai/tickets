@@ -27,7 +27,7 @@ hikari = "5.1.0"
 flyway = "10.11.0"
 h2 = "2.2.224"
 configurate = "4.1.2"
-postgresql = "42.7.3"
+postgresql = "0.8.9"
 
 # Misc
 corn = "4.0.0-SNAPSHOT"
@@ -79,7 +79,7 @@ flyway = { group = "org.flywaydb", name = "flyway-core", version.ref = "flyway" 
 flyway-database-postgresql = { group = "org.flywaydb", name = "flyway-database-postgresql", version.ref = "flyway" }
 h2 = { group = "com.h2database", name = "h2", version.ref = "h2" }
 configurate = { group = "org.spongepowered", name = "configurate-hocon", version.ref = "configurate" }
-postgresql = { group = "org.postgresql", name = "postgresql", version.ref = "postgresql" }
+postgresql = { group = "com.impossibl.pgjdbc-ng", name = "pgjdbc-ng", version.ref = "postgresql" }
 gson = { group = "com.google.code.gson", name = "gson", version = "2.10.1" }
 
 # Misc

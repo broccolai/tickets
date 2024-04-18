@@ -22,7 +22,7 @@ public class DatabaseConfiguration implements Configuration {
 
     @ConfigSerializable
     public static class Postgres {
-        public String url = "jdbc:postgresql://localhost:5432/database";
+        public String url = "jdbc:pgsql://localhost:5432/database";
 
         public String username = "username";
 

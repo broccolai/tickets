@@ -1,5 +1,6 @@
 package love.broccolai.tickets.api.service;
 
+import com.impossibl.postgres.api.jdbc.PGNotificationListener;
 import java.time.Instant;
 import java.util.Collection;
 import java.util.Map;
@@ -15,6 +16,8 @@ import org.jspecify.annotations.Nullable;
 
 @NullMarked
 public interface StorageService {
+
+    void addNotificationListener(PGNotificationListener listener);
 
     Ticket createTicket(TicketType type, UUID creator, String message);
 
