@@ -21,6 +21,7 @@ import love.broccolai.tickets.api.model.Ticket;
 import love.broccolai.tickets.api.model.TicketStatus;
 import love.broccolai.tickets.api.model.TicketType;
 import love.broccolai.tickets.api.model.action.Action;
+import love.broccolai.tickets.api.model.action.AssociatedAction;
 import love.broccolai.tickets.api.model.action.packaged.OpenAction;
 import love.broccolai.tickets.api.service.StorageService;
 import love.broccolai.tickets.common.configuration.DatabaseConfiguration;
@@ -60,13 +61,13 @@ public final class DatabaseStorageService implements StorageService {
         this.locator = new QueriesLocator(configuration.type);
     }
 
-    //todo: implement listen / channel via statements.
     @Override
     public void addNotificationListener(final PGNotificationListener listener) {
         this.jdbi.useHandle(handle -> {
+            handle.execute("LISTEN action_channel");
+
             PGConnection connection = this.connectionFromHandle(handle);
             logger.trace("Adding notification listener: {}", listener.getClass().getSimpleName());
-
             connection.addNotificationListener(listener);
         });
     }
@@ -156,6 +157,16 @@ public final class DatabaseStorageService implements StorageService {
         filteredTickets.removeIf(ticket -> !statuses.contains(ticket.status()));
 
         return filteredTickets;
+    }
+
+    @Override
+    public AssociatedAction selectActionWithTicketReference(int id) {
+        return this.jdbi.withHandle(handle -> {
+            return handle.createQuery(this.locator.query("select-action"))
+                .bind("id", id)
+                .mapTo(AssociatedAction.class)
+                .first();
+        });
     }
 
 }

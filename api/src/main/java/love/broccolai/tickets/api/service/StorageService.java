@@ -11,6 +11,7 @@ import love.broccolai.tickets.api.model.Ticket;
 import love.broccolai.tickets.api.model.TicketStatus;
 import love.broccolai.tickets.api.model.TicketType;
 import love.broccolai.tickets.api.model.action.Action;
+import love.broccolai.tickets.api.model.action.AssociatedAction;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
@@ -33,4 +34,6 @@ public interface StorageService {
         @Nullable UUID creator,
         @Nullable Instant since
     );
+
+    AssociatedAction selectActionWithTicketReference(int id);
 }

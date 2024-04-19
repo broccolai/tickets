@@ -10,6 +10,7 @@ import javax.sql.DataSource;
 import love.broccolai.tickets.api.model.TicketType;
 import love.broccolai.tickets.api.registry.ActionRegistry;
 import love.broccolai.tickets.api.registry.TicketTypeRegistry;
+import love.broccolai.tickets.common.configuration.DatabaseConfiguration;
 import love.broccolai.tickets.common.configuration.TicketsConfiguration;
 import love.broccolai.tickets.common.inject.ConfigurationModule;
 import love.broccolai.tickets.common.inject.ServiceModule;
@@ -35,6 +36,7 @@ public final class TicketsPackage {
         );
 
         PackagedMigrations.migrate(
+            injector.getInstance(DatabaseConfiguration.class),
             classLoader,
             injector.getInstance(DataSource.class)
         );

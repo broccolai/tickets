@@ -21,6 +21,7 @@ import love.broccolai.tickets.common.registry.SimpleActionRegistry;
 import love.broccolai.tickets.common.registry.SimpleTicketTypeRegistry;
 import love.broccolai.tickets.common.serialization.gson.InstantAdapter;
 import love.broccolai.tickets.common.serialization.jdbi.ActionMapper;
+import love.broccolai.tickets.common.serialization.jdbi.AssociatedActionMapper;
 import love.broccolai.tickets.common.serialization.jdbi.TicketMapper;
 import love.broccolai.tickets.common.serialization.jdbi.TicketTypeMapper;
 import org.jdbi.v3.core.Jdbi;
@@ -75,12 +76,14 @@ public final class ConfigurationModule extends AbstractModule {
     public Jdbi provideJdbi(
         final DataSource dataSource,
         final ActionMapper actionMapper,
+        final AssociatedActionMapper associatedActionMapper,
         final TicketMapper ticketMapper,
         final TicketTypeMapper ticketTypeMapper
     ) {
         Jdbi jdbi = Jdbi.create(dataSource)
             .installPlugin(new Gson2Plugin())
             .registerRowMapper(actionMapper)
+            .registerRowMapper(associatedActionMapper)
             .registerRowMapper(ticketMapper)
             .registerColumnMapper(ticketTypeMapper)
             .registerArgument(ticketTypeMapper);
