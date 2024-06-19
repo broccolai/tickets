@@ -3,14 +3,14 @@ package love.broccolai.tickets.api.model.action.packaged;
 import java.time.Instant;
 import java.util.UUID;
 import love.broccolai.tickets.api.model.TicketStatus;
-import love.broccolai.tickets.api.model.action.MessageAction;
 import love.broccolai.tickets.api.model.action.StatusAction;
+import love.broccolai.tickets.api.model.format.TicketFormatContent;
 
 public record OpenAction(
     Instant date,
     UUID creator,
-    String message
-) implements StatusAction, MessageAction {
+    TicketFormatContent content
+) implements StatusAction {
 
     public static final String IDENTIFIER = "open";
 

@@ -3,7 +3,7 @@ package love.broccolai.tickets.minecraft.common.parsers.ticket;
 import com.google.inject.Inject;
 import io.leangen.geantyref.TypeToken;
 import java.util.Locale;
-import love.broccolai.tickets.api.model.TicketType;
+import love.broccolai.tickets.api.model.format.TicketFormat;
 import love.broccolai.tickets.api.registry.TicketTypeRegistry;
 import love.broccolai.tickets.minecraft.common.model.Commander;
 import love.broccolai.tickets.minecraft.common.parsers.DescribedArgumentParser;
@@ -13,7 +13,7 @@ import org.incendo.cloud.parser.ArgumentParseResult;
 import org.jspecify.annotations.NullMarked;
 
 @NullMarked
-public class TicketTypeDescriptor implements DescribedArgumentParser<TicketType> {
+public class TicketTypeDescriptor implements DescribedArgumentParser<TicketFormat> {
 
     private final TicketTypeRegistry ticketTypeRegistry;
 
@@ -23,17 +23,17 @@ public class TicketTypeDescriptor implements DescribedArgumentParser<TicketType>
     }
 
     @Override
-    public TypeToken<TicketType> valueType() {
-        return TypeToken.get(TicketType.class);
+    public TypeToken<TicketFormat> valueType() {
+        return TypeToken.get(TicketFormat.class);
     }
 
     @Override
-    public ArgumentParseResult<TicketType> parse(
+    public ArgumentParseResult<TicketFormat> parse(
         final CommandContext<Commander> commandContext,
         final CommandInput commandInput
     ) {
         String input = commandInput.readString().toLowerCase(Locale.ROOT);
-        TicketType type = this.ticketTypeRegistry.fromIdentifier(input);
+        TicketFormat type = this.ticketTypeRegistry.fromIdentifier(input);
 
         if (type == null) {
             return ArgumentParseResult.failure(new RuntimeException());

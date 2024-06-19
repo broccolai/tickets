@@ -7,17 +7,18 @@ import java.util.UUID;
 import love.broccolai.corn.trove.Trove;
 import love.broccolai.tickets.api.model.Ticket;
 import love.broccolai.tickets.api.model.TicketStatus;
-import love.broccolai.tickets.api.model.TicketType;
 import love.broccolai.tickets.api.model.action.Action;
-import love.broccolai.tickets.api.model.action.MessageAction;
 import love.broccolai.tickets.api.model.action.StatusAction;
 import love.broccolai.tickets.api.model.action.packaged.AssignAction;
+import love.broccolai.tickets.api.model.action.packaged.OpenAction;
+import love.broccolai.tickets.api.model.format.TicketFormat;
+import love.broccolai.tickets.api.model.format.TicketFormatContent;
 import org.jspecify.annotations.NullMarked;
 
 @NullMarked
 public record SimpleTicket(
     int id,
-    TicketType type,
+    TicketFormat type,
     UUID creator,
     Instant date,
     Set<Action> actions
@@ -37,12 +38,13 @@ public record SimpleTicket(
             .orElseThrow();
     }
 
+    //todo: implement updating
     @Override
-    public String message() {
+    public TicketFormatContent content() {
         return Trove.of(this.actions)
-            .filterIsInstance(MessageAction.class)
-            .last()
-            .map(MessageAction::message)
+            .filterIsInstance(OpenAction.class)
+            .first()
+            .map(OpenAction::content)
             .orElseThrow();
     }
 

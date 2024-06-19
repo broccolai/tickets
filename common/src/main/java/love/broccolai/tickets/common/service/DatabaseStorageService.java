@@ -19,10 +19,11 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import love.broccolai.tickets.api.model.Ticket;
 import love.broccolai.tickets.api.model.TicketStatus;
-import love.broccolai.tickets.api.model.TicketType;
 import love.broccolai.tickets.api.model.action.Action;
 import love.broccolai.tickets.api.model.action.AssociatedAction;
 import love.broccolai.tickets.api.model.action.packaged.OpenAction;
+import love.broccolai.tickets.api.model.format.TicketFormat;
+import love.broccolai.tickets.api.model.format.TicketFormatContent;
 import love.broccolai.tickets.api.service.StorageService;
 import love.broccolai.tickets.common.configuration.DatabaseConfiguration;
 import love.broccolai.tickets.common.model.SimpleTicket;
@@ -81,9 +82,9 @@ public final class DatabaseStorageService implements StorageService {
     }
 
     @Override
-    public Ticket createTicket(final TicketType type, final UUID creator, final String message) {
+    public Ticket createTicket(final UUID creator, final TicketFormat type, final TicketFormatContent content) {
         Instant timestamp = TimeUtilities.nowTruncated();
-        OpenAction action = new OpenAction(timestamp, creator, message);
+        OpenAction action = new OpenAction(timestamp, creator, content);
         QualifiedType<OpenAction> actionType = QualifiedType.of(OpenAction.class).with(Json.class);
 
         Ticket createdTicket = this.jdbi.inTransaction(handle -> {
@@ -108,7 +109,7 @@ public final class DatabaseStorageService implements StorageService {
             return ticket;
         });
 
-        logger.info("user {} created ticket {} - {} with message {}", creator, createdTicket.type().identifier(), createdTicket.id(), message);
+        logger.info("user {} created ticket {} - {} with message {}", creator, createdTicket.type().identifier(), createdTicket.id(), createdTicket.content());
 
         return createdTicket;
     }

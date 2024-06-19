@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import javax.sql.DataSource;
-import love.broccolai.tickets.api.model.TicketType;
+import love.broccolai.tickets.api.model.format.TicketFormat;
 import love.broccolai.tickets.api.registry.ActionRegistry;
 import love.broccolai.tickets.api.registry.TicketTypeRegistry;
 import love.broccolai.tickets.common.configuration.DatabaseConfiguration;
@@ -44,7 +44,7 @@ public final class TicketsPackage {
         TicketsConfiguration configuration = injector.getInstance(TicketsConfiguration.class);
         TicketTypeRegistry registry = injector.getInstance(TicketTypeRegistry.class);
 
-        for (TicketType ticketType : configuration.types) {
+        for (TicketFormat ticketType : configuration.types) {
             registry.register(ticketType.identifier(), ticketType);
         }
 

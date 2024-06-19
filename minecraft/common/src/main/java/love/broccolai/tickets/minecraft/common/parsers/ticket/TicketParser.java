@@ -23,7 +23,7 @@ import org.incendo.cloud.suggestion.BlockingSuggestionProvider;
 import org.jspecify.annotations.NullMarked;
 
 @NullMarked
-final class TicketParser implements ArgumentParser<Commander, Ticket>, BlockingSuggestionProvider.Strings<Commander> {
+public final class TicketParser implements ArgumentParser<Commander, Ticket>, BlockingSuggestionProvider.Strings<Commander> {
 
     private static final int MINIMUM_ID = 0;
     private static final int MAXIMUM_ID = Integer.MAX_VALUE;
@@ -33,7 +33,7 @@ final class TicketParser implements ArgumentParser<Commander, Ticket>, BlockingS
     private final StorageService storageService;
 
     @Inject
-    TicketParser(final StorageService storageService) {
+    public TicketParser(final StorageService storageService) {
         this.storageService = storageService;
     }
 

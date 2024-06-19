@@ -10,6 +10,8 @@ import love.broccolai.tickets.api.service.ModificationService;
 import love.broccolai.tickets.api.service.StorageService;
 import love.broccolai.tickets.minecraft.common.factory.CommandArgumentFactory;
 import love.broccolai.tickets.minecraft.common.model.Commander;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.JoinConfiguration;
 import org.incendo.cloud.Command;
 import org.incendo.cloud.CommandManager;
 import org.incendo.cloud.context.CommandContext;
@@ -47,6 +49,11 @@ public final class StaffCommands extends AbstractCommand {
             .commandBuilder("tickets", "tis");
 
         commandManager.command(
+            root.literal("show")
+                .handler(this::handleShow)
+        );
+
+        commandManager.command(
             root.literal("list")
                 .handler(this::handleList)
         );
@@ -62,6 +69,13 @@ public final class StaffCommands extends AbstractCommand {
             root.literal("close")
                 .required(TICKET_KEY, this.argumentFactory.targetedTicket(EnumSet.of(OPEN, PICKED)))
                 .handler(this::handleClose)
+        );
+    }
+
+    public void handleShow(final CommandContext<Commander> context) {
+        Component.join(
+            JoinConfiguration.newlines(),
+            Component.text("")
         );
     }
 

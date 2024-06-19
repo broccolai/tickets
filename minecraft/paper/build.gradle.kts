@@ -1,9 +1,9 @@
 plugins {
     id("tickets.base")
     id("tickets.gremlin")
-    id("xyz.jpenilla.run-paper") version "2.2.3"
-    id("xyz.jpenilla.resource-factory") version "0.0.9"
-    id("xyz.jpenilla.resource-factory-paper-convention") version "0.0.9"
+    id("xyz.jpenilla.run-paper") version "2.2.4"
+    id("xyz.jpenilla.resource-factory") version "1.1.1"
+    id("xyz.jpenilla.resource-factory-paper-convention") version "1.1.1"
 }
 
 fun DependencyHandler.runtimeDownloadApi(dependencyNotation: Any) {

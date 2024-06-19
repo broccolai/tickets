@@ -41,8 +41,8 @@ class CalculatingStatisticServiceTest {
         Instant fiveMinutes = TimeUtilities.nowTruncated().plus(5, ChronoUnit.MINUTES);
         Action close = new CloseAction(fiveMinutes, UUID.randomUUID());
 
-        Ticket ticket1 = this.storageService.createTicket(PremadeTickets.ticketType(), UUID.randomUUID(), "");
-        Ticket ticket2 = this.storageService.createTicket(PremadeTickets.ticketType(), UUID.randomUUID(), "");
+        Ticket ticket1 = this.storageService.createTicket(UUID.randomUUID(), PremadeTickets.ticketType(), PremadeTickets.ticketContent());
+        Ticket ticket2 = this.storageService.createTicket(UUID.randomUUID(), PremadeTickets.ticketType(), PremadeTickets.ticketContent());
 
         ticket1.actions().add(close);
         ticket2.actions().add(close);

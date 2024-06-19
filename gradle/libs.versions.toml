@@ -24,7 +24,7 @@ moonshine = "2.0.4"
 # Storage
 jdbi = "3.45.1"
 hikari = "5.1.0"
-flyway = "10.11.0"
+flyway = "10.11.1"
 h2 = "2.2.224"
 configurate = "4.1.2"
 postgresql = "0.8.9"
@@ -38,8 +38,8 @@ caffeine = "3.1.8"
 paper-api = "1.20.2-R0.1-SNAPSHOT"
 
 # Web
-springBoot = "3.2.4"
-springShellBom = "3.2.3"
+springBoot = "3.2.5"
+springShellBom = "3.2.4"
 graal = "0.10.1"
 
 [plugins]
@@ -60,7 +60,7 @@ guice-assisted = { group = "com.google.inject.extensions", name = "guice-assiste
 
 # Incendo
 cloud-core = { group = "org.incendo", name = "cloud-core", version.ref = "cloud" }
-cloud-paper = { group = "org.incendo", name = "cloud-paper", version = "2.0.0-beta.5" }
+cloud-paper = { group = "org.incendo", name = "cloud-paper", version = "2.0.0-SNAPSHOT" }
 cloud-extras = { group = "org.incendo", name = "cloud-minecraft-extras", version.ref = "cloud" }
 
 # Kyori

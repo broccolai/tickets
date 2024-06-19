@@ -4,7 +4,7 @@ import com.google.inject.Inject;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
-import love.broccolai.tickets.api.model.TicketType;
+import love.broccolai.tickets.api.model.format.TicketFormat;
 import love.broccolai.tickets.api.registry.TicketTypeRegistry;
 import org.jdbi.v3.core.argument.AbstractArgumentFactory;
 import org.jdbi.v3.core.argument.Argument;
@@ -14,7 +14,7 @@ import org.jdbi.v3.core.statement.StatementContext;
 import org.jspecify.annotations.NullMarked;
 
 @NullMarked
-public final class TicketTypeMapper extends AbstractArgumentFactory<TicketType> implements ColumnMapper<TicketType> {
+public final class TicketTypeMapper extends AbstractArgumentFactory<TicketFormat> implements ColumnMapper<TicketFormat> {
 
     private final TicketTypeRegistry typeRegistry;
 
@@ -25,14 +25,14 @@ public final class TicketTypeMapper extends AbstractArgumentFactory<TicketType> 
     }
 
     @Override
-    public TicketType map(final ResultSet rs, final int columnNumber, final StatementContext ctx) throws SQLException {
+    public TicketFormat map(final ResultSet rs, final int columnNumber, final StatementContext ctx) throws SQLException {
         String identifier = rs.getString(columnNumber);
 
         return this.typeRegistry.fromIdentifier(identifier);
     }
 
     @Override
-    protected Argument build(TicketType value, ConfigRegistry config) {
+    protected Argument build(TicketFormat value, ConfigRegistry config) {
         return (position, statement, ctx) -> {
             statement.setString(position, value.identifier());
         };

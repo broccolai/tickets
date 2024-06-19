@@ -5,6 +5,8 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import love.broccolai.tickets.api.model.action.Action;
+import love.broccolai.tickets.api.model.format.TicketFormat;
+import love.broccolai.tickets.api.model.format.TicketFormatContent;
 import org.jspecify.annotations.NullMarked;
 
 @NullMarked
@@ -12,7 +14,7 @@ public interface Ticket {
 
     int id();
 
-    TicketType type();
+    TicketFormat type();
 
     UUID creator();
 
@@ -24,7 +26,7 @@ public interface Ticket {
 
     TicketStatus status();
 
-    String message();
+    TicketFormatContent content();
 
     Optional<UUID> assignee();
 }

@@ -60,8 +60,8 @@ public class TargetTicketDescriptor implements AggregateParser<Commander, Ticket
     }
 
     @Override
-    public AggregateResultMapper.DirectAggregateResultMapper<Commander, Ticket> mapper() {
-        return ($, context) -> ArgumentParseResult.success(context.get(TICKET_KEY));
+    public AggregateResultMapper<Commander, Ticket> mapper() {
+        return ($, context) -> ArgumentParseResult.success(context.get(TICKET_KEY)).asFuture();
     }
 
     @Override
