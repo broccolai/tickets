@@ -15,7 +15,7 @@ mockito = "5.11.0"
 guice = "7.0.0"
 
 # Incendo
-cloud = "2.0.0-beta.4"
+cloud = "2.0.0-rc.1"
 
 # Kyori
 adventure = "4.16.0"
@@ -35,7 +35,7 @@ slf4j = "2.0.9"
 caffeine = "3.1.8"
 
 # Bukkit
-paper-api = "1.20.2-R0.1-SNAPSHOT"
+paper-api = "1.21-R0.1-SNAPSHOT"
 
 # Web
 springBoot = "3.2.5"
