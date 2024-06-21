@@ -38,7 +38,7 @@ caffeine = "3.1.8"
 paper-api = "1.20.2-R0.1-SNAPSHOT"
 
 # Web
-springBoot = "3.2.4"
+springBoot = "3.3.1"
 springShellBom = "3.2.3"
 graal = "0.10.1"
 
