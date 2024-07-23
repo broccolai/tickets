@@ -1,31 +1,31 @@
 [versions]
 # Tooling
 indra = "3.1.3"
-jspecify = "0.3.0"
+jspecify = "1.0.0"
 shadow = "8.1.1"
 gremlin = "0.0.6"
 test-logger = "4.0.0"
 
 # Testing
-truth = "1.4.2"
+truth = "1.4.4"
 junit = "5.10.2"
-mockito = "5.11.0"
+mockito = "5.12.0"
 
 # Google
 guice = "7.0.0"
 
 # Incendo
-cloud = "2.0.0-rc.1"
+cloud = "2.0.0-rc.2"
 
 # Kyori
-adventure = "4.16.0"
+adventure = "4.17.0"
 moonshine = "2.0.4"
 
 # Storage
-jdbi = "3.45.1"
+jdbi = "3.45.2"
 hikari = "5.1.0"
-flyway = "10.11.1"
-h2 = "2.2.224"
+flyway = "10.16.0"
+h2 = "2.3.230"
 configurate = "4.1.2"
 postgresql = "0.8.9"
 
@@ -80,7 +80,7 @@ flyway-database-postgresql = { group = "org.flywaydb", name = "flyway-database-p
 h2 = { group = "com.h2database", name = "h2", version.ref = "h2" }
 configurate = { group = "org.spongepowered", name = "configurate-hocon", version.ref = "configurate" }
 postgresql = { group = "com.impossibl.pgjdbc-ng", name = "pgjdbc-ng", version.ref = "postgresql" }
-gson = { group = "com.google.code.gson", name = "gson", version = "2.10.1" }
+gson = { group = "com.google.code.gson", name = "gson", version = "2.11.0" }
 
 # Misc
 corn-trove = { group = "love.broccolai.corn", name = "corn-trove", version.ref = "corn" }
