@@ -15,7 +15,7 @@ mockito = "5.11.0"
 guice = "7.0.0"
 
 # Incendo
-cloud = "2.0.0-beta.4"
+cloud = "2.0.0-SNAPSHOT"
 
 # Kyori
 adventure = "4.16.0"
