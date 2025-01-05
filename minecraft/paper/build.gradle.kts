@@ -1,9 +1,9 @@
 plugins {
     id("tickets.base")
     id("tickets.gremlin")
-    id("xyz.jpenilla.run-paper") version "2.3.0"
-    id("xyz.jpenilla.resource-factory") version "1.1.2"
-    id("xyz.jpenilla.resource-factory-paper-convention") version "1.1.2"
+    id("xyz.jpenilla.run-paper") version "2.3.1"
+    id("xyz.jpenilla.resource-factory") version "1.2.0"
+    id("xyz.jpenilla.resource-factory-paper-convention") version "1.2.0"
 }
 
 fun DependencyHandler.runtimeDownloadApi(dependencyNotation: Any) {
@@ -20,7 +20,7 @@ dependencies {
 
 tasks {
     runServer {
-        minecraftVersion("1.21")
+        minecraftVersion("1.21.4")
         dependsOn(jar)
     }
 

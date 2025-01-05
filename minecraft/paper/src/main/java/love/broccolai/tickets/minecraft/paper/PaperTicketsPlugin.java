@@ -10,11 +10,14 @@ import love.broccolai.tickets.minecraft.common.command.AdminCommands;
 import love.broccolai.tickets.minecraft.common.command.StaffCommands;
 import love.broccolai.tickets.minecraft.common.command.UserCommands;
 import love.broccolai.tickets.minecraft.common.inject.CommandArgumentModule;
+import love.broccolai.tickets.minecraft.common.inject.MessageModule;
 import love.broccolai.tickets.minecraft.common.listener.ActionListener;
 import love.broccolai.tickets.minecraft.common.model.Commander;
 import love.broccolai.tickets.minecraft.paper.inject.PaperPlatformModule;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.incendo.cloud.CommandManager;
+import org.incendo.cloud.bukkit.internal.CraftBukkitReflection;
+import org.incendo.cloud.bukkit.parser.location.LocationParser;
 
 public final class PaperTicketsPlugin extends JavaPlugin {
 
@@ -30,6 +33,7 @@ public final class PaperTicketsPlugin extends JavaPlugin {
         Injector injector = ticketsPackage.startup(
             this.getClass().getClassLoader(),
             new CommandArgumentModule(),
+            new MessageModule(),
             new PaperPlatformModule(this)
         );
 

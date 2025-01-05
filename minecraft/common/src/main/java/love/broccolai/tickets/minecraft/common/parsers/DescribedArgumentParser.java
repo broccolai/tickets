@@ -9,8 +9,7 @@ import org.jspecify.annotations.NullMarked;
 @NullMarked
 public interface DescribedArgumentParser<T> extends
     ParserDescriptor<Commander, T>,
-    ArgumentParser<Commander, T>,
-    BlockingSuggestionProvider.Strings<Commander> {
+    ArgumentParser<Commander, T> {
 
     @Override
     default ArgumentParser<Commander, T> parser() {

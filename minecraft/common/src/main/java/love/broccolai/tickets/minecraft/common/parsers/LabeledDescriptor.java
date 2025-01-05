@@ -1,16 +1,20 @@
 package love.broccolai.tickets.minecraft.common.parsers;
 
+import com.mojang.brigadier.LiteralMessage;
 import io.leangen.geantyref.TypeToken;
 import java.util.List;
 import love.broccolai.tickets.minecraft.common.model.Commander;
+import org.incendo.cloud.brigadier.suggestion.TooltipSuggestion;
 import org.incendo.cloud.context.CommandContext;
 import org.incendo.cloud.context.CommandInput;
 import org.incendo.cloud.parser.ArgumentParseResult;
 import org.incendo.cloud.parser.standard.StringParser;
+import org.incendo.cloud.suggestion.BlockingSuggestionProvider;
+import org.incendo.cloud.suggestion.Suggestion;
 import org.jspecify.annotations.NullMarked;
 
 @NullMarked
-public final class LabeledDescriptor implements DescribedArgumentParser<String> {
+public final class LabeledDescriptor implements DescribedArgumentParser<String>, BlockingSuggestionProvider<Commander> {
 
     private static final StringParser<Commander> PARSER = new StringParser<>(StringParser.StringMode.GREEDY);
 
@@ -28,10 +32,7 @@ public final class LabeledDescriptor implements DescribedArgumentParser<String> 
     }
 
     @Override
-    public Iterable<String> stringSuggestions(
-        final CommandContext<Commander> commandContext,
-        final CommandInput input
-    ) {
-        return List.of("[<value>]");
+    public Iterable<? extends Suggestion> suggestions(final CommandContext<Commander> context, final CommandInput input) {
+        return List.of(TooltipSuggestion.suggestion("[<value>]", new LiteralMessage("hi")));
     }
 }

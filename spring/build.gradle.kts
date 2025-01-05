@@ -7,7 +7,7 @@ plugins {
 
 plugins.apply("io.spring.dependency-management")
 
-extra["flyway.version"] = "10.11.0"
+extra["flyway.version"] = "11.1.0"
 
 graalvmNative {
     binaries.all {

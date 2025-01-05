@@ -8,24 +8,24 @@ test-logger = "4.0.0"
 
 # Testing
 truth = "1.4.4"
-junit = "5.10.2"
-mockito = "5.12.0"
+junit = "5.11.4"
+mockito = "5.15.2"
 
 # Google
 guice = "7.0.0"
 
 # Incendo
-cloud = "2.0.0-rc.2"
+cloud = "2.0.0"
 
 # Kyori
-adventure = "4.17.0"
+adventure = "4.18.0"
 moonshine = "2.0.4"
 
 # Storage
-jdbi = "3.45.2"
-hikari = "5.1.0"
-flyway = "10.16.0"
-h2 = "2.3.230"
+jdbi = "3.47.0"
+hikari = "6.2.1"
+flyway = "11.1.0"
+h2 = "2.3.232"
 configurate = "4.1.2"
 postgresql = "0.8.9"
 
@@ -35,11 +35,11 @@ slf4j = "2.0.9"
 caffeine = "3.1.8"
 
 # Bukkit
-paper-api = "1.21-R0.1-SNAPSHOT"
+paper-api = "1.21.4-R0.1-SNAPSHOT"
 
 # Web
-springBoot = "3.2.5"
-springShellBom = "3.2.4"
+springBoot = "3.4.1"
+springShellBom = "3.4.0"
 graal = "0.10.1"
 
 [plugins]
@@ -61,6 +61,7 @@ guice-assisted = { group = "com.google.inject.extensions", name = "guice-assiste
 # Incendo
 cloud-core = { group = "org.incendo", name = "cloud-core", version.ref = "cloud" }
 cloud-paper = { group = "org.incendo", name = "cloud-paper", version = "2.0.0-SNAPSHOT" }
+cloud-brigadier = { group = "org.incendo", name = "cloud-brigadier", version = "2.0.0-SNAPSHOT" }
 cloud-extras = { group = "org.incendo", name = "cloud-minecraft-extras", version.ref = "cloud" }
 
 # Kyori

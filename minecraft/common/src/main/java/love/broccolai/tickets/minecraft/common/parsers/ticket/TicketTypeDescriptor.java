@@ -10,10 +10,11 @@ import love.broccolai.tickets.minecraft.common.parsers.DescribedArgumentParser;
 import org.incendo.cloud.context.CommandContext;
 import org.incendo.cloud.context.CommandInput;
 import org.incendo.cloud.parser.ArgumentParseResult;
+import org.incendo.cloud.suggestion.BlockingSuggestionProvider;
 import org.jspecify.annotations.NullMarked;
 
 @NullMarked
-public class TicketTypeDescriptor implements DescribedArgumentParser<TicketFormat> {
+public class TicketTypeDescriptor implements DescribedArgumentParser<TicketFormat>, BlockingSuggestionProvider.Strings<Commander> {
 
     private final TicketTypeRegistry ticketTypeRegistry;
 

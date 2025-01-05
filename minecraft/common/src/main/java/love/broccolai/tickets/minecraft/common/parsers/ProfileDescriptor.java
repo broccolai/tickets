@@ -10,10 +10,11 @@ import org.incendo.cloud.context.CommandContext;
 import org.incendo.cloud.context.CommandInput;
 import org.incendo.cloud.key.CloudKey;
 import org.incendo.cloud.parser.ArgumentParseResult;
+import org.incendo.cloud.suggestion.BlockingSuggestionProvider;
 import org.jspecify.annotations.NullMarked;
 
 @NullMarked
-public final class ProfileDescriptor implements DescribedArgumentParser<Profile> {
+public final class ProfileDescriptor implements DescribedArgumentParser<Profile>, BlockingSuggestionProvider.Strings<Commander> {
 
     public static final CloudKey<Profile> LAST_FOUND_PROFILE = CloudKey.cloudKey("last_found_profile", Profile.class);
     private static final Pattern USERNAME_PATTERN = Pattern.compile("^[a-zA-Z0-9_]{2,16}$");

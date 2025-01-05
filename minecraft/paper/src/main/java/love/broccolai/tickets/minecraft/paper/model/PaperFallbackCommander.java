@@ -1,27 +1,26 @@
 package love.broccolai.tickets.minecraft.paper.model;
 
 import io.papermc.paper.command.brigadier.CommandSourceStack;
-import java.util.UUID;
 import love.broccolai.tickets.minecraft.common.model.Commander;
 import net.kyori.adventure.audience.Audience;
-import org.bukkit.command.ConsoleCommandSender;
+import net.kyori.adventure.identity.Identity;
+import org.bukkit.command.CommandSender;
 import org.jspecify.annotations.NullMarked;
+import java.util.UUID;
 
 @NullMarked
-public record PaperConsoleCommander(
-    ConsoleCommandSender consoleCommandSender,
+public record PaperFallbackCommander(
+    CommandSender commandSender,
     CommandSourceStack commandSourceStack
 ) implements Commander {
 
-    private static final UUID CONSOLE_FAKE_UUID = new UUID(0L, 0L);
-
     @Override
     public Audience audience() {
-        return this.consoleCommandSender();
+        return this.commandSender;
     }
 
     @Override
     public UUID uuid() {
-        return CONSOLE_FAKE_UUID;
+        return this.commandSender.get(Identity.UUID).orElseThrow();
     }
 }

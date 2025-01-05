@@ -25,6 +25,8 @@ public final class ActionMapper implements TwoWayRowMapper<Action> {
             this.registry.fromIdentifier(identifier)
         );
 
+        System.out.println("qualifiedType = " + qualifiedType);
+
         return rowView.getColumn("data", qualifiedType);
     }
 

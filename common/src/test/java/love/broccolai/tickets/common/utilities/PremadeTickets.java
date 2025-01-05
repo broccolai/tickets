@@ -15,21 +15,26 @@ public final class PremadeTickets {
     private PremadeTickets() {
     }
 
+    public static TicketFormatPart ticketFormatPart() {
+        return new TicketFormatPart("message", TicketFormatStyle.Sentence);
+    }
+
     public static TicketFormat ticketType() {
         return new TicketFormat(
             "question",
             "Question",
             "Ask a general question!",
             List.of(
-                new TicketFormatPart("message", TicketFormatStyle.Sentence)
+                ticketFormatPart()
             )
         );
     }
 
     public static TicketFormatContent ticketContent() {
-        return TicketFormatContent.of(
-            Pair.of("message", "heyy")
-        );
+        TicketFormatContent content = new TicketFormatContent();
+        content.put(ticketFormatPart().identifier(), "heyyy");
+
+        return content;
     }
 
     public static Ticket createTicket(

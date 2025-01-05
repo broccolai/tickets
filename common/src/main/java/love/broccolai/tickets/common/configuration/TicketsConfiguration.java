@@ -46,6 +46,15 @@ public final class TicketsConfiguration implements Configuration {
                 new TicketFormatPart("player", TicketFormatStyle.Player),
                 new TicketFormatPart("message", TicketFormatStyle.Sentence)
             )
+        ),
+        new TicketFormat(
+            "grief_report",
+            "Grief Report",
+            "Report a grief.",
+            List.of(
+                new TicketFormatPart("location", TicketFormatStyle.Location),
+                new TicketFormatPart("message", TicketFormatStyle.Sentence)
+            )
         )
     );
 

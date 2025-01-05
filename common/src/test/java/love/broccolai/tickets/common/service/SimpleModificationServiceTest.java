@@ -1,6 +1,7 @@
 package love.broccolai.tickets.common.service;
 
 import java.util.LinkedHashSet;
+import java.util.Set;
 import java.util.UUID;
 import love.broccolai.tickets.api.model.TicketStatus;
 import love.broccolai.tickets.api.model.action.Action;
@@ -14,7 +15,6 @@ import love.broccolai.tickets.common.model.SimpleTicket;
 import love.broccolai.tickets.common.utilities.PremadeTickets;
 import love.broccolai.tickets.common.utilities.TimeUtilities;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import static com.google.common.truth.Truth.assertThat;
@@ -37,9 +37,7 @@ class SimpleModificationServiceTest {
             new LinkedHashSet<>()
         );
 
-        Action openAction = new OpenAction(TimeUtilities.nowTruncated(), UUID.randomUUID(), TicketFormatContent.of(
-            Pair.of("message", "hello")
-        ));
+        Action openAction = new OpenAction(TimeUtilities.nowTruncated(), UUID.randomUUID(), PremadeTickets.ticketContent());
 
         this.ticket.withAction(openAction);
     }
@@ -52,18 +50,18 @@ class SimpleModificationServiceTest {
         assertThat(this.ticket.status()).isEqualTo(TicketStatus.CLOSED);
     }
 
-    //todo
     @Test
-    @Disabled
-    void edit() {
+    void comment() {
         CommentAction action = this.modificationService.comment(
             this.ticket,
             UUID.randomUUID(),
             "New message"
         );
 
-        assertThat(this.ticket.actions()).hasSize(2);
-        //assertThat(this.ticket.content()).isEqualTo(action.content());
+        Set<Action> actions = this.ticket.actions();
+
+        assertThat(actions).hasSize(2);
+        assertThat(actions).contains(action);
     }
 
     @Test
