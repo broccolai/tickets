@@ -2,7 +2,7 @@ package love.broccolai.tickets.minecraft.paper.parsers;
 
 import io.leangen.geantyref.TypeToken;
 import love.broccolai.tickets.minecraft.common.model.Commander;
-import love.broccolai.tickets.minecraft.common.model.Location;
+import love.broccolai.tickets.api.model.Location;
 import love.broccolai.tickets.minecraft.common.parsers.LocationDescriptor;
 import org.incendo.cloud.bukkit.parser.location.LocationParser;
 import org.incendo.cloud.context.CommandContext;

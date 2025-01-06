@@ -8,6 +8,8 @@ import java.util.Set;
 import love.broccolai.tickets.api.model.Ticket;
 import love.broccolai.tickets.api.model.TicketStatus;
 import love.broccolai.tickets.api.model.proflie.Profile;
+import love.broccolai.tickets.api.service.StorageService;
+import love.broccolai.tickets.minecraft.common.exceptions.TicketNotFoundException;
 import love.broccolai.tickets.minecraft.common.model.Commander;
 import love.broccolai.tickets.minecraft.common.parsers.ProfileDescriptor;
 import org.incendo.cloud.component.CommandComponent;
@@ -31,12 +33,12 @@ public class TargetTicketDescriptor implements AggregateParser<Commander, Ticket
 
     @AssistedInject
     public TargetTicketDescriptor(
+        final StorageService storageService,
         final ProfileDescriptor profileDescriptor,
-        final TicketParser ticketParser,
         final @Assisted("statuses") Set<TicketStatus> statuses
     ) {
         this.profileDescriptor = profileDescriptor;
-        this.ticketParser = ticketParser;
+        this.ticketParser = new TicketParser(storageService, false);
         this.statuses = statuses;
     }
 
@@ -61,7 +63,16 @@ public class TargetTicketDescriptor implements AggregateParser<Commander, Ticket
 
     @Override
     public AggregateResultMapper<Commander, Ticket> mapper() {
-        return ($, context) -> ArgumentParseResult.success(context.get(TICKET_KEY)).asFuture();
+        return ($, context) -> {
+            Profile profile = context.get(TARGET_KEY);
+            Ticket ticket = context.get(TICKET_KEY);
+
+            if (!profile.uuid().equals(ticket.creator())) {
+                return ArgumentParseResult.<Ticket>failure(new TicketNotFoundException()).asFuture();
+            }
+
+            return ArgumentParseResult.success(context.get(TICKET_KEY)).asFuture();
+        };
     }
 
     @Override

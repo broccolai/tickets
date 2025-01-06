@@ -12,6 +12,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Instant;
 import javax.sql.DataSource;
+import love.broccolai.tickets.api.model.format.TicketFormatContent;
 import love.broccolai.tickets.api.registry.ActionRegistry;
 import love.broccolai.tickets.api.registry.TicketTypeRegistry;
 import love.broccolai.tickets.common.configuration.Configuration;
@@ -20,6 +21,7 @@ import love.broccolai.tickets.common.configuration.TicketsConfiguration;
 import love.broccolai.tickets.common.registry.SimpleActionRegistry;
 import love.broccolai.tickets.common.registry.SimpleTicketTypeRegistry;
 import love.broccolai.tickets.common.serialization.gson.InstantAdapter;
+import love.broccolai.tickets.common.serialization.gson.TicketFormatContentAdapter;
 import love.broccolai.tickets.common.serialization.jdbi.ActionMapper;
 import love.broccolai.tickets.common.serialization.jdbi.AssociatedActionMapper;
 import love.broccolai.tickets.common.serialization.jdbi.TicketMapper;
@@ -38,6 +40,7 @@ public final class ConfigurationModule extends AbstractModule {
 
     private static final Gson GSON = new GsonBuilder()
         .registerTypeAdapter(Instant.class, new InstantAdapter())
+        .registerTypeAdapter(TicketFormatContent.class, new TicketFormatContentAdapter())
         .create();
 
     @Override

@@ -1,7 +1,5 @@
 package love.broccolai.tickets.minecraft.common.parsers.ticket;
 
-import com.google.common.base.Objects;
-import com.google.inject.Inject;
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.Optional;
@@ -13,7 +11,6 @@ import love.broccolai.tickets.api.model.proflie.Profile;
 import love.broccolai.tickets.api.service.StorageService;
 import love.broccolai.tickets.minecraft.common.exceptions.TicketNotFoundException;
 import love.broccolai.tickets.minecraft.common.model.Commander;
-import love.broccolai.tickets.minecraft.common.parsers.ProfileDescriptor;
 import org.incendo.cloud.context.CommandContext;
 import org.incendo.cloud.context.CommandInput;
 import org.incendo.cloud.key.CloudKey;
@@ -21,6 +18,7 @@ import org.incendo.cloud.parser.ArgumentParseResult;
 import org.incendo.cloud.parser.ArgumentParser;
 import org.incendo.cloud.suggestion.BlockingSuggestionProvider;
 import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 @NullMarked
 public final class TicketParser implements ArgumentParser<Commander, Ticket>, BlockingSuggestionProvider.Strings<Commander> {
@@ -31,10 +29,11 @@ public final class TicketParser implements ArgumentParser<Commander, Ticket>, Bl
     private static final CloudKey<Profile> TARGET_KEY = CloudKey.cloudKey("target", Profile.class);
 
     private final StorageService storageService;
+    private final boolean self;
 
-    @Inject
-    public TicketParser(final StorageService storageService) {
+    public TicketParser(final StorageService storageService, final boolean self) {
         this.storageService = storageService;
+        this.self = self;
     }
 
     @Override
@@ -45,18 +44,10 @@ public final class TicketParser implements ArgumentParser<Commander, Ticket>, Bl
         if (!commandInput.isValidInteger(MINIMUM_ID, MAXIMUM_ID)) {
             return ArgumentParseResult.failure(new RuntimeException("cannot parse ticket"));
         }
-
-        Optional<Profile> potentialProfile = commandContext.optional(ProfileDescriptor.LAST_FOUND_PROFILE);
-
-        if (potentialProfile.isEmpty()) {
-            return ArgumentParseResult.failure(new RuntimeException("no target"));
-        }
-
-        Profile profile = potentialProfile.get();
         int id = commandInput.readInteger();
 
         return this.storageService.selectTicket(id)
-            .filter(ticket -> Objects.equal(ticket.creator(), profile.uuid()))
+            .filter(ticket -> this.ticketMatchesTarget(commandContext, ticket))
             .map(ArgumentParseResult::success)
             .orElse(ArgumentParseResult.failure(new TicketNotFoundException()));
     }
@@ -66,10 +57,7 @@ public final class TicketParser implements ArgumentParser<Commander, Ticket>, Bl
         final CommandContext<Commander> commandContext,
         final CommandInput input
     ) {
-        UUID source = commandContext
-            .optional(TARGET_KEY)
-            .map(Profile::uuid)
-            .orElse(null);
+        UUID source = this.target(commandContext);
 
         if (source == null) {
             return Collections.emptyList();
@@ -79,5 +67,21 @@ public final class TicketParser implements ArgumentParser<Commander, Ticket>, Bl
             .map(Ticket::id)
             .map(String::valueOf)
             .toList();
+    }
+
+    private boolean ticketMatchesTarget(final CommandContext<Commander> commandContext, final Ticket ticket) {
+        UUID target = this.target(commandContext);
+
+        return target == null || ticket.creator().equals(target);
+    }
+
+    private @Nullable UUID target(final CommandContext<Commander> commandContext) {
+        if (this.self) {
+            return commandContext.sender().uuid();
+        }
+
+        return commandContext.optional(TARGET_KEY)
+            .map(Profile::uuid)
+            .orElse(null);
     }
 }

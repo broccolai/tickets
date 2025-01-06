@@ -4,13 +4,20 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
 import io.leangen.geantyref.TypeToken;
+import love.broccolai.tickets.api.model.Location;
 import love.broccolai.tickets.api.model.Ticket;
+import love.broccolai.tickets.api.model.format.TicketFormat;
+import love.broccolai.tickets.api.model.proflie.Profile;
 import love.broccolai.tickets.minecraft.common.mooonshine.BasicReceiverResolver;
 import love.broccolai.tickets.minecraft.common.mooonshine.LocaleConfiguration;
 import love.broccolai.tickets.minecraft.common.mooonshine.MessageRenderer;
+import love.broccolai.tickets.minecraft.common.mooonshine.resolvers.LocationPlaceholderResolver;
 import love.broccolai.tickets.minecraft.common.mooonshine.resolvers.NumberPlaceholderResolver;
+import love.broccolai.tickets.minecraft.common.mooonshine.resolvers.ProfilePlaceholderResolver;
 import love.broccolai.tickets.minecraft.common.mooonshine.resolvers.StringPlaceholderResolver;
 import love.broccolai.tickets.minecraft.common.mooonshine.resolvers.TicketPlaceholderResolver;
+import love.broccolai.tickets.minecraft.common.mooonshine.resolvers.TicketFormatPlaceholderResolver;
+import love.broccolai.tickets.minecraft.common.mooonshine.resolvers.UUIDPlaceholderResolver;
 import love.broccolai.tickets.minecraft.common.service.MessageService;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.moonshine.Moonshine;
@@ -25,6 +32,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Path;
 import java.util.Objects;
+import java.util.UUID;
 
 public class MessageModule extends AbstractModule {
 
@@ -35,8 +43,12 @@ public class MessageModule extends AbstractModule {
         final MessageRenderer messageRenderer,
         final StringPlaceholderResolver stringPlaceholderResolver,
         final NumberPlaceholderResolver numberPlaceholderResolver,
-        final TicketPlaceholderResolver ticketPlaceholderResolver
-    ) throws UnscannableMethodException {
+        final ProfilePlaceholderResolver profilePlaceholderResolver,
+        final UUIDPlaceholderResolver uuidPlaceholderResolver,
+        final TicketPlaceholderResolver ticketPlaceholderResolver,
+        final TicketFormatPlaceholderResolver ticketFormatPlaceholderResolver,
+        final LocationPlaceholderResolver locationPlaceholderResolver
+        ) throws UnscannableMethodException {
         return Moonshine.<MessageService, Audience>builder(TypeToken.get(MessageService.class))
             .receiverLocatorResolver(basicReceiverResolver, 0)
             .sourced((audience, key) -> localeConfiguration.get(key))
@@ -47,7 +59,11 @@ public class MessageModule extends AbstractModule {
             )
             .weightedPlaceholderResolver(String.class, stringPlaceholderResolver, 1)
             .weightedPlaceholderResolver(Number.class, numberPlaceholderResolver, 1)
+            .weightedPlaceholderResolver(Profile.class, profilePlaceholderResolver, 1)
+            .weightedPlaceholderResolver(UUID.class, uuidPlaceholderResolver, 1)
             .weightedPlaceholderResolver(Ticket.class, ticketPlaceholderResolver, 1)
+            .weightedPlaceholderResolver(TicketFormat.class, ticketFormatPlaceholderResolver, 1)
+            .weightedPlaceholderResolver(Location.class, locationPlaceholderResolver, 1)
             .create(this.getClass().getClassLoader());
     }
 

@@ -1,4 +1,4 @@
-package love.broccolai.tickets.minecraft.common.model;
+package love.broccolai.tickets.api.model;
 
 public record Location(
     String world,

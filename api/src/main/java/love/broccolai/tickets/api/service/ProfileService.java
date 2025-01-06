@@ -13,6 +13,8 @@ public interface ProfileService {
 
     Map<UUID, Profile> get(Collection<UUID> uuids);
 
+    String name(UUID uuid);
+
     Collection<String> onlineUsernames();
 
 }

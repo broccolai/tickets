@@ -1,6 +1,6 @@
 package love.broccolai.tickets.minecraft.common.parsers;
 
-import love.broccolai.tickets.minecraft.common.model.Location;
+import love.broccolai.tickets.api.model.Location;
 import org.jspecify.annotations.NullMarked;
 
 @NullMarked

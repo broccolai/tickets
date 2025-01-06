@@ -31,6 +31,11 @@ public final class PaperProfileService implements ProfileService {
     }
 
     @Override
+    public String name(UUID uuid) {
+        return Bukkit.getOfflinePlayer(uuid).getName();
+    }
+
+    @Override
     public Collection<String> onlineUsernames() {
         return Trove.of(Bukkit.getOnlinePlayers())
             .map(Player::getName)
