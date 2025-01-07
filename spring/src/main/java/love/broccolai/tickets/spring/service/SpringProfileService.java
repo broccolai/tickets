@@ -28,6 +28,11 @@ public final class SpringProfileService implements ProfileService {
     }
 
     @Override
+    public String name(UUID uuid) {
+        return "temp";
+    }
+
+    @Override
     public Collection<String> onlineUsernames() {
         throw new IllegalCallerException();
     }

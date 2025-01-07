@@ -4,6 +4,11 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
 import io.leangen.geantyref.TypeToken;
+import java.io.IOException;
+import java.net.URL;
+import java.nio.file.Path;
+import java.util.Objects;
+import java.util.UUID;
 import love.broccolai.tickets.api.model.Location;
 import love.broccolai.tickets.api.model.Ticket;
 import love.broccolai.tickets.api.model.format.TicketFormat;
@@ -15,8 +20,8 @@ import love.broccolai.tickets.minecraft.common.mooonshine.resolvers.LocationPlac
 import love.broccolai.tickets.minecraft.common.mooonshine.resolvers.NumberPlaceholderResolver;
 import love.broccolai.tickets.minecraft.common.mooonshine.resolvers.ProfilePlaceholderResolver;
 import love.broccolai.tickets.minecraft.common.mooonshine.resolvers.StringPlaceholderResolver;
-import love.broccolai.tickets.minecraft.common.mooonshine.resolvers.TicketPlaceholderResolver;
 import love.broccolai.tickets.minecraft.common.mooonshine.resolvers.TicketFormatPlaceholderResolver;
+import love.broccolai.tickets.minecraft.common.mooonshine.resolvers.TicketPlaceholderResolver;
 import love.broccolai.tickets.minecraft.common.mooonshine.resolvers.UUIDPlaceholderResolver;
 import love.broccolai.tickets.minecraft.common.service.MessageService;
 import net.kyori.adventure.audience.Audience;
@@ -28,11 +33,6 @@ import org.spongepowered.configurate.ConfigurateException;
 import org.spongepowered.configurate.ConfigurationNode;
 import org.spongepowered.configurate.hocon.HoconConfigurationLoader;
 import org.spongepowered.configurate.loader.ConfigurationLoader;
-import java.io.IOException;
-import java.net.URL;
-import java.nio.file.Path;
-import java.util.Objects;
-import java.util.UUID;
 
 public class MessageModule extends AbstractModule {
 
@@ -48,7 +48,7 @@ public class MessageModule extends AbstractModule {
         final TicketPlaceholderResolver ticketPlaceholderResolver,
         final TicketFormatPlaceholderResolver ticketFormatPlaceholderResolver,
         final LocationPlaceholderResolver locationPlaceholderResolver
-        ) throws UnscannableMethodException {
+    ) throws UnscannableMethodException {
         return Moonshine.<MessageService, Audience>builder(TypeToken.get(MessageService.class))
             .receiverLocatorResolver(basicReceiverResolver, 0)
             .sourced((audience, key) -> localeConfiguration.get(key))

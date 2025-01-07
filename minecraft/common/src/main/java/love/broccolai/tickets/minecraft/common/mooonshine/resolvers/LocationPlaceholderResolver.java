@@ -1,5 +1,8 @@
 package love.broccolai.tickets.minecraft.common.mooonshine.resolvers;
 
+import java.lang.reflect.Method;
+import java.lang.reflect.Type;
+import java.text.DecimalFormat;
 import love.broccolai.tickets.api.model.Location;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
@@ -10,10 +13,6 @@ import net.kyori.moonshine.placeholder.ContinuanceValue;
 import net.kyori.moonshine.util.Either;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
-
-import java.lang.reflect.Method;
-import java.lang.reflect.Type;
-import java.text.DecimalFormat;
 
 import static net.kyori.moonshine.placeholder.ConclusionValue.conclusionValue;
 

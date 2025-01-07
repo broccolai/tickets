@@ -1,6 +1,9 @@
 package love.broccolai.tickets.minecraft.common.mooonshine.resolvers;
 
 import com.google.inject.Inject;
+import java.lang.reflect.Method;
+import java.lang.reflect.Type;
+import java.util.UUID;
 import love.broccolai.tickets.api.model.proflie.Profile;
 import love.broccolai.tickets.api.service.ProfileService;
 import net.kyori.adventure.audience.Audience;
@@ -10,10 +13,6 @@ import net.kyori.moonshine.placeholder.ContinuanceValue;
 import net.kyori.moonshine.util.Either;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
-
-import java.lang.reflect.Method;
-import java.lang.reflect.Type;
-import java.util.UUID;
 
 import static net.kyori.moonshine.placeholder.ContinuanceValue.continuanceValue;
 

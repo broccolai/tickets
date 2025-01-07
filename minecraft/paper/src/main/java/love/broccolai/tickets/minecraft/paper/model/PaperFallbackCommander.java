@@ -1,12 +1,12 @@
 package love.broccolai.tickets.minecraft.paper.model;
 
 import io.papermc.paper.command.brigadier.CommandSourceStack;
+import java.util.UUID;
 import love.broccolai.tickets.minecraft.common.model.Commander;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.identity.Identity;
 import org.bukkit.command.CommandSender;
 import org.jspecify.annotations.NullMarked;
-import java.util.UUID;
 
 @NullMarked
 public record PaperFallbackCommander(

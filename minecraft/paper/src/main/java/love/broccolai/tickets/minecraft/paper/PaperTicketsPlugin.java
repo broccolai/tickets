@@ -16,8 +16,6 @@ import love.broccolai.tickets.minecraft.common.model.Commander;
 import love.broccolai.tickets.minecraft.paper.inject.PaperPlatformModule;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.incendo.cloud.CommandManager;
-import org.incendo.cloud.bukkit.internal.CraftBukkitReflection;
-import org.incendo.cloud.bukkit.parser.location.LocationParser;
 
 public final class PaperTicketsPlugin extends JavaPlugin {
 

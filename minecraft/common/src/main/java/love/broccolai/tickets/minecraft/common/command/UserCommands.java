@@ -13,7 +13,6 @@ import love.broccolai.tickets.common.configuration.TicketsConfiguration;
 import love.broccolai.tickets.minecraft.common.factory.CommandArgumentFactory;
 import love.broccolai.tickets.minecraft.common.model.Commander;
 import love.broccolai.tickets.minecraft.common.model.PlayerCommander;
-import love.broccolai.tickets.minecraft.common.parsers.LabeledDescriptor;
 import love.broccolai.tickets.minecraft.common.parsers.LocationDescriptor;
 import love.broccolai.tickets.minecraft.common.parsers.ticket.TicketTypeDescriptor;
 import love.broccolai.tickets.minecraft.common.service.MessageService;

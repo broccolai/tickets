@@ -1,13 +1,13 @@
 package love.broccolai.tickets.minecraft.common.mooonshine.resolvers;
 
+import java.lang.reflect.Type;
+import java.util.HashMap;
+import java.util.Map;
 import net.kyori.adventure.text.Component;
 import net.kyori.moonshine.placeholder.ConclusionValue;
 import net.kyori.moonshine.placeholder.ContinuanceValue;
 import net.kyori.moonshine.util.Either;
 import org.jspecify.annotations.NullMarked;
-import java.lang.reflect.Type;
-import java.util.HashMap;
-import java.util.Map;
 
 @NullMarked
 final class PlaceholderMap {
@@ -22,7 +22,7 @@ final class PlaceholderMap {
 
     public <F> PlaceholderMap continuance(final String key, final F value, final Type type) {
         this.result.put(
-            createKey(key),
+            this.createKey(key),
             Either.right(ContinuanceValue.continuanceValue(value, type))
         );
 
@@ -31,7 +31,7 @@ final class PlaceholderMap {
 
     public PlaceholderMap conclusion(final String key, final Component component) {
         this.result.put(
-            createKey(key),
+            this.createKey(key),
             Either.left(ConclusionValue.conclusionValue(component))
         );
         return this;

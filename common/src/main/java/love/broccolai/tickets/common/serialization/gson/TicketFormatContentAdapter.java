@@ -6,10 +6,10 @@ import com.google.gson.JsonParser;
 import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
+import java.io.IOException;
 import love.broccolai.tickets.api.model.format.TicketFormatContent;
 import love.broccolai.tickets.api.model.format.TicketFormatStyle;
 import love.broccolai.tickets.api.utilities.Pair;
-import java.io.IOException;
 
 public class TicketFormatContentAdapter extends TypeAdapter<TicketFormatContent> {
 
@@ -33,7 +33,7 @@ public class TicketFormatContentAdapter extends TypeAdapter<TicketFormatContent>
             if (value == null) {
                 out.nullValue();
             } else {
-                gson.toJson(value, value.getClass(), out);
+                this.gson.toJson(value, value.getClass(), out);
             }
 
             out.endObject();
@@ -64,14 +64,12 @@ public class TicketFormatContentAdapter extends TypeAdapter<TicketFormatContent>
                         JsonElement valueElement = JsonParser.parseReader(in);
                         if (style != null) {
                             Class<?> type = style.contentType();
-                            value = gson.fromJson(valueElement, type);
+                            value = this.gson.fromJson(valueElement, type);
                         } else {
                             value = valueElement;
                         }
                     }
-                    default -> {
-                        in.skipValue();
-                    }
+                    default -> in.skipValue();
                 }
             }
 

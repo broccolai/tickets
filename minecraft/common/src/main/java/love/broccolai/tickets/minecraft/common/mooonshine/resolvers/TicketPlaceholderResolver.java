@@ -16,8 +16,6 @@ import net.kyori.moonshine.util.Either;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
-import static net.kyori.moonshine.placeholder.ContinuanceValue.continuanceValue;
-
 @NullMarked
 public final class TicketPlaceholderResolver implements IPlaceholderResolver<Audience, Ticket, Component> {
 

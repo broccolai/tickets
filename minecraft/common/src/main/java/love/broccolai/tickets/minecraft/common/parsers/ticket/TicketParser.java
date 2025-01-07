@@ -2,7 +2,6 @@ package love.broccolai.tickets.minecraft.common.parsers.ticket;
 
 import java.util.Collections;
 import java.util.EnumSet;
-import java.util.Optional;
 import java.util.UUID;
 import love.broccolai.corn.trove.Trove;
 import love.broccolai.tickets.api.model.Ticket;

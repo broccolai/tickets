@@ -1,5 +1,8 @@
 package love.broccolai.tickets.minecraft.common.service;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 import love.broccolai.tickets.api.model.Location;
 import love.broccolai.tickets.api.model.Ticket;
 import net.kyori.adventure.text.Component;
@@ -9,9 +12,6 @@ import net.kyori.moonshine.annotation.Message;
 import net.kyori.moonshine.annotation.Placeholder;
 import org.flywaydb.core.internal.util.StringUtils;
 import org.jspecify.annotations.NullMarked;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
 
 @NullMarked
 public interface MessageService {
@@ -40,7 +40,7 @@ public interface MessageService {
         display.add(Component.text());
 
         //todo: lol
-        ticket.type().parts().forEach((part) -> {
+        ticket.type().parts().forEach(part -> {
             Component data = switch (part.style()) {
                 case Player -> this.ticketDataProfile(
                     StringUtils.capitalizeFirstLetter(part.identifier()),
@@ -52,7 +52,7 @@ public interface MessageService {
                 );
                 case Location -> this.ticketDataLocation(
                     StringUtils.capitalizeFirstLetter(part.identifier()),
-                    ((Location) ticket.content().get(part.identifier()).second())
+                    (Location) ticket.content().get(part.identifier()).second()
                 );
             };
 

@@ -32,7 +32,7 @@ public final class PremadeTickets {
 
     public static TicketFormatContent ticketContent() {
         TicketFormatContent content = new TicketFormatContent();
-        content.put(ticketFormatPart().identifier(), "heyyy");
+        content.put(ticketFormatPart().identifier(), Pair.of(TicketFormatStyle.Sentence, "heyyyy"));
 
         return content;
     }
