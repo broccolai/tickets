@@ -8,7 +8,6 @@ import love.broccolai.tickets.api.model.format.TicketFormat;
 import love.broccolai.tickets.api.model.format.TicketFormatContent;
 import love.broccolai.tickets.api.model.format.TicketFormatPart;
 import love.broccolai.tickets.api.service.StorageService;
-import love.broccolai.tickets.api.utilities.Pair;
 import love.broccolai.tickets.common.configuration.TicketsConfiguration;
 import love.broccolai.tickets.minecraft.common.factory.CommandArgumentFactory;
 import love.broccolai.tickets.minecraft.common.model.Commander;
@@ -24,8 +23,6 @@ import org.incendo.cloud.key.CloudKey;
 import org.incendo.cloud.parser.ParserDescriptor;
 import org.incendo.cloud.parser.standard.StringParser;
 import org.jspecify.annotations.NullMarked;
-
-import static net.kyori.adventure.text.Component.text;
 
 @NullMarked
 public final class UserCommands extends AbstractCommand {
@@ -99,18 +96,17 @@ public final class UserCommands extends AbstractCommand {
 
     private void handleCreate(final CommandContext<PlayerCommander> context, TicketFormat format) {
         PlayerCommander commander = context.sender();
-        TicketFormatContent content = new TicketFormatContent();
+        TicketFormatContent content = new TicketFormatContent(format.identifier());
 
         for (TicketFormatPart part : format.parts()) {
             CloudKey<?> key = CloudKey.cloudKey(part.identifier(), part.style().contentType());
-            content.put(part.identifier(), Pair.of(part.style(), context.get(key)));
+            content.put(part.identifier(), context.get(key));
         }
 
         Ticket ticket = this.storageService.createTicket(commander.uuid(), format, content);
 
-        commander.sendMessage(
-            text("Ticket created: " + ticket.id())
-        );
+        commander.sendMessage(this.messageService.ticketDisplay(ticket));
+        this.messageService.feedbackUserCreate(commander, ticket);
     }
 
     private void handleShow(final CommandContext<PlayerCommander> context) {

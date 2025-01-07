@@ -7,6 +7,8 @@ import java.lang.reflect.Type;
 import java.util.Map;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.ShadowColor;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.Tag;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
@@ -18,9 +20,14 @@ import org.jspecify.annotations.NullMarked;
 public final class MessageRenderer implements IMessageRenderer<Audience, String, Component, Component> {
 
     private final MiniMessage miniMessage = MiniMessage.miniMessage();
+    private final TagResolver prefix;
 
     @Inject
-    public MessageRenderer() {
+    public MessageRenderer(final LocaleConfiguration localeConfiguration) {
+        Component prefixComponent = this.miniMessage.deserialize(localeConfiguration.get("prefix"))
+            .shadowColor(ShadowColor.shadowColor(NamedTextColor.BLACK, 130));
+
+        this.prefix = TagResolver.resolver("prefix", Tag.selfClosingInserting(prefixComponent));
     }
 
     @Override
@@ -41,6 +48,7 @@ public final class MessageRenderer implements IMessageRenderer<Audience, String,
 
                 return Tag.selfClosingInserting(placeholder);
             })
+            .resolver(this.prefix)
             .build();
 
         return this.miniMessage.deserialize(intermediateMessage, resolver);

@@ -5,9 +5,12 @@ import java.lang.reflect.Type;
 import java.util.Map;
 import java.util.UUID;
 import love.broccolai.tickets.api.model.Ticket;
+import love.broccolai.tickets.api.model.TicketStatus;
 import love.broccolai.tickets.api.model.format.TicketFormat;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.ShadowColor;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.moonshine.placeholder.ConclusionValue;
 import net.kyori.moonshine.placeholder.ContinuanceValue;
@@ -28,18 +31,22 @@ public final class TicketPlaceholderResolver implements IPlaceholderResolver<Aud
         final Method method,
         final @Nullable Object[] parameters
     ) {
-        TextColor statusColor = switch (value.status()) {
-            case OPEN -> TextColor.color(0x00FF00);
-            case PICKED -> TextColor.color(0xFFFF00);
-            case CLOSED -> TextColor.color(0xFF0000);
-        };
+        Component id = Component.text("#" + value.id())
+            .color(TextColor.color(value.status().color()))
+            .shadowColor(ShadowColor.shadowColor(NamedTextColor.BLACK, 130));
 
-        Component id = Component.text("#" + value.id(), statusColor);
-
-        return new PlaceholderMap(placeholderName)
+        PlaceholderMap placeholders = new PlaceholderMap(placeholderName)
             .conclusion("id", id)
             .continuance("creator", value.creator(), UUID.class)
             .continuance("format", value.type(), TicketFormat.class)
-            .build();
+            .continuance("status", value.status(), TicketStatus.class);
+
+        if (value.assignee().isPresent()) {
+            placeholders.continuance("assignee", value.assignee().get(), UUID.class);
+        } else {
+            placeholders.conclusion("assignee", Component.text("NONE?"));
+        }
+
+        return placeholders.build();
     }
 }

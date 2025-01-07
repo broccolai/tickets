@@ -11,6 +11,7 @@ import java.util.Objects;
 import java.util.UUID;
 import love.broccolai.tickets.api.model.Location;
 import love.broccolai.tickets.api.model.Ticket;
+import love.broccolai.tickets.api.model.TicketStatus;
 import love.broccolai.tickets.api.model.format.TicketFormat;
 import love.broccolai.tickets.api.model.proflie.Profile;
 import love.broccolai.tickets.minecraft.common.mooonshine.BasicReceiverResolver;
@@ -22,6 +23,7 @@ import love.broccolai.tickets.minecraft.common.mooonshine.resolvers.ProfilePlace
 import love.broccolai.tickets.minecraft.common.mooonshine.resolvers.StringPlaceholderResolver;
 import love.broccolai.tickets.minecraft.common.mooonshine.resolvers.TicketFormatPlaceholderResolver;
 import love.broccolai.tickets.minecraft.common.mooonshine.resolvers.TicketPlaceholderResolver;
+import love.broccolai.tickets.minecraft.common.mooonshine.resolvers.TicketStatusPlaceholderResolver;
 import love.broccolai.tickets.minecraft.common.mooonshine.resolvers.UUIDPlaceholderResolver;
 import love.broccolai.tickets.minecraft.common.service.MessageService;
 import net.kyori.adventure.audience.Audience;
@@ -47,6 +49,7 @@ public class MessageModule extends AbstractModule {
         final UUIDPlaceholderResolver uuidPlaceholderResolver,
         final TicketPlaceholderResolver ticketPlaceholderResolver,
         final TicketFormatPlaceholderResolver ticketFormatPlaceholderResolver,
+        final TicketStatusPlaceholderResolver ticketStatusPlaceholderResolver,
         final LocationPlaceholderResolver locationPlaceholderResolver
     ) throws UnscannableMethodException {
         return Moonshine.<MessageService, Audience>builder(TypeToken.get(MessageService.class))
@@ -63,6 +66,7 @@ public class MessageModule extends AbstractModule {
             .weightedPlaceholderResolver(UUID.class, uuidPlaceholderResolver, 1)
             .weightedPlaceholderResolver(Ticket.class, ticketPlaceholderResolver, 1)
             .weightedPlaceholderResolver(TicketFormat.class, ticketFormatPlaceholderResolver, 1)
+            .weightedPlaceholderResolver(TicketStatus.class, ticketStatusPlaceholderResolver, 1)
             .weightedPlaceholderResolver(Location.class, locationPlaceholderResolver, 1)
             .create(this.getClass().getClassLoader());
     }

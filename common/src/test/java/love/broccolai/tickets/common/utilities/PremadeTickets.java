@@ -9,7 +9,6 @@ import love.broccolai.tickets.api.model.format.TicketFormatContent;
 import love.broccolai.tickets.api.model.format.TicketFormatPart;
 import love.broccolai.tickets.api.model.format.TicketFormatStyle;
 import love.broccolai.tickets.api.service.StorageService;
-import love.broccolai.tickets.api.utilities.Pair;
 
 public final class PremadeTickets {
     private PremadeTickets() {
@@ -31,8 +30,9 @@ public final class PremadeTickets {
     }
 
     public static TicketFormatContent ticketContent() {
-        TicketFormatContent content = new TicketFormatContent();
-        content.put(ticketFormatPart().identifier(), Pair.of(TicketFormatStyle.Sentence, "heyyyy"));
+        TicketFormatPart part = ticketFormatPart();
+        TicketFormatContent content = new TicketFormatContent(part.identifier());
+        content.put(part.identifier(), "What is the meaning of life?");
 
         return content;
     }

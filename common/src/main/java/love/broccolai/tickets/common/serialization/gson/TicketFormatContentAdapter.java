@@ -1,84 +1,107 @@
 package love.broccolai.tickets.common.serialization.gson;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonParser;
 import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
+import com.google.inject.Inject;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+import love.broccolai.tickets.api.model.format.TicketFormat;
 import love.broccolai.tickets.api.model.format.TicketFormatContent;
-import love.broccolai.tickets.api.model.format.TicketFormatStyle;
-import love.broccolai.tickets.api.utilities.Pair;
+import love.broccolai.tickets.api.model.format.TicketFormatPart;
+import love.broccolai.tickets.api.registry.TicketTypeRegistry;
 
-public class TicketFormatContentAdapter extends TypeAdapter<TicketFormatContent> {
+public final class TicketFormatContentAdapter extends TypeAdapter<TicketFormatContent> {
 
+    private final TicketTypeRegistry ticketTypeRegistry;
     private final Gson gson = new Gson();
+
+    @Inject
+    public TicketFormatContentAdapter(final TicketTypeRegistry ticketTypeRegistry) {
+        this.ticketTypeRegistry = ticketTypeRegistry;
+    }
 
     @Override
     public void write(JsonWriter out, TicketFormatContent content) throws IOException {
         out.beginObject();
-        for (var entry : content.entrySet()) {
-            String key = entry.getKey();
-            out.name(key);
-            out.beginObject();
 
-            TicketFormatStyle style = entry.getValue().first();
-            Object value = entry.getValue().second();
+        // 1) Write the formatIdentifier
+        out.name("formatIdentifier").value(content.formatIdentifier());
 
-            out.name("style");
-            out.value(style.name());
+        // 2) Write the parts map
+        out.name("parts");
+        out.beginObject();
 
-            out.name("value");
-            if (value == null) {
-                out.nullValue();
-            } else {
-                this.gson.toJson(value, value.getClass(), out);
+        // Look up the ticket format so we know how to serialize each key
+        TicketFormat format = this.ticketTypeRegistry.fromIdentifier(content.formatIdentifier());
+        // (Could be null if unknown, so handle carefully)
+
+        // Go through each entry in parts
+        content.forEach((partKey, partValue) -> {
+            try {
+                out.name(partKey);
+                if (format != null) {
+                    TicketFormatPart ticketPart = format.findPart(partKey);
+                    // We have a known style => we know the real Java type
+                    Class<?> realType = ticketPart.style().contentType();
+                    this.gson.toJson(partValue, realType, out);
+                    return;
+                }
+                // Fallback if we can’t find a matching style
+                this.gson.toJson(partValue, Object.class, out);
+            } catch (IOException e) {
+                e.printStackTrace();
             }
+        });
 
-            out.endObject();
-        }
+        out.endObject();
         out.endObject();
     }
 
     @Override
     public TicketFormatContent read(JsonReader in) throws IOException {
-        TicketFormatContent content = new TicketFormatContent();
+        // We’ll buffer the data in a local map first
+        String formatIdentifier = null;
+        Map<String, Object> parts = new HashMap<>();
+
         in.beginObject();
-
         while (in.hasNext()) {
-            String entryName = in.nextName();
-            in.beginObject();
+            String name = in.nextName();
+            switch (name) {
+                case "formatIdentifier" -> {
+                    formatIdentifier = in.nextString();
+                }
+                case "parts" -> {
+                    in.beginObject();
+                    // Look up the format for correct deserialization
+                    TicketFormat format = this.ticketTypeRegistry.fromIdentifier(formatIdentifier);
 
-            TicketFormatStyle style = null;
-            Object value = null;
+                    while (in.hasNext()) {
+                        String partKey = in.nextName();
+                        // Attempt to find the part definition for this key
+                        TicketFormatPart ticketPart = (format != null) ? format.findPart(partKey) : null;
+                        Class<?> realType = (ticketPart != null)
+                            ? ticketPart.style().contentType()
+                            : Object.class; // fallback
 
-            while (in.hasNext()) {
-                String fieldName = in.nextName();
-                switch (fieldName) {
-                    case "style" -> {
-                        String styleName = in.nextString();
-                        style = TicketFormatStyle.valueOf(styleName);
+                        Object partValue = this.gson.fromJson(in, realType);
+                        parts.put(partKey, partValue);
                     }
-                    case "value" -> {
-                        JsonElement valueElement = JsonParser.parseReader(in);
-                        if (style != null) {
-                            Class<?> type = style.contentType();
-                            value = this.gson.fromJson(valueElement, type);
-                        } else {
-                            value = valueElement;
-                        }
-                    }
-                    default -> in.skipValue();
+                    in.endObject();
+                }
+                default -> {
+                    // Skip anything unknown
+                    in.skipValue();
                 }
             }
-
-            in.endObject();
-
-            content.put(entryName, Pair.of(style, value));
         }
-
         in.endObject();
+
+        // Finally, create a new TicketFormatContent
+        TicketFormatContent content = new TicketFormatContent(formatIdentifier);
+        parts.forEach(content::put);
         return content;
     }
 }

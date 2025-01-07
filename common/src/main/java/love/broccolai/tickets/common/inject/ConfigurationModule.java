@@ -38,11 +38,6 @@ import org.spongepowered.configurate.objectmapping.ObjectMapper;
 @NullMarked
 public final class ConfigurationModule extends AbstractModule {
 
-    private static final Gson GSON = new GsonBuilder()
-        .registerTypeAdapter(Instant.class, new InstantAdapter())
-        .registerTypeAdapter(TicketFormatContent.class, new TicketFormatContentAdapter())
-        .create();
-
     @Override
     protected void configure() {
         this.bind(ActionRegistry.class).to(SimpleActionRegistry.class);
@@ -76,8 +71,20 @@ public final class ConfigurationModule extends AbstractModule {
 
     @Provides
     @Singleton
+    public Gson provideGson(
+        TicketFormatContentAdapter ticketFormatContentAdapter
+    ) {
+        return new GsonBuilder()
+            .registerTypeAdapter(TicketFormatContent.class, ticketFormatContentAdapter)
+            .registerTypeAdapter(Instant.class, new InstantAdapter())
+            .create();
+    }
+
+    @Provides
+    @Singleton
     public Jdbi provideJdbi(
         final DataSource dataSource,
+        final Gson gson,
         final ActionMapper actionMapper,
         final AssociatedActionMapper associatedActionMapper,
         final TicketMapper ticketMapper,
@@ -91,7 +98,7 @@ public final class ConfigurationModule extends AbstractModule {
             .registerColumnMapper(ticketTypeMapper)
             .registerArgument(ticketTypeMapper);
 
-        jdbi.getConfig(Gson2Config.class).setGson(GSON);
+        jdbi.getConfig(Gson2Config.class).setGson(gson);
 
         return jdbi;
     }

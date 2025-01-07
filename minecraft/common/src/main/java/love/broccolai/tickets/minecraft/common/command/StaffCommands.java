@@ -1,7 +1,9 @@
 package love.broccolai.tickets.minecraft.common.command;
 
 import com.google.inject.Inject;
+import java.util.ArrayList;
 import java.util.EnumSet;
+import java.util.List;
 import java.util.UUID;
 import love.broccolai.corn.trove.Trove;
 import love.broccolai.tickets.api.model.Ticket;
@@ -10,6 +12,7 @@ import love.broccolai.tickets.api.service.ModificationService;
 import love.broccolai.tickets.api.service.StorageService;
 import love.broccolai.tickets.minecraft.common.factory.CommandArgumentFactory;
 import love.broccolai.tickets.minecraft.common.model.Commander;
+import love.broccolai.tickets.minecraft.common.service.MessageService;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.JoinConfiguration;
 import org.incendo.cloud.Command;
@@ -20,7 +23,6 @@ import org.jspecify.annotations.NullMarked;
 
 import static love.broccolai.tickets.api.model.TicketStatus.OPEN;
 import static love.broccolai.tickets.api.model.TicketStatus.PICKED;
-import static net.kyori.adventure.text.Component.text;
 
 @NullMarked
 public final class StaffCommands extends AbstractCommand {
@@ -29,16 +31,19 @@ public final class StaffCommands extends AbstractCommand {
     private final static CloudKey<Profile> TARGET_KEY = CloudKey.cloudKey("profile", Profile.class);
 
     private final CommandArgumentFactory argumentFactory;
+    private final MessageService messageService;
     private final StorageService storageService;
     private final ModificationService modificationService;
 
     @Inject
     public StaffCommands(
         final CommandArgumentFactory argumentFactory,
+        final MessageService messageService,
         final StorageService storageService,
         final ModificationService modificationService
     ) {
         this.argumentFactory = argumentFactory;
+        this.messageService = messageService;
         this.storageService = storageService;
         this.modificationService = modificationService;
     }
@@ -82,11 +87,25 @@ public final class StaffCommands extends AbstractCommand {
     public void handleList(final CommandContext<Commander> context) {
         Commander commander = context.sender();
 
-        commander.sendMessage(text("all tickets"));
+        List<Component> message = new ArrayList<>();
+        message.add(this.messageService.feedbackStaffListHeader());
 
-        Trove.of(this.storageService.findTickets(EnumSet.of(OPEN), null, null))
-            .map(ticket -> text(ticket.id() + " with status + " + ticket.status().name()))
-            .forEach(commander::sendMessage);
+        Trove.of(this.storageService.findTickets(EnumSet.of(OPEN, PICKED), null, null))
+                .group(Ticket::type)
+                .forEach((type, tickets) -> {
+                    message.add(Component.text(" " + type.displayName()));
+
+                    tickets.forEach(ticket -> {
+                        message.add(this.messageService.feedbackStaffListEntry(ticket));
+                    });
+
+                    message.add(Component.newline());
+                });
+
+        commander.sendMessage(Component.join(
+            JoinConfiguration.newlines(),
+            message
+        ));
     }
 
     public void handleAssign(final CommandContext<Commander> context) {
