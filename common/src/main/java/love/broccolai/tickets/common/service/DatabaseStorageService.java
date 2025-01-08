@@ -24,6 +24,7 @@ import love.broccolai.tickets.api.model.action.AssociatedAction;
 import love.broccolai.tickets.api.model.action.packaged.OpenAction;
 import love.broccolai.tickets.api.model.format.TicketFormat;
 import love.broccolai.tickets.api.model.format.TicketFormatContent;
+import love.broccolai.tickets.api.model.proflie.Profile;
 import love.broccolai.tickets.api.service.StorageService;
 import love.broccolai.tickets.common.configuration.DatabaseConfiguration;
 import love.broccolai.tickets.common.model.SimpleTicket;
@@ -167,6 +168,46 @@ public final class DatabaseStorageService implements StorageService {
                 .bind("id", id)
                 .mapTo(AssociatedAction.class)
                 .first();
+        });
+    }
+
+    @Override
+    public Collection<Profile> loadProfiles(final Collection<UUID> uniqueIds) {
+        return this.jdbi.withHandle(handle -> {
+            return handle.createQuery(this.locator.query("profile/select-profiles"))
+                .bindList("ids", uniqueIds)
+                .mapTo(Profile.class)
+                .list();
+        });
+    }
+
+    @Override
+    public Optional<Profile> findProfile(String name) {
+        return this.jdbi.withHandle(handle -> {
+            return handle.createQuery(this.locator.query("profile/find-profile"))
+                .bind("username", name)
+                .mapTo(Profile.class)
+                .findFirst();
+        });
+    }
+
+    @Override
+    public void insertProfile(Profile profile) {
+        this.jdbi.useHandle(handle -> {
+            handle.createUpdate(this.locator.query("profile/create-profile"))
+                .bindByType("uuid", profile.uuid(), UUID.class)
+                .bind("username", profile.username())
+                .execute();
+        });
+    }
+
+    @Override
+    public void updateProfile(Profile profile) {
+        this.jdbi.useHandle(handle -> {
+            handle.createUpdate(this.locator.query("profile/update-profile"))
+                .bindByType("uuid", profile.uuid(), UUID.class)
+                .bind("username", profile.username())
+                .execute();
         });
     }
 

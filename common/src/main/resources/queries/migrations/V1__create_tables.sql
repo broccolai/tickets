@@ -15,3 +15,11 @@ CREATE TABLE tickets_action
 
     PRIMARY KEY (id, ticket)
 );
+
+CREATE TABLE tickets_profile
+(
+    uuid uuid NOT NULL,
+    username varchar(255) NOT NULL,
+
+    PRIMARY KEY (uuid)
+);

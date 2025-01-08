@@ -33,10 +33,14 @@ public interface SinglePlaceholderResolver<T> extends IPlaceholderResolver<Audie
             parameters
         );
 
+        if (resolvedValue == null) {
+            return Map.of();
+        }
+
         return Map.of(placeholderName, resolvedValue);
     }
 
-    Either<ConclusionValue<? extends Component>, ContinuanceValue<?>> single(
+    @Nullable Either<ConclusionValue<? extends Component>, ContinuanceValue<?>> single(
         final String placeholderName,
         final T value,
         final Audience receiver,

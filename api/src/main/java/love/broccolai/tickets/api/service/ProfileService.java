@@ -2,19 +2,21 @@ package love.broccolai.tickets.api.service;
 
 import java.util.Collection;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
+import java.util.function.Function;
 import love.broccolai.tickets.api.model.proflie.Profile;
 
 public interface ProfileService {
 
-    Profile get(UUID uuid);
+    Optional<Profile> get(UUID uuid);
 
-    Profile get(String username);
+    Optional<Profile> get(String username);
 
     Map<UUID, Profile> get(Collection<UUID> uuids);
 
-    String name(UUID uuid);
+    Optional<Profile> modify(UUID uuid, Function<Profile, Boolean> modifier);
 
-    Collection<String> onlineUsernames();
+    Collection<Profile> find();
 
 }

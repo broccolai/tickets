@@ -13,6 +13,7 @@ import love.broccolai.tickets.api.model.action.Action;
 import love.broccolai.tickets.api.model.action.AssociatedAction;
 import love.broccolai.tickets.api.model.format.TicketFormat;
 import love.broccolai.tickets.api.model.format.TicketFormatContent;
+import love.broccolai.tickets.api.model.proflie.Profile;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
@@ -37,4 +38,12 @@ public interface StorageService {
     );
 
     AssociatedAction selectActionWithTicketReference(int id);
+
+    Collection<Profile> loadProfiles(Collection<UUID> uniqueIds);
+
+    Optional<Profile> findProfile(String name);
+
+    void insertProfile(Profile profile);
+
+    void updateProfile(Profile profile);
 }

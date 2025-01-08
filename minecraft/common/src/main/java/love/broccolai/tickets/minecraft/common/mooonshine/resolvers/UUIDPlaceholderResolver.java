@@ -27,7 +27,7 @@ public final class UUIDPlaceholderResolver implements SinglePlaceholderResolver<
     }
 
     @Override
-    public Either<ConclusionValue<? extends Component>, ContinuanceValue<?>> single(
+    public @Nullable Either<ConclusionValue<? extends Component>, ContinuanceValue<?>> single(
         final String placeholderName,
         final UUID value,
         final Audience receiver,
@@ -35,7 +35,13 @@ public final class UUIDPlaceholderResolver implements SinglePlaceholderResolver<
         final Method method,
         final @Nullable Object[] parameters
     ) {
-        Profile profile = this.profileService.get(value);
+        Profile profile = this.profileService.get(value)
+            .orElse(null);
+
+        if (profile == null) {
+            return null;
+        }
+
         return Either.right(continuanceValue(profile, Profile.class));
     }
 

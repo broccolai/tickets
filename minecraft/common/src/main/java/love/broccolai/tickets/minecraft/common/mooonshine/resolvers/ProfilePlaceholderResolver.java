@@ -18,6 +18,8 @@ import static net.kyori.moonshine.placeholder.ConclusionValue.conclusionValue;
 @NullMarked
 public final class ProfilePlaceholderResolver implements SinglePlaceholderResolver<Profile> {
 
+    private static final String UNKNOWN = "?";
+
     private final ProfileService profileService;
 
     @Inject
@@ -34,7 +36,10 @@ public final class ProfilePlaceholderResolver implements SinglePlaceholderResolv
         final Method method,
         final @Nullable Object[] parameters
     ) {
-        String name = this.profileService.name(value.uuid());
+        String name = this.profileService.get(value.uuid())
+            .map(Profile::username)
+            .orElse(UNKNOWN);
+
         Component result = Component.text(name).hoverEvent(Component.text(value.uuid().toString()));
 
         return Either.left(conclusionValue(result));

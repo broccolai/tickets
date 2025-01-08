@@ -14,6 +14,8 @@ import love.broccolai.tickets.minecraft.common.inject.MessageModule;
 import love.broccolai.tickets.minecraft.common.listener.ActionListener;
 import love.broccolai.tickets.minecraft.common.model.Commander;
 import love.broccolai.tickets.minecraft.paper.inject.PaperPlatformModule;
+import love.broccolai.tickets.minecraft.paper.listeners.UpdateProfileListener;
+import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.incendo.cloud.CommandManager;
 
@@ -41,7 +43,17 @@ public final class PaperTicketsPlugin extends JavaPlugin {
         injector.getInstance(StaffCommands.class).register(commandManager);
         injector.getInstance(AdminCommands.class).register(commandManager);
 
+        this.registerListeners(injector);
         this.setupNotifications(injector);
+    }
+
+    private void registerListeners(final Injector injector) {
+        PluginManager pluginManager = this.getServer().getPluginManager();
+
+        pluginManager.registerEvents(
+            injector.getInstance(UpdateProfileListener.class),
+            this
+        );
     }
 
     //todo: add non-notif alternative for H2.

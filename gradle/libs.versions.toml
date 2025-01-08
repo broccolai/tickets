@@ -60,6 +60,7 @@ guice-assisted = { group = "com.google.inject.extensions", name = "guice-assiste
 
 # Incendo
 cloud-core = { group = "org.incendo", name = "cloud-core", version.ref = "cloud" }
+cloud-services = { group = "org.incendo", name = "cloud-services", version.ref = "cloud" }
 cloud-paper = { group = "org.incendo", name = "cloud-paper", version = "2.0.0-SNAPSHOT" }
 cloud-brigadier = { group = "org.incendo", name = "cloud-brigadier", version = "2.0.0-SNAPSHOT" }
 cloud-extras = { group = "org.incendo", name = "cloud-minecraft-extras", version.ref = "cloud" }

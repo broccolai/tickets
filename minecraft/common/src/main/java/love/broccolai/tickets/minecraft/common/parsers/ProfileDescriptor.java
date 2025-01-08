@@ -3,12 +3,12 @@ package love.broccolai.tickets.minecraft.common.parsers;
 import com.google.inject.Inject;
 import io.leangen.geantyref.TypeToken;
 import java.util.regex.Pattern;
+import love.broccolai.corn.trove.Trove;
 import love.broccolai.tickets.api.model.proflie.Profile;
 import love.broccolai.tickets.api.service.ProfileService;
 import love.broccolai.tickets.minecraft.common.model.Commander;
 import org.incendo.cloud.context.CommandContext;
 import org.incendo.cloud.context.CommandInput;
-import org.incendo.cloud.key.CloudKey;
 import org.incendo.cloud.parser.ArgumentParseResult;
 import org.incendo.cloud.suggestion.BlockingSuggestionProvider;
 import org.jspecify.annotations.NullMarked;
@@ -16,7 +16,6 @@ import org.jspecify.annotations.NullMarked;
 @NullMarked
 public final class ProfileDescriptor implements DescribedArgumentParser<Profile>, BlockingSuggestionProvider.Strings<Commander> {
 
-    public static final CloudKey<Profile> LAST_FOUND_PROFILE = CloudKey.cloudKey("last_found_profile", Profile.class);
     private static final Pattern USERNAME_PATTERN = Pattern.compile("^[a-zA-Z0-9_]{2,16}$");
 
     private final ProfileService profileService;
@@ -42,10 +41,9 @@ public final class ProfileDescriptor implements DescribedArgumentParser<Profile>
             return ArgumentParseResult.failure(new RuntimeException());
         }
 
-        Profile profile = this.profileService.get(input);
-        commandContext.store(LAST_FOUND_PROFILE, profile);
-
-        return ArgumentParseResult.success(profile);
+        return this.profileService.get(input)
+            .map(ArgumentParseResult::success)
+            .orElse(ArgumentParseResult.failure(new RuntimeException("could not find profile")));
     }
 
     @Override
@@ -53,6 +51,9 @@ public final class ProfileDescriptor implements DescribedArgumentParser<Profile>
         final CommandContext<Commander> commandContext,
         final CommandInput input
     ) {
-        return this.profileService.onlineUsernames();
+        //todo: replace with a filter system
+        return Trove.of(this.profileService.find())
+            .map(Profile::username)
+            .toList();
     }
 }
