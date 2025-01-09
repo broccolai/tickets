@@ -3,6 +3,7 @@ package love.broccolai.tickets.common.packaged;
 import love.broccolai.tickets.api.model.action.packaged.AssignAction;
 import love.broccolai.tickets.api.model.action.packaged.CloseAction;
 import love.broccolai.tickets.api.model.action.packaged.CommentAction;
+import love.broccolai.tickets.api.model.action.packaged.DiscussionAction;
 import love.broccolai.tickets.api.model.action.packaged.OpenAction;
 import love.broccolai.tickets.api.registry.ActionRegistry;
 import org.jspecify.annotations.NullMarked;
@@ -28,6 +29,10 @@ public final class PackagedActions {
         actionRegistry.register(
             AssignAction.IDENTIFIER,
             AssignAction.class
+        );
+        actionRegistry.register(
+            DiscussionAction.IDENTIFIER,
+            DiscussionAction.class
         );
     }
 }
