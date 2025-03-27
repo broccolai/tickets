@@ -33,6 +33,7 @@ public final class LabeledDescriptor implements DescribedArgumentParser<String>,
 
     @Override
     public Iterable<? extends Suggestion> suggestions(final CommandContext<Commander> context, final CommandInput input) {
+        //todo(josh): If we want hoverable messages in the future we can have platforms provider a component -> brig message mapper
         return List.of(TooltipSuggestion.suggestion("[<value>]", new LiteralMessage("hi")));
     }
 }

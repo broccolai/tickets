@@ -3,13 +3,13 @@
 indra = "3.1.3"
 jspecify = "1.0.0"
 shadow = "8.1.1"
-gremlin = "0.0.6"
+gremlin = "0.0.7"
 test-logger = "4.0.0"
 
 # Testing
 truth = "1.4.4"
 junit = "5.11.4"
-mockito = "5.15.2"
+mockito = "5.16.1"
 
 # Google
 guice = "7.0.0"
@@ -18,27 +18,27 @@ guice = "7.0.0"
 cloud = "2.0.0"
 
 # Kyori
-adventure = "4.18.0"
+adventure = "4.19.0"
 moonshine = "2.0.4"
 
 # Storage
-jdbi = "3.47.0"
-hikari = "6.2.1"
-flyway = "11.1.0"
+jdbi = "3.49.0"
+hikari = "6.3.0"
+flyway = "11.5.0"
 h2 = "2.3.232"
-configurate = "4.1.2"
+configurate = "4.2.0"
 postgresql = "0.8.9"
 
 # Misc
 corn = "4.0.0-SNAPSHOT"
 slf4j = "2.0.9"
-caffeine = "3.1.8"
+caffeine = "3.2.0"
 
 # Bukkit
 paper-api = "1.21.4-R0.1-SNAPSHOT"
 
 # Web
-springBoot = "3.4.1"
+springBoot = "3.4.4"
 springShellBom = "3.4.0"
 graal = "0.10.1"
 
