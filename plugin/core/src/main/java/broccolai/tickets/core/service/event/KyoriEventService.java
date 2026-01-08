@@ -6,12 +6,13 @@ import com.google.inject.Singleton;
 import net.kyori.event.EventBus;
 import net.kyori.event.EventSubscriber;
 import net.kyori.event.PostResult;
+import net.kyori.event.SimpleEventBus;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 @Singleton
 public final class KyoriEventService implements EventService {
 
-    private final EventBus<Event> eventBus = EventBus.create(Event.class);
+    private final EventBus<Event> eventBus = new SimpleEventBus<>(Event.class);
 
     @Override
     public @NonNull PostResult post(final @NonNull Event event) {
@@ -20,7 +21,7 @@ public final class KyoriEventService implements EventService {
 
     @Override
     public <T extends Event> void register(final @NonNull Class<T> clazz, final @NonNull EventSubscriber<T> subscriber) {
-        this.eventBus.subscribe(clazz, subscriber);
+        this.eventBus.register(clazz, subscriber);
     }
 
 }

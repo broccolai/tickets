@@ -1,9 +1,9 @@
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 
 plugins {
-    id("com.github.johnrengelman.shadow") version "8.1.1"
-    id("xyz.jpenilla.gremlin-gradle") version "0.0.1-SNAPSHOT"
-    id("xyz.jpenilla.run-paper") version "2.2.0"
+    id("com.gradleup.shadow") version "9.3.1"
+    id("xyz.jpenilla.gremlin-gradle") version "0.0.9"
+    id("xyz.jpenilla.run-paper") version "3.0.2"
 }
 
 repositories {
@@ -35,7 +35,7 @@ configurations.runtimeDownload {
 
 tasks {
     runServer {
-        minecraftVersion("1.20.2")
+        minecraftVersion("1.21.11")
         downloadPlugins {
             url("https://github.com/MilkBowl/Vault/releases/download/1.7.3/Vault.jar")
         }
