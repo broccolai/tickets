@@ -35,6 +35,7 @@ dependencies {
     api(libs.spring.boot.autoconfigure)
     api(libs.spring.shell)
     api(platform(libs.spring.shell.dependencies))
+    implementation("org.springframework.shell:spring-shell-jline")
 
     api(libs.gson)
 }

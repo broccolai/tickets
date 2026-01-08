@@ -1,7 +1,7 @@
 plugins {
     id("java-library")
     id("xyz.jpenilla.gremlin-gradle")
-    id("com.github.johnrengelman.shadow")
+    id("com.gradleup.shadow")
 }
 
 configurations.runtimeDownload {
@@ -19,7 +19,7 @@ tasks {
             include(project(":tickets-api"))
             include(project(":tickets-common"))
             include(project(":tickets-minecraft-common"))
-            include(dependency("xyz.jpenilla:gremlin-runtime:0.0.7"))
+            include(dependency("xyz.jpenilla:gremlin-runtime:0.0.9"))
         }
 
         relocate("xyz.jpenilla.gremlin", "love.broccolai.tickets.lib.xyz.jpenilla.gremlin")
