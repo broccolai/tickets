@@ -19,7 +19,7 @@ tasks {
             include(project(":tickets-api"))
             include(project(":tickets-common"))
             include(project(":tickets-minecraft-common"))
-            include(dependency("xyz.jpenilla:gremlin-runtime:0.0.9"))
+            include(dependency("xyz.jpenilla:gremlin-runtime:${libs.versions.gremlin.get()}"))
         }
 
         relocate("xyz.jpenilla.gremlin", "love.broccolai.tickets.lib.xyz.jpenilla.gremlin")

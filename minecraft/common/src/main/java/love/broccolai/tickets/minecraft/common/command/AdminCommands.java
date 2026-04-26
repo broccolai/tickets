@@ -2,9 +2,9 @@ package love.broccolai.tickets.minecraft.common.command;
 
 import com.google.inject.Inject;
 import java.time.Duration;
-import love.broccolai.tickets.api.service.StatisticService;
+import love.broccolai.tickets.minecraft.common.TicketPermissions;
 import love.broccolai.tickets.minecraft.common.model.Commander;
-import love.broccolai.tickets.minecraft.common.utilities.DurationFormatter;
+import love.broccolai.tickets.minecraft.common.service.TicketOperations;
 import org.incendo.cloud.Command;
 import org.incendo.cloud.CommandManager;
 import org.incendo.cloud.context.CommandContext;
@@ -12,19 +12,17 @@ import org.incendo.cloud.key.CloudKey;
 import org.incendo.cloud.parser.standard.DurationParser;
 import org.jspecify.annotations.NullMarked;
 
-import static net.kyori.adventure.text.Component.text;
-
 @NullMarked
 public final class AdminCommands extends AbstractCommand {
 
-    private final static CloudKey<Duration> DURATION_KEY = CloudKey.cloudKey("duration", Duration.class);
-    private final static Duration FOREVER_DURATION = Duration.ofSeconds(Long.MAX_VALUE);
+    private static final CloudKey<Duration> DURATION_KEY = CloudKey.cloudKey("duration", Duration.class);
+    private static final Duration FOREVER_DURATION = Duration.ofSeconds(Long.MAX_VALUE);
 
-    private final StatisticService statisticService;
+    private final TicketOperations actions;
 
     @Inject
-    public AdminCommands(final StatisticService statisticService) {
-        this.statisticService = statisticService;
+    public AdminCommands(final TicketOperations actions) {
+        this.actions = actions;
     }
 
     @Override
@@ -34,22 +32,18 @@ public final class AdminCommands extends AbstractCommand {
 
         commandManager.command(
             root.literal("stats")
+                .permission(TicketPermissions.ADMIN_STATS)
                 .literal("lifespan")
                 .optional("duration", DurationParser.durationParser())
                 .handler(this::handleLifespan)
         );
     }
 
-    public void handleLifespan(final CommandContext<Commander> context) {
+    private void handleLifespan(final CommandContext<Commander> context) {
         Commander commander = context.sender();
-        Duration search = context.optional(DURATION_KEY)
+        Duration searchWindow = context.optional(DURATION_KEY)
             .orElse(FOREVER_DURATION);
 
-        Duration result = this.statisticService.averageTicketsLifespan(search);
-        String formattedResult = DurationFormatter.formatDuration(result);
-
-        commander.sendMessage(
-            text("average ticket lifespan: " + formattedResult)
-        );
+        this.actions.averageLifespan(commander, searchWindow);
     }
 }

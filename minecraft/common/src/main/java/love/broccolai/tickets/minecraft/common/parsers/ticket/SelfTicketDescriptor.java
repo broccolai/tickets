@@ -16,15 +16,13 @@ import org.jspecify.annotations.NullMarked;
 public final class SelfTicketDescriptor implements ParserDescriptor<Commander, Ticket> {
 
     private final TicketParser ticketParser;
-    private final Set<TicketStatus> statuses;
 
     @AssistedInject
     public SelfTicketDescriptor(
         final StorageService storageService,
         final @Assisted("statuses") Set<TicketStatus> statuses
     ) {
-        this.ticketParser = new TicketParser(storageService, true);
-        this.statuses = statuses;
+        this.ticketParser = new TicketParser(storageService, true, statuses);
     }
 
     @Override

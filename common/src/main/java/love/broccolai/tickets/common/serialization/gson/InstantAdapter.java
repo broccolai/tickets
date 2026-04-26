@@ -7,28 +7,27 @@ import com.google.gson.stream.JsonWriter;
 import java.io.IOException;
 import java.time.Instant;
 
-//todo: could be better, rushed.
 public final class InstantAdapter extends TypeAdapter<Instant> {
 
     @Override
-    public void write(JsonWriter out, Instant value) throws IOException {
+    public void write(final JsonWriter writer, final Instant value) throws IOException {
         if (value == null) {
-            out.nullValue();
+            writer.nullValue();
             return;
         }
 
-        out.value(value.toEpochMilli());
+        writer.value(value.toEpochMilli());
     }
 
     @Override
-    public Instant read(JsonReader in) throws IOException {
-        JsonToken token = in.peek();
+    public Instant read(final JsonReader reader) throws IOException {
+        JsonToken token = reader.peek();
 
         if (token == JsonToken.NULL) {
-            in.nextNull();
+            reader.nextNull();
             return null;
         }
 
-        return Instant.ofEpochMilli(in.nextLong());
+        return Instant.ofEpochMilli(reader.nextLong());
     }
 }

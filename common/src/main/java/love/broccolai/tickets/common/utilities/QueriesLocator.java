@@ -1,17 +1,14 @@
 package love.broccolai.tickets.common.utilities;
 
-import com.google.common.base.Splitter;
-import java.util.List;
 import love.broccolai.tickets.common.configuration.DatabaseConfiguration;
 import org.jdbi.v3.core.locator.ClasspathSqlLocator;
-import org.jdbi.v3.core.locator.internal.ClasspathBuilder;
 import org.jspecify.annotations.NullMarked;
 
 @NullMarked
 public final class QueriesLocator {
 
     private static final String SQL_EXTENSION = "sql";
-    private static final Splitter SPLITTER = Splitter.on(';');
+
     private final ClasspathSqlLocator locator = ClasspathSqlLocator.create();
 
     private final DatabaseConfiguration.Type databaseType;
@@ -29,16 +26,8 @@ public final class QueriesLocator {
         return this.applyDialectSpecificAlterations(rawQuery);
     }
 
-    public List<String> queries(final String name) {
-        return SPLITTER.splitToList(this.query(name));
-    }
-
     private String createQueryPath(final String name) {
-        return new ClasspathBuilder()
-            .appendDotPath("queries")
-            .appendDotPath(name)
-            .setExtension(SQL_EXTENSION)
-            .build();
+        return "queries/" + name + "." + SQL_EXTENSION;
     }
 
     private String applyDialectSpecificAlterations(final String query) {
@@ -51,5 +40,4 @@ public final class QueriesLocator {
 
         return alteredQuery;
     }
-
 }

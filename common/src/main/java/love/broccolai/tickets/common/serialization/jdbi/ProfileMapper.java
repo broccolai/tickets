@@ -1,7 +1,7 @@
 package love.broccolai.tickets.common.serialization.jdbi;
 
 import java.util.UUID;
-import love.broccolai.tickets.api.model.proflie.Profile;
+import love.broccolai.tickets.api.model.profile.Profile;
 import org.jdbi.v3.core.mapper.RowViewMapper;
 import org.jdbi.v3.core.result.RowView;
 import org.jspecify.annotations.NullMarked;

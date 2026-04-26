@@ -4,18 +4,17 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.EnumSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 import love.broccolai.tickets.api.model.Ticket;
-import love.broccolai.tickets.api.model.TicketStatus;
-import love.broccolai.tickets.api.model.proflie.Profile;
+import love.broccolai.tickets.api.model.profile.Profile;
 import love.broccolai.tickets.api.service.ProfileService;
 import love.broccolai.tickets.api.service.StorageService;
+import love.broccolai.tickets.api.service.TicketSearch;
 import love.broccolai.tickets.common.service.profile.PartialProfileProvider;
 import love.broccolai.tickets.common.service.profile.ProfileCacheProvider;
 import love.broccolai.tickets.common.service.profile.ProfileCreateProvider;
@@ -27,13 +26,13 @@ import org.jspecify.annotations.NullMarked;
 
 @Singleton
 @NullMarked
-public class PipelineProfileService implements ProfileService {
+public final class PipelineProfileService implements ProfileService {
 
     private final ServicePipeline pipeline = ServicePipeline.builder().build();
 
     private final StorageService storageService;
     private final ProfileCacheProvider cacheProvider;
-    private final UUIDUsernameConverter uuidUsernameConverter;
+    private final UUIDUsernameConverter usernameConverter;
 
     @Inject
     public PipelineProfileService(
@@ -41,11 +40,11 @@ public class PipelineProfileService implements ProfileService {
         final ProfileCreateProvider createProvider,
         final ProfileDataProvider dataProvider,
         final ProfileCacheProvider cacheProvider,
-        final UUIDUsernameConverter uuidUsernameConverter
+        final UUIDUsernameConverter usernameConverter
     ) {
         this.storageService = storageService;
         this.cacheProvider = cacheProvider;
-        this.uuidUsernameConverter = uuidUsernameConverter;
+        this.usernameConverter = usernameConverter;
 
         this.pipeline
             .registerServiceType(PartialProfileProvider.TYPE, createProvider)
@@ -62,24 +61,36 @@ public class PipelineProfileService implements ProfileService {
     }
 
     @Override
-    public Optional<Profile> get(final UUID uniqueId) {
-        Profile profile = this.get(Collections.singletonList(uniqueId)).get(uniqueId);
+    public Optional<Profile> find(final UUID uniqueId) {
+        Profile profile = this.load(List.of(uniqueId)).get(uniqueId);
 
         return Optional.ofNullable(profile);
     }
 
     @Override
-    public Optional<Profile> get(String username) {
-        UUID uuid = this.uuidUsernameConverter.uuid(username);
-
-        return this.get(uuid);
+    public Optional<Profile> find(final String username) {
+        return this.cacheProvider.find(username)
+            .or(() -> this.storageService.findProfile(username)
+                .map(this::cache))
+            .or(() -> this.usernameConverter.uuid(username)
+                .flatMap(this::find));
     }
 
     @Override
-    public final Map<UUID, Profile> get(final Collection<UUID> uniqueIds) {
-        Map<UUID, Profile> results = this.pipeline.pump(new ProfileServiceContext(uniqueIds))
-            .through(PartialProfileProvider.TYPE)
-            .complete();
+    public Map<UUID, Profile> load(final Collection<UUID> uniqueIds) {
+        if (uniqueIds.isEmpty()) {
+            return Map.of();
+        }
+
+        Map<UUID, Profile> results;
+
+        try {
+            results = this.pipeline.pump(new ProfileServiceContext(uniqueIds))
+                .through(PartialProfileProvider.TYPE)
+                .complete();
+        } catch (IllegalStateException e) {
+            return Map.of();
+        }
 
         this.cacheProvider.cache(results);
 
@@ -87,24 +98,38 @@ public class PipelineProfileService implements ProfileService {
     }
 
     @Override
-    public Optional<Profile> modify(UUID uuid, Function<Profile, Boolean> modifier) {
-        return this.get(uuid).map(profile -> {
-            if (modifier.apply(profile)) {
-                this.storageService.updateProfile(profile);
-            }
+    public Optional<Profile> update(final Profile profile) {
+        this.storageService.updateProfile(profile);
 
-            return profile;
-        });
+        return Optional.of(this.cache(profile));
     }
 
     @Override
-    public Collection<Profile> find() {
-        Set<UUID> relevantUniqueIds = this.storageService.findTickets(EnumSet.of(TicketStatus.OPEN, TicketStatus.PICKED), null, null)
+    public Optional<Profile> updateUsername(final UUID uuid, final String username) {
+        return this.find(uuid)
+            .flatMap(profile -> this.update(profile.withUsername(username)));
+    }
+
+    @Override
+    public Collection<Profile> active() {
+        Set<UUID> relevantUniqueIds = this.storageService.findTickets(
+            TicketSearch.allActive()
+        )
             .stream()
             .map(Ticket::creator)
             .collect(Collectors.toSet());
 
-        return this.get(relevantUniqueIds).values();
+        return this.load(relevantUniqueIds).values();
     }
 
+    @Override
+    public Collection<Profile> cached() {
+        return this.cacheProvider.cached();
+    }
+
+    private Profile cache(final Profile profile) {
+        this.cacheProvider.cache(profile);
+
+        return profile;
+    }
 }

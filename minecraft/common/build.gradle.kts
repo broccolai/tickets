@@ -11,5 +11,5 @@ dependencies {
     api(libs.adventure.minimessage)
     api(libs.moonshine.standard)
 
-    compileOnly("com.mojang:brigadier:1.0.17")
+    compileOnly(libs.brigadier)
 }

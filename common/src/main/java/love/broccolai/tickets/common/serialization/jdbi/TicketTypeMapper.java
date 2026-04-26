@@ -14,7 +14,9 @@ import org.jdbi.v3.core.statement.StatementContext;
 import org.jspecify.annotations.NullMarked;
 
 @NullMarked
-public final class TicketTypeMapper extends AbstractArgumentFactory<TicketFormat> implements ColumnMapper<TicketFormat> {
+public final class TicketTypeMapper
+    extends AbstractArgumentFactory<TicketFormat>
+    implements ColumnMapper<TicketFormat> {
 
     private final TicketTypeRegistry typeRegistry;
 
@@ -25,15 +27,19 @@ public final class TicketTypeMapper extends AbstractArgumentFactory<TicketFormat
     }
 
     @Override
-    public TicketFormat map(final ResultSet rs, final int columnNumber, final StatementContext ctx) throws SQLException {
-        String identifier = rs.getString(columnNumber);
+    public TicketFormat map(
+        final ResultSet resultSet,
+        final int columnNumber,
+        final StatementContext context
+    ) throws SQLException {
+        String identifier = resultSet.getString(columnNumber);
 
-        return this.typeRegistry.fromIdentifier(identifier);
+        return this.typeRegistry.requireIdentifier(identifier);
     }
 
     @Override
-    protected Argument build(TicketFormat value, ConfigRegistry config) {
-        return (position, statement, ctx) -> {
+    protected Argument build(final TicketFormat value, final ConfigRegistry config) {
+        return (position, statement, context) -> {
             statement.setString(position, value.identifier());
         };
     }

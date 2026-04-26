@@ -8,15 +8,15 @@ import java.util.Collection;
 import java.util.Collections;
 import javax.sql.DataSource;
 import love.broccolai.tickets.api.model.format.TicketFormat;
-import love.broccolai.tickets.api.registry.ActionRegistry;
 import love.broccolai.tickets.api.registry.TicketTypeRegistry;
 import love.broccolai.tickets.common.configuration.DatabaseConfiguration;
 import love.broccolai.tickets.common.configuration.TicketsConfiguration;
 import love.broccolai.tickets.common.inject.ConfigurationModule;
 import love.broccolai.tickets.common.inject.ServiceModule;
-import love.broccolai.tickets.common.packaged.PackagedActions;
 import love.broccolai.tickets.common.packaged.PackagedMigrations;
+import org.jspecify.annotations.NullMarked;
 
+@NullMarked
 public final class TicketsPackage {
 
     public Injector startup(
@@ -30,10 +30,6 @@ public final class TicketsPackage {
         );
 
         Injector injector = Guice.createInjector(modules);
-
-        PackagedActions.register(
-            injector.getInstance(ActionRegistry.class)
-        );
 
         PackagedMigrations.migrate(
             injector.getInstance(DatabaseConfiguration.class),
@@ -58,5 +54,4 @@ public final class TicketsPackage {
 
         return modules;
     }
-
 }

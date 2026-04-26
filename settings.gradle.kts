@@ -25,7 +25,6 @@ rootProject.name = "tickets-parent"
 
 setupSubproject(name = "api")
 setupSubproject(name = "common")
-setupSubproject(name = "spring")
 
 setupSubproject(folder = "minecraft", name = "common")
 setupSubproject(folder = "minecraft", name = "paper")
@@ -34,12 +33,8 @@ fun setupSubproject(folder: String? = null, name: String) {
     val formattedName = listOfNotNull("tickets", folder, name)
         .joinToString("-")
 
-    include(name)
+    include(formattedName)
 
-    val project = project(":$name")
-    project.name = formattedName
-
-    folder?.let {
-        project.projectDir = file("$folder/$name")
-    }
+    val project = project(":$formattedName")
+    project.projectDir = file(listOfNotNull(folder, name).joinToString("/"))
 }

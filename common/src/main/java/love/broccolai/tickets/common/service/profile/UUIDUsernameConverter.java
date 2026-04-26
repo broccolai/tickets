@@ -1,10 +1,13 @@
 package love.broccolai.tickets.common.service.profile;
 
+import java.util.Optional;
 import java.util.UUID;
+import org.jspecify.annotations.NullMarked;
 
+@NullMarked
 public interface UUIDUsernameConverter {
 
-    String username(UUID uuid);
+    Optional<String> username(UUID uuid);
 
-    UUID uuid(String username);
+    Optional<UUID> uuid(String username);
 }

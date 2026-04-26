@@ -1,7 +1,7 @@
 package love.broccolai.tickets.api.model.format;
 
 import love.broccolai.tickets.api.model.Location;
-import love.broccolai.tickets.api.model.proflie.Profile;
+import love.broccolai.tickets.api.model.profile.Profile;
 
 public enum TicketFormatStyle {
     Player(Profile.class),

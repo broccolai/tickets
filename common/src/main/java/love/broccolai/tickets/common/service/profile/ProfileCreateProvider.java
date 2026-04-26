@@ -5,13 +5,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import love.broccolai.tickets.api.model.proflie.Profile;
+import love.broccolai.tickets.api.model.profile.Profile;
 import love.broccolai.tickets.api.service.StorageService;
 import org.jspecify.annotations.NullMarked;
 
-/**
- * Final provider to use, creates the profile.
- */
 @NullMarked
 public final class ProfileCreateProvider implements PartialProfileProvider {
 
@@ -32,14 +29,16 @@ public final class ProfileCreateProvider implements PartialProfileProvider {
         Map<UUID, Profile> results = new HashMap<>();
 
         for (UUID request : requests) {
-            String username = this.usernameProvider.username(request);
-            Profile profile = new Profile(request, username);
+            Profile profile = this.usernameProvider.username(request)
+                .map(username -> new Profile(request, username))
+                .orElse(null);
 
-            results.put(request, profile);
-            this.storageService.insertProfile(profile);
+            if (profile != null) {
+                results.put(request, profile);
+                this.storageService.insertProfile(profile);
+            }
         }
 
         return results;
     }
-
 }

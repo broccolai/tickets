@@ -12,20 +12,19 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Instant;
 import javax.sql.DataSource;
-import love.broccolai.tickets.api.model.format.TicketFormatContent;
-import love.broccolai.tickets.api.registry.ActionRegistry;
+import love.broccolai.tickets.api.model.action.ActionRegistry;
+import love.broccolai.tickets.api.model.component.ComponentRegistry;
+import love.broccolai.tickets.api.model.format.TicketFormData;
 import love.broccolai.tickets.api.registry.TicketTypeRegistry;
 import love.broccolai.tickets.common.configuration.Configuration;
 import love.broccolai.tickets.common.configuration.DatabaseConfiguration;
 import love.broccolai.tickets.common.configuration.TicketsConfiguration;
 import love.broccolai.tickets.common.registry.SimpleActionRegistry;
+import love.broccolai.tickets.common.registry.SimpleComponentRegistry;
 import love.broccolai.tickets.common.registry.SimpleTicketTypeRegistry;
 import love.broccolai.tickets.common.serialization.gson.InstantAdapter;
-import love.broccolai.tickets.common.serialization.gson.TicketFormatContentAdapter;
-import love.broccolai.tickets.common.serialization.jdbi.ActionMapper;
-import love.broccolai.tickets.common.serialization.jdbi.AssociatedActionMapper;
+import love.broccolai.tickets.common.serialization.gson.TicketFormDataAdapter;
 import love.broccolai.tickets.common.serialization.jdbi.ProfileMapper;
-import love.broccolai.tickets.common.serialization.jdbi.TicketMapper;
 import love.broccolai.tickets.common.serialization.jdbi.TicketTypeMapper;
 import org.jdbi.v3.core.Jdbi;
 import org.jdbi.v3.gson2.Gson2Config;
@@ -41,8 +40,9 @@ public final class ConfigurationModule extends AbstractModule {
 
     @Override
     protected void configure() {
-        this.bind(ActionRegistry.class).to(SimpleActionRegistry.class);
         this.bind(TicketTypeRegistry.class).to(SimpleTicketTypeRegistry.class);
+        this.bind(ComponentRegistry.class).to(SimpleComponentRegistry.class);
+        this.bind(ActionRegistry.class).to(SimpleActionRegistry.class);
     }
 
     @Provides
@@ -73,10 +73,10 @@ public final class ConfigurationModule extends AbstractModule {
     @Provides
     @Singleton
     public Gson provideGson(
-        TicketFormatContentAdapter ticketFormatContentAdapter
+        final TicketFormDataAdapter ticketFormDataAdapter
     ) {
         return new GsonBuilder()
-            .registerTypeAdapter(TicketFormatContent.class, ticketFormatContentAdapter)
+            .registerTypeAdapter(TicketFormData.class, ticketFormDataAdapter)
             .registerTypeAdapter(Instant.class, new InstantAdapter())
             .create();
     }
@@ -87,17 +87,11 @@ public final class ConfigurationModule extends AbstractModule {
         final DataSource dataSource,
         final Gson gson,
         final ProfileMapper profileMapper,
-        final ActionMapper actionMapper,
-        final AssociatedActionMapper associatedActionMapper,
-        final TicketMapper ticketMapper,
         final TicketTypeMapper ticketTypeMapper
     ) {
         Jdbi jdbi = Jdbi.create(dataSource)
             .installPlugin(new Gson2Plugin())
             .registerRowMapper(profileMapper)
-            .registerRowMapper(actionMapper)
-            .registerRowMapper(associatedActionMapper)
-            .registerRowMapper(ticketMapper)
             .registerColumnMapper(ticketTypeMapper)
             .registerArgument(ticketTypeMapper);
 
@@ -126,18 +120,19 @@ public final class ConfigurationModule extends AbstractModule {
         final Class<T> clazz,
         final Path file
     ) throws IOException {
-        ObjectMapper<T> MAPPER = ObjectMapper.factory().get(clazz);
+        ObjectMapper<T> mapper = ObjectMapper.factory().get(clazz);
 
         if (Files.notExists(file)) {
+            Files.createDirectories(file.getParent());
             Files.createFile(file);
         }
 
         ConfigurationLoader<?> loader = this.pathConfigurationLoader(file);
 
         ConfigurationNode node = loader.load();
-        T config = MAPPER.load(node);
+        T config = mapper.load(node);
 
-        MAPPER.save(config, node);
+        mapper.save(config, node);
         loader.save(node);
 
         return config;

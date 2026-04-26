@@ -3,12 +3,11 @@ package love.broccolai.tickets.common.utilities;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import java.time.Instant;
-import love.broccolai.tickets.api.model.format.TicketFormatContent;
+import love.broccolai.tickets.api.model.format.TicketFormData;
 import love.broccolai.tickets.api.registry.TicketTypeRegistry;
 import love.broccolai.tickets.common.serialization.gson.InstantAdapter;
-import love.broccolai.tickets.common.serialization.gson.TicketFormatContentAdapter;
-import love.broccolai.tickets.common.serialization.jdbi.ActionMapper;
-import love.broccolai.tickets.common.serialization.jdbi.TicketMapper;
+import love.broccolai.tickets.common.serialization.gson.TicketFormDataAdapter;
+import love.broccolai.tickets.common.serialization.jdbi.ProfileMapper;
 import love.broccolai.tickets.common.serialization.jdbi.TicketTypeMapper;
 import org.jdbi.v3.core.Jdbi;
 import org.jdbi.v3.core.spi.JdbiPlugin;
@@ -20,7 +19,7 @@ public final class TicketsJdbiPlugin implements JdbiPlugin {
     private static final TicketTypeRegistry TICKET_TYPE_REGISTRY = PremadeTicketTypeRegistry.create();
 
     private static final Gson GSON = new GsonBuilder()
-        .registerTypeAdapter(TicketFormatContent.class, new TicketFormatContentAdapter(TICKET_TYPE_REGISTRY))
+        .registerTypeAdapter(TicketFormData.class, new TicketFormDataAdapter(TICKET_TYPE_REGISTRY))
         .registerTypeAdapter(Instant.class, new InstantAdapter())
         .create();
 
@@ -30,12 +29,10 @@ public final class TicketsJdbiPlugin implements JdbiPlugin {
 
         jdbi
             .installPlugin(new Gson2Plugin())
-            .registerRowMapper(new TicketMapper())
-            .registerRowMapper(new ActionMapper(PremadeActionRegistry.create()))
+            .registerRowMapper(new ProfileMapper())
             .registerColumnMapper(ticketTypeMapper)
             .registerArgument(ticketTypeMapper);
 
         jdbi.getConfig(Gson2Config.class).setGson(GSON);
     }
-
 }

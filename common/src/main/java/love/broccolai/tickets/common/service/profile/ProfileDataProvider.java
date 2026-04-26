@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
-import love.broccolai.tickets.api.model.proflie.Profile;
+import love.broccolai.tickets.api.model.profile.Profile;
 import love.broccolai.tickets.api.service.StorageService;
 import org.jspecify.annotations.NullMarked;
 
@@ -27,5 +27,4 @@ public final class ProfileDataProvider implements PartialProfileProvider {
             .stream()
             .collect(Collectors.toMap(Profile::uuid, profile -> profile));
     }
-
 }

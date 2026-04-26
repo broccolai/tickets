@@ -11,14 +11,16 @@ import love.broccolai.tickets.minecraft.common.command.StaffCommands;
 import love.broccolai.tickets.minecraft.common.command.UserCommands;
 import love.broccolai.tickets.minecraft.common.inject.CommandArgumentModule;
 import love.broccolai.tickets.minecraft.common.inject.MessageModule;
-import love.broccolai.tickets.minecraft.common.listener.ActionListener;
+import love.broccolai.tickets.minecraft.common.listener.TicketActionRelay;
 import love.broccolai.tickets.minecraft.common.model.Commander;
 import love.broccolai.tickets.minecraft.paper.inject.PaperPlatformModule;
 import love.broccolai.tickets.minecraft.paper.listeners.UpdateProfileListener;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.incendo.cloud.CommandManager;
+import org.jspecify.annotations.NullMarked;
 
+@NullMarked
 public final class PaperTicketsPlugin extends JavaPlugin {
 
     private static final Key<CommandManager<Commander>> COMMAND_MANAGER_KEY = Key.get(new TypeLiteral<>() {
@@ -56,8 +58,7 @@ public final class PaperTicketsPlugin extends JavaPlugin {
         );
     }
 
-    //todo: add non-notif alternative for H2.
-    public void setupNotifications(final Injector injector) {
+    private void setupNotifications(final Injector injector) {
         DatabaseConfiguration databaseConfiguration = injector.getInstance(DatabaseConfiguration.class);
 
         if (databaseConfiguration.type != DatabaseConfiguration.Type.POSTGRES) {
@@ -66,8 +67,8 @@ public final class PaperTicketsPlugin extends JavaPlugin {
 
         StorageService storageService = injector.getInstance(StorageService.class);
 
-        storageService.addNotificationListener(
-            injector.getInstance(ActionListener.class)
+        storageService.addTicketActionRelay(
+            injector.getInstance(TicketActionRelay.class)
         );
     }
 }

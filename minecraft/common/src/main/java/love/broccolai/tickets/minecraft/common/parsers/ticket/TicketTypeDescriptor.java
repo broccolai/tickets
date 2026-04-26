@@ -5,6 +5,7 @@ import io.leangen.geantyref.TypeToken;
 import java.util.Locale;
 import love.broccolai.tickets.api.model.format.TicketFormat;
 import love.broccolai.tickets.api.registry.TicketTypeRegistry;
+import love.broccolai.tickets.minecraft.common.exceptions.TicketTypeNotFoundException;
 import love.broccolai.tickets.minecraft.common.model.Commander;
 import love.broccolai.tickets.minecraft.common.parsers.DescribedArgumentParser;
 import org.incendo.cloud.context.CommandContext;
@@ -14,7 +15,9 @@ import org.incendo.cloud.suggestion.BlockingSuggestionProvider;
 import org.jspecify.annotations.NullMarked;
 
 @NullMarked
-public class TicketTypeDescriptor implements DescribedArgumentParser<TicketFormat>, BlockingSuggestionProvider.Strings<Commander> {
+public final class TicketTypeDescriptor implements
+    DescribedArgumentParser<TicketFormat>,
+    BlockingSuggestionProvider.Strings<Commander> {
 
     private final TicketTypeRegistry ticketTypeRegistry;
 
@@ -34,17 +37,17 @@ public class TicketTypeDescriptor implements DescribedArgumentParser<TicketForma
         final CommandInput commandInput
     ) {
         String input = commandInput.readString().toLowerCase(Locale.ROOT);
-        TicketFormat type = this.ticketTypeRegistry.fromIdentifier(input);
 
-        if (type == null) {
-            return ArgumentParseResult.failure(new RuntimeException());
-        }
-
-        return ArgumentParseResult.success(type);
+        return this.ticketTypeRegistry.findByIdentifier(input)
+            .map(ArgumentParseResult::success)
+            .orElse(ArgumentParseResult.failure(new TicketTypeNotFoundException()));
     }
 
     @Override
-    public Iterable<String> stringSuggestions(final CommandContext<Commander> commandContext, final CommandInput input) {
+    public Iterable<String> stringSuggestions(
+        final CommandContext<Commander> commandContext,
+        final CommandInput input
+    ) {
         return this.ticketTypeRegistry.identifiers();
     }
 }

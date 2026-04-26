@@ -4,19 +4,52 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.function.Function;
-import love.broccolai.tickets.api.model.proflie.Profile;
+import java.util.function.UnaryOperator;
+import love.broccolai.tickets.api.model.profile.Profile;
+import org.jspecify.annotations.NullMarked;
 
+@NullMarked
 public interface ProfileService {
 
-    Optional<Profile> get(UUID uuid);
+    Optional<Profile> find(UUID uuid);
 
-    Optional<Profile> get(String username);
+    Optional<Profile> find(String username);
 
-    Map<UUID, Profile> get(Collection<UUID> uuids);
+    Map<UUID, Profile> load(Collection<UUID> uuids);
 
-    Optional<Profile> modify(UUID uuid, Function<Profile, Boolean> modifier);
+    Optional<Profile> update(Profile profile);
 
-    Collection<Profile> find();
+    Optional<Profile> updateUsername(UUID uuid, String username);
 
+    Collection<Profile> active();
+
+    Collection<Profile> cached();
+
+    default Optional<Profile> get(final UUID uuid) {
+        return this.find(uuid);
+    }
+
+    default Optional<Profile> get(final String username) {
+        return this.find(username);
+    }
+
+    default Map<UUID, Profile> get(final Collection<UUID> uuids) {
+        return this.load(uuids);
+    }
+
+    default Optional<Profile> modify(final UUID uuid, final UnaryOperator<Profile> modifier) {
+        return this.find(uuid).flatMap(profile -> {
+            Profile updatedProfile = modifier.apply(profile);
+
+            if (updatedProfile.equals(profile)) {
+                return Optional.of(profile);
+            }
+
+            return this.update(updatedProfile);
+        });
+    }
+
+    default Collection<Profile> find() {
+        return this.active();
+    }
 }

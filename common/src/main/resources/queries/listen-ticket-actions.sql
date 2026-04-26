@@ -1,0 +1,1 @@
+LISTEN ticket_action_channel;
